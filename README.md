@@ -21,4 +21,6 @@ It is not a finished game — it’s a proof of concept that demonstrates physic
 Currently in **prototype stage** — gameplay, polish, and VFX updates will continue progressively.  
 ---
 
+![Build Status](https://github.com/Serdumenn/PongMobilePrototype/actions/workflows/build-android.yml/badge.svg)
+
 Follow the development to see future improvements!
