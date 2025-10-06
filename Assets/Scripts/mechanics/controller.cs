@@ -1,38 +1,49 @@
 using UnityEngine;
 using UnityEngine.UI;
 
-public class controller : MonoBehaviour {
+public class controller : MonoBehaviour
+{
     public Button left, right;
-    public bool direction;
+    public bool direction;   // true = left, false = right (mevcut UI event’lerin bozulmaması için bıraktım)
     public bool moving;
-    public float speed;
-    public float limit;
-    void FixedUpdate()
+    public float speed = 5f;
+    public float limit = 7f;
+
+    private float moveDir;   // -1, 0, +1
+
+    void OnEnable()
     {
-        if (transform.position.x < limit) transform.position = new Vector3(limit, transform.position.y, 0);
-        if (transform.position.x > -limit) transform.position = new Vector3(-limit, transform.position.y, 0);
-        if (direction && moving)
-        {
-            transform.Translate(-Vector3.right * speed * Time.deltaTime);
-        }
-        if (!direction && moving) 
-        {
-            transform.Translate(Vector3.right * speed * Time.deltaTime);
-        }
-        
+        moving = false;
+        moveDir = 0f;
     }
+
+    void Update()
+    {
+        if (!moving || Mathf.Approximately(moveDir, 0f))
+            return;
+
+        float delta = moveDir * speed * Time.deltaTime;
+        float clampedX = Mathf.Clamp(transform.position.x + delta, -limit, limit);
+        transform.position = new Vector3(clampedX, transform.position.y, transform.position.z);
+    }
+
     public void goLeft()
     {
         moving = true;
         direction = true;
+        moveDir = -1f;
     }
-    public void stop()
-    {
-        moving = false;
-    }
+
     public void goRight()
     {
         moving = true;
         direction = false;
+        moveDir = 1f;
+    }
+
+    public void stop()
+    {
+        moving = false;
+        moveDir = 0f;
     }
 }

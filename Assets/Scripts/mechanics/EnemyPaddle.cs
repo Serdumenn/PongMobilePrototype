@@ -2,115 +2,84 @@ using UnityEngine;
 
 public class EnemyPaddle : MonoBehaviour
 {
-    public Transform ball;
+    [Header("AI Settings")]
     public float moveSpeed = 5f;
-    public float minMoveThreshold = 0.5f;
-    public float margin = 0.2f;
+    public float difficultyError = 0.3f;
+    public float predictionStep = 0.3f; // 0.1f idi, CPU yükünü azaltmak için artırıldı
 
-    public float rotationFactor = 5f;
-    public float smoothRotation = 5f;
+    [Header("Scene References")]
+    public Transform ball;
+    public Rigidbody2D rb;
 
-    private Rigidbody2D rb;
-    private float paddleWidth;
-    private Vector3 lastPosition;
-    private float velocityX;
+    private Camera cam;
+    private float halfCourtWidth;
+    private int cachedW, cachedH;
 
-    public enum GameMode { Easy, Medium, Hard }
-    public GameMode gameMode = GameMode.Medium;
-    private float maxError;
-    private float errorOffset;
-
-    public saving prefs;
-
-    void Start()
+    void Awake()
     {
-        rb = GetComponent<Rigidbody2D>();
-        paddleWidth = GetComponent<SpriteRenderer>().bounds.size.x;
-        SetDifficultySettings();
-        errorOffset = Random.Range(-maxError, maxError);
-        lastPosition = transform.position;
+        if (rb == null)
+            rb = GetComponent<Rigidbody2D>();
+
+        cam = Camera.main;
+        CacheCourtWidth();
+    }
+
+    void Update()
+    {
+        // Ekran çözünürlüğü değişirse alanı güncelle
+        if (Screen.width != cachedW || Screen.height != cachedH)
+            CacheCourtWidth();
     }
 
     void FixedUpdate()
     {
-        AutoMove();
-        //UpdateRotation();
+        if (ball == null) return;
+
+        float targetX = PredictBallTargetX();
+        float newX = Mathf.MoveTowards(rb.position.x, targetX, moveSpeed * Time.fixedDeltaTime);
+        newX = Mathf.Clamp(newX, -halfCourtWidth + 0.5f, halfCourtWidth - 0.5f);
+        rb.MovePosition(new Vector2(newX, rb.position.y));
     }
 
-    private void AutoMove()
+    float PredictBallTargetX()
     {
-        Rigidbody2D ballRb = ball.GetComponent<Rigidbody2D>();
-        if (ball != null && ballRb.linearVelocity.magnitude > 0.1f)
-        {
-            float predictedX = PredictBallPosition();
-            if (Mathf.Abs(predictedX - transform.position.x) > minMoveThreshold)
-            {
-                float newX = Mathf.Lerp(transform.position.x, predictedX, moveSpeed * Time.deltaTime);
-                newX = Mathf.Clamp(newX, -GetCourtWidth() / 2f + paddleWidth / 2f + margin, GetCourtWidth() / 2f - paddleWidth / 2f - margin);
-                rb.MovePosition(new Vector2(newX, transform.position.y));
-            }
-        }
-    }
-
-    /*private void UpdateRotation()
-    {
-        velocityX = (transform.position.x - lastPosition.x) / Time.fixedDeltaTime;
-        float targetRotation = -velocityX * rotationFactor;
-
-        if (Mathf.Abs(velocityX) > 0.01f)
-        {
-            transform.rotation = Quaternion.Lerp(transform.rotation, Quaternion.Euler(0, 0, targetRotation), Time.fixedDeltaTime * smoothRotation);
-        }
-        else
-        {
-            transform.rotation = Quaternion.Lerp(transform.rotation, Quaternion.identity, Time.fixedDeltaTime * smoothRotation);
-        }
-
-        lastPosition = transform.position;
-    }*/
-
-    private float PredictBallPosition()
-    {
+        // Basit top tahmin fonksiyonu — optimize edilmiş versiyon
         Vector2 ballPos = ball.position;
         Rigidbody2D ballRb = ball.GetComponent<Rigidbody2D>();
-        Vector2 ballVelocity = ballRb.linearVelocity;
-        if (ballVelocity.magnitude == 0) return transform.position.x;
-        float predictedX = ballPos.x;
-        while (ballPos.y < 5f && ballPos.y > -5f)
+        Vector2 ballVel = ballRb.linearVelocity;
+
+        // Top yukarı değil aşağı geliyorsa tahmin etme
+        if (ballVel.y <= 0)
+            return rb.position.x;
+
+        float topBoundary = Mathf.Abs(transform.position.y);
+        float stepDistance = predictionStep;
+
+        // Basitleştirilmiş yansıma simülasyonu
+        while (ballPos.y < topBoundary)
         {
-            ballPos += ballVelocity.normalized * 0.1f;
-            if (ballPos.x <= -GetCourtWidth() / 2f)
-                ballVelocity.x = Mathf.Abs(ballVelocity.x);
-            else if (ballPos.x >= GetCourtWidth() / 2f)
-                ballVelocity.x = -Mathf.Abs(ballVelocity.x);
-            if (ballPos.y >= 4f || ballPos.y <= -4f)
+            ballPos += ballVel.normalized * stepDistance;
+
+            if (Mathf.Abs(ballPos.x) > halfCourtWidth)
             {
-                predictedX = ballPos.x;
-                break;
+                ballVel.x *= -1; // duvara çarptı, yansıt
+                ballPos.x = Mathf.Sign(ballPos.x) * halfCourtWidth;
             }
         }
-        predictedX += errorOffset;
-        return Mathf.Clamp(predictedX, -GetCourtWidth() / 2f + paddleWidth / 2f + margin, GetCourtWidth() / 2f - paddleWidth / 2f - margin);
+
+        // Küçük rastgele hata ekleyelim (AI insan gibi davransın)
+        float error = Random.Range(-difficultyError, difficultyError);
+        return Mathf.Clamp(ballPos.x + error, -halfCourtWidth, halfCourtWidth);
     }
 
-    private void SetDifficultySettings()
+    void CacheCourtWidth()
     {
-        switch (gameMode)
-        {
-            case GameMode.Easy:
-                maxError = 0.35f;
-                break;
-            case GameMode.Medium:
-                maxError = 0.25f;
-                break;
-            case GameMode.Hard:
-                maxError = 0.20f;
-                break;
-        }
-    }
+        cachedW = Screen.width;
+        cachedH = Screen.height;
 
-    private float GetCourtWidth()
-    {
-        return Camera.main.ScreenToWorldPoint(new Vector2(Screen.width, Screen.height)).x * 2f;
+        if (cam == null) cam = Camera.main;
+        if (cam == null) return;
+
+        halfCourtWidth = cam.ScreenToWorldPoint(new Vector3(Screen.width, 0, 0)).x;
     }
 }
