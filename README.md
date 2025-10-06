@@ -21,6 +21,7 @@ It is not a finished game — it’s a proof of concept that demonstrates physic
 
 ## Status 
 ![Android Build](https://img.shields.io/github/actions/workflow/status/Serdumenn/PongMobilePrototype/build-android.yml?branch=main&label=Android%20Build&logo=unity&logoColor=white&style=for-the-badge)
+
 Currently in **prototype stage** — gameplay, polish, and VFX updates will continue progressively.  
 
 ---
