@@ -1,0 +1,31 @@
+name: Build Android APK
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build:
+    name: Build for Android
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1. Repo’yu indir
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      # 2. Unity Builder kullan
+      - name: Build project
+        uses: game-ci/unity-builder@v4
+        with:
+          unityVersion: 6000.0.58f2
+          targetPlatform: Android
+
+      # 3. Çıktıyı artifact olarak yükle
+      - name: Upload APK
+        uses: actions/upload-artifact@v3
+        with:
+          name: PongMobilePrototype-APK
+          path: build/Android/*.apk
