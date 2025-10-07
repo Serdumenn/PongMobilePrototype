@@ -26,6 +26,7 @@ jobs:
         uses: game-ci/unity-builder@v4
         with:
           unityVersion: 6000.0.58f2
+          customImage: unityci/editor:ubuntu-2022.3.50f1-android-3.1.1
           targetPlatform: Android
           projectPath: .
           buildsPath: build/android
