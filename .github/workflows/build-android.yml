@@ -26,7 +26,7 @@ jobs:
         uses: game-ci/unity-builder@v4
         with:
           unityVersion: 6000.0.58f2
-          customImage: unityci/editor:ubuntu-2022.3.50f1-android-3.1.1
+          customImage: unityci/editor:ubuntu-2022.3.50f1-android-3.1.0
           targetPlatform: Android
           projectPath: .
           buildsPath: build/android
@@ -34,11 +34,16 @@ jobs:
           allowDirtyBuild: true
         env:
           UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
-          UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
-          UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
 
       - name: Upload Build Artifact
         uses: actions/upload-artifact@v4
         with:
           name: AndroidBuild
           path: build/android
+
+      - name: Upload Editor Logs (if failed)
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: EditorLogs
+          path: ~/.config/unity3d/Editor.log
