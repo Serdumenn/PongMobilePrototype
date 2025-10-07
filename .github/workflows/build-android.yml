@@ -27,8 +27,9 @@ jobs:
         with:
           unityVersion: 6000.0.58f2
           targetPlatform: Android
+          projectPath: .
+          buildsPath: build/android
           buildName: PongMobilePrototype
-          buildPath: build/android
           allowDirtyBuild: true
         env:
           UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
