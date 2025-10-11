@@ -34,10 +34,20 @@ jobs:
           buildsPath: build/android
           buildName: PongMobilePrototype
 
-          # <<< ÖNEMLİ: sdkmanager'ın tam yolu
-          androidSdkManagerPath: /opt/android/sdk/cmdline-tools/latest/bin/sdkmanager
+          # Bu komutlar DOCKER konteynerinin içinde çalışır
+          preBuildSteps: |
+            echo "PATH: $PATH"
+            echo "Listing cmdline-tools:"
+            ls -la /opt/android/sdk/cmdline-tools || true
+            ls -la /opt/android/sdk/cmdline-tools/latest/bin || true
+            # Lisansları kabul et (varsa)
+            yes | /opt/android/sdk/cmdline-tools/latest/bin/sdkmanager --licenses || true
         env:
           UNITY_SERIAL: ${{ secrets.UNITY_SERIAL }}
+          # Unity Builder'ın sdkmanager'ı bulabilmesi için
+          ANDROID_SDK_ROOT: /opt/android/sdk
+          ANDROID_HOME: /opt/android/sdk
+          PATH: /opt/android/sdk/cmdline-tools/latest/bin:/opt/android/sdk/platform-tools:$PATH
 
       - name: Upload Build Artifact (APK/AAB)
         if: always()
