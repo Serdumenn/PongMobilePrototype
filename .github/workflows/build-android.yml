@@ -3,14 +3,6 @@ name: Build Android APK
 on:
   push:
     branches: [ main ]
-  workflow_dispatch:
-
-concurrency:
-  group: android-${{ github.ref }}
-  cancel-in-progress: true
-
-permissions:
-  contents: read
 
 jobs:
   build:
@@ -32,32 +24,36 @@ jobs:
       - name: Build with Unity (Android)
         uses: game-ci/unity-builder@v4
         with:
-          unityVersion: 6000.0.58f2
+          # Unity 6.0.0 (6000.0.58f2) + Android yüklü imaj
           customImage: unityci/editor:ubuntu-6000.0.58f2-android-3
+          unityVersion: 6000.0.58f2
           targetPlatform: Android
+
+          # Versiyonlamayı kapat (git'e bağımlılığı azaltır)
+          versioning: None
+
+          # (ÖNEMLİ) Konteyner içinde git kur
+          preBuildSteps: |
+            apt-get update
+            apt-get install -y git
+
+          # Çıktı konumu/isim
           projectPath: .
           buildsPath: build/android
           buildName: PongMobilePrototype
-          allowDirtyBuild: true
-        env:
-          # Unity lisans ULF içeriğini tek satır olarak bu secrecy'e koydun
-          UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
 
-          # --- Android SDK yolu kritik ---
-          ANDROID_SDK_ROOT: /opt/android-sdk
-          ANDROID_HOME: /opt/android-sdk
-          PATH: /opt/android-sdk/cmdline-tools/latest/bin:/opt/android-sdk/platform-tools:/opt/android-sdk/tools/bin:${PATH}
+        env:
+          # Pro lisans kullanmıyorsan bunları boş bırak; Personal’da SKIP_ACTIVATION otomatik.
+          # UNITY_SERIAL: ${{ secrets.UNITY_SERIAL }}
+          # UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
+          # UNITY_EMAIL:   ${{ secrets.UNITY_EMAIL }}
+          # UNITY_PASSWORD:${{ secrets.UNITY_PASSWORD }}
+          # İstersen açıkça atlayabilirsin:
+          SKIP_ACTIVATION: true
 
       - name: Upload Build Artifact
-        if: success()
+        if: always()
         uses: actions/upload-artifact@v4
         with:
           name: AndroidBuild
           path: build/android
-
-      - name: Upload Editor Logs (if failed)
-        if: failure()
-        uses: actions/upload-artifact@v4
-        with:
-          name: EditorLogs
-          path: ~/.config/unity3d/Editor.log
