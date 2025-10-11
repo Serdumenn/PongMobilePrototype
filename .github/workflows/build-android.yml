@@ -34,17 +34,23 @@ jobs:
           buildsPath: build/android
           buildName: PongMobilePrototype
 
-          # Bu komutlar DOCKER konteynerinin içinde çalışır
+          # Container içinde çalışır — git kur, sdkmanager göster, lisansları kabul et
           preBuildSteps: |
-            echo "PATH: $PATH"
-            echo "Listing cmdline-tools:"
+            set -e
+            echo "Installing git..."
+            apt-get update -y && apt-get install -y git
+            git --version || true
+
+            echo "Checking Android SDK cmdline-tools..."
             ls -la /opt/android/sdk/cmdline-tools || true
             ls -la /opt/android/sdk/cmdline-tools/latest/bin || true
-            # Lisansları kabul et (varsa)
+
+            echo "Accepting Android SDK licenses (best-effort)..."
             yes | /opt/android/sdk/cmdline-tools/latest/bin/sdkmanager --licenses || true
         env:
           UNITY_SERIAL: ${{ secrets.UNITY_SERIAL }}
-          # Unity Builder'ın sdkmanager'ı bulabilmesi için
+
+          # sdkmanager ve platform-tools görünür olsun
           ANDROID_SDK_ROOT: /opt/android/sdk
           ANDROID_HOME: /opt/android/sdk
           PATH: /opt/android/sdk/cmdline-tools/latest/bin:/opt/android/sdk/platform-tools:$PATH
