@@ -11,19 +11,31 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      # 0) Repo’yu al
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
+      # 1) Git yoksa kur (git hatasını kesin çözer)
+      - name: Ensure git is available
+        run: |
+          if ! command -v git >/dev/null 2>&1; then
+            sudo apt-get update
+            sudo apt-get install -y git
+          fi
+          git --version
+
+      # 2) Library cache (opsiyonel ama hızlı)
       - name: Cache Library folder
-        uses: actions/cache@v4
+        uses: actions/cache@v3
         with:
           path: Library
           key: Library-${{ runner.os }}-${{ hashFiles('**/Packages/manifest.json') }}
           restore-keys: |
             Library-${{ runner.os }}-
 
+      # 3) Unity ile Android build
       - name: Build with Unity (Android)
         uses: game-ci/unity-builder@v4
         with:
@@ -33,29 +45,17 @@ jobs:
           projectPath: .
           buildsPath: build/android
           buildName: PongMobilePrototype
-
-          # Container içinde çalışır — git kur, sdkmanager göster, lisansları kabul et
-          preBuildSteps: |
-            set -e
-            echo "Installing git..."
-            apt-get update -y && apt-get install -y git
-            git --version || true
-
-            echo "Checking Android SDK cmdline-tools..."
-            ls -la /opt/android/sdk/cmdline-tools || true
-            ls -la /opt/android/sdk/cmdline-tools/latest/bin || true
-
-            echo "Accepting Android SDK licenses (best-effort)..."
-            yes | /opt/android/sdk/cmdline-tools/latest/bin/sdkmanager --licenses || true
+          # git'e ihtiyaç duymasın:
+          versioning: None
+          allowDirtyBuild: true
         env:
+          # Pro lisans/seri kullanıyorsan:
           UNITY_SERIAL: ${{ secrets.UNITY_SERIAL }}
+          # Kişisel lisans ile .ulf kullanıyorsan bunun yerine:
+          # UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
 
-          # sdkmanager ve platform-tools görünür olsun
-          ANDROID_SDK_ROOT: /opt/android/sdk
-          ANDROID_HOME: /opt/android/sdk
-          PATH: /opt/android/sdk/cmdline-tools/latest/bin:/opt/android/sdk/platform-tools:$PATH
-
-      - name: Upload Build Artifact (APK/AAB)
+      # 4) APK/AAB artefactlarını yükle
+      - name: Upload Build Artifact
         if: always()
         uses: actions/upload-artifact@v4
         with:
@@ -63,12 +63,11 @@ jobs:
           path: |
             build/android/**/*.apk
             build/android/**/*.aab
-          if-no-files-found: warn
 
-      - name: Upload Editor Logs
-        if: always()
+      # 5) Editor log’u yükle (debug için)
+      - name: Upload Editor Logs (if failed)
+        if: failure()
         uses: actions/upload-artifact@v4
         with:
           name: EditorLogs
           path: ~/.config/unity3d/Editor.log
-          if-no-files-found: warn
