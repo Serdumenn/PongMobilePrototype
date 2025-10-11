@@ -1,3 +1,4 @@
+using Unity.Collections;
 using UnityEngine;
 
 public class EnemyPaddle : MonoBehaviour
@@ -5,7 +6,7 @@ public class EnemyPaddle : MonoBehaviour
     [Header("AI Settings")]
     public float moveSpeed = 5f;
     public float difficultyError = 0.3f;
-    public float predictionStep = 0.3f; // 0.1f idi, CPU yükünü azaltmak için artırıldı
+    public float predictionStep = 0.3f;
 
     [Header("Scene References")]
     public Transform ball;
@@ -26,7 +27,6 @@ public class EnemyPaddle : MonoBehaviour
 
     void Update()
     {
-        // Ekran çözünürlüğü değişirse alanı güncelle
         if (Screen.width != cachedW || Screen.height != cachedH)
             CacheCourtWidth();
     }
@@ -43,31 +43,27 @@ public class EnemyPaddle : MonoBehaviour
 
     float PredictBallTargetX()
     {
-        // Basit top tahmin fonksiyonu — optimize edilmiş versiyon
         Vector2 ballPos = ball.position;
         Rigidbody2D ballRb = ball.GetComponent<Rigidbody2D>();
         Vector2 ballVel = ballRb.linearVelocity;
 
-        // Top yukarı değil aşağı geliyorsa tahmin etme
         if (ballVel.y <= 0)
             return rb.position.x;
 
         float topBoundary = Mathf.Abs(transform.position.y);
         float stepDistance = predictionStep;
 
-        // Basitleştirilmiş yansıma simülasyonu
         while (ballPos.y < topBoundary)
         {
             ballPos += ballVel.normalized * stepDistance;
 
             if (Mathf.Abs(ballPos.x) > halfCourtWidth)
             {
-                ballVel.x *= -1; // duvara çarptı, yansıt
+                ballVel.x *= -1;
                 ballPos.x = Mathf.Sign(ballPos.x) * halfCourtWidth;
             }
         }
 
-        // Küçük rastgele hata ekleyelim (AI insan gibi davransın)
         float error = Random.Range(-difficultyError, difficultyError);
         return Mathf.Clamp(ballPos.x + error, -halfCourtWidth, halfCourtWidth);
     }
