@@ -11,13 +11,11 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # 1) Kodu al (tüm commit geçmişiyle)
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
-      # 2) Unity Library önbelleği (ilk çalıştırmada yoksa uyarı normal)
       - name: Cache Library folder
         uses: actions/cache@v4
         with:
@@ -26,24 +24,22 @@ jobs:
           restore-keys: |
             Library-${{ runner.os }}-
 
-      # 3) Unity ile Android build
       - name: Build with Unity (Android)
         uses: game-ci/unity-builder@v4
         with:
           unityVersion: 6000.0.58f2
-          # Bu imaj Android SDK + NDK içerir.
           customImage: unityci/editor:ubuntu-6000.0.58f2-android-3
           targetPlatform: Android
           projectPath: .
           buildsPath: build/android
           buildName: PongMobilePrototype
-          # versioning: None  # (İstersen kapalı; otomatik versiyon kodu istersen Semantic seçebilirsin)
+
+          # <<< ÖNEMLİ: sdkmanager'ın tam yolu
+          androidSdkManagerPath: /opt/android/sdk/cmdline-tools/latest/bin/sdkmanager
         env:
-          # Sadece SERIAL kullanıyoruz (kişisel lisanslarda bu yeterli)
           UNITY_SERIAL: ${{ secrets.UNITY_SERIAL }}
 
-      # 4) APK’yı artefact olarak yükle
-      - name: Upload Build Artifact (APK)
+      - name: Upload Build Artifact (APK/AAB)
         if: always()
         uses: actions/upload-artifact@v4
         with:
@@ -53,7 +49,6 @@ jobs:
             build/android/**/*.aab
           if-no-files-found: warn
 
-      # 5) Editor loglarını da al (teşhis için)
       - name: Upload Editor Logs
         if: always()
         uses: actions/upload-artifact@v4
