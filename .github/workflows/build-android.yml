@@ -3,6 +3,7 @@ name: Build Android APK
 on:
   push:
     branches: [ main ]
+  workflow_dispatch:
 
 jobs:
   build:
@@ -10,10 +11,10 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout
+      - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Cache Library
+      - name: Cache Library folder
         uses: actions/cache@v3
         with:
           path: Library
@@ -21,21 +22,27 @@ jobs:
           restore-keys: |
             Library-${{ runner.os }}-
 
-      - name: Build (Unity Builder)
+      - name: Setup Unity and Build for Android
         uses: game-ci/unity-builder@v4
         with:
           unityVersion: 6000.0.58f2
+          customImage: unityci/editor:ubuntu-6000.0.58f2-android-3.1.1
           targetPlatform: Android
           projectPath: .
           buildsPath: build/android
           buildName: PongMobilePrototype
-          allowDirtyBuild: true
-          activationMode: manual
         env:
           UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
 
-      - name: Upload APK/AAB
+      - name: Upload Build Artifact
         uses: actions/upload-artifact@v4
         with:
           name: AndroidBuild
           path: build/android
+
+      - name: Upload Editor Logs (if failed)
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: EditorLog
+          path: ~/.config/unity3d/Editor.log
