@@ -11,13 +11,11 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # 0) Repo’yu al
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
-      # 1) Git yoksa kur (git hatasını kesin çözer)
       - name: Ensure git is available
         run: |
           if ! command -v git >/dev/null 2>&1; then
@@ -26,7 +24,6 @@ jobs:
           fi
           git --version
 
-      # 2) Library cache (opsiyonel ama hızlı)
       - name: Cache Library folder
         uses: actions/cache@v3
         with:
@@ -35,7 +32,6 @@ jobs:
           restore-keys: |
             Library-${{ runner.os }}-
 
-      # 3) Unity ile Android build
       - name: Build with Unity (Android)
         uses: game-ci/unity-builder@v4
         with:
@@ -45,16 +41,14 @@ jobs:
           projectPath: .
           buildsPath: build/android
           buildName: PongMobilePrototype
-          # git'e ihtiyaç duymasın:
-          versioning: None
+          versioning: None          # git'e bağımlılığı kapatıyoruz
           allowDirtyBuild: true
         env:
-          # Pro lisans/seri kullanıyorsan:
-          UNITY_SERIAL: ${{ secrets.UNITY_SERIAL }}
-          # Kişisel lisans ile .ulf kullanıyorsan bunun yerine:
-          # UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
+          UNITY_SERIAL: ${{ secrets.UNITY_SERIAL }}   # Pro ise bunu kullan
+          # UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}  # Personal .ulf kullanıyorsan YUKARIDAKİNİ KALDIR, bunu aç
+          ANDROID_SDK_ROOT: /opt/android
+          ANDROID_HOME: /opt/android
 
-      # 4) APK/AAB artefactlarını yükle
       - name: Upload Build Artifact
         if: always()
         uses: actions/upload-artifact@v4
@@ -64,7 +58,6 @@ jobs:
             build/android/**/*.apk
             build/android/**/*.aab
 
-      # 5) Editor log’u yükle (debug için)
       - name: Upload Editor Logs (if failed)
         if: failure()
         uses: actions/upload-artifact@v4
