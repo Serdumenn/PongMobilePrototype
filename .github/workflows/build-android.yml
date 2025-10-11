@@ -14,6 +14,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      # (İsteğe bağlı) Library önbelleği
       - name: Cache Library folder
         uses: actions/cache@v3
         with:
@@ -26,7 +27,6 @@ jobs:
         uses: game-ci/unity-builder@v4
         with:
           unityVersion: 6000.0.58f2
-          customImage: unityci/editor:ubuntu-6000.0.58f2-android-3.1.1
           targetPlatform: Android
           projectPath: .
           buildsPath: build/android
@@ -40,9 +40,10 @@ jobs:
           name: AndroidBuild
           path: build/android
 
+      # Hata olursa editör logunu al
       - name: Upload Editor Logs (if failed)
         if: failure()
         uses: actions/upload-artifact@v4
         with:
-          name: EditorLog
+          name: EditorLogs
           path: ~/.config/unity3d/Editor.log
