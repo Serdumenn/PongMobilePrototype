@@ -33,19 +33,20 @@ jobs:
         uses: game-ci/unity-builder@v4
         with:
           unityVersion: 6000.0.58f2
-          # VAR OLAN TAG: android-3
           customImage: unityci/editor:ubuntu-6000.0.58f2-android-3
           targetPlatform: Android
           projectPath: .
           buildsPath: build/android
           buildName: PongMobilePrototype
           allowDirtyBuild: true
-
-          # SDKMANAGER YOLUNU ELLE VER (bu imajda bu dizinde)
-          androidSdkManagerPath: /opt/android-sdk/cmdline-tools/latest/bin/sdkmanager
         env:
-          # Yalnızca ULF içeriği (tek satır) — UNITY_LICENSE secret’ında
+          # Unity lisans ULF içeriğini tek satır olarak bu secrecy'e koydun
           UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
+
+          # --- Android SDK yolu kritik ---
+          ANDROID_SDK_ROOT: /opt/android-sdk
+          ANDROID_HOME: /opt/android-sdk
+          PATH: /opt/android-sdk/cmdline-tools/latest/bin:/opt/android-sdk/platform-tools:/opt/android-sdk/tools/bin:${PATH}
 
       - name: Upload Build Artifact
         if: success()
