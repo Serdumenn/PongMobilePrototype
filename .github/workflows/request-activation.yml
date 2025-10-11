@@ -1,0 +1,25 @@
+name: Request Unity Activation File
+
+on:
+  workflow_dispatch: {}   # Elle “Run workflow” ile çalıştıracağız
+
+jobs:
+  request:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      # BURASI .alf dosyasını CI imajından üreten adım
+      - name: Request manual activation file (.alf)
+        id: getalf
+        uses: game-ci/unity-request-activation-file@v4
+        with:
+          unityVersion: 6000.0.58f2
+          customImage: unityci/editor:ubuntu-2022.3.50f1-android-3.1.0
+
+      # Çıkan .alf dosyasını “Artifacts” olarak indirilebilir yapıyoruz
+      - name: Upload .alf as artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: Unity-activation-file
+          path: ${{ steps.getalf.outputs.filePath }}
