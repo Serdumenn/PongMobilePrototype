@@ -7,13 +7,15 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout
         uses: actions/checkout@v4
         with:
           lfs: true
           fetch-depth: 0
+
+      - name: Make hook executable
+        run: chmod +x .github/hooks/prepare-android-sdk.sh
 
       - name: Cache Library
         uses: actions/cache@v4
@@ -31,15 +33,8 @@ jobs:
           targetPlatform: Android
           unityVersion: "6000.0.58f2"
           customImage: "unityci/editor:ubuntu-6000.0.58f2-android-3"
-
-          # Unity Builder v4 'sdkmanager'ı kökte /cmdline-tools ve /tools/bin altında arıyor.
-          # UnityCI imajında gerçek yol: /usr/lib/android/sdk/cmdline-tools/latest/bin
-          # Küçük symlink'lerle bu yol farkını kapatıyoruz.
-          preBuildSteps: |
-            mkdir -p /cmdline-tools || true
-            ln -sfn /usr/lib/android/sdk/cmdline-tools/latest /cmdline-tools/latest || true
-            mkdir -p /tools || true
-            ln -sfn /usr/lib/android/sdk/cmdline-tools/latest/bin /tools/bin || true
+          # <<< KRİTİK: hook, container başlar başlamaz çalışır
+          containerHookFiles: ".github/hooks/prepare-android-sdk.sh"
 
           projectPath: .
           buildName: PongMobilePrototype
