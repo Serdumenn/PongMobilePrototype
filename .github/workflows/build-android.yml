@@ -23,25 +23,29 @@ jobs:
           restore-keys: |
             Library-${{ runner.os }}-
 
-      # v3 KULLANIYORUZ → sdkmanager yolunu verebiliyoruz
       - name: Build with Unity (Android)
-        uses: game-ci/unity-builder@v3
+        uses: game-ci/unity-builder@v4
         env:
           UNITY_SERIAL: ${{ secrets.UNITY_SERIAL }}
         with:
           targetPlatform: Android
           unityVersion: "6000.0.58f2"
-          # UnityCI imajında Android SDK hazır geliyor
           customImage: "unityci/editor:ubuntu-6000.0.58f2-android-3"
-          # sdkmanager'ın konteyner içindeki tam yolu:
-          androidSdkManagerPath: "/usr/lib/android/sdk/cmdline-tools/latest/bin/sdkmanager"
+
+          # Unity Builder v4 'sdkmanager'ı kökte /cmdline-tools ve /tools/bin altında arıyor.
+          # UnityCI imajında gerçek yol: /usr/lib/android/sdk/cmdline-tools/latest/bin
+          # Küçük symlink'lerle bu yol farkını kapatıyoruz.
+          preBuildSteps: |
+            mkdir -p /cmdline-tools || true
+            ln -sfn /usr/lib/android/sdk/cmdline-tools/latest /cmdline-tools/latest || true
+            mkdir -p /tools || true
+            ln -sfn /usr/lib/android/sdk/cmdline-tools/latest/bin /tools/bin || true
 
           projectPath: .
           buildName: PongMobilePrototype
           buildsPath: build/android
-          androidExportType: androidPackage   # APK
+          androidExportType: androidPackage
           androidSymbolType: none
-
           allowDirtyBuild: true
           versioning: None
           androidVersionCode: ${{ github.run_number }}
