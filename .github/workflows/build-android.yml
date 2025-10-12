@@ -13,49 +13,47 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
         with:
+          lfs: true
           fetch-depth: 0
 
       - name: Cache Library
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: Library
           key: Library-${{ runner.os }}-${{ hashFiles('**/Packages/manifest.json') }}
           restore-keys: |
             Library-${{ runner.os }}-
 
-      # ---- BURASI ÖNEMLİ: v3 + sdkmanager yolu ----
       - name: Build with Unity (Android)
-        uses: game-ci/unity-builder@v3
-        with:
-          unityVersion: 6000.0.58f2
-          customImage: unityci/editor:ubuntu-6000.0.58f2-android-3
-          targetPlatform: Android
-          projectPath: .
-          buildsPath: build/android
-          buildName: PongMobilePrototype
-          versioning: None               # git'e bağımlılığı kapat
-          allowDirtyBuild: true
-          androidSdkManagerPath: /opt/android/cmdline-tools/latest/bin/sdkmanager
+        uses: game-ci/unity-builder@v4
         env:
-          # Pro lisans kullanıyorsan:
+          # Lisans
           UNITY_SERIAL: ${{ secrets.UNITY_SERIAL }}
-          # Personal .ulf kullanıyorsan yukarıyı kaldır, bunu aç:
-          # UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
-          ANDROID_SDK_ROOT: /opt/android
-          ANDROID_HOME: /opt/android
 
-      - name: Upload Build Artifact
+          # ---- ÖNEMLİ: Android SDK yolları (unityci/editor imajlarında burası) ----
+          ANDROID_SDK_ROOT: /usr/lib/android/sdk
+          ANDROID_HOME: /usr/lib/android/sdk
+          # ----------------------------------------------------------------------------
+
+        with:
+          targetPlatform: Android
+          unityVersion: "6000.0.58f2"              # Unity 6 (6000.0.58f2)
+          # İstersen sabitlemek istersen özel imaj da verebilirsin:
+          # customImage: "unityci/editor:ubuntu-6000.0.58f2-android-3"
+          projectPath: .
+          buildName: PongMobilePrototype
+          buildsPath: build/android
+          androidExportType: androidPackage        # APK
+          androidSymbolType: none
+          allowDirtyBuild: true
+          versioning: None                         # istersen SemVer/Custom yapabilirsin
+          # androidVersionCode otomatik istersen:
+          androidVersionCode: ${{ github.run_number }}
+
+      - name: Upload APK
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: AndroidBuild
+          name: android-apk
           path: |
             build/android/**/*.apk
-            build/android/**/*.aab
-
-      - name: Upload Editor Logs (if failed)
-        if: failure()
-        uses: actions/upload-artifact@v4
-        with:
-          name: EditorLogs
-          path: ~/.config/unity3d/Editor.log
