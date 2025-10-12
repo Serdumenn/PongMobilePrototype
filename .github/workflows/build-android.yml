@@ -1,5 +1,4 @@
 name: Build Android APK
-
 on:
   push:
     branches: [ main ]
@@ -24,30 +23,27 @@ jobs:
           restore-keys: |
             Library-${{ runner.os }}-
 
+      # v3 KULLANIYORUZ → sdkmanager yolunu verebiliyoruz
       - name: Build with Unity (Android)
-        uses: game-ci/unity-builder@v4
+        uses: game-ci/unity-builder@v3
         env:
-          # Lisans
           UNITY_SERIAL: ${{ secrets.UNITY_SERIAL }}
-
-          # ---- ÖNEMLİ: Android SDK yolları (unityci/editor imajlarında burası) ----
-          ANDROID_SDK_ROOT: /usr/lib/android/sdk
-          ANDROID_HOME: /usr/lib/android/sdk
-          # ----------------------------------------------------------------------------
-
         with:
           targetPlatform: Android
-          unityVersion: "6000.0.58f2"              # Unity 6 (6000.0.58f2)
-          # İstersen sabitlemek istersen özel imaj da verebilirsin:
-          # customImage: "unityci/editor:ubuntu-6000.0.58f2-android-3"
+          unityVersion: "6000.0.58f2"
+          # UnityCI imajında Android SDK hazır geliyor
+          customImage: "unityci/editor:ubuntu-6000.0.58f2-android-3"
+          # sdkmanager'ın konteyner içindeki tam yolu:
+          androidSdkManagerPath: "/usr/lib/android/sdk/cmdline-tools/latest/bin/sdkmanager"
+
           projectPath: .
           buildName: PongMobilePrototype
           buildsPath: build/android
-          androidExportType: androidPackage        # APK
+          androidExportType: androidPackage   # APK
           androidSymbolType: none
+
           allowDirtyBuild: true
-          versioning: None                         # istersen SemVer/Custom yapabilirsin
-          # androidVersionCode otomatik istersen:
+          versioning: None
           androidVersionCode: ${{ github.run_number }}
 
       - name: Upload APK
@@ -55,5 +51,4 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: android-apk
-          path: |
-            build/android/**/*.apk
+          path: build/android/**/*.apk
