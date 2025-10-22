@@ -8,8 +8,7 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
         with:
           lfs: true
           fetch-depth: 0
@@ -28,14 +27,14 @@ jobs:
       - name: Build with Unity (Android)
         uses: game-ci/unity-builder@v4
         env:
-          UNITY_SERIAL: ${{ secrets.UNITY_SERIAL }}
+          UNITY_EMAIL:    ${{ secrets.UNITY_EMAIL }}
+          UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
+          UNITY_SERIAL:   ${{ secrets.UNITY_SERIAL }}
         with:
           targetPlatform: Android
           unityVersion: "6000.0.58f2"
           customImage: "unityci/editor:ubuntu-6000.0.58f2-android-3"
-          # <<< KRİTİK: hook, container başlar başlamaz çalışır
           containerHookFiles: ".github/hooks/prepare-android-sdk.sh"
-
           projectPath: .
           buildName: PongMobilePrototype
           buildsPath: build/android
@@ -51,3 +50,7 @@ jobs:
         with:
           name: android-apk
           path: build/android/**/*.apk
+
+      - name: Return license
+        if: always()
+        uses: game-ci/unity-return-license@v2
