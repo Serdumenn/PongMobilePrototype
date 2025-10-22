@@ -1,22 +1,25 @@
 name: Build Android APK
+
 on:
   push:
     branches: [ main ]
   workflow_dispatch:
 
 jobs:
-  build:
+  build-android:
     runs-on: ubuntu-latest
+
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout
+        uses: actions/checkout@v4
         with:
           lfs: true
           fetch-depth: 0
 
-      - name: Make hook executable
+      - name: Make Android SDK hook executable
         run: chmod +x .github/hooks/prepare-android-sdk.sh
 
-      - name: Cache Library
+      - name: Cache Unity Library (speeds up repeat builds)
         uses: actions/cache@v4
         with:
           path: Library
@@ -27,9 +30,12 @@ jobs:
       - name: Build with Unity (Android)
         uses: game-ci/unity-builder@v4
         env:
+          UNITY_LICENSE:  ${{ secrets.UNITY_LICENSE }}
           UNITY_EMAIL:    ${{ secrets.UNITY_EMAIL }}
           UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
-          UNITY_SERIAL:   ${{ secrets.UNITY_SERIAL }}
+          # UNITY_EMAIL:    ${{ secrets.UNITY_EMAIL }}
+          # UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
+          # UNITY_SERIAL:   ${{ secrets.UNITY_SERIAL }}
         with:
           targetPlatform: Android
           unityVersion: "6000.0.58f2"
@@ -38,19 +44,14 @@ jobs:
           projectPath: .
           buildName: PongMobilePrototype
           buildsPath: build/android
-          androidExportType: androidPackage
+          androidExportType: androidPackage      # .apk
           androidSymbolType: none
           allowDirtyBuild: true
           versioning: None
           androidVersionCode: ${{ github.run_number }}
 
-      - name: Upload APK
-        if: always()
+      - name: Upload APK artifact
         uses: actions/upload-artifact@v4
         with:
           name: android-apk
           path: build/android/**/*.apk
-
-      - name: Return license
-        if: always()
-        uses: game-ci/unity-return-license@v2
