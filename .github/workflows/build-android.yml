@@ -15,6 +15,22 @@ jobs:
       UNITY_SERIAL:   ${{ secrets.UNITY_SERIAL }}
 
     steps:
+      - name: Free disk space (20+ GB)
+        uses: jlumbroso/free-disk-space@v1.3.1
+        with:
+          tool-cache: true
+          large-packages: true
+          android: true
+          dotnet: true
+          haskell: true
+          swap-storage: true
+
+      - name: Extra Docker prune
+        run: |
+          docker system prune -af || true
+          docker volume prune -f || true
+          df -h
+
       - name: Checkout
         uses: actions/checkout@v4
         with:
@@ -48,7 +64,7 @@ jobs:
           projectPath: .
           buildName: PongMobilePrototype
           buildsPath: build/android
-          androidExportType: androidPackage    # APK
+          androidExportType: androidPackage
           androidSymbolType: none
           allowDirtyBuild: true
           versioning: None
