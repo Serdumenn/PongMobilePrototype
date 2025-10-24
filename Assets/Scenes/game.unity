@@ -257,9 +257,6 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 7520118501717616612, guid: 9b152dc7244c8bb42b6338fcd8c62017, type: 3}
       insertIndex: -1
       addedObject: {fileID: 304256254}
-    - targetCorrespondingSourceObject: {fileID: 7520118501717616612, guid: 9b152dc7244c8bb42b6338fcd8c62017, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 304256256}
   m_SourcePrefab: {fileID: 100100000, guid: 9b152dc7244c8bb42b6338fcd8c62017, type: 3}
 --- !u!1 &304256253 stripped
 GameObject:
@@ -278,9 +275,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3789be7e9d644024da566225801a3b33, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  moveSpeed: 2
-  difficultyError: 0.3
-  predictionStep: 0.3
+  moveSpeed: 3
+  difficultyError: 0.5
+  predictionStep: 0.5
   ball: {fileID: 6710128072545501306}
   rb: {fileID: 0}
 --- !u!4 &304256255 stripped
@@ -288,18 +285,6 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 7520118501717616618, guid: 9b152dc7244c8bb42b6338fcd8c62017, type: 3}
   m_PrefabInstance: {fileID: 304256252}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &304256256
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 304256253}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: bd6721262544e7041a8e5e13f393650b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &311433691
 GameObject:
   m_ObjectHideFlags: 0
@@ -1315,7 +1300,13 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 2018088317}
     m_RemovedComponents: []
-    m_RemovedGameObjects: []
+    m_RemovedGameObjects:
+    - {fileID: 5140748311645495583, guid: 16bec77f3dd0a694dae829d00376c414, type: 3}
+    - {fileID: -6949005772883156852, guid: 16bec77f3dd0a694dae829d00376c414, type: 3}
+    - {fileID: 5061563421074606945, guid: 16bec77f3dd0a694dae829d00376c414, type: 3}
+    - {fileID: 3473593060152793285, guid: 16bec77f3dd0a694dae829d00376c414, type: 3}
+    - {fileID: 3714757539773175529, guid: 16bec77f3dd0a694dae829d00376c414, type: 3}
+    - {fileID: 2528426179981425065, guid: 16bec77f3dd0a694dae829d00376c414, type: 3}
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 16bec77f3dd0a694dae829d00376c414, type: 3}
@@ -1490,9 +1481,6 @@ PrefabInstance:
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 4914627914556790184, guid: 0a428050592b01c438efc2a3b67ff7b5, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 4914627915892225214}
-    - targetCorrespondingSourceObject: {fileID: 4914627914556790184, guid: 0a428050592b01c438efc2a3b67ff7b5, type: 3}
-      insertIndex: -1
       addedObject: {fileID: 4914627915892225215}
   m_SourcePrefab: {fileID: 100100000, guid: 0a428050592b01c438efc2a3b67ff7b5, type: 3}
 --- !u!4 &4914627915892225212 stripped
@@ -1500,18 +1488,6 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 4914627914556790190, guid: 0a428050592b01c438efc2a3b67ff7b5, type: 3}
   m_PrefabInstance: {fileID: 4914627915892225211}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &4914627915892225214
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1402544403}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: bd6721262544e7041a8e5e13f393650b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &4914627915892225215
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1588,6 +1564,10 @@ PrefabInstance:
       propertyPath: playerText
       value: 
       objectReference: {fileID: 220503607}
+    - target: {fileID: 6710128072270622620, guid: c3dadef25cf7e3949b974cc10d534e4e, type: 3}
+      propertyPath: m_Material
+      value: 
+      objectReference: {fileID: 6200000, guid: c376fef0a99e617418865516a883ca32, type: 2}
     - target: {fileID: 6710128072270622623, guid: c3dadef25cf7e3949b974cc10d534e4e, type: 3}
       propertyPath: rallyObject
       value: 
