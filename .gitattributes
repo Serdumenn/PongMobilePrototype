@@ -1,2 +1,4 @@
 # Auto detect text files and perform LF normalization
 * text=auto
+# Bash scriptlerin satır sonları LF olsun (Windows'ta CRLF bozulmasın)
+*.sh text eol=lf
