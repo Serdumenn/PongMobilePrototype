@@ -74,3 +74,12 @@ crashlytics-build.properties
 !Assets/
 !ProjectSettings/
 !Packages/
+# Unity meta must be kept
+!**/*.meta
+
+# IDE junk
+.idea/
+.vscode/
+*.~
+*.tmp
+
