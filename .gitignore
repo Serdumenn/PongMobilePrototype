@@ -1,85 +1,69 @@
-# --------------------------------------
-# UNITY PROJECT STANDARD GITIGNORE
-# Optimized for GitHub Actions (GameCI)
-# --------------------------------------
-
-# Unity generated folders
 [Ll]ibrary/
 [Tt]emp/
 [Oo]bj/
+[Ll]ogs/
+[Mm]emoryCaptures/
+[Uu]ser[Ss]ettings/
 [Bb]uild/
 [Bb]uilds/
-[Ll]ogs/
-[Uu]ser[Ss]ettings/
-[Mm]emoryCaptures/
-[Rr]ecordings/
-ExportedObj/
-.consulo/
+[Bb]uildArtifacts/
+[Bb]ee/
+sysinfo.txt
 
-# Generated project files
+.idea/
+
+.vs/
 *.csproj
-*.unityproj
 *.sln
 *.suo
-*.tmp
 *.user
 *.userprefs
 *.pidb
-*.booproj
 *.svd
 *.pdb
-*.mdb
-*.opendb
-*.VC.db
 
-# Cache & Logs
-.vs/
-.gradle/
-*.log
-sysinfo.txt
-*.pidb.meta
-*.pdb.meta
-*.mdb.meta
+.vscode/
+*.code-workspace
 
-# Unity build outputs
+.DS_Store
+.DS_Store?
+._*
+Thumbs.db
+ehthumbs.db
+Icon?
+Desktop.ini
+
+*.unitypackage
+
+AddressableAssetsData/*/*.bin*
+AddressableAssetsData/*/link.xml
+ServerData/
+
+**/TextMesh Pro/**/Resources/**/TMP Settings.asset
+
 *.apk
 *.aab
-*.unitypackage
-*.app
-*.exe
-*.zip
-*.tar.gz
-*.ipa
+*.obb
+.gradle/
+**/gradle/
+**/gradle/wrapper/
+**/local.properties
 
-# Addressables
-[Aa]ssets/[Aa]ddressable[Aa]ssets[Dd]ata/*/*.bin*
-[Aa]ssets/[Ss]treamingAssets/aa.meta
-[Aa]ssets/[Ss]treamingAssets/aa/*
+*.keystore
+*.jks
+*.p12
+*.pem
+*.cer
+*.key
 
-# JetBrains Rider plugin (auto-generated)
-[Aa]ssets/Plugins/Editor/JetBrains*
-
-# Crashlytics generated files
-crashlytics-build.properties
-
-# Auto-generated local-only files
-*.tmproj
-*.utmp
-
-# --------------------------------------
-# KEEP THESE - REQUIRED BY UNITY BUILDER
-# --------------------------------------
-
-# DO NOT ignore these!
-!Assets/
-!ProjectSettings/
-!Packages/
-# Unity meta must be kept
-!**/*.meta
-
-# IDE junk
-.idea/
-.vscode/
-*.~
 *.tmp
+*.temp
+*.bak
+*.backup
+*.old
+*.orig
+*.rej
+*~
+~$*
 
+!**/*.meta

@@ -1,0 +1,1 @@
+C:\Users\SERDUMEN\Documents\GitHub\PongMobilePrototype\Library\Bee\Android\Prj\Mono2x\Gradle\unityLibrary\build\intermediates\cxx\RelWithDebInfo\72223j2l\obj\armeabi-v7a

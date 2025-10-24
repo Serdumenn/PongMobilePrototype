@@ -1,0 +1,5 @@
+C:/Users/enes/Desktop/Projects/UnityProjects/AssetPacks/menu_prototype/.utmp/Debug/4e443i6q/armeabi-v7a/CMakeFiles/edit_cache.dir
+C:/Users/enes/Desktop/Projects/UnityProjects/AssetPacks/menu_prototype/.utmp/Debug/4e443i6q/armeabi-v7a/CMakeFiles/rebuild_cache.dir
+C:/Users/enes/Desktop/Projects/UnityProjects/AssetPacks/menu_prototype/.utmp/Debug/4e443i6q/armeabi-v7a/FramePacing/CMakeFiles/swappywrapper.dir
+C:/Users/enes/Desktop/Projects/UnityProjects/AssetPacks/menu_prototype/.utmp/Debug/4e443i6q/armeabi-v7a/FramePacing/CMakeFiles/edit_cache.dir
+C:/Users/enes/Desktop/Projects/UnityProjects/AssetPacks/menu_prototype/.utmp/Debug/4e443i6q/armeabi-v7a/FramePacing/CMakeFiles/rebuild_cache.dir
