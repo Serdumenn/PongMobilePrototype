@@ -8,15 +8,15 @@ public class saving : MonoBehaviour {
     void Awake() {
 
         if (!PlayerPrefs.HasKey("isSoundOn")) {
-            PlayerPrefs.SetInt("isSoundOn", 1);  // Default sound ON
+            PlayerPrefs.SetInt("isSoundOn", 1);
             PlayerPrefs.Save();
         }
         if (!PlayerPrefs.HasKey("isMusicOn")) {
-            PlayerPrefs.SetInt("isMusicOn", 1);  // Default music ON
+            PlayerPrefs.SetInt("isMusicOn", 1);
             PlayerPrefs.Save();
         }
         /*if (!PlayerPrefs.HasKey("difficulty")) {
-            PlayerPrefs.SetInt("difficulty", 1);  // Default to medium difficulty
+            PlayerPrefs.SetInt("difficulty", 1);
             PlayerPrefs.Save();
         }*/
 

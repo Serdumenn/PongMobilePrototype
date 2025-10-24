@@ -64,7 +64,6 @@ public class scoreVisuals : MonoBehaviour {
             }
         }
     }
-    // make every image grey
     void ResetVisuals() 
     {
         foreach (Image img in scorePoints) 

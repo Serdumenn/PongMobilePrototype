@@ -40,7 +40,6 @@ public class ball : MonoBehaviour
 
     IEnumerator ResetBallWithCountdown()
     {
-        // Topu resetle, gizle ve beklet
         rb.linearVelocity = Vector2.zero;
         transform.position = initialPosition;
         waitingForLaunch = true;
@@ -50,7 +49,6 @@ public class ball : MonoBehaviour
 
         GetComponent<SpriteRenderer>().enabled = true;
 
-        // Oyuncu dokunmasını bekle
         float timer = 0f;
         while (waitingForLaunch)
         {
@@ -81,7 +79,6 @@ public class ball : MonoBehaviour
         if (bounceSound != null)
             bounceSound.Play();
 
-        // Hız artışı — ama maxSpeed’i aşmasın
         float newSpeed = Mathf.Clamp(rb.linearVelocity.magnitude + speedIncreasePerHit, launchSpeed, maxSpeed);
         rb.linearVelocity = rb.linearVelocity.normalized * newSpeed;
     }

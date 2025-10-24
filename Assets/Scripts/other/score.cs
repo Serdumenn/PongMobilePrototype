@@ -40,7 +40,7 @@ public class score : MonoBehaviour {
     }
     public IEnumerator TriggerAnimator(Animator animator)
     {
-        yield return null; // Wait one frame
+        yield return null;
         animator.SetTrigger("change");
     }
 }

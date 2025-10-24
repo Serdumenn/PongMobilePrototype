@@ -8,7 +8,6 @@ public class mainMenu : MonoBehaviour {
     public GameObject[] menus;
     public AudioSource[] soundEffects;
     public saving prefs;
-    // load game scene
     public void LoadScene(int index)
     {
         playSound(0);
@@ -38,7 +37,6 @@ public class mainMenu : MonoBehaviour {
     {
         soundEffects[index].Play();
     }
-    // plays buttons anim
     public void playAnim (GameObject button)
     {
         Animator animator = button.GetComponent<Animator>();

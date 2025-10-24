@@ -29,7 +29,6 @@ public class racketController : MonoBehaviour
             {
                 isTouching = true;
 
-                // Dokunulan noktayı sınırlar içinde tut
                 float clampedX = Mathf.Clamp(touchPos.x, -screenLimit, screenLimit);
                 transform.position = new Vector3(clampedX, transform.position.y, transform.position.z);
             }

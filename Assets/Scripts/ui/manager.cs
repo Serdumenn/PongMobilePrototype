@@ -15,7 +15,6 @@ public class manager : MonoBehaviour
 
     void Awake()
     {
-        // --- FPS ve VSync ayarı ---
         if (Application.targetFrameRate != 60)
         {
             QualitySettings.vSyncCount = 0;
@@ -23,7 +22,6 @@ public class manager : MonoBehaviour
             Debug.Log("Target FPS set to 60");
         }
 
-        // --- Top referansları ---
         ballcs = ball.GetComponent<ball>();
         ballRenderer = ball.GetComponent<SpriteRenderer>();
     }
@@ -39,7 +37,6 @@ public class manager : MonoBehaviour
             lose.SetActive(true);
         }
 
-        // disable some elements
         racket1.SetActive(false);
         racket2.SetActive(false);
         if (ballRenderer != null) ballRenderer.enabled = false;
@@ -61,8 +58,6 @@ public class manager : MonoBehaviour
 
     public void Pause()
     {
-        // Yeni ball.cs içinde coroutineRunning yok, onun yerine coroutine kontrolü yapmıyoruz artık.
-        // Sadece topu durdurup gizliyoruz:
         Time.timeScale = 0;
         if (ballRenderer != null) ballRenderer.enabled = false;
         gameUI.SetActive(false);
@@ -73,7 +68,6 @@ public class manager : MonoBehaviour
 
     public void unPause()
     {
-        // Reset coroutine’ini elle yeniden başlatmaya gerek yok — top kendi mantığıyla resetleniyor.
         Time.timeScale = 1;
         if (ballRenderer != null) ballRenderer.enabled = true;
         gameUI.SetActive(true);
