@@ -2,15 +2,39 @@ name: Build Android APK
 
 on:
   push:
-    branches: [ main ]
+    branches: [ "main" ]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: android-build-${{ github.ref }}
+  cancel-in-progress: false
 
 jobs:
   build-android:
     runs-on: ubuntu-latest
+    timeout-minutes: 60
 
     steps:
+      - name: Maximize build space
+        uses: easimon/maximize-build-space@v10
+        with:
+          root-reserve-mb: 4096
+          swap-size-mb: 1
+          remove-android: 'true'
+          remove-dotnet: 'true'
+          remove-haskell: 'true'
+          remove-docker-images: 'true'
+
       - name: Extra Docker prune
-        run: docker system prune -af || true
+        run: |
+          docker system prune -af || true
+          sudo rm -rf /usr/local/lib/android || true
+          sudo rm -rf /opt/ghc || true
+          sudo rm -rf /usr/share/dotnet || true
+          sudo rm -rf /opt/hostedtoolcache/CodeQL || true
+          df -h
 
       - name: Checkout
         uses: actions/checkout@v4
@@ -25,9 +49,9 @@ jobs:
         with:
           path: |
             Library
-          key: Library-${{ runner.os }}-${{ hashFiles('**/Packages/manifest.json') }}
+          key: Library-Linux-${{ hashFiles('**/ProjectSettings/ProjectVersion.txt') }}-${{ hashFiles('**/*.cs','**/*.unity','**/*.prefab','**/*.mat','**/*.anim','**/*.shader','Packages/manifest.json','Packages/packages-lock.json') }}
           restore-keys: |
-            Library-${{ runner.os }}-
+            Library-Linux-
 
       - name: Build with Unity (Android)
         uses: game-ci/unity-builder@v4
@@ -36,24 +60,19 @@ jobs:
           UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
           UNITY_SERIAL: ${{ secrets.UNITY_SERIAL }}
         with:
-          projectPath: .
           unityVersion: 6000.0.58f2
           targetPlatform: Android
-
-          buildsPath: build/android
-
-          versioning: None
-
+          projectPath: .
           buildName: PongMobilePrototype
-
-          androidVersionCode: ${{ github.run_number }}
+          buildPath: build/android/Android
+          buildFile: PongMobilePrototype.apk
+          androidVersionCode: 48
           androidExportType: androidPackage
           androidSymbolType: none
 
       - name: Upload APK artifact
-        if: success()
         uses: actions/upload-artifact@v4
         with:
           name: android-apk
-          path: |
-            build/**/*.apk
+          path: build/android/Android/PongMobilePrototype.apk
+          if-no-files-found: error
