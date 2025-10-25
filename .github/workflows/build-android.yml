@@ -2,7 +2,7 @@ name: Build Android APK
 
 on:
   push:
-    branches: [ "main" ]
+    branches: ["main"]
 
 permissions:
   contents: read
@@ -38,12 +38,15 @@ jobs:
         with:
           lfs: true
 
+      - name: Ignore file mode changes
+        run: git config core.filemode false
+
       - name: Cache Unity Library (speeds up repeat builds)
         uses: actions/cache@v4
         with:
           path: |
             Library
-          key: Library-Linux-${{ hashFiles('**/ProjectSettings/ProjectVersion.txt') }}-${{ hashFiles('**/*.cs','**/*.unity','**/*.prefab','**/*.mat','**/*.anim','**/*.shader','Packages/manifest.json','Packages/packages-lock.json') }}
+          key: Library-Linux-${{ hashFiles('ProjectSettings/ProjectVersion.txt') }}-${{ hashFiles('**/*.cs','**/*.unity','**/*.prefab','**/*.mat','**/*.anim','**/*.shader','Packages/manifest.json','Packages/packages-lock.json') }}
           restore-keys: |
             Library-Linux-
 
@@ -59,10 +62,12 @@ jobs:
           projectPath: .
           buildName: PongMobilePrototype
           buildPath: build/android/Android
-          versioning: none
-          androidVersionCode: 48
+          buildFile: PongMobilePrototype.apk
+          androidVersionCode: ${{ github.run_number }}
           androidExportType: androidPackage
           androidSymbolType: none
+          versioning: none
+          allowDirtyBuild: true
 
       - name: Upload APK artifact
         uses: actions/upload-artifact@v4
