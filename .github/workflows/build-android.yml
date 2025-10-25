@@ -26,6 +26,7 @@ jobs:
           remove-dotnet: 'true'
           remove-haskell: 'true'
           remove-docker-images: 'true'
+          mount-path: /var/lib/docker
 
       - name: Extra Docker prune
         run: |
@@ -38,12 +39,15 @@ jobs:
         with:
           lfs: true
 
+      - name: Make Git ignore filemode changes
+        run: git config core.filemode false
+
       - name: Cache Unity Library (speeds up repeat builds)
         uses: actions/cache@v4
         with:
           path: |
             Library
-          key: Library-Linux-${{ hashFiles('**/ProjectSettings/ProjectVersion.txt') }}
+          key: Library-Linux-${{ hashFiles('**/ProjectSettings/ProjectVersion.txt') }}-${{ hashFiles('**/*.cs','**/*.unity','**/*.prefab','**/*.mat','**/*.anim','**/*.shader','Packages/manifest.json','Packages/packages-lock.json') }}
           restore-keys: |
             Library-Linux-
 
@@ -55,8 +59,8 @@ jobs:
           UNITY_SERIAL: ${{ secrets.UNITY_SERIAL }}
         with:
           unityVersion: 6000.0.58f2
-          projectPath: .
           targetPlatform: Android
+          projectPath: .
           buildName: PongMobilePrototype
           buildsPath: builds
           versioning: None
@@ -64,10 +68,9 @@ jobs:
           androidExportType: androidPackage
           androidSymbolType: none
           allowDirtyBuild: true
-
       - name: Upload APK artifact
         uses: actions/upload-artifact@v4
         with:
           name: android-apk
-          path: builds/Android/PongMobilePrototype.apk
+          path: builds/**/PongMobilePrototype.apk
           if-no-files-found: error
