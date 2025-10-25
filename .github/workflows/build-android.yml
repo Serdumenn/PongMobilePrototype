@@ -38,15 +38,12 @@ jobs:
         with:
           lfs: true
 
-      - name: Ignore file mode changes
-        run: git config core.filemode false
-
       - name: Cache Unity Library (speeds up repeat builds)
         uses: actions/cache@v4
         with:
           path: |
             Library
-          key: Library-Linux-${{ hashFiles('ProjectSettings/ProjectVersion.txt') }}-${{ hashFiles('**/*.cs','**/*.unity','**/*.prefab','**/*.mat','**/*.anim','**/*.shader','Packages/manifest.json','Packages/packages-lock.json') }}
+          key: Library-Linux-${{ hashFiles('**/ProjectSettings/ProjectVersion.txt') }}
           restore-keys: |
             Library-Linux-
 
@@ -58,20 +55,19 @@ jobs:
           UNITY_SERIAL: ${{ secrets.UNITY_SERIAL }}
         with:
           unityVersion: 6000.0.58f2
-          targetPlatform: Android
           projectPath: .
+          targetPlatform: Android
           buildName: PongMobilePrototype
-          buildPath: build/android/Android
-          buildFile: PongMobilePrototype.apk
-          androidVersionCode: ${{ github.run_number }}
+          buildsPath: builds
+          versioning: None
+          androidVersionCode: 48
           androidExportType: androidPackage
           androidSymbolType: none
-          versioning: none
           allowDirtyBuild: true
 
       - name: Upload APK artifact
         uses: actions/upload-artifact@v4
         with:
           name: android-apk
-          path: build/android/Android/PongMobilePrototype.apk
+          path: builds/Android/PongMobilePrototype.apk
           if-no-files-found: error
