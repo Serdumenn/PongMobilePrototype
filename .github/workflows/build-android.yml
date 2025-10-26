@@ -17,32 +17,10 @@ jobs:
     timeout-minutes: 60
 
     steps:
-      - name: Maximize build space
-        uses: easimon/maximize-build-space@v10
-        with:
-          root-reserve-mb: 4096
-          temp-reserve-mb: 100
-          swap-size-mb: 1024
-          remove-android: 'true'
-          remove-dotnet: 'true'
-          remove-haskell: 'true'
-          remove-codeql: 'true'
-          remove-docker-images: 'true'
-
       - name: Extra Docker prune
         run: |
           docker system prune -af || true
-          df -h
-
-      - name: Move Docker data-root to workspace disk
-        run: |
-          set -eux
-          sudo systemctl stop docker
-          NEW_ROOT="${GITHUB_WORKSPACE}/.docker-data"
-          sudo mkdir -p "$NEW_ROOT"
-          echo "{\"data-root\": \"${NEW_ROOT}\"}" | sudo tee /etc/docker/daemon.json
-          sudo systemctl start docker
-          docker info | grep "Docker Root Dir" || true
+          sudo rm -rf /usr/local/lib/android /opt/ghc /usr/share/dotnet /opt/hostedtoolcache/CodeQL || true
           df -h
 
       - name: Checkout
@@ -62,6 +40,24 @@ jobs:
           restore-keys: |
             Library-Linux-
 
+      - name: Move Docker data-root to workspace disk (outside repo dir)
+        env:
+          NEW_DOCKER_ROOT: ${{ runner.workspace }}/.docker-data
+        run: |
+          set -eux
+          echo "NEW_DOCKER_ROOT=$NEW_DOCKER_ROOT"
+          sudo systemctl stop docker
+          sudo mkdir -p "$NEW_DOCKER_ROOT"
+          # Eski veriyi kopyala (varsa)
+          if [ -d /var/lib/docker ]; then
+            sudo rsync -aH --delete /var/lib/docker/ "$NEW_DOCKER_ROOT"/
+          fi
+          # daemon.json yaz
+          echo "{\"data-root\":\"$NEW_DOCKER_ROOT\"}" | sudo tee /etc/docker/daemon.json
+          sudo systemctl start docker
+          docker info | sed -n 's/.*Docker Root Dir: //p'
+          df -h
+
       - name: Build with Unity (Android)
         uses: game-ci/unity-builder@v4
         env:
@@ -72,17 +68,18 @@ jobs:
           unityVersion: 6000.0.58f2
           targetPlatform: Android
           projectPath: .
-          buildsPath: builds
           buildName: PongMobilePrototype
-          versioning: None
+          buildsPath: builds
+          buildFile: PongMobilePrototype.apk
+          versioning: none
           androidVersionCode: 48
           androidExportType: androidPackage
           androidSymbolType: none
-          allowDirtyBuild: true
+          allowDirtyBuild: false
 
       - name: Upload APK artifact
         uses: actions/upload-artifact@v4
         with:
           name: android-apk
-          path: builds/Android/*.apk
+          path: builds/Android/PongMobilePrototype.apk
           if-no-files-found: error
