@@ -33,7 +33,7 @@ public class EnemyPaddle : MonoBehaviour
 
     void FixedUpdate()
     {
-        if (ball == null) return;
+        if (ball == null || rb == null) return;
 
         float targetX = PredictBallTargetX();
         float newX = Mathf.MoveTowards(rb.position.x, targetX, moveSpeed * Time.fixedDeltaTime);
@@ -45,13 +45,15 @@ public class EnemyPaddle : MonoBehaviour
     {
         Vector2 ballPos = ball.position;
         Rigidbody2D ballRb = ball.GetComponent<Rigidbody2D>();
+        if (ballRb == null) return rb.position.x;
+
         Vector2 ballVel = ballRb.linearVelocity;
 
         if (ballVel.y <= 0)
             return rb.position.x;
 
         float topBoundary = Mathf.Abs(transform.position.y);
-        float stepDistance = predictionStep;
+        float stepDistance = Mathf.Max(0.05f, predictionStep);
 
         while (ballPos.y < topBoundary)
         {

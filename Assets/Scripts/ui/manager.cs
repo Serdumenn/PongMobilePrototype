@@ -22,26 +22,23 @@ public class manager : MonoBehaviour
             Debug.Log("Target FPS set to 60");
         }
 
-        ballcs = ball.GetComponent<ball>();
-        ballRenderer = ball.GetComponent<SpriteRenderer>();
+        if (ball != null)
+        {
+            ballcs = ball.GetComponent<ball>();
+            ballRenderer = ball.GetComponent<SpriteRenderer>();
+        }
     }
 
     public void GameEnding(bool whoWin)
     {
-        if (whoWin)
-        {
-            win.SetActive(true);
-        }
-        else
-        {
-            lose.SetActive(true);
-        }
+        if (win != null) win.SetActive(whoWin);
+        if (lose != null) lose.SetActive(!whoWin);
 
-        racket1.SetActive(false);
-        racket2.SetActive(false);
+        if (racket1) racket1.SetActive(false);
+        if (racket2) racket2.SetActive(false);
         if (ballRenderer != null) ballRenderer.enabled = false;
-        gameUI.SetActive(false);
-        endUI.SetActive(true);
+        if (gameUI) gameUI.SetActive(false);
+        if (endUI) endUI.SetActive(true);
     }
 
     public void Restart()
@@ -60,19 +57,19 @@ public class manager : MonoBehaviour
     {
         Time.timeScale = 0;
         if (ballRenderer != null) ballRenderer.enabled = false;
-        gameUI.SetActive(false);
-        pauseMenu.SetActive(true);
-        racket1.SetActive(false);
-        racket2.SetActive(false);
+        if (gameUI) gameUI.SetActive(false);
+        if (pauseMenu) pauseMenu.SetActive(true);
+        if (racket1) racket1.SetActive(false);
+        if (racket2) racket2.SetActive(false);
     }
 
     public void unPause()
     {
         Time.timeScale = 1;
         if (ballRenderer != null) ballRenderer.enabled = true;
-        gameUI.SetActive(true);
-        racket1.SetActive(true);
-        racket2.SetActive(true);
-        pauseMenu.SetActive(false);
+        if (gameUI) gameUI.SetActive(true);
+        if (racket1) racket1.SetActive(true);
+        if (racket2) racket2.SetActive(true);
+        if (pauseMenu) pauseMenu.SetActive(false);
     }
 }

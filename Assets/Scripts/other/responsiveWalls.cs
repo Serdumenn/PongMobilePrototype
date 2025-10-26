@@ -6,31 +6,44 @@ public class responsiveWalls : MonoBehaviour
     public GameObject sagWall;
     public float wallThickness = 0.5f;
 
+    private Camera cam;
+    private int lastW, lastH;
+
     void Start()
     {
+        cam = Camera.main;
         UpdateSideWalls();
+    }
+
+    void Update()
+    {
+        if (Screen.width != lastW || Screen.height != lastH)
+            UpdateSideWalls();
     }
 
     void UpdateSideWalls()
     {
-        float distance = Mathf.Abs(Camera.main.transform.position.z);
+        if (cam == null) cam = Camera.main;
+        if (cam == null || solWall == null || sagWall == null) return;
 
-        Vector3 bottomLeft = Camera.main.ViewportToWorldPoint(new Vector3(0, 0, distance));
-        Vector3 topRight   = Camera.main.ViewportToWorldPoint(new Vector3(1, 1, distance));
+        float distance = Mathf.Abs(cam.transform.position.z);
+        Vector3 bottomLeft = cam.ViewportToWorldPoint(new Vector3(0, 0, distance));
+        Vector3 topRight   = cam.ViewportToWorldPoint(new Vector3(1, 1, distance));
 
-        float midY = (bottomLeft.y + topRight.y) / 2;
+        float midY = (bottomLeft.y + topRight.y) / 2f;
 
-        solWall.transform.position = new Vector3(bottomLeft.x - wallThickness / 2, midY, 0);
-        sagWall.transform.position = new Vector3(topRight.x + wallThickness / 2, midY, 0);
+        solWall.transform.position = new Vector3(bottomLeft.x - wallThickness / 2f, midY, 0f);
+        sagWall.transform.position = new Vector3(topRight.x  + wallThickness / 2f, midY, 0f);
 
         float screenHeight = topRight.y - bottomLeft.y;
 
-        BoxCollider2D solCollider = solWall.GetComponent<BoxCollider2D>();
-        BoxCollider2D sagCollider = sagWall.GetComponent<BoxCollider2D>();
+        var solCollider = solWall.GetComponent<BoxCollider2D>();
+        var sagCollider = sagWall.GetComponent<BoxCollider2D>();
 
-        if(solCollider != null)
-            solCollider.size = new Vector2(wallThickness, screenHeight);
-        if(sagCollider != null)
-            sagCollider.size = new Vector2(wallThickness, screenHeight);
+        if (solCollider) solCollider.size = new Vector2(wallThickness, screenHeight);
+        if (sagCollider) sagCollider.size = new Vector2(wallThickness, screenHeight);
+
+        lastW = Screen.width;
+        lastH = Screen.height;
     }
 }

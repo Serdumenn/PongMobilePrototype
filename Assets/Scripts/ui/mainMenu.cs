@@ -4,42 +4,34 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
-public class mainMenu : MonoBehaviour {
+public class mainMenu : MonoBehaviour
+{
     public GameObject[] menus;
     public AudioSource[] soundEffects;
     public saving prefs;
+
     public void LoadScene(int index)
     {
         playSound(0);
         SceneManager.LoadScene(index);
     }
-    public void restart ()
+
+    public void restart()
     {
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
-    /*
-    public void goMenu ()
+
+    public void playSound(int index)
     {
-        SceneManager.LoadScene(0);
+        if (soundEffects == null || index < 0 || index >= soundEffects.Length) return;
+        var src = soundEffects[index];
+        if (src != null) src.Play();
     }
-    // this is universal button for all back buttons
-    /*public void BackUniversal ()
+
+    public void playAnim(GameObject button)
     {
-        playSound(0);
-        for(int i = 0; i < menus.Length; i++)
-        {
-            menus[i].SetActive(false);
-        }
-        menus[0].SetActive(true);
-    }*/
-    // plays button sound for all buttons
-    public void playSound (int index)
-    {
-        soundEffects[index].Play();
-    }
-    public void playAnim (GameObject button)
-    {
-        Animator animator = button.GetComponent<Animator>();
-        animator.SetTrigger("click");
+        if (button == null) return;
+        var animator = button.GetComponent<Animator>();
+        if (animator != null) animator.SetTrigger("click");
     }
 }

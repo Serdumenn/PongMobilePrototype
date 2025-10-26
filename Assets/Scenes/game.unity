@@ -1172,6 +1172,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 2018088317}
     - target: {fileID: 3960305444792714754, guid: 16bec77f3dd0a694dae829d00376c414, type: 3}
+      propertyPath: prefs
+      value: 
+      objectReference: {fileID: 1644561400}
+    - target: {fileID: 3960305444792714754, guid: 16bec77f3dd0a694dae829d00376c414, type: 3}
       propertyPath: 'soundEffects.Array.data[0]'
       value: 
       objectReference: {fileID: 275385007}

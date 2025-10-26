@@ -1,7 +1,8 @@
 using UnityEngine;
 using UnityEngine.UI;
 
-public class rallyCount : MonoBehaviour {
+public class rallyCount : MonoBehaviour
+{
     public int count;
     public Text rallyText;
     public Animator animator;
@@ -9,39 +10,47 @@ public class rallyCount : MonoBehaviour {
     public float minRally, maxRally;
     public float startRate, maxRate;
 
-    void Start ()
+    void Start()
     {
         resetCount();
     }
 
     public void changeColor()
     {
-        float t = Mathf.Clamp01((count - minRally) / maxRally);
-        rallyText.color = Color.Lerp(Color.white, Color.red, t);
+        float denom = Mathf.Max(0.0001f, maxRally);
+        float t = Mathf.Clamp01((count - minRally) / denom);
+        if (rallyText) rallyText.color = Color.Lerp(Color.white, Color.red, t);
     }
 
     public void AddRally()
     {
         count += 1;
         if (count >= minRally)
-        {   
-            rallyText.text = ("RALLY " + count + "X!");
-            animator.SetTrigger("count");
+        {
+            if (rallyText) rallyText.text = "RALLY " + count + "X!";
+            if (animator) animator.SetTrigger("count");
             changeColor();
 
-            var emissionModule = effect.emission;
-            float emissionRate = Mathf.Lerp(startRate, maxRate, (count - minRally) / maxRally);
-            emissionModule.rateOverTime = emissionRate;
+            if (effect)
+            {
+                var emissionModule = effect.emission;
+                float denom = Mathf.Max(0.0001f, maxRally);
+                float t = Mathf.Clamp01((count - minRally) / denom);
+                float emissionRate = Mathf.Lerp(startRate, maxRate, t);
+                emissionModule.rateOverTime = emissionRate;
+            }
         }
     }
 
     public void resetCount()
     {
-        rallyText.text = "";
+        if (rallyText) { rallyText.text = ""; rallyText.color = Color.white; }
         count = 0;
-        rallyText.color = Color.white;
-        effect.Clear();
-        var emissionModule = effect.emission;
-        emissionModule.rateOverTime = startRate;
+        if (effect)
+        {
+            effect.Clear();
+            var emissionModule = effect.emission;
+            emissionModule.rateOverTime = startRate;
+        }
     }
 }

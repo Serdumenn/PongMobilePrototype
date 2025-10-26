@@ -13,13 +13,15 @@ public class ball : MonoBehaviour
     private Vector2 initialPosition;
     private Coroutine resetRoutine;
     private bool waitingForLaunch = false;
+    private SpriteRenderer sr;
 
     void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
+        sr = GetComponent<SpriteRenderer>();
+
         rb.collisionDetectionMode = CollisionDetectionMode2D.Continuous;
         rb.interpolation = RigidbodyInterpolation2D.Interpolate;
-
         initialPosition = transform.position;
     }
 
@@ -43,13 +45,12 @@ public class ball : MonoBehaviour
         rb.linearVelocity = Vector2.zero;
         transform.position = initialPosition;
         waitingForLaunch = true;
-        GetComponent<SpriteRenderer>().enabled = false;
+        if (sr) sr.enabled = false;
 
         yield return new WaitForSeconds(1.0f);
 
-        GetComponent<SpriteRenderer>().enabled = true;
+        if (sr) sr.enabled = true;
 
-        float timer = 0f;
         while (waitingForLaunch)
         {
             if (Input.GetMouseButtonDown(0) || Input.touchCount > 0)
@@ -57,7 +58,6 @@ public class ball : MonoBehaviour
                 LaunchBall();
                 waitingForLaunch = false;
             }
-            timer += Time.deltaTime;
             yield return null;
         }
     }
@@ -79,8 +79,12 @@ public class ball : MonoBehaviour
         if (bounceSound != null)
             bounceSound.Play();
 
-        float newSpeed = Mathf.Clamp(rb.linearVelocity.magnitude + speedIncreasePerHit, launchSpeed, maxSpeed);
-        rb.linearVelocity = rb.linearVelocity.normalized * newSpeed;
+        var v = rb.linearVelocity;
+        if (!float.IsFinite(v.x) || !float.IsFinite(v.y))
+            v = Vector2.up * launchSpeed;
+
+        float newSpeed = Mathf.Clamp(v.magnitude + speedIncreasePerHit, launchSpeed, maxSpeed);
+        rb.linearVelocity = v.normalized * newSpeed;
     }
 
     void OnTriggerEnter2D(Collider2D col)

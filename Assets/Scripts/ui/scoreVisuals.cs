@@ -1,74 +1,75 @@
 using UnityEngine;
 using UnityEngine.UI;
 
-public class scoreVisuals : MonoBehaviour {
+public class scoreVisuals : MonoBehaviour
+{
     public int enemyScore, playerScore;
-    public int diffNeed;
+    public int diffNeed = 3;
     public Image[] scorePoints;
     public score scorescript;
     private manager managerScript;
     public GameObject managerObj;
-    void Start() 
+
+    void Start()
     {
-        managerScript = managerObj.transform.GetComponent<manager>();
+        if (managerObj != null)
+            managerScript = managerObj.GetComponent<manager>();
         ResetVisuals();
     }
 
-    public void playerScores() {
+    public void playerScores()
+    {
         playerScore += 1;
         UpdateScore();
     }
 
-    public void enemyScores() {
+    public void enemyScores()
+    {
         enemyScore += 1;
         UpdateScore();
     }
 
-    void UpdateScore() 
+    void UpdateScore()
     {
         int scoreDiff = playerScore - enemyScore;
         UpdateVisuals(scoreDiff);
 
-        if (Mathf.Abs(scoreDiff) >= diffNeed) 
+        if (Mathf.Abs(scoreDiff) >= diffNeed && managerScript != null)
         {
-            if (scoreDiff > 0) 
-            {
-                managerScript.GameEnding(true);
-            } 
-            else 
-            {
-                managerScript.GameEnding(false);
-            }
+            managerScript.GameEnding(scoreDiff > 0);
         }
     }
 
-    void UpdateVisuals(int diff) 
+    void UpdateVisuals(int diff)
     {
         ResetVisuals();
+        if (scorePoints == null || scorePoints.Length == 0) return;
 
         int absDiff = Mathf.Abs(diff);
-        if (diff > 0) 
-        { 
-            for (int i = 0; i < absDiff && i < scorePoints.Length; i++) 
+        if (diff > 0)
+        {
+            for (int i = 0; i < absDiff && i < scorePoints.Length; i++)
             {
                 int index = scorePoints.Length - 1 - i;
-                scorePoints[index].color = Color.blue;
+                if (scorePoints[index] != null) scorePoints[index].color = Color.blue;
             }
-        } 
-        else if (diff < 0) 
-        { 
-            for (int i = 0; i < absDiff && i < scorePoints.Length; i++) 
+        }
+        else if (diff < 0)
+        {
+            for (int i = 0; i < absDiff && i < scorePoints.Length; i++)
             {
                 int index = i;
-                scorePoints[index].color = Color.red;
+                if (scorePoints[index] != null) scorePoints[index].color = Color.red;
             }
         }
     }
-    void ResetVisuals() 
+
+    void ResetVisuals()
     {
-        foreach (Image img in scorePoints) 
+        if (scorePoints == null) return;
+        foreach (var img in scorePoints)
         {
-            img.color = Color.gray;
+            if (img != null) img.color = Color.gray;
         }
     }
 }
