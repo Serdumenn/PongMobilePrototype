@@ -17,21 +17,32 @@ jobs:
     timeout-minutes: 60
 
     steps:
+      - name: Extra Docker prune
+        run: |
+          docker system prune -af || true
+          sudo rm -rf /usr/local/lib/android /opt/ghc /usr/share/dotnet /opt/hostedtoolcache/CodeQL || true
+          df -h
+
       - name: Maximize build space
         uses: easimon/maximize-build-space@v10
         with:
           root-reserve-mb: 4096
+          temp-reserve-mb: 100
           swap-size-mb: 1
           remove-android: 'true'
           remove-dotnet: 'true'
           remove-haskell: 'true'
           remove-docker-images: 'true'
-          mount-path: /var/lib/docker
 
-      - name: Extra Docker prune
+      - name: Move Docker data-root to the big workspace disk
         run: |
-          docker system prune -af || true
-          sudo rm -rf /usr/local/lib/android /opt/ghc /usr/share/dotnet /opt/hostedtoolcache/CodeQL || true
+          set -eux
+          sudo systemctl stop docker
+          sudo mkdir -p /home/runner/work/docker
+          echo '{"data-root":"/home/runner/work/docker"}' | sudo tee /etc/docker/daemon.json
+          sudo systemctl daemon-reload
+          sudo systemctl start docker
+          docker info
           df -h
 
       - name: Checkout
@@ -63,14 +74,15 @@ jobs:
           projectPath: .
           buildName: PongMobilePrototype
           buildsPath: builds
-          versioning: None
+          buildFile: PongMobilePrototype.apk
+          versioning: none
           androidVersionCode: 48
           androidExportType: androidPackage
           androidSymbolType: none
-          allowDirtyBuild: true
+
       - name: Upload APK artifact
         uses: actions/upload-artifact@v4
         with:
           name: android-apk
-          path: builds/**/PongMobilePrototype.apk
+          path: builds/Android/PongMobilePrototype.apk
           if-no-files-found: error
