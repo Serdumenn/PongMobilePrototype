@@ -17,21 +17,22 @@ jobs:
     timeout-minutes: 60
 
     steps:
-      - name: Maximize build space
-        uses: easimon/maximize-build-space@v10
-        with:
-          root-reserve-mb: 4096
-          temp-reserve-mb: 100
-          swap-size-mb: 1
-          overprovision-lvm: false
-          remove-android: 'true'
-          remove-dotnet: 'true'
-          remove-haskell: 'true'
-          remove-codeql: 'true'
-          remove-docker-images: 'true'
-
       - name: Extra Docker prune
         run: docker system prune -af || true
+
+      - name: Move Docker data-root to big workspace disk (outside repo dir)
+        shell: bash
+        run: |
+          set -euxo pipefail
+          NEW_ROOT="/home/runner/work/_temp/docker-data"
+          sudo mkdir -p "$NEW_ROOT"
+          # Docker daemon config'i yaz
+          echo "{\"data-root\": \"$NEW_ROOT\"}" | sudo tee /etc/docker/daemon.json
+          # Eski data-root’u boşaltalım (varsa)
+          sudo systemctl stop docker
+          sudo rm -rf /var/lib/docker || true
+          sudo systemctl start docker
+          docker info
 
       - name: Checkout
         uses: actions/checkout@v4
@@ -46,11 +47,11 @@ jobs:
         with:
           path: |
             Library
-          key: Library-Linux-${{ hashFiles('**/ProjectSettings/ProjectVersion.txt') }}
+          key: Library-Linux-${{ hashFiles('**/ProjectSettings/ProjectVersion.txt') }}-${{ hashFiles('**/*.cs','**/*.unity','**/*.prefab','**/*.mat','**/*.anim','**/*.shader','Packages/manifest.json','Packages/packages-lock.json') }}
           restore-keys: |
+            Library-Linux-${{ hashFiles('**/ProjectSettings/ProjectVersion.txt') }}
             Library-Linux-
 
-      # 6) Unity build
       - name: Build with Unity (Android)
         uses: game-ci/unity-builder@v4
         env:
@@ -59,15 +60,15 @@ jobs:
           UNITY_SERIAL: ${{ secrets.UNITY_SERIAL }}
         with:
           unityVersion: 6000.0.58f2
-          projectPath: .
           targetPlatform: Android
-          buildsPath: builds
+          projectPath: .
           buildName: PongMobilePrototype
-          versioning: None
+          buildsPath: builds
+          buildFile: PongMobilePrototype.apk
+          versioning: none
+          androidVersionCode: 58
           androidExportType: androidPackage
-          androidVersionCode: ${{ github.run_number }}
           androidSymbolType: none
-          allowDirtyBuild: true
 
       - name: Upload APK artifact
         uses: actions/upload-artifact@v4
