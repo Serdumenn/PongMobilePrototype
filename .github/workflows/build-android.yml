@@ -23,16 +23,15 @@ jobs:
           root-reserve-mb: 4096
           temp-reserve-mb: 100
           swap-size-mb: 1
+          overprovision-lvm: false
           remove-android: 'true'
           remove-dotnet: 'true'
           remove-haskell: 'true'
+          remove-codeql: 'true'
           remove-docker-images: 'true'
 
       - name: Extra Docker prune
-        run: |
-          docker system prune -af || true
-          sudo rm -rf /opt/ghc /usr/share/dotnet /opt/hostedtoolcache/CodeQL || true
-          df -h
+        run: docker system prune -af || true
 
       - name: Checkout
         uses: actions/checkout@v4
@@ -47,10 +46,11 @@ jobs:
         with:
           path: |
             Library
-          key: Library-Linux-${{ hashFiles('**/ProjectSettings/ProjectVersion.txt') }}-${{ hashFiles('**/*.cs','**/*.unity','**/*.prefab','**/*.mat','**/*.anim','**/*.shader','Packages/manifest.json','Packages/packages-lock.json') }}
+          key: Library-Linux-${{ hashFiles('**/ProjectSettings/ProjectVersion.txt') }}
           restore-keys: |
             Library-Linux-
 
+      # 6) Unity build
       - name: Build with Unity (Android)
         uses: game-ci/unity-builder@v4
         env:
@@ -59,13 +59,13 @@ jobs:
           UNITY_SERIAL: ${{ secrets.UNITY_SERIAL }}
         with:
           unityVersion: 6000.0.58f2
-          targetPlatform: Android
           projectPath: .
+          targetPlatform: Android
           buildsPath: builds
           buildName: PongMobilePrototype
           versioning: None
-          androidVersionCode: 48
           androidExportType: androidPackage
+          androidVersionCode: ${{ github.run_number }}
           androidSymbolType: none
           allowDirtyBuild: true
 
