@@ -1,57 +1,77 @@
-name: Build Android APK
+name: Android Build (Unity Pro)
 
 on:
   push:
-    branches: [ "main" ]
-
-permissions:
-  contents: read
+    branches: [ main ]
+  workflow_dispatch:
 
 jobs:
   build-android:
     runs-on: ubuntu-latest
-    timeout-minutes: 60
 
     steps:
-      - name: Extra Docker prune
-        run: docker system prune -af || true
-
-      - name: Checkout
+      - name: Checkout (with LFS)
         uses: actions/checkout@v4
         with:
           lfs: true
 
-      - name: Make Git ignore filemode changes
-        run: git config core.filemode false
-
-      - name: Cache Unity Library (speeds up repeat builds)
+      - name: Cache Unity/Library
         uses: actions/cache@v4
         with:
-          path: Library
-          key: Library-Linux-${{ hashFiles('**/ProjectSettings/ProjectVersion.txt') }}-${{ hashFiles('**/*.cs','**/*.unity','**/*.prefab','**/*.mat','**/*.anim','**/*.shader','Packages/manifest.json','Packages/packages-lock.json') }}
-          restore-keys: |
-            Library-Linux-
+          path: |
+            Library
+            ~/.cache/unity3d
+            ~/.local/share/unity3d
+          key: ${{ runner.os }}-unity-${{ hashFiles('Packages/manifest.json') }}
 
-      - name: Build with Unity (Android)
+      - name: Build with Unity (Android, Pro Serial)
         uses: game-ci/unity-builder@v4
         env:
-          UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
+          UNITY_EMAIL:    ${{ secrets.UNITY_EMAIL }}
           UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
-          UNITY_SERIAL: ${{ secrets.UNITY_SERIAL }}
+          UNITY_SERIAL:   ${{ secrets.UNITY_SERIAL }}
         with:
-          unityVersion: 6000.0.58f2
-          projectPath: .
+          unityVersion:   ${{ vars.UNITY_VERSION }}
+          projectPath:    .
           targetPlatform: Android
-          versioning: None
-          androidVersionCode: 58
           androidExportType: androidPackage
-          androidSymbolType: none
-          buildsPath: builds
-          buildName: PongMobilePrototype
+          buildName:      ${{ vars.BUILD_NAME }}
+          buildsPath:     ${{ vars.BUILDS_PATH }}
+          # customParameters: -quit -batchmode -nographics
 
       - name: Upload APK artifact
         uses: actions/upload-artifact@v4
         with:
           name: android-apk
-          path: builds/Android/*.apk
-          if-no-files-found: error
+          path: ${{ vars.BUILDS_PATH }}/Android/**/*.apk
+
+      # - name: Decode keystore
+      #   if: ${{ secrets.ANDROID_KEYSTORE_BASE64 != '' }}
+      #   run: |
+      #     echo "${{ secrets.ANDROID_KEYSTORE_BASE64 }}" | base64 -d > $HOME/keystore.jks
+      #
+      # - name: Build signed AAB (instead of APK)
+      #   if: ${{ secrets.ANDROID_KEYSTORE_BASE64 != '' }}
+      #   uses: game-ci/unity-builder@v4
+      #   env:
+      #     UNITY_EMAIL:    ${{ secrets.UNITY_EMAIL }}
+      #     UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
+      #     UNITY_SERIAL:   ${{ secrets.UNITY_SERIAL }}
+      #   with:
+      #     unityVersion:   ${{ vars.UNITY_VERSION }}
+      #     projectPath:    .
+      #     targetPlatform: Android
+      #     androidExportType: androidAppBundle  # AAB
+      #     androidKeystoreName: $HOME/keystore.jks
+      #     androidKeystorePass: ${{ secrets.ANDROID_KEYSTORE_PASS }}
+      #     androidKeyaliasName: ${{ secrets.ANDROID_KEYALIAS_NAME }}
+      #     androidKeyaliasPass: ${{ secrets.ANDROID_KEYALIAS_PASS }}
+      #     buildName:      ${{ vars.BUILD_NAME }}
+      #     buildsPath:     ${{ vars.BUILDS_PATH }}
+      #
+      # - name: Upload AAB artifact
+      #   if: ${{ secrets.ANDROID_KEYSTORE_BASE64 != '' }}
+      #   uses: actions/upload-artifact@v4
+      #   with:
+      #     name: android-aab
+      #     path: ${{ vars.BUILDS_PATH }}/Android/**/*.aab
