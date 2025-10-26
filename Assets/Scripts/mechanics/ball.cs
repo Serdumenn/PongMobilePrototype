@@ -40,7 +40,7 @@ public class ball : MonoBehaviour
 
     IEnumerator ResetBallWithCountdown()
     {
-        rb.linearVelocity = Vector2.zero;
+        rb.velocity = Vector2.zero;
         transform.position = initialPosition;
         waitingForLaunch = true;
         GetComponent<SpriteRenderer>().enabled = false;
@@ -68,7 +68,7 @@ public class ball : MonoBehaviour
         float direction = Random.value < 0.5f ? -1f : 1f;
         Vector2 launchDir = Quaternion.Euler(0, 0, randomAngle * direction) * Vector2.up;
 
-        rb.linearVelocity = launchDir * launchSpeed;
+        rb.velocity = launchDir * launchSpeed;
 
         if (trailEffect != null)
             trailEffect.SetActive(true);
@@ -79,8 +79,8 @@ public class ball : MonoBehaviour
         if (bounceSound != null)
             bounceSound.Play();
 
-        float newSpeed = Mathf.Clamp(rb.linearVelocity.magnitude + speedIncreasePerHit, launchSpeed, maxSpeed);
-        rb.linearVelocity = rb.linearVelocity.normalized * newSpeed;
+        float newSpeed = Mathf.Clamp(rb.velocity.magnitude + speedIncreasePerHit, launchSpeed, maxSpeed);
+        rb.velocity = rb.velocity.normalized * newSpeed;
     }
 
     void OnTriggerEnter2D(Collider2D col)

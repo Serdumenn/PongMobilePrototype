@@ -45,7 +45,7 @@ public class EnemyPaddle : MonoBehaviour
     {
         Vector2 ballPos = ball.position;
         Rigidbody2D ballRb = ball.GetComponent<Rigidbody2D>();
-        Vector2 ballVel = ballRb.linearVelocity;
+        Vector2 ballVel = ballRb.velocity;
 
         if (ballVel.y <= 0)
             return rb.position.x;
