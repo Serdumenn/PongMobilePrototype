@@ -7,10 +7,6 @@ on:
 permissions:
   contents: read
 
-concurrency:
-  group: android-build-${{ github.ref }}
-  cancel-in-progress: false
-
 jobs:
   build-android:
     runs-on: ubuntu-latest
@@ -19,20 +15,6 @@ jobs:
     steps:
       - name: Extra Docker prune
         run: docker system prune -af || true
-
-      - name: Move Docker data-root to big workspace disk (outside repo dir)
-        shell: bash
-        run: |
-          set -euxo pipefail
-          NEW_ROOT="/home/runner/work/_temp/docker-data"
-          sudo mkdir -p "$NEW_ROOT"
-          # Docker daemon config'i yaz
-          echo "{\"data-root\": \"$NEW_ROOT\"}" | sudo tee /etc/docker/daemon.json
-          # Eski data-root’u boşaltalım (varsa)
-          sudo systemctl stop docker
-          sudo rm -rf /var/lib/docker || true
-          sudo systemctl start docker
-          docker info
 
       - name: Checkout
         uses: actions/checkout@v4
@@ -45,11 +27,9 @@ jobs:
       - name: Cache Unity Library (speeds up repeat builds)
         uses: actions/cache@v4
         with:
-          path: |
-            Library
+          path: Library
           key: Library-Linux-${{ hashFiles('**/ProjectSettings/ProjectVersion.txt') }}-${{ hashFiles('**/*.cs','**/*.unity','**/*.prefab','**/*.mat','**/*.anim','**/*.shader','Packages/manifest.json','Packages/packages-lock.json') }}
           restore-keys: |
-            Library-Linux-${{ hashFiles('**/ProjectSettings/ProjectVersion.txt') }}
             Library-Linux-
 
       - name: Build with Unity (Android)
@@ -60,19 +40,18 @@ jobs:
           UNITY_SERIAL: ${{ secrets.UNITY_SERIAL }}
         with:
           unityVersion: 6000.0.58f2
-          targetPlatform: Android
           projectPath: .
-          buildName: PongMobilePrototype
-          buildsPath: builds
-          buildFile: PongMobilePrototype.apk
-          versioning: none
+          targetPlatform: Android
+          versioning: None
           androidVersionCode: 58
           androidExportType: androidPackage
           androidSymbolType: none
+          buildsPath: builds
+          buildName: PongMobilePrototype
 
       - name: Upload APK artifact
         uses: actions/upload-artifact@v4
         with:
           name: android-apk
-          path: builds/Android/PongMobilePrototype.apk
+          path: builds/Android/*.apk
           if-no-files-found: error
