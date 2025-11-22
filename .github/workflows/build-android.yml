@@ -35,29 +35,4 @@ jobs:
           path: Library
           key: Library-${{ runner.os }}-${{ env.UNITY_VERSION }}-${{ hashFiles('Packages/manifest.json', 'ProjectSettings/ProjectSettings.asset') }}
           restore-keys: |
-            Library-${{ runner.os }}-${{ env.UNITY_VERSION }}-
-
-      - name: Build Android (AAB)
-        uses: game-ci/unity-builder@v4
-        env:
-          UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
-        with:
-          unityVersion: ${{ env.UNITY_VERSION }}
-          targetPlatform: Android
-          androidExportType: androidAppBundle
-          buildName: ${{ env.BUILD_NAME }}
-          buildsPath: ${{ env.BUILDS_PATH }}
-
-      - name: Upload AAB
-        uses: actions/upload-artifact@v4
-        with:
-          name: android-aab
-          path: ${{ env.BUILDS_PATH }}/Android/**/*.aab
-
-      - name: Final cleanup
-        if: always()
-        run: |
-          rm -rf Library
-          rm -rf Temp
-          rm -rf Logs
-          rm -rf ${{ env.BUILDS_PATH }}
+            Library-${{ runner.os }}
