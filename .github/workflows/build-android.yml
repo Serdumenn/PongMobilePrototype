@@ -1,4 +1,4 @@
-name: Android Build (Unity 6)
+name: Android Build (APK)
 
 on:
   push:
