@@ -2,60 +2,80 @@ name: Android Build (APK)
 
 on:
   push:
-    branches: [ "main" ]
-  workflow_dispatch: {}
+    branches: [ main ]
+  workflow_dispatch:
 
-concurrency:
-  group: android-apk-${{ github.ref }}
-  cancel-in-progress: true
+env:
+  UNITY_VERSION: 6000.0.58f2
+  BUILD_NAME: PongMobilePrototype
+  BUILDS_PATH: builds
 
 jobs:
   build-android:
     runs-on: ubuntu-latest
-
-    env:
-      UNITY_VERSION: ${{ vars.UNITY_VERSION }}
-      BUILD_NAME: ${{ vars.BUILD_NAME }}
-      BUILDS_PATH: ${{ vars.BUILDS_PATH }}
-
-      UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
-      UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
-      UNITY_SERIAL: ${{ secrets.UNITY_SERIAL }}
+    timeout-minutes: 90
 
     steps:
-      - name: Checkout (LFS)
+      - name: Checkout (with LFS)
         uses: actions/checkout@v4
         with:
           lfs: true
-          fetch-depth: 0
+          fetch-depth: 1
 
-      - name: Cache Library
+      - name: Disk before cleanup
+        run: |
+          df -h
+          docker system df || true
+
+      - name: Free disk space (before Unity image pull)
+        run: |
+          set -euxo pipefail
+          sudo rm -rf /usr/local/lib/android || true
+          sudo rm -rf /usr/share/dotnet || true
+          sudo rm -rf /opt/ghc || true
+          sudo rm -rf /usr/local/share/boost || true
+          sudo rm -rf /opt/hostedtoolcache || true
+          sudo apt-get clean
+          sudo rm -rf /var/lib/apt/lists/* || true
+          docker system prune -af --volumes || true
+          df -h
+          docker system df || true
+
+      - name: Pre-clean workspace
+        run: |
+          rm -rf Library Temp Logs "${{ env.BUILDS_PATH }}"
+
+      - name: Cache Unity Library
         uses: actions/cache@v4
         with:
           path: Library
-          key: Library-${{ env.UNITY_VERSION }}-${{ hashFiles('Packages/manifest.json', 'Packages/packages-lock.json', 'ProjectSettings/ProjectSettings.asset') }}
+          key: Library-${{ runner.os }}-${{ env.UNITY_VERSION }}-${{ hashFiles('Packages/manifest.json', 'ProjectSettings/ProjectSettings.asset') }}
           restore-keys: |
-            Library-${{ env.UNITY_VERSION }}-
+            Library-${{ runner.os }}-${{ env.UNITY_VERSION }}-
+            Library-${{ runner.os }}-
 
-      - name: Build Android (APK)
+      - name: Build Android APK
         uses: game-ci/unity-builder@v4
+        env:
+          UNITY_VERSION: ${{ env.UNITY_VERSION }}
+          UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
         with:
+          projectPath: .
           unityVersion: ${{ env.UNITY_VERSION }}
           targetPlatform: Android
-          buildsPath: ${{ env.BUILDS_PATH }}
-          buildName: ${{ env.BUILD_NAME }}
           androidExportType: androidPackage
+          buildName: ${{ env.BUILD_NAME }}
+          buildsPath: ${{ env.BUILDS_PATH }}
 
       - name: List build output
         run: |
-          echo "=== Build folder ==="
-          ls -R "${{ env.BUILDS_PATH }}" || true
+          ls -la "${{ env.BUILDS_PATH }}" || true
+          ls -la "${{ env.BUILDS_PATH }}/Android" || true
+          find "${{ env.BUILDS_PATH }}" -maxdepth 4 -type f -name "*.apk" -print || true
 
       - name: Upload APK artifact
         uses: actions/upload-artifact@v4
         with:
-          name: ${{ env.BUILD_NAME }}-Android-APK-${{ github.run_number }}
-          path: |
-            ${{ env.BUILDS_PATH }}/Android/**/*.apk
-            ${{ env.BUILDS_PATH }}/**/*.apk
+          name: ${{ env.BUILD_NAME }}-${{ github.sha }}
+          path: ${{ env.BUILDS_PATH }}/Android/*.apk
           if-no-files-found: error
