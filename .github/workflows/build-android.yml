@@ -3,49 +3,42 @@ name: Android Build (APK)
 on:
   push:
     branches: [ "main" ]
-  workflow_dispatch:
+  workflow_dispatch: {}
 
-env:
-  UNITY_VERSION: ${{ vars.UNITY_VERSION }}
-  BUILD_NAME: ${{ vars.BUILD_NAME }}
-  BUILDS_PATH: ${{ vars.BUILDS_PATH }}
+concurrency:
+  group: android-apk-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   build-android:
-    name: Build Android (APK)
     runs-on: ubuntu-latest
-    timeout-minutes: 90
+
+    env:
+      UNITY_VERSION: ${{ vars.UNITY_VERSION }}
+      BUILD_NAME: ${{ vars.BUILD_NAME }}
+      BUILDS_PATH: ${{ vars.BUILDS_PATH }}
+
+      UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
+      UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
+      UNITY_SERIAL: ${{ secrets.UNITY_SERIAL }}
 
     steps:
       - name: Checkout (LFS)
         uses: actions/checkout@v4
         with:
           lfs: true
-          fetch-depth: 1
+          fetch-depth: 0
 
-      - name: Pre-clean workspace
-        shell: bash
-        run: |
-          rm -rf Library Temp Logs
-          rm -rf "${BUILDS_PATH}"
-
-      - name: Cache Unity Library
+      - name: Cache Library
         uses: actions/cache@v4
         with:
           path: Library
-          key: Library-${{ runner.os }}-${{ env.UNITY_VERSION }}-Android-${{ hashFiles('Packages/manifest.json', 'Packages/packages-lock.json', 'ProjectSettings/ProjectSettings.asset') }}
+          key: Library-${{ env.UNITY_VERSION }}-${{ hashFiles('Packages/manifest.json', 'Packages/packages-lock.json', 'ProjectSettings/ProjectSettings.asset') }}
           restore-keys: |
-            Library-${{ runner.os }}-${{ env.UNITY_VERSION }}-Android-
-            Library-${{ runner.os }}-${{ env.UNITY_VERSION }}-
+            Library-${{ env.UNITY_VERSION }}-
 
-      - name: Build (Unity) -> APK
+      - name: Build Android (APK)
         uses: game-ci/unity-builder@v4
-        env:
-          UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
-          UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
-          UNITY_SERIAL: ${{ secrets.UNITY_SERIAL }}
-
-          # UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
         with:
           unityVersion: ${{ env.UNITY_VERSION }}
           targetPlatform: Android
@@ -53,10 +46,16 @@ jobs:
           buildName: ${{ env.BUILD_NAME }}
           androidExportType: androidPackage
 
-      - name: Upload APK Artifact
+      - name: List build output
+        run: |
+          echo "=== Build folder ==="
+          ls -R "${{ env.BUILDS_PATH }}" || true
+
+      - name: Upload APK artifact
         uses: actions/upload-artifact@v4
         with:
-          name: APK-${{ env.BUILD_NAME }}-${{ github.run_number }}
+          name: ${{ env.BUILD_NAME }}-Android-APK-${{ github.run_number }}
           path: |
             ${{ env.BUILDS_PATH }}/Android/**/*.apk
-          retention-days: 14
+            ${{ env.BUILDS_PATH }}/**/*.apk
+          if-no-files-found: error
