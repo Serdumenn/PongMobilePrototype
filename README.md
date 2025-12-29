@@ -31,14 +31,6 @@ Setup guide (Personal License): `docs/CI-ANDROID.md`
 
 ---
 
-## Local setup
-
-1. Install Unity Hub and Unity **6000.0.58f2** (or set your version and update the repo variable accordingly).
-2. Open the project folder with Unity Hub.
-3. Press Play.
-
----
-
 ## Notes on Unity versioning
 
 Unity releases frequently. To keep builds reproducible, the CI pipeline uses a fixed Unity version.  
