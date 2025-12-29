@@ -1,34 +1,47 @@
-# Pong Mobile Prototype
+# Pong Mobile Prototype (Unity)
 
-A simple 2D mobile Pong prototype made with Unity.  
-The game uses Unity’s built-in physics system for realistic ball movement and allows the ball to spin depending on the paddle’s hit direction. Designed for mobile devices with touch controls.
+A lightweight 2D Pong prototype built with Unity, designed for mobile (touch) controls.  
+The project focuses on responsive paddle feel, consistent ball physics, and a clean iteration loop supported by CI.
 
-![WhatsApp Görsel 2025-10-19 saat 01 13 36_fd962911](https://github.com/user-attachments/assets/d7e44756-14ca-4f67-9e54-d879930aea2e)
-![WhatsApp Görsel 2025-10-08 saat 01 27 36_bd3e006f](https://github.com/user-attachments/assets/49d73bec-6454-464f-99c2-87586862ab89)
-![WhatsApp Görsel 2025-10-08 saat 01 27 36_34e017ba](https://github.com/user-attachments/assets/3c935bd8-db9d-45a2-ba95-7b918ca94ac0) 
+> Unity Version: **6000.0.58f2** (can be changed via repo variable)
 
-##  Features
+## What this project includes
 
-- Real-time 2D physics and collision system  
-- Ball spin (angular velocity) based on paddle movement  
-- Touch input controls for mobile gameplay  
-- Basic score UI and restart system  
+This is not a “content-heavy” game project. It’s a compact prototype that demonstrates:
 
-##  Purpose
-
-This project was created as a learning and experimentation prototype to explore:
-- Unity’s 2D physics interactions  
-- Touch input handling for mobile devices
-- Gameplay balancing and spin mechanics  
-
-It is not a finished game — it’s a proof of concept that demonstrates physics-based gameplay design for mobile.
-
-## Status 
-![Android Build](https://img.shields.io/github/actions/workflow/status/Serdumenn/PongMobilePrototype/build-android.yml?branch=main&label=Android%20Build&logo=unity&logoColor=white&style=for-the-badge)
-
-Currently in **prototype stage** — gameplay, polish, and VFX updates will continue progressively.  
+- **Physics-driven Pong** with predictable collisions  
+- **Spin / angular response** based on paddle movement (feel + control)  
+- **Mobile-first input** (touch controls)  
+- **Simple scoring loop** suitable for quick iteration
 
 ---
 
+## Continuous Integration (Android APK)
 
-Follow the development to see future improvements!
+![Android Build](https://img.shields.io/github/actions/workflow/status/Serdumenn/PongMobilePrototype/build-android.yml?branch=main&label=Android%20Build&logo=unity&logoColor=white&style=for-the-badge)
+
+This repository contains a GitHub Actions pipeline that builds an **Android APK**:
+
+- Runs on **every push** to `main` (and can also be run manually)
+- Produces a downloadable **APK artifact** on each successful run
+- Surfaces build/import issues early (acts like a quality gate)
+- Uses **Library caching** to reduce build time after the first run
+
+Setup guide (Personal License): `docs/CI-ANDROID.md`
+
+---
+
+## Local setup
+
+1. Install Unity Hub and Unity **6000.0.58f2** (or set your version and update the repo variable accordingly).
+2. Open the project folder with Unity Hub.
+3. Press Play.
+
+---
+
+## Notes on Unity versioning
+
+Unity releases frequently. To keep builds reproducible, the CI pipeline uses a fixed Unity version.  
+If you use a different version, update the repository variable:
+
+`Settings → Secrets and variables → Actions → Variables → UNITY_VERSION`
