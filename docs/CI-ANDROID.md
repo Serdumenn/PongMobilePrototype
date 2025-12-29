@@ -17,6 +17,7 @@ Note: This project is a great example of a workflow. I used this old project, wh
 The repository should contain the following workflow file (Within your own repository):
 
 - `.github/workflows/personal-build-android.yml`
+"[personal-build-android.yml](https://github.com/user-attachments/files/24370207/personal-build-android.yml)"
 
 This file runs the Unity build on Docker and uploads the resulting APK as an artifact.
 
