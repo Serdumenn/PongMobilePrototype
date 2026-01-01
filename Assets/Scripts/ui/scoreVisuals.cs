@@ -10,10 +10,15 @@ public class scoreVisuals : MonoBehaviour
     private manager managerScript;
     public GameObject managerObj;
 
+    private const string KEY_DIFF_NEED = "diffNeed";
+
     void Start()
     {
+        diffNeed = PlayerPrefs.GetInt(KEY_DIFF_NEED, diffNeed);
+
         if (managerObj != null)
             managerScript = managerObj.GetComponent<manager>();
+
         ResetVisuals();
     }
 

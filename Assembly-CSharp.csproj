@@ -52,14 +52,20 @@
     <Compile Include="Assets\Scripts\ui\saving.cs" />
     <Compile Include="Assets\Scripts\mechanics\EnemyPaddle.cs" />
     <Compile Include="Assets\Scripts\ui\changeColor.cs" />
+    <Compile Include="Assets\Scripts\ui\StartTypeSelector.cs" />
     <Compile Include="Assets\Scripts\ui\scoreVisuals.cs" />
     <Compile Include="Assets\Scripts\other\score.cs" />
+    <Compile Include="Assets\Scripts\ui\DisableIfPersistentMusicExists.cs" />
     <Compile Include="Assets\Scripts\ui\mainMenu.cs" />
+    <Compile Include="Assets\Scripts\ui\MenuUIController.cs" />
     <Compile Include="Assets\Scripts\mechanics\ball.cs" />
     <Compile Include="Assets\Scripts\ui\mute.cs" />
+    <Compile Include="Assets\Scripts\mechanics\GameSettings.cs" />
     <Compile Include="Assets\Scripts\ui\manager.cs" />
+    <Compile Include="Assets\Scripts\ui\MenuAudioButtonsBinder.cs" />
     <Compile Include="Assets\Scripts\mechanics\racketController.cs" />
-    <Compile Include="Assets\Scripts\mechanics\rallyCount.cs" />
+    <Compile Include="Assets\Scripts\ui\PersistentMusic.cs" />
+    <Compile Include="Assets\Scripts\ui\DiffNeedDisplay.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="UnityEngine">

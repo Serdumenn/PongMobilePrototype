@@ -1,83 +1,162 @@
-using Unity.Collections;
 using UnityEngine;
 
 public class EnemyPaddle : MonoBehaviour
 {
-    [Header("AI Settings")]
-    public float moveSpeed = 5f;
-    public float difficultyError = 0.3f;
-    public float predictionStep = 0.3f;
+    [Header("References")]
+    [SerializeField] private Rigidbody2D rb;
+    [SerializeField] private Rigidbody2D ballRb;
 
-    [Header("Scene References")]
-    public Transform ball;
-    public Rigidbody2D rb;
+    [Header("Movement")]
+    public float moveSpeed = 8f;
+
+    public float smoothTime = 0.08f;
+
+    public float wallPadding = 0.35f;
+
+    [Header("Prediction")]
+    public float predictionInterval = 0.10f;
+
+    [Tooltip("Easy(world units)")]
+    public float errorEasy = 1.2f;
+
+    [Tooltip("Medium(world units)")]
+    public float errorMedium = 0.6f;
+
+    [Tooltip("Hard(world units)")]
+    public float errorHard = 0.15f;
 
     private Camera cam;
     private float halfCourtWidth;
-    private int cachedW, cachedH;
+    private float nextPredictTime;
+    private float targetX;
+    private float xVelRef;
+    private float currentErrorOffset;
+    private float prevBallVy;
+    private int cachedDifficulty = -999;
 
-    void Awake()
+    private void Awake()
     {
-        if (rb == null)
-            rb = GetComponent<Rigidbody2D>();
+        if (!rb) rb = GetComponent<Rigidbody2D>();
+        if (!ballRb)
+        {
+            var ballObj = GameObject.FindWithTag("Ball");
+            if (ballObj) ballRb = ballObj.GetComponent<Rigidbody2D>();
+        }
 
         cam = Camera.main;
         CacheCourtWidth();
+
+        targetX = transform.position.x;
+        nextPredictTime = 0f;
+        prevBallVy = 0f;
     }
 
-    void Update()
+    private void Update()
     {
-        if (Screen.width != cachedW || Screen.height != cachedH)
-            CacheCourtWidth();
+        CacheCourtWidth();
     }
 
-    void FixedUpdate()
+    private void FixedUpdate()
     {
-        if (ball == null || rb == null) return;
+        if (!rb || !ballRb) return;
 
-        float targetX = PredictBallTargetX();
-        float newX = Mathf.MoveTowards(rb.position.x, targetX, moveSpeed * Time.fixedDeltaTime);
-        newX = Mathf.Clamp(newX, -halfCourtWidth + 0.5f, halfCourtWidth - 0.5f);
+        var ballVel = ballRb.linearVelocity;
+        var ballPos = ballRb.position;
+
+        ApplyDifficultyIfNeeded();
+
+        if (ballVel.y > 0f && prevBallVy <= 0f)
+        {
+            currentErrorOffset = Random.Range(-GetErrorRange(), GetErrorRange());
+            nextPredictTime = 0f;
+        }
+        prevBallVy = ballVel.y;
+
+        if (Time.time >= nextPredictTime)
+        {
+            targetX = PredictTargetX(ballPos, ballVel);
+            nextPredictTime = Time.time + predictionInterval;
+        }
+
+        float maxX = Mathf.Max(0.1f, halfCourtWidth - wallPadding);
+        float desiredX = Mathf.Clamp(targetX, -maxX, maxX);
+
+        float newX = Mathf.SmoothDamp(rb.position.x, desiredX, ref xVelRef, smoothTime, moveSpeed, Time.fixedDeltaTime);
+        newX = Mathf.Clamp(newX, -maxX, maxX);
+
         rb.MovePosition(new Vector2(newX, rb.position.y));
     }
 
-    float PredictBallTargetX()
+    private void ApplyDifficultyIfNeeded()
     {
-        Vector2 ballPos = ball.position;
-        Rigidbody2D ballRb = ball.GetComponent<Rigidbody2D>();
-        if (ballRb == null) return rb.position.x;
+        int diff = GameSettings.GetDifficulty(0);
+        if (diff == cachedDifficulty) return;
 
-        Vector2 ballVel = ballRb.linearVelocity;
+        cachedDifficulty = diff;
 
-        if (ballVel.y <= 0)
-            return rb.position.x;
-
-        float topBoundary = Mathf.Abs(transform.position.y);
-        float stepDistance = Mathf.Max(0.05f, predictionStep);
-
-        while (ballPos.y < topBoundary)
+        switch (diff)
         {
-            ballPos += ballVel.normalized * stepDistance;
-
-            if (Mathf.Abs(ballPos.x) > halfCourtWidth)
-            {
-                ballVel.x *= -1;
-                ballPos.x = Mathf.Sign(ballPos.x) * halfCourtWidth;
-            }
+            case 0:
+                moveSpeed = 7.0f;
+                break;
+            case 1:
+                moveSpeed = 9.0f;
+                break;
+            case 2:
+                moveSpeed = 11.5f;
+                break;
         }
-
-        float error = Random.Range(-difficultyError, difficultyError);
-        return Mathf.Clamp(ballPos.x + error, -halfCourtWidth, halfCourtWidth);
     }
 
-    void CacheCourtWidth()
+    private float GetErrorRange()
     {
-        cachedW = Screen.width;
-        cachedH = Screen.height;
+        switch (cachedDifficulty < 0 ? GameSettings.GetDifficulty(0) : cachedDifficulty)
+        {
+            case 0: return errorEasy;
+            case 1: return errorMedium;
+            case 2: return errorHard;
+            default: return errorEasy;
+        }
+    }
 
-        if (cam == null) cam = Camera.main;
-        if (cam == null) return;
+    private float PredictTargetX(Vector2 ballPos, Vector2 ballVel)
+    {
+        if (ballVel.y <= 0.01f) return rb.position.x;
 
-        halfCourtWidth = cam.ScreenToWorldPoint(new Vector3(Screen.width, 0, 0)).x;
+        float enemyY = rb.position.y;
+
+        float t = (enemyY - ballPos.y) / ballVel.y;
+        if (t <= 0f) return rb.position.x;
+
+        float rawX = ballPos.x + ballVel.x * t;
+
+        float maxX = Mathf.Max(0.1f, halfCourtWidth - wallPadding);
+        float reflectedX = ReflectInBounds(rawX, maxX);
+
+        reflectedX += currentErrorOffset;
+
+        return Mathf.Clamp(reflectedX, -maxX, maxX);
+    }
+
+    private float ReflectInBounds(float x, float maxX)
+    {
+        float L = maxX * 2f;
+        float twoL = L * 2f;
+        float shifted = x + maxX;
+
+        float r = Mathf.Repeat(shifted, twoL);
+        if (r > L) r = twoL - r;
+        return r - maxX;
+    }
+
+    private void CacheCourtWidth()
+    {
+        if (!cam) cam = Camera.main;
+        if (!cam) return;
+
+        float left = cam.ScreenToWorldPoint(new Vector3(0, 0, 0)).x;
+        float right = cam.ScreenToWorldPoint(new Vector3(Screen.width, 0, 0)).x;
+
+        halfCourtWidth = Mathf.Abs(right - left) * 0.5f;
     }
 }
