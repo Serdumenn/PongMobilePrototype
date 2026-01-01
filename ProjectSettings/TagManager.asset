@@ -18,6 +18,7 @@ TagManager:
   - Goal2
   - sfx source
   - music source
+  - Paddle
   layers:
   - Default
   - TransparentFX

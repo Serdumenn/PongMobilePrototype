@@ -64,6 +64,7 @@
     <Compile Include="Assets\Scripts\ui\manager.cs" />
     <Compile Include="Assets\Scripts\ui\MenuAudioButtonsBinder.cs" />
     <Compile Include="Assets\Scripts\mechanics\racketController.cs" />
+    <Compile Include="Assets\Scripts\mechanics\PaddleVisualTilt.cs" />
     <Compile Include="Assets\Scripts\ui\PersistentMusic.cs" />
     <Compile Include="Assets\Scripts\ui\DiffNeedDisplay.cs" />
   </ItemGroup>

@@ -5,16 +5,17 @@ public class scoreVisuals : MonoBehaviour
 {
     public int enemyScore, playerScore;
     public int diffNeed = 3;
+
     public Image[] scorePoints;
     public score scorescript;
+
     private manager managerScript;
     public GameObject managerObj;
 
-    private const string KEY_DIFF_NEED = "diffNeed";
-
     void Start()
     {
-        diffNeed = PlayerPrefs.GetInt(KEY_DIFF_NEED, diffNeed);
+        GameSettings.EnsureLoaded();
+        diffNeed = GameSettings.DiffNeed;
 
         if (managerObj != null)
             managerScript = managerObj.GetComponent<manager>();
@@ -40,9 +41,7 @@ public class scoreVisuals : MonoBehaviour
         UpdateVisuals(scoreDiff);
 
         if (Mathf.Abs(scoreDiff) >= diffNeed && managerScript != null)
-        {
             managerScript.GameEnding(scoreDiff > 0);
-        }
     }
 
     void UpdateVisuals(int diff)
@@ -51,6 +50,7 @@ public class scoreVisuals : MonoBehaviour
         if (scorePoints == null || scorePoints.Length == 0) return;
 
         int absDiff = Mathf.Abs(diff);
+
         if (diff > 0)
         {
             for (int i = 0; i < absDiff && i < scorePoints.Length; i++)
@@ -73,8 +73,6 @@ public class scoreVisuals : MonoBehaviour
     {
         if (scorePoints == null) return;
         foreach (var img in scorePoints)
-        {
             if (img != null) img.color = Color.gray;
-        }
     }
 }

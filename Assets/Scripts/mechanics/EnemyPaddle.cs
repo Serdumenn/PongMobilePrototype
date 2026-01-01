@@ -2,161 +2,124 @@ using UnityEngine;
 
 public class EnemyPaddle : MonoBehaviour
 {
-    [Header("References")]
-    [SerializeField] private Rigidbody2D rb;
-    [SerializeField] private Rigidbody2D ballRb;
+    [Header("AI Settings")]
+    public float moveSpeed = 5f;
+    [Tooltip("Prediction step in world units (smaller = more accurate but more iterations).")]
+    public float predictionStep = 0.15f;
 
-    [Header("Movement")]
-    public float moveSpeed = 8f;
+    [Header("Scene References")]
+    public Transform ball;
+    public Rigidbody2D rb;
+    public Rigidbody2D ballRb;
 
-    public float smoothTime = 0.08f;
-
-    public float wallPadding = 0.35f;
-
-    [Header("Prediction")]
-    public float predictionInterval = 0.10f;
-
-    [Tooltip("Easy(world units)")]
-    public float errorEasy = 1.2f;
-
-    [Tooltip("Medium(world units)")]
-    public float errorMedium = 0.6f;
-
-    [Tooltip("Hard(world units)")]
-    public float errorHard = 0.15f;
+    [Header("Clamp")]
+    public float edgePadding = 0.6f;
 
     private Camera cam;
     private float halfCourtWidth;
-    private float nextPredictTime;
-    private float targetX;
-    private float xVelRef;
-    private float currentErrorOffset;
-    private float prevBallVy;
-    private int cachedDifficulty = -999;
+    private int cachedW, cachedH;
 
-    private void Awake()
+    private bool hasPrediction;
+    private float cachedTargetX;
+    private float lastBallVelY;
+
+    private float difficultyError;
+
+    void Awake()
     {
-        if (!rb) rb = GetComponent<Rigidbody2D>();
-        if (!ballRb)
-        {
-            var ballObj = GameObject.FindWithTag("Ball");
-            if (ballObj) ballRb = ballObj.GetComponent<Rigidbody2D>();
-        }
+        GameSettings.EnsureLoaded();
+
+        difficultyError = GameSettings.DifficultyError;
+
+        if (rb == null) rb = GetComponent<Rigidbody2D>();
+        if (ball != null && ballRb == null) ballRb = ball.GetComponent<Rigidbody2D>();
 
         cam = Camera.main;
         CacheCourtWidth();
 
-        targetX = transform.position.x;
-        nextPredictTime = 0f;
-        prevBallVy = 0f;
+        if (rb != null)
+        {
+            rb.interpolation = RigidbodyInterpolation2D.Interpolate;
+            rb.freezeRotation = true;
+        }
     }
 
-    private void Update()
+    void Update()
     {
-        CacheCourtWidth();
+        if (Screen.width != cachedW || Screen.height != cachedH)
+            CacheCourtWidth();
     }
 
-    private void FixedUpdate()
+    void FixedUpdate()
     {
-        if (!rb || !ballRb) return;
+        if (ball == null || rb == null) return;
+        if (ballRb == null) ballRb = ball.GetComponent<Rigidbody2D>();
+        if (ballRb == null) return;
 
-        var ballVel = ballRb.linearVelocity;
-        var ballPos = ballRb.position;
+        Vector2 vel = ballRb.linearVelocity;
+        bool movingTowardEnemy = vel.y > 0f;
 
-        ApplyDifficultyIfNeeded();
-
-        if (ballVel.y > 0f && prevBallVy <= 0f)
+        if (movingTowardEnemy)
         {
-            currentErrorOffset = Random.Range(-GetErrorRange(), GetErrorRange());
-            nextPredictTime = 0f;
+            if (!hasPrediction || Mathf.Sign(vel.y) != Mathf.Sign(lastBallVelY))
+            {
+                float error = Random.Range(-difficultyError, difficultyError);
+                cachedTargetX = PredictBallTargetX(ball.position, vel, error);
+                hasPrediction = true;
+            }
         }
-        prevBallVy = ballVel.y;
-
-        if (Time.time >= nextPredictTime)
+        else
         {
-            targetX = PredictTargetX(ballPos, ballVel);
-            nextPredictTime = Time.time + predictionInterval;
+            hasPrediction = false;
         }
 
-        float maxX = Mathf.Max(0.1f, halfCourtWidth - wallPadding);
-        float desiredX = Mathf.Clamp(targetX, -maxX, maxX);
+        lastBallVelY = vel.y;
 
-        float newX = Mathf.SmoothDamp(rb.position.x, desiredX, ref xVelRef, smoothTime, moveSpeed, Time.fixedDeltaTime);
-        newX = Mathf.Clamp(newX, -maxX, maxX);
+        float targetX = hasPrediction ? cachedTargetX : rb.position.x;
+        float newX = Mathf.MoveTowards(rb.position.x, targetX, moveSpeed * Time.fixedDeltaTime);
 
+        newX = Mathf.Clamp(newX, -halfCourtWidth + edgePadding, halfCourtWidth - edgePadding);
         rb.MovePosition(new Vector2(newX, rb.position.y));
     }
 
-    private void ApplyDifficultyIfNeeded()
+    float PredictBallTargetX(Vector2 ballPos, Vector2 ballVel, float error)
     {
-        int diff = GameSettings.GetDifficulty(0);
-        if (diff == cachedDifficulty) return;
+        if (ballVel.sqrMagnitude < 0.0001f) return rb.position.x;
+        if (ballVel.y <= 0f) return rb.position.x;
 
-        cachedDifficulty = diff;
+        float targetY = transform.position.y;
 
-        switch (diff)
+        float step = Mathf.Max(0.05f, predictionStep);
+        Vector2 dir = ballVel.normalized;
+
+        int safety = 0;
+        while (ballPos.y < targetY && safety++ < 10000)
         {
-            case 0:
-                moveSpeed = 7.0f;
-                break;
-            case 1:
-                moveSpeed = 9.0f;
-                break;
-            case 2:
-                moveSpeed = 11.5f;
-                break;
+            ballPos += dir * step;
+
+            if (ballPos.x > halfCourtWidth)
+            {
+                ballPos.x = halfCourtWidth;
+                dir.x *= -1f;
+            }
+            else if (ballPos.x < -halfCourtWidth)
+            {
+                ballPos.x = -halfCourtWidth;
+                dir.x *= -1f;
+            }
         }
+
+        return Mathf.Clamp(ballPos.x + error, -halfCourtWidth, halfCourtWidth);
     }
 
-    private float GetErrorRange()
+    void CacheCourtWidth()
     {
-        switch (cachedDifficulty < 0 ? GameSettings.GetDifficulty(0) : cachedDifficulty)
-        {
-            case 0: return errorEasy;
-            case 1: return errorMedium;
-            case 2: return errorHard;
-            default: return errorEasy;
-        }
-    }
+        cachedW = Screen.width;
+        cachedH = Screen.height;
 
-    private float PredictTargetX(Vector2 ballPos, Vector2 ballVel)
-    {
-        if (ballVel.y <= 0.01f) return rb.position.x;
+        if (cam == null) cam = Camera.main;
+        if (cam == null) return;
 
-        float enemyY = rb.position.y;
-
-        float t = (enemyY - ballPos.y) / ballVel.y;
-        if (t <= 0f) return rb.position.x;
-
-        float rawX = ballPos.x + ballVel.x * t;
-
-        float maxX = Mathf.Max(0.1f, halfCourtWidth - wallPadding);
-        float reflectedX = ReflectInBounds(rawX, maxX);
-
-        reflectedX += currentErrorOffset;
-
-        return Mathf.Clamp(reflectedX, -maxX, maxX);
-    }
-
-    private float ReflectInBounds(float x, float maxX)
-    {
-        float L = maxX * 2f;
-        float twoL = L * 2f;
-        float shifted = x + maxX;
-
-        float r = Mathf.Repeat(shifted, twoL);
-        if (r > L) r = twoL - r;
-        return r - maxX;
-    }
-
-    private void CacheCourtWidth()
-    {
-        if (!cam) cam = Camera.main;
-        if (!cam) return;
-
-        float left = cam.ScreenToWorldPoint(new Vector3(0, 0, 0)).x;
-        float right = cam.ScreenToWorldPoint(new Vector3(Screen.width, 0, 0)).x;
-
-        halfCourtWidth = Mathf.Abs(right - left) * 0.5f;
+        halfCourtWidth = cam.ScreenToWorldPoint(new Vector3(Screen.width, 0, 0)).x;
     }
 }

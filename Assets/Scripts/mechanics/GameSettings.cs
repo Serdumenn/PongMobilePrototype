@@ -1,45 +1,82 @@
 using UnityEngine;
 
+public enum StartMode
+{
+    TapToLaunch = 0,
+    AutoAfterCountdown = 1
+}
+
 public static class GameSettings
 {
-    public const string KEY_DIFFICULTY = "difficulty";
-    public const string KEY_DIFFNEED   = "diffNeed";
-    public const string KEY_STARTTYPE  = "startType";
+    public const string DifficultyKey = "game.difficultyError";
+    public const string DiffNeedKey   = "game.diffNeed";
+    public const string StartModeKey  = "game.startMode";
 
-    public static int GetDifficulty(int defaultValue = 0)
-        => GetIntAny(defaultValue, KEY_DIFFICULTY, "Difficulty", "difficultyIndex", "diff", "aiDifficulty");
+    public const float DefaultDifficultyError = 0.30f;
+    public const int   DefaultDiffNeed        = 3;
+    public const StartMode DefaultStartMode   = StartMode.TapToLaunch;
 
-    public static int GetDiffNeed(int defaultValue = 3)
-        => GetIntAny(defaultValue, KEY_DIFFNEED, "DiffNeed", "diff_need", "scoreDiffNeed");
+    private static bool loaded;
+    private static float difficultyError;
+    private static int diffNeed;
+    private static StartMode startMode;
 
-    public static int GetStartType(int defaultValue = 0)
-        => GetIntAny(defaultValue, KEY_STARTTYPE, "StartType", "start_type", "roundStartType");
-
-    public static void SetDifficulty(int value)
+    public static float DifficultyError
     {
-        PlayerPrefs.SetInt(KEY_DIFFICULTY, Mathf.Clamp(value, 0, 2));
+        get { EnsureLoaded(); return difficultyError; }
+    }
+
+    public static int DiffNeed
+    {
+        get { EnsureLoaded(); return diffNeed; }
+    }
+
+    public static StartMode CurrentStartMode
+    {
+        get { EnsureLoaded(); return startMode; }
+    }
+
+    public static void EnsureLoaded(
+        float difficultyDefault = DefaultDifficultyError,
+        int diffNeedDefault = DefaultDiffNeed,
+        StartMode startModeDefault = DefaultStartMode)
+    {
+        if (loaded) return;
+
+        difficultyError = PlayerPrefs.GetFloat(DifficultyKey, difficultyDefault);
+        diffNeed = PlayerPrefs.GetInt(DiffNeedKey, diffNeedDefault);
+        startMode = (StartMode)PlayerPrefs.GetInt(StartModeKey, (int)startModeDefault);
+
+        loaded = true;
+    }
+
+    public static void SetDifficultyError(float value)
+    {
+        EnsureLoaded();
+        difficultyError = Mathf.Max(0f, value);
+        PlayerPrefs.SetFloat(DifficultyKey, difficultyError);
         PlayerPrefs.Save();
     }
 
     public static void SetDiffNeed(int value)
     {
-        PlayerPrefs.SetInt(KEY_DIFFNEED, Mathf.Max(1, value));
+        EnsureLoaded();
+        diffNeed = Mathf.Max(1, value);
+        PlayerPrefs.SetInt(DiffNeedKey, diffNeed);
         PlayerPrefs.Save();
     }
 
-    public static void SetStartType(int value)
+    public static void SetStartMode(StartMode mode)
     {
-        PlayerPrefs.SetInt(KEY_STARTTYPE, Mathf.Clamp(value, 0, 1));
+        EnsureLoaded();
+        startMode = mode;
+        PlayerPrefs.SetInt(StartModeKey, (int)startMode);
         PlayerPrefs.Save();
     }
 
-    private static int GetIntAny(int defaultValue, params string[] keys)
+    public static void ForceReload()
     {
-        for (int i = 0; i < keys.Length; i++)
-        {
-            if (PlayerPrefs.HasKey(keys[i]))
-                return PlayerPrefs.GetInt(keys[i], defaultValue);
-        }
-        return defaultValue;
+        loaded = false;
+        EnsureLoaded();
     }
 }
