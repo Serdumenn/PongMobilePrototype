@@ -9,14 +9,21 @@ With this setup:
 
 Note: This project is a great example of a workflow. I used this old project, which I pulled from dusty shelves, to write the workflow (with the help of various editors and AI). You are welcome to examine the project as you wish. Integrating the workflow into your project is quite simple. I tried to make it as detailed and understandable as possible. If you have any questions, please don't hesitate to contact me. I am open to any feedback to continue improving the process. Thank you for your interest.
 
+<img width="2355" height="685" alt="github_actions_unity_android_flow" src="https://github.com/user-attachments/assets/6cf49340-9f7f-45c8-b2d6-14988371ad32" />
+
 ---
 
 ## 1) Required file
-The repository should contain the following workflow file:
+The repository should contain the following workflow file (Within your own repository):
 
 - `.github/workflows/personal-build-android.yml`
+"[personal-build-android.yml](https://github.com/user-attachments/files/24370207/personal-build-android.yml)"
 
 This file runs the Unity build on Docker and uploads the resulting APK as an artifact.
+
+<img width="1085" height="385" alt="Step2" src="https://github.com/user-attachments/assets/a49860c4-6677-49d0-9961-3a94963bc56f" />
+
+Note: Fill in the marked fields according to your project's technical information. If you know the workflow, you can even modify it to offer different services according to your repository.
 
 ---
 
@@ -30,8 +37,6 @@ These three are the most practical and stable method:
 - `UNITY_LICENSE` (the most critical one)
 - `UNITY_EMAIL`
 - `UNITY_PASSWORD`
-
-> `UNITY_SERIAL` is **not used** in the Personal workflow.
 
 ### 2.2 Variables (if using a workflow)
 If they are read as env/with in the workflow, you need to enter them. Recommended:
@@ -53,6 +58,8 @@ Purpose: To place the contents of the license file provided by Unity into a GitH
    `C:\ProgramData\Unity\`
 4) Find this file:
    `Unity_lic.ulf`
+   
+<img width="1187" height="370" alt="Step1" src="https://github.com/user-attachments/assets/64d1f8d8-40e6-456f-9abf-3fe7e0cc36c0" />
 
 > `ProgramData` may be hidden, but you can type the folder name directly into the address bar to access it.
 
@@ -60,6 +67,9 @@ Purpose: To place the contents of the license file provided by Unity into a GitH
 1) Open the downloaded license file with **Notepad**.
 2) Copy all the text inside.
 3) GitHub → Secrets → `UNITY_LICENSE` → Paste into the Value field → Save.
+
+<img width="1262" height="803" alt="step3" src="https://github.com/user-attachments/assets/19a26c16-0845-44c8-b53d-a87aeb9d2666" />
+<img width="941" height="470" alt="step4" src="https://github.com/user-attachments/assets/42b371dd-99e9-4e6c-a35e-7776c37dffd5" />
 
 That's it. From now on, if the workflow asks for a license, it will activate with `UNITY_LICENSE`.
 

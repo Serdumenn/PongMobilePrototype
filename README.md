@@ -27,7 +27,8 @@ This repository contains a GitHub Actions pipeline that builds an **Android APK*
 - Surfaces build/import issues early (acts like a quality gate)
 - Uses **Library caching** to reduce build time after the first run
 
-Setup guide (Personal License): `docs/CI-ANDROID.md`
+📌 Setup guide Android APK CI Guide: "[docs/CI-ANDROID.md](docs/CI-ANDROID.md)" 📌
+
 
 ---
 
