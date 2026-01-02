@@ -4,8 +4,8 @@ public class EnemyPaddle : MonoBehaviour
 {
     [Header("AI Settings")]
     public float moveSpeed = 5f;
-    [Tooltip("Prediction step in world units (smaller = more accurate but more iterations).")]
-    public float predictionStep = 0.15f;
+    public float difficultyError = 0.3f;
+    public float predictionStep = 0.3f;
 
     [Header("Scene References")]
     public Transform ball;
@@ -15,20 +15,17 @@ public class EnemyPaddle : MonoBehaviour
     [Header("Clamp")]
     public float edgePadding = 0.6f;
 
-    private Camera cam;
-    private float halfCourtWidth;
-    private int cachedW, cachedH;
+    Camera cam;
+    float halfCourtWidth;
+    int cachedW, cachedH;
 
-    private bool hasPrediction;
-    private float cachedTargetX;
-    private float lastBallVelY;
-
-    private float difficultyError;
+    float cachedTargetX;
+    float lastBallVelY;
+    bool hasPrediction;
 
     void Awake()
     {
-        GameSettings.EnsureLoaded();
-
+        GameSettings.EnsureLoaded(difficultyError, GameSettings.DefaultDiffNeed, GameSettings.DefaultStartMode);
         difficultyError = GameSettings.DifficultyError;
 
         if (rb == null) rb = GetComponent<Rigidbody2D>();
@@ -36,12 +33,6 @@ public class EnemyPaddle : MonoBehaviour
 
         cam = Camera.main;
         CacheCourtWidth();
-
-        if (rb != null)
-        {
-            rb.interpolation = RigidbodyInterpolation2D.Interpolate;
-            rb.freezeRotation = true;
-        }
     }
 
     void Update()
@@ -57,14 +48,14 @@ public class EnemyPaddle : MonoBehaviour
         if (ballRb == null) return;
 
         Vector2 vel = ballRb.linearVelocity;
-        bool movingTowardEnemy = vel.y > 0f;
+        bool towardEnemy = vel.y > 0f;
 
-        if (movingTowardEnemy)
+        if (towardEnemy)
         {
             if (!hasPrediction || Mathf.Sign(vel.y) != Mathf.Sign(lastBallVelY))
             {
-                float error = Random.Range(-difficultyError, difficultyError);
-                cachedTargetX = PredictBallTargetX(ball.position, vel, error);
+                float err = Random.Range(-difficultyError, difficultyError);
+                cachedTargetX = PredictBallTargetX(ball.position, vel, err);
                 hasPrediction = true;
             }
         }
@@ -76,40 +67,35 @@ public class EnemyPaddle : MonoBehaviour
         lastBallVelY = vel.y;
 
         float targetX = hasPrediction ? cachedTargetX : rb.position.x;
-        float newX = Mathf.MoveTowards(rb.position.x, targetX, moveSpeed * Time.fixedDeltaTime);
 
+        float newX = Mathf.MoveTowards(rb.position.x, targetX, moveSpeed * Time.fixedDeltaTime);
         newX = Mathf.Clamp(newX, -halfCourtWidth + edgePadding, halfCourtWidth - edgePadding);
+
         rb.MovePosition(new Vector2(newX, rb.position.y));
     }
 
     float PredictBallTargetX(Vector2 ballPos, Vector2 ballVel, float error)
     {
-        if (ballVel.sqrMagnitude < 0.0001f) return rb.position.x;
         if (ballVel.y <= 0f) return rb.position.x;
 
-        float targetY = transform.position.y;
-
+        float targetY = rb.position.y; // enemy paddle y-line
         float step = Mathf.Max(0.05f, predictionStep);
-        Vector2 dir = ballVel.normalized;
 
-        int safety = 0;
-        while (ballPos.y < targetY && safety++ < 10000)
+        Vector2 pos = ballPos;
+        Vector2 vel = ballVel.normalized * ballVel.magnitude;
+
+        while (pos.y < targetY)
         {
-            ballPos += dir * step;
+            pos += vel.normalized * step;
 
-            if (ballPos.x > halfCourtWidth)
+            if (Mathf.Abs(pos.x) > halfCourtWidth)
             {
-                ballPos.x = halfCourtWidth;
-                dir.x *= -1f;
-            }
-            else if (ballPos.x < -halfCourtWidth)
-            {
-                ballPos.x = -halfCourtWidth;
-                dir.x *= -1f;
+                vel.x *= -1f;
+                pos.x = Mathf.Sign(pos.x) * halfCourtWidth;
             }
         }
 
-        return Mathf.Clamp(ballPos.x + error, -halfCourtWidth, halfCourtWidth);
+        return Mathf.Clamp(pos.x + error, -halfCourtWidth, halfCourtWidth);
     }
 
     void CacheCourtWidth()
@@ -120,6 +106,6 @@ public class EnemyPaddle : MonoBehaviour
         if (cam == null) cam = Camera.main;
         if (cam == null) return;
 
-        halfCourtWidth = cam.ScreenToWorldPoint(new Vector3(Screen.width, 0, 0)).x;
+        halfCourtWidth = cam.ScreenToWorldPoint(new Vector3(Screen.width, 0f, 0f)).x;
     }
 }

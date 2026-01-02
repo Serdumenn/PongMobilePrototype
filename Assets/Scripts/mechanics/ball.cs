@@ -3,62 +3,102 @@ using UnityEngine;
 
 public class ball : MonoBehaviour
 {
-    [Header("Launch / Speed")]
+    [Header("Launch")]
     public float launchSpeed = 8f;
-    [Tooltip("Each collision multiplies speed by this value. 1.02 = +%2")]
-    public float speedMultiplierPerHit = 1.02f;
     public float maxSpeed = 16f;
 
-    [Header("Controlled Pong Bounce")]
-    [Range(0f, 89f)] public float maxBounceAngle = 75f;
-    [Tooltip("Prevents near-horizontal infinite loops. 0.25 means |vy| >= 25% of speed.")]
-    [Range(0.05f, 0.9f)] public float minVerticalRatio = 0.25f;
-    [Tooltip("Tiny randomness to avoid repeated identical trajectories.")]
-    [Range(0f, 0.1f)] public float tinyRandomness = 0.02f;
+    [Tooltip("Percent speed increase per collision (e.g. 0.02 = +2%).")]
+    [Range(0f, 0.2f)]
+    public float speedIncreasePercent = 0.02f;
 
-    [Header("Visual / Audio")]
+    [Header("Anti-Horizontal Lock")]
+    [Tooltip("Minimum vertical component ratio (0-1). If abs(dir.y) drops below this, we nudge it up.")]
+    [Range(0.05f, 0.8f)]
+    public float minVerticalDot = 0.2f;
+
+    [Header("FX")]
     public GameObject trailEffect;
     public AudioSource bounceSound;
 
-    Rigidbody2D rb;
-    Vector2 initialPosition;
-    Coroutine resetRoutine;
-    bool waitingForLaunch;
-    SpriteRenderer sr;
+    private Rigidbody2D rb;
+    private SpriteRenderer sr;
+    private Vector2 spawnPos;
+    private Coroutine resetRoutine;
+    private bool waitingForLaunch;
+
+    private float lastNonZeroYSign = 1f;
 
     void Awake()
     {
+        GameSettings.EnsureLoaded(GameSettings.DefaultDifficultyError, GameSettings.DefaultDiffNeed, GameSettings.DefaultStartMode);
+
         rb = GetComponent<Rigidbody2D>();
         sr = GetComponent<SpriteRenderer>();
 
-        rb.gravityScale = 0f;
-        rb.linearDamping = 0f;
-        rb.angularDamping = 0f;
+        if (rb != null)
+        {
+            rb.bodyType = RigidbodyType2D.Dynamic;
+            rb.gravityScale = 0f;
+            rb.linearDamping = 0f;
+            rb.angularDamping = 0f;
+            rb.collisionDetectionMode = CollisionDetectionMode2D.Continuous;
+            rb.interpolation = RigidbodyInterpolation2D.Interpolate;
+            rb.constraints = RigidbodyConstraints2D.FreezeRotation;
+        }
 
-        rb.collisionDetectionMode = CollisionDetectionMode2D.Continuous;
-        rb.interpolation = RigidbodyInterpolation2D.Interpolate;
-
-        initialPosition = transform.position;
+        spawnPos = transform.position;
     }
 
-    void Start() => StartResetSequence();
+    void Start()
+    {
+        StartResetSequence();
+    }
 
     void StartResetSequence()
     {
-        if (resetRoutine != null) StopCoroutine(resetRoutine);
-        resetRoutine = StartCoroutine(ResetBallTapToLaunch());
+        if (resetRoutine != null)
+        {
+            StopCoroutine(resetRoutine);
+            resetRoutine = null;
+        }
+        resetRoutine = StartCoroutine(ResetAndLaunchFlow());
     }
 
-    IEnumerator ResetBallTapToLaunch()
+    IEnumerator ResetAndLaunchFlow()
     {
-        rb.linearVelocity = Vector2.zero;
-        transform.position = initialPosition;
+        if (rb != null)
+        {
+            rb.linearVelocity = Vector2.zero;
+            rb.angularVelocity = 0f;
+        }
+
+        transform.position = spawnPos;
+
         waitingForLaunch = true;
-        if (sr) sr.enabled = false;
+
+        if (trailEffect != null) trailEffect.SetActive(false);
+        if (sr != null) sr.enabled = false;
 
         yield return new WaitForSeconds(1.0f);
 
-        if (sr) sr.enabled = true;
+        if (sr != null) sr.enabled = true;
+
+        bool autoLaunch = false;
+        try
+        {
+            autoLaunch = (GameSettings.CurrentStartMode == StartMode.AutoAfterCountdown);
+        }
+        catch
+        {
+            autoLaunch = false;
+        }
+
+        if (autoLaunch)
+        {
+            LaunchBall();
+            waitingForLaunch = false;
+            yield break;
+        }
 
         while (waitingForLaunch)
         {
@@ -73,91 +113,71 @@ public class ball : MonoBehaviour
 
     void LaunchBall()
     {
-        float angle = Random.Range(-45f, 45f);
-        float dirY = (Random.value < 0.5f) ? -1f : 1f;
+        if (rb == null) return;
 
-        Vector2 dir = AngleToDir(angle, dirY);
-        rb.linearVelocity = dir * launchSpeed;
+        float angle = Random.Range(30f, 60f);
+        float leftRight = Random.value < 0.5f ? -1f : 1f;
+
+        Vector2 dir = Quaternion.Euler(0f, 0f, angle * leftRight) * Vector2.up;
+        rb.linearVelocity = dir.normalized * launchSpeed;
+
+        lastNonZeroYSign = Mathf.Sign(dir.y) == 0 ? lastNonZeroYSign : Mathf.Sign(dir.y);
 
         if (trailEffect != null) trailEffect.SetActive(true);
     }
 
     void OnCollisionEnter2D(Collision2D collision)
     {
-        if (bounceSound) bounceSound.Play();
+        if (rb == null) return;
 
-        float speed = Mathf.Clamp(rb.linearVelocity.magnitude * speedMultiplierPerHit, launchSpeed, maxSpeed);
-
-        if (collision.collider.CompareTag("Paddle"))
-        {
-            Transform paddle = collision.collider.transform;
-
-            float halfWidth = GetApproxHalfWidth(collision.collider);
-            float relX = (halfWidth > 0.0001f) ? (transform.position.x - paddle.position.x) / halfWidth : 0f;
-            relX = Mathf.Clamp(relX, -1f, 1f);
-
-            float bounceAngle = relX * maxBounceAngle;
-
-            float dirY = (transform.position.y >= paddle.position.y) ? 1f : -1f;
-
-            Vector2 dir = AngleToDir(bounceAngle, dirY);
-            dir = EnforceMinVertical(dir, dirY);
-
-            dir = AddTinyNoise(dir);
-
-            rb.linearVelocity = dir.normalized * speed;
-            return;
-        }
+        if (bounceSound != null) bounceSound.Play();
 
         Vector2 v = rb.linearVelocity;
-        if (!float.IsFinite(v.x) || !float.IsFinite(v.y)) v = Vector2.up * launchSpeed;
 
-        Vector2 dir2 = v.normalized;
-        float signY = Mathf.Sign(dir2.y);
-        if (signY == 0) signY = (Random.value < 0.5f) ? -1f : 1f;
+        if (!float.IsFinite(v.x) || !float.IsFinite(v.y) || v.sqrMagnitude < 0.0001f)
+        {
+            v = Vector2.up * launchSpeed;
+        }
 
-        dir2 = EnforceMinVertical(dir2, signY);
-        dir2 = AddTinyNoise(dir2);
+        float speed = Mathf.Clamp(v.magnitude * (1f + speedIncreasePercent), launchSpeed, maxSpeed);
+        v = v.normalized * speed;
 
-        rb.linearVelocity = dir2.normalized * speed;
+        v = EnforceMinVertical(v);
+
+        rb.linearVelocity = v;
     }
 
     void OnTriggerEnter2D(Collider2D col)
     {
         if (col.CompareTag("Goal1") || col.CompareTag("Goal2"))
+        {
             StartResetSequence();
+        }
     }
 
-    Vector2 AngleToDir(float angleDeg, float dirY)
+    Vector2 EnforceMinVertical(Vector2 velocity)
     {
-        float rad = angleDeg * Mathf.Deg2Rad;
-        float x = Mathf.Sin(rad);
-        float y = Mathf.Cos(rad) * Mathf.Sign(dirY);
-        return new Vector2(x, y);
-    }
+        float speed = velocity.magnitude;
+        if (speed <= Mathf.Epsilon) return Vector2.up * launchSpeed;
 
-    Vector2 EnforceMinVertical(Vector2 dir, float dirYSign)
-    {
+        Vector2 dir = velocity / speed;
+
         float absY = Mathf.Abs(dir.y);
-        if (absY >= minVerticalRatio) return dir;
+        if (absY >= minVerticalDot)
+        {
+            if (Mathf.Abs(dir.y) > 0.0001f) lastNonZeroYSign = Mathf.Sign(dir.y);
+            return velocity;
+        }
 
-        float y = minVerticalRatio * Mathf.Sign(dirYSign);
-        float xSign = (dir.x >= 0f) ? 1f : -1f;
-        float x = Mathf.Sqrt(Mathf.Max(0f, 1f - y * y)) * xSign;
+        float signY = (Mathf.Abs(dir.y) > 0.0001f) ? Mathf.Sign(dir.y) : lastNonZeroYSign;
 
-        return new Vector2(x, y);
-    }
+        float signX = (Mathf.Abs(dir.x) > 0.0001f) ? Mathf.Sign(dir.x) : (Random.value < 0.5f ? -1f : 1f);
 
-    Vector2 AddTinyNoise(Vector2 dir)
-    {
-        if (tinyRandomness <= 0f) return dir;
-        dir.x += Random.Range(-tinyRandomness, tinyRandomness);
-        dir.y += Random.Range(-tinyRandomness, tinyRandomness);
-        return dir.normalized;
-    }
+        float clampedY = minVerticalDot * signY;
+        float clampedX = Mathf.Sqrt(Mathf.Clamp01(1f - clampedY * clampedY)) * signX;
 
-    float GetApproxHalfWidth(Collider2D col)
-    {
-        return col.bounds.extents.x;
+        lastNonZeroYSign = signY;
+
+        return new Vector2(clampedX, clampedY) * speed;
     }
 }
