@@ -2,10 +2,10 @@ using UnityEngine;
 
 public class EnemyPaddle : MonoBehaviour
 {
-    [Header("Runtime (auto from difficulty)")]
-    public float moveSpeed = 6f;
+    [Header("AI Settings (base, overridden by difficulty)")]
+    public float moveSpeed = 7f;
     public float reactionDelay = 0.08f;
-    public float aimError = 0.25f;
+    public float aimError = 0.20f;
     public float returnToCenterSpeed = 3f;
 
     [Header("Scene References")]
@@ -15,102 +15,110 @@ public class EnemyPaddle : MonoBehaviour
 
     private Camera cam;
     private float halfCourtWidth;
-
     private float nextThinkTime;
-    private float cachedTargetX;
+    private float targetX;
 
-    private void Awake()
+    void Awake()
     {
         if (rb == null) rb = GetComponent<Rigidbody2D>();
+
         if (rb != null)
         {
             rb.gravityScale = 0f;
             rb.constraints = RigidbodyConstraints2D.FreezeRotation;
         }
 
-        if (ball != null && ballRb == null)
-            ballRb = ball.GetComponent<Rigidbody2D>();
-
         cam = Camera.main;
         CacheCourtWidth();
 
-        cachedTargetX = rb != null ? rb.position.x : transform.position.x;
-
-        ApplyDifficultyFromPrefs();
-    }
-
-    private void ApplyDifficultyFromPrefs()
-    {
-        int d = PlayerPrefs.GetInt("difficulty", 0);
-
-        switch (d)
+        if (ball == null)
         {
-            case 0: // Easy 
-                moveSpeed = 6.2f;
-                reactionDelay = 0.11f;
-                aimError = 0.28f;
-                returnToCenterSpeed = 3.0f;
-                break;
-
-            case 1: // Medium
-                moveSpeed = 7.0f;
-                reactionDelay = 0.07f;
-                aimError = 0.20f;
-                returnToCenterSpeed = 3.4f;
-                break;
-
-            case 2: // Hard
-                moveSpeed = 9.0f;
-                reactionDelay = 0.04f;
-                aimError = 0.12f;
-                returnToCenterSpeed = 3.8f;
-                break;
+            var b = GameObject.FindGameObjectWithTag("ball");
+            if (b) ball = b.transform;
         }
+
+        if (ball != null && ballRb == null)
+            ballRb = ball.GetComponent<Rigidbody2D>();
+
+        ApplyDifficulty();
+        targetX = rb != null ? rb.position.x : transform.position.x;
     }
 
-    private void Update()
+    void Update()
     {
         CacheCourtWidth();
     }
 
-    private void FixedUpdate()
+    void FixedUpdate()
     {
-        if (ball == null || rb == null) return;
-
+        if (rb == null || ball == null) return;
         if (ballRb == null) ballRb = ball.GetComponent<Rigidbody2D>();
         if (ballRb == null) return;
 
         Vector2 bPos = ballRb.position;
         Vector2 bVel = ballRb.linearVelocity;
 
-        bool comingToEnemy = IsBallComingToThisPaddle(bVel);
+        bool coming = IsBallComingToThisPaddle(bVel);
 
         if (Time.time >= nextThinkTime)
         {
             nextThinkTime = Time.time + reactionDelay;
 
-            if (comingToEnemy && Mathf.Abs(bVel.y) > 0.01f)
+            if (coming && Mathf.Abs(bVel.y) > 0.01f)
             {
-                float tx = PredictXAtY(bPos, bVel, rb.position.y);
-                tx += Random.Range(-aimError, aimError);
-                cachedTargetX = Mathf.Clamp(tx, -halfCourtWidth, halfCourtWidth);
+                float predicted = PredictXAtY(bPos, bVel, rb.position.y);
+                predicted += Random.Range(-aimError, aimError);
+                targetX = Mathf.Clamp(predicted, -halfCourtWidth, halfCourtWidth);
             }
             else
             {
-                cachedTargetX = 0f;
+                targetX = 0f; // center
             }
         }
 
-        float speed = comingToEnemy ? moveSpeed : returnToCenterSpeed;
-
-        float newX = Mathf.MoveTowards(rb.position.x, cachedTargetX, speed * Time.fixedDeltaTime);
+        float speed = coming ? moveSpeed : returnToCenterSpeed;
+        float newX = Mathf.MoveTowards(rb.position.x, targetX, speed * Time.fixedDeltaTime);
         newX = Mathf.Clamp(newX, -halfCourtWidth, halfCourtWidth);
 
         rb.MovePosition(new Vector2(newX, rb.position.y));
     }
 
+    private void ApplyDifficulty()
+    {
+        GameSettings.ForceReload();
+        int d = GameSettings.DifficultyLevel; // 0/1/2
+
+        // Bu değerler “easy bebek yener” sorununu çözecek şekilde biraz güçlendirildi.
+        // İstersen sonra ince ayarlarız.
+        switch (d)
+        {
+            case 0: // Easy
+                moveSpeed = 6.2f;
+                reactionDelay = 0.10f;
+                aimError = 0.35f;
+                returnToCenterSpeed = 2.6f;
+                break;
+
+            case 1: // Medium
+                moveSpeed = 7.4f;
+                reactionDelay = 0.07f;
+                aimError = 0.22f;
+                returnToCenterSpeed = 3.0f;
+                break;
+
+            case 2: // Hard
+                moveSpeed = 9.2f;
+                reactionDelay = 0.045f;
+                aimError = 0.14f;
+                returnToCenterSpeed = 3.6f;
+                break;
+        }
+    }
+
     private bool IsBallComingToThisPaddle(Vector2 vel)
     {
+        // Paddle yukarıdaysa (y>0): top geliyorsa vel.y > 0
+        // Paddle aşağıdaysa (y<0): top geliyorsa vel.y < 0
         float y = rb.position.y;
         return y > 0f ? vel.y > 0f : vel.y < 0f;
     }
@@ -122,9 +130,8 @@ public class EnemyPaddle : MonoBehaviour
 
         float rawX = ballPos.x + ballVel.x * t;
 
-        float w = halfCourtWidth;
-        if (w <= 0.01f) return rawX;
-
+        // Mirror reflection within [-halfCourtWidth, +halfCourtWidth]
+        float w = Mathf.Max(0.5f, halfCourtWidth);
         float range = 2f * w;
         float x = rawX + w;
         float m = Mathf.Repeat(x, range);
@@ -138,8 +145,7 @@ public class EnemyPaddle : MonoBehaviour
         if (cam == null) return;
 
         halfCourtWidth = cam.ScreenToWorldPoint(new Vector3(Screen.width, 0, 0)).x;
-
-        halfCourtWidth -= 0.2f;
+        halfCourtWidth -= 0.2f; // small margin
         if (halfCourtWidth < 0.5f) halfCourtWidth = 0.5f;
     }
 }

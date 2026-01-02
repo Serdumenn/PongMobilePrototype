@@ -56,7 +56,7 @@ public class RacketController : MonoBehaviour
 
         if (!hasInput)
         {
-            rb.velocity = new Vector2(Mathf.Lerp(rb.velocity.x, 0f, damping), 0f);
+            rb.linearVelocity = new Vector2(Mathf.Lerp(rb.linearVelocity.x, 0f, damping), 0f);
             return;
         }
 
@@ -65,8 +65,8 @@ public class RacketController : MonoBehaviour
         float dx = targetX - rb.position.x;
         float desiredVelX = Mathf.Clamp(dx * followGain, -maxSpeed, maxSpeed);
 
-        float newVelX = Mathf.Lerp(rb.velocity.x, desiredVelX, damping);
-        rb.velocity = new Vector2(newVelX, 0f);
+        float newVelX = Mathf.Lerp(rb.linearVelocity.x, desiredVelX, damping);
+        rb.linearVelocity = new Vector2(newVelX, 0f);
 
         rb.position = new Vector2(ClampX(rb.position.x), rb.position.y);
     }

@@ -3,76 +3,66 @@ using UnityEngine.UI;
 
 public class scoreVisuals : MonoBehaviour
 {
-    public int enemyScore, playerScore;
-    public int diffNeed = 3;
-
+    [Header("Visual Only (reads from ScoreManager)")]
     public Image[] scorePoints;
-    public score scorescript;
 
-    private manager managerScript;
-    public GameObject managerObj;
+    [Header("Optional refs")]
+    public ScoreManager scoreManager;
 
-    void Start()
+    [Tooltip("If you want a centered bar: right side = player lead, left side = enemy lead")]
+    public Color playerColor = Color.blue;
+    public Color enemyColor = Color.red;
+    public Color neutralColor = Color.gray;
+
+    void Awake()
     {
-        GameSettings.EnsureLoaded();
-        diffNeed = GameSettings.DiffNeed;
-
-        if (managerObj != null)
-            managerScript = managerObj.GetComponent<manager>();
-
-        ResetVisuals();
+        if (scoreManager == null)
+            scoreManager = FindAny<ScoreManager>();
     }
 
-    public void playerScores()
+    void Update()
     {
-        playerScore += 1;
-        UpdateScore();
+        if (scoreManager == null || scorePoints == null || scorePoints.Length == 0)
+            return;
+
+        int diff = scoreManager.GetPlayerScore() - scoreManager.GetEnemyScore();
+        DrawDiff(diff);
     }
 
-    public void enemyScores()
+    private void DrawDiff(int diff)
     {
-        enemyScore += 1;
-        UpdateScore();
-    }
+        // Basit mantık: tümünü nötrle, sonra fark kadar boyayalım.
+        foreach (var img in scorePoints)
+            if (img) img.color = neutralColor;
 
-    void UpdateScore()
-    {
-        int scoreDiff = playerScore - enemyScore;
-        UpdateVisuals(scoreDiff);
-
-        if (Mathf.Abs(scoreDiff) >= diffNeed && managerScript != null)
-            managerScript.GameEnding(scoreDiff > 0);
-    }
-
-    void UpdateVisuals(int diff)
-    {
-        ResetVisuals();
-        if (scorePoints == null || scorePoints.Length == 0) return;
-
-        int absDiff = Mathf.Abs(diff);
+        int n = Mathf.Min(Mathf.Abs(diff), scorePoints.Length);
 
         if (diff > 0)
         {
-            for (int i = 0; i < absDiff && i < scorePoints.Length; i++)
+            // player leads -> sağdan boya
+            for (int i = 0; i < n; i++)
             {
-                int index = scorePoints.Length - 1 - i;
-                if (scorePoints[index] != null) scorePoints[index].color = Color.blue;
+                int idx = scorePoints.Length - 1 - i;
+                if (scorePoints[idx]) scorePoints[idx].color = playerColor;
             }
         }
         else if (diff < 0)
         {
-            for (int i = 0; i < absDiff && i < scorePoints.Length; i++)
+            // enemy leads -> soldan boya
+            for (int i = 0; i < n; i++)
             {
-                int index = i;
-                if (scorePoints[index] != null) scorePoints[index].color = Color.red;
+                int idx = i;
+                if (scorePoints[idx]) scorePoints[idx].color = enemyColor;
             }
         }
     }
 
-    void ResetVisuals()
+    private static T FindAny<T>() where T : Object
     {
-        if (scorePoints == null) return;
-        foreach (var img in scorePoints)
-            if (img != null) img.color = Color.gray;
+#if UNITY_2023_1_OR_NEWER
+        return FindAnyObjectByType<T>();
+#else
+        return FindObjectOfType<T>();
+#endif
     }
 }

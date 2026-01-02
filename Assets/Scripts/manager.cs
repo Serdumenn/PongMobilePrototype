@@ -3,65 +3,60 @@ using UnityEngine.SceneManagement;
 
 public class manager : MonoBehaviour
 {
-    [Header("Scene References")]
-    public Ball ballRef;
+    public GameObject endScreen;
+    public GameObject winEndScreen;
+    public GameObject loseEndScreen;
+
+    public GameObject ball;
+    public GameObject racket;
+    public GameObject enemy;
+
+    private ball ballcs;
+    private SpriteRenderer ballRenderer;
+
+    [Header("Optional")]
     public ScoreManager scoreManager;
 
-    [Header("UI (optional)")]
-    public GameObject endUI;
-    public GameObject winUI;
-    public GameObject loseUI;
-
-    private bool gameEnded;
-
-    private void Awake()
+    void Start()
     {
-        if (ballRef == null)
+        if (ball != null)
         {
-#if UNITY_2023_1_OR_NEWER
-            ballRef = Object.FindAnyObjectByType<Ball>();
-#else
-            ballRef = Object.FindObjectOfType<Ball>();
-#endif
+            ballcs = ball.GetComponent<ball>();
+            ballRenderer = ball.GetComponent<SpriteRenderer>();
         }
 
         if (scoreManager == null)
-        {
-#if UNITY_2023_1_OR_NEWER
-            scoreManager = Object.FindAnyObjectByType<ScoreManager>();
-#else
-            scoreManager = Object.FindObjectOfType<ScoreManager>();
-#endif
-        }
+            scoreManager = FindAny<ScoreManager>();
     }
 
     public void GameEnding(bool playerWon)
     {
-        if (gameEnded) return;
-        gameEnded = true;
+        Time.timeScale = 0f;
 
-        if (ballRef != null) ballRef.HardStop();
+        if (endScreen != null) endScreen.SetActive(true);
+        if (winEndScreen != null) winEndScreen.SetActive(playerWon);
+        if (loseEndScreen != null) loseEndScreen.SetActive(!playerWon);
 
-        if (endUI) endUI.SetActive(true);
-        if (winUI) winUI.SetActive(playerWon);
-        if (loseUI) loseUI.SetActive(!playerWon);
+        // gameplay objects stop
+        if (ballcs != null) ballcs.enabled = false;
 
+        if (ball != null) ball.SetActive(false);
+        if (racket != null) racket.SetActive(false);
+        if (enemy != null) enemy.SetActive(false);
     }
 
-    public void RestartScene()
+    public void RestartGame()
     {
-        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+        Time.timeScale = 1f;
+        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
 
-    public void NewMatch()
+    private static T FindAny<T>() where T : Object
     {
-        gameEnded = false;
-
-        if (endUI) endUI.SetActive(false);
-        if (winUI) winUI.SetActive(false);
-        if (loseUI) loseUI.SetActive(false);
-
-        if (scoreManager != null) scoreManager.ResetScores();
-        if (ballRef != null) ballRef.StartResetSequence();
+#if UNITY_2023_1_OR_NEWER
+        return FindAnyObjectByType<T>();
+#else
+        return FindObjectOfType<T>();
+#endif
     }
 }

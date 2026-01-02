@@ -1399,9 +1399,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1ea30de4a91561347b99a045f50f02e0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  playerText: {fileID: 0}
-  enemyText: {fileID: 0}
-  scorePoints: []
+  playerText: {fileID: 220503607}
+  enemyText: {fileID: 2016894936}
   diffNeed: 3
   gameManager: {fileID: 2018088317}
 --- !u!1001 &895622166540026163
@@ -1496,6 +1495,10 @@ PrefabInstance:
       propertyPath: scorescript
       value: 
       objectReference: {fileID: 0}
+    - target: {fileID: 2936589661488441086, guid: 16bec77f3dd0a694dae829d00376c414, type: 3}
+      propertyPath: scoreManager
+      value: 
+      objectReference: {fileID: 2030383228}
     - target: {fileID: 2986937973735917527, guid: 16bec77f3dd0a694dae829d00376c414, type: 3}
       propertyPath: m_Type
       value: 0
@@ -2115,12 +2118,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1148f9d3dfceae54b8f5896d6de5bbae, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  screenLimit: 2.5
-  smoothTime: 0.06
+  cam: {fileID: 0}
+  rb: {fileID: 0}
   maxSpeed: 30
-  visualChild: {fileID: 489308800}
-  maxTiltDeg: 18
-  tiltSmooth: 12
+  followGain: 12
+  damping: 0.35
+  wallMargin: 0.25
 --- !u!50 &4914627915892225217 stripped
 Rigidbody2D:
   m_CorrespondingSourceObject: {fileID: 4914627914556790188, guid: 0a428050592b01c438efc2a3b67ff7b5, type: 3}

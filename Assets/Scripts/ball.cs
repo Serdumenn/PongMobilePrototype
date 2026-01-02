@@ -1,36 +1,34 @@
 using System.Collections;
 using UnityEngine;
 
-public class Ball : MonoBehaviour
+public class ball : MonoBehaviour
 {
     [Header("Launch")]
-    [Min(0.1f)] public float launchSpeed = 8f;
-    [Min(0.1f)] public float maxSpeed = 16f;
+    public float launchSpeed = 8f;
+    public float maxSpeed = 16f;
 
-    [Tooltip("0.02 = %2 hız artışı (her geçerli çarpışmada).")]
-    [Range(0f, 0.2f)] public float speedIncreasePercent = 0.02f;
+    [Tooltip("Percent speed increase per collision (0.02 = +2%).")]
+    [Range(0f, 0.2f)]
+    public float speedIncreasePercent = 0.02f;
 
     [Header("Stability")]
-    [Tooltip("Y bileşeni bu değerin altına düşerse düzeltilir (yatay kilidi önler).")]
-    [Range(0.05f, 0.6f)] public float minVerticalDot = 0.2f;
+    [Tooltip("Minimum |y| component for direction (prevents near-horizontal lock).")]
+    [Range(0.05f, 0.6f)]
+    public float minVerticalDot = 0.20f;
 
-    [Tooltip("Aynı anda çoklu çarpışma spam'ini engeller (hız spike/jitter için kritik).")]
-    [Range(0f, 0.2f)] public float collisionCooldown = 0.06f;
+    [Tooltip("Seconds. Prevents multi-hit spam causing sudden speed spikes.")]
+    public float collisionCooldown = 0.06f;
 
-    [Header("FX")]
+    [Header("Effects")]
     public GameObject trailEffect;
     public AudioSource bounceSound;
 
     [Header("Scoring")]
     public ScoreManager scoreManager;
 
-    [Header("Start Mode")]
-    public StartMode startMode = StartMode.TapToLaunch;
-
     private Rigidbody2D rb;
     private SpriteRenderer sr;
-
-    private Vector2 initialPos;
+    private Vector2 initialPosition;
     private Coroutine resetRoutine;
     private bool waitingForLaunch;
 
@@ -38,107 +36,87 @@ public class Ball : MonoBehaviour
     private int lastCollisionFrame;
     private int lastColliderId;
 
-    private void Awake()
+    void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
         sr = GetComponent<SpriteRenderer>();
 
         if (rb != null)
         {
-            rb.bodyType = RigidbodyType2D.Dynamic;
             rb.gravityScale = 0f;
             rb.collisionDetectionMode = CollisionDetectionMode2D.Continuous;
             rb.interpolation = RigidbodyInterpolation2D.Interpolate;
             rb.constraints = RigidbodyConstraints2D.FreezeRotation;
         }
 
-        initialPos = rb != null ? rb.position : (Vector2)transform.position;
+        initialPosition = rb != null ? rb.position : (Vector2)transform.position;
 
         if (scoreManager == null)
-        {
-#if UNITY_2023_1_OR_NEWER
-            scoreManager = Object.FindAnyObjectByType<ScoreManager>();
-#else
-            scoreManager = Object.FindObjectOfType<ScoreManager>();
-#endif
-        }
-
-        TryLoadSettings();
+            scoreManager = FindAny<ScoreManager>();
     }
 
-    private void Start()
+    void Start()
     {
         StartResetSequence();
     }
 
-    private void TryLoadSettings()
-    {
-        try
-        {
-            GameSettings.EnsureLoaded();
-            startMode = GameSettings.CurrentStartMode;
-        }
-        catch { /* GameSettings*/ }
-    }
-
-    private void FixedUpdate()
+    void FixedUpdate()
     {
         if (rb == null) return;
 
         Vector2 v = rb.linearVelocity;
         float spd = v.magnitude;
-        if (spd < 0.0001f) return;
+        if (spd < 0.001f) return;
 
+        // Clamp max speed
         if (spd > maxSpeed)
-        {
             rb.linearVelocity = (v / spd) * maxSpeed;
-            v = rb.linearVelocity;
-            spd = maxSpeed;
-        }
 
-        Vector2 dir = v / spd;
+        // Prevent near-horizontal lock
+        Vector2 dir = rb.linearVelocity.normalized;
         if (Mathf.Abs(dir.y) < minVerticalDot)
         {
             float signY = dir.y >= 0 ? 1f : -1f;
             float signX = dir.x >= 0 ? 1f : -1f;
 
             float clampedY = minVerticalDot * signY;
-            float remaining = Mathf.Sqrt(Mathf.Clamp01(1f - clampedY * clampedY));
-            float clampedX = remaining * signX;
+            float clampedX = Mathf.Sqrt(Mathf.Clamp01(1f - clampedY * clampedY)) * signX;
 
             rb.linearVelocity = new Vector2(clampedX, clampedY) * spd;
         }
     }
 
-    public void StartResetSequence()
+    private void StartResetSequence()
     {
         if (resetRoutine != null)
         {
             StopCoroutine(resetRoutine);
             resetRoutine = null;
         }
-        resetRoutine = StartCoroutine(ResetRoutine());
+        resetRoutine = StartCoroutine(ResetBallRoutine());
     }
 
-    private IEnumerator ResetRoutine()
+    private IEnumerator ResetBallRoutine()
     {
         if (rb != null) rb.linearVelocity = Vector2.zero;
 
-        if (rb != null) rb.position = initialPos;
-        else transform.position = initialPos;
+        if (rb != null) rb.position = initialPosition;
+        else transform.position = initialPosition;
 
         waitingForLaunch = true;
 
         if (sr) sr.enabled = false;
-        if (trailEffect) trailEffect.SetActive(false);
+        if (trailEffect != null) trailEffect.SetActive(false);
 
         yield return new WaitForSeconds(0.75f);
 
         if (sr) sr.enabled = true;
 
-        if (startMode == StartMode.AutoAfterCountdown)
+        GameSettings.ForceReload();
+
+        if (GameSettings.CurrentStartMode == StartMode.AutoAfterCountdown)
         {
-            Launch();
+            LaunchBall();
             waitingForLaunch = false;
             yield break;
         }
@@ -147,81 +125,88 @@ public class Ball : MonoBehaviour
         {
             if (Input.GetMouseButtonDown(0) || Input.touchCount > 0)
             {
-                Launch();
+                LaunchBall();
                 waitingForLaunch = false;
             }
             yield return null;
         }
     }
 
-    public void Launch()
+    private void LaunchBall()
     {
-        if (rb == null) return;
-
         float angle = Random.Range(25f, 55f);
         float signX = Random.value < 0.5f ? -1f : 1f;
+        float signY = Random.value < 0.5f ? -1f : 1f;
 
-        Vector2 dir = Quaternion.Euler(0, 0, angle * signX) * Vector2.up;
-        rb.linearVelocity = dir.normalized * launchSpeed;
+        Vector2 baseDir = signY > 0 ? Vector2.up : Vector2.down;
+        Vector2 dir = Quaternion.Euler(0, 0, angle * signX) * baseDir;
 
-        if (trailEffect) trailEffect.SetActive(true);
+        if (rb != null)
+            rb.linearVelocity = dir.normalized * launchSpeed;
+
+        if (trailEffect != null)
+            trailEffect.SetActive(true);
     }
 
     private void OnCollisionEnter2D(Collision2D col)
     {
-        if (rb == null) return;
+        if (rb == null || col == null || col.collider == null) return;
 
-        int colliderId = col.collider != null ? col.collider.GetInstanceID() : 0;
+        // tag filter
+        string tag = col.collider.tag;
+        if (tag != "racket" && tag != "wall")
+            return;
 
-        if (Time.time - lastCollisionTime < collisionCooldown) return;
-        if (Time.frameCount == lastCollisionFrame && colliderId == lastColliderId) return;
+        // spam guard
+        int id = col.collider.GetInstanceID();
+        if (Time.time - lastCollisionTime < collisionCooldown)
+            return;
+
+        if (Time.frameCount == lastCollisionFrame && id == lastColliderId)
+            return;
 
         lastCollisionTime = Time.time;
         lastCollisionFrame = Time.frameCount;
-        lastColliderId = colliderId;
+        lastColliderId = id;
 
-        if (bounceSound) bounceSound.Play();
-
-        string tag = col.collider != null ? col.collider.tag : "";
-        if (tag != "racket" && tag != "wall") return;
+        if (bounceSound != null)
+            bounceSound.Play();
 
         Vector2 v = rb.linearVelocity;
         float spd = v.magnitude;
-        if (spd < 0.001f) spd = launchSpeed;
 
         float newSpeed = Mathf.Clamp(spd * (1f + speedIncreasePercent), launchSpeed, maxSpeed);
-        rb.linearVelocity = (v.sqrMagnitude > 0.0001f ? v.normalized : Vector2.up) * newSpeed;
+        if (spd > 0.001f)
+            rb.linearVelocity = (v / spd) * newSpeed;
+        else
+            rb.linearVelocity = Vector2.up * launchSpeed;
     }
 
     private void OnTriggerEnter2D(Collider2D col)
     {
         if (col == null) return;
 
+        // Cursor raporundaki gibi:
+        // Goal1 = top/enemy side -> Player scores
+        // Goal2 = bottom/player side -> Enemy scores
         if (col.CompareTag("Goal1"))
         {
-            if (scoreManager) scoreManager.PlayerScored();
+            if (scoreManager != null) scoreManager.PlayerScored();
             StartResetSequence();
         }
         else if (col.CompareTag("Goal2"))
         {
-            if (scoreManager) scoreManager.EnemyScored();
+            if (scoreManager != null) scoreManager.EnemyScored();
             StartResetSequence();
         }
     }
 
-    public void SetStartMode(StartMode mode)
+    private static T FindAny<T>() where T : Object
     {
-        startMode = mode;
-    }
-
-    public void HardStop()
-    {
-        if (rb != null) rb.linearVelocity = Vector2.zero;
-        waitingForLaunch = false;
-        if (resetRoutine != null)
-        {
-            StopCoroutine(resetRoutine);
-            resetRoutine = null;
-        }
+#if UNITY_2023_1_OR_NEWER
+        return FindAnyObjectByType<T>();
+#else
+        return FindObjectOfType<T>();
+#endif
     }
 }

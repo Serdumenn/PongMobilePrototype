@@ -3,46 +3,40 @@ using UnityEngine.UI;
 
 public class ScoreManager : MonoBehaviour
 {
-    [Header("UI Text (optional)")]
+    [Header("UI (optional but recommended)")]
     public Text playerText;
     public Text enemyText;
 
     [Header("Win Condition")]
     public int diffNeed = 3;
-
-    [Header("Game Manager")]
     public manager gameManager;
 
     private int playerScore;
     private int enemyScore;
 
-    private void Awake()
+    void Awake()
     {
-        TryLoadDiffNeed();
-
+        // manager auto-find
         if (gameManager == null)
-        {
-#if UNITY_2023_1_OR_NEWER
-            gameManager = Object.FindAnyObjectByType<manager>();
-#else
-            gameManager = Object.FindObjectOfType<manager>();
-#endif
-        }
+            gameManager = FindAny<manager>();
+
+        // UI auto-bind (best-effort)
+        if (playerText == null || enemyText == null)
+            AutoBindTexts();
     }
 
-    private void Start()
+    void Start()
     {
+        GameSettings.ForceReload();
+        diffNeed = GameSettings.DiffNeed;
         RefreshUI();
     }
 
-    private void TryLoadDiffNeed()
+    public void ResetScores()
     {
-        try
-        {
-            GameSettings.EnsureLoaded();
-            diffNeed = GameSettings.DiffNeed;
-        }
-        catch { /* none */ }
+        playerScore = 0;
+        enemyScore = 0;
+        RefreshUI();
     }
 
     public void PlayerScored()
@@ -59,13 +53,6 @@ public class ScoreManager : MonoBehaviour
         CheckEnd();
     }
 
-    public void ResetScores()
-    {
-        playerScore = 0;
-        enemyScore = 0;
-        RefreshUI();
-    }
-
     public int GetPlayerScore() => playerScore;
     public int GetEnemyScore() => enemyScore;
 
@@ -79,8 +66,29 @@ public class ScoreManager : MonoBehaviour
     {
         int diff = playerScore - enemyScore;
         if (gameManager != null && Mathf.Abs(diff) >= diffNeed)
-        {
             gameManager.GameEnding(diff > 0);
+    }
+
+    private void AutoBindTexts()
+    {
+        // Canvas altındaki Text'leri tarayıp isimden yakalamaya çalışır
+        var texts = GetComponentsInChildren<Text>(true);
+        foreach (var t in texts)
+        {
+            string n = t.gameObject.name.ToLowerInvariant();
+            if (playerText == null && n.Contains("player") && n.Contains("score"))
+                playerText = t;
+            if (enemyText == null && (n.Contains("enemy") || n.Contains("ai")) && n.Contains("score"))
+                enemyText = t;
         }
+    }
+
+    private static T FindAny<T>() where T : Object
+    {
+#if UNITY_2023_1_OR_NEWER
+        return FindAnyObjectByType<T>();
+#else
+        return FindObjectOfType<T>();
+#endif
     }
 }
