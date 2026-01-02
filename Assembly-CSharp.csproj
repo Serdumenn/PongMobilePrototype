@@ -48,25 +48,25 @@
     <Analyzer Include="C:\Program Files\Unity\Hub\Editor\6000.0.58f2\Editor\Data\Tools\Unity.SourceGenerators\Unity.UIToolkit.SourceGenerator.dll" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Assets\Scripts\other\responsiveWalls.cs" />
-    <Compile Include="Assets\Scripts\ui\saving.cs" />
-    <Compile Include="Assets\Scripts\mechanics\EnemyPaddle.cs" />
-    <Compile Include="Assets\Scripts\ui\changeColor.cs" />
-    <Compile Include="Assets\Scripts\ui\StartTypeSelector.cs" />
-    <Compile Include="Assets\Scripts\ui\scoreVisuals.cs" />
-    <Compile Include="Assets\Scripts\other\score.cs" />
-    <Compile Include="Assets\Scripts\ui\DisableIfPersistentMusicExists.cs" />
-    <Compile Include="Assets\Scripts\ui\mainMenu.cs" />
-    <Compile Include="Assets\Scripts\ui\MenuUIController.cs" />
-    <Compile Include="Assets\Scripts\mechanics\ball.cs" />
-    <Compile Include="Assets\Scripts\ui\mute.cs" />
-    <Compile Include="Assets\Scripts\mechanics\GameSettings.cs" />
-    <Compile Include="Assets\Scripts\ui\manager.cs" />
-    <Compile Include="Assets\Scripts\ui\MenuAudioButtonsBinder.cs" />
-    <Compile Include="Assets\Scripts\mechanics\racketController.cs" />
-    <Compile Include="Assets\Scripts\mechanics\PaddleVisualTilt.cs" />
-    <Compile Include="Assets\Scripts\ui\PersistentMusic.cs" />
-    <Compile Include="Assets\Scripts\ui\DiffNeedDisplay.cs" />
+    <Compile Include="Assets\Scripts\DiffNeedDisplay.cs" />
+    <Compile Include="Assets\Scripts\manager.cs" />
+    <Compile Include="Assets\Scripts\MenuAudioButtonsBinder.cs" />
+    <Compile Include="Assets\Scripts\scoreVisuals.cs" />
+    <Compile Include="Assets\Scripts\ScoreManager.cs" />
+    <Compile Include="Assets\Scripts\GameSettings.cs" />
+    <Compile Include="Assets\Scripts\ball.cs" />
+    <Compile Include="Assets\Scripts\StartTypeSelector.cs" />
+    <Compile Include="Assets\Scripts\mainMenu.cs" />
+    <Compile Include="Assets\Scripts\EnemyPaddle.cs" />
+    <Compile Include="Assets\Scripts\responsiveWalls.cs" />
+    <Compile Include="Assets\Scripts\DisableIfPersistentMusicExists.cs" />
+    <Compile Include="Assets\Scripts\saving.cs" />
+    <Compile Include="Assets\Scripts\changeColor.cs" />
+    <Compile Include="Assets\Scripts\racketController.cs" />
+    <Compile Include="Assets\Scripts\mute.cs" />
+    <Compile Include="Assets\Scripts\MenuUIController.cs" />
+    <Compile Include="Assets\Scripts\PersistentMusic.cs" />
+    <Compile Include="Assets\Scripts\PaddleVisualTilt.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="UnityEngine">
