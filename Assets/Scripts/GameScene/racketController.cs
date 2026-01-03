@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class RacketController : MonoBehaviour
+public class racketController : MonoBehaviour
 {
     public Camera cam;
     public Rigidbody2D rb;
@@ -8,7 +8,13 @@ public class RacketController : MonoBehaviour
     [Header("Feel")]
     public float maxSpeed = 10f;
     public float followGain = 12f;
-    public float damping = 0.35f;
+
+    [Tooltip("How fast we accelerate toward desired velocity (units/s^2).")]
+    public float acceleration = 60f;
+
+    [Tooltip("How fast we decelerate to 0 when no input (units/s^2).")]
+    public float deceleration = 80f;
+
     public float wallMargin = 0.25f;
 
     private float halfCourtWidth;
@@ -54,21 +60,24 @@ public class RacketController : MonoBehaviour
             hasInput = true;
         }
 
-        if (!hasInput)
+        float desiredVelX = 0f;
+
+        if (hasInput)
         {
-            rb.linearVelocity = new Vector2(Mathf.Lerp(rb.linearVelocity.x, 0f, damping), 0f);
-            return;
+            targetX = ClampX(targetX);
+            float dx = targetX - rb.position.x;
+            desiredVelX = Mathf.Clamp(dx * followGain, -maxSpeed, maxSpeed);
         }
 
-        targetX = ClampX(targetX);
+        float currentVelX = rb.linearVelocity.x;
+        float a = hasInput ? acceleration : deceleration;
+        float newVelX = Mathf.MoveTowards(currentVelX, desiredVelX, a * Time.fixedDeltaTime);
 
-        float dx = targetX - rb.position.x;
-        float desiredVelX = Mathf.Clamp(dx * followGain, -maxSpeed, maxSpeed);
-
-        float newVelX = Mathf.Lerp(rb.linearVelocity.x, desiredVelX, damping);
         rb.linearVelocity = new Vector2(newVelX, 0f);
 
-        rb.position = new Vector2(ClampX(rb.position.x), rb.position.y);
+        float clampedX = ClampX(rb.position.x);
+        if (!Mathf.Approximately(clampedX, rb.position.x))
+            rb.position = new Vector2(clampedX, rb.position.y);
     }
 
     void CacheCourtWidth()

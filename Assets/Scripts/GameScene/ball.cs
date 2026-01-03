@@ -16,8 +16,14 @@ public class ball : MonoBehaviour
     [Range(0.05f, 0.6f)]
     public float minVerticalDot = 0.20f;
 
-    [Tooltip("Seconds. Prevents multi-hit spam causing sudden speed spikes.")]
+    [Tooltip("Minimum time between speed-ups.")]
     public float collisionCooldown = 0.06f;
+
+    [Tooltip("Extra guard to prevent rapid multi speed-ups.")]
+    public float speedUpCooldown = 0.12f;
+
+    [Tooltip("If false, only racket collisions speed up (walls won't).")]
+    public bool increaseSpeedOnWalls = false;
 
     [Header("Effects")]
     public GameObject trailEffect;
@@ -27,18 +33,25 @@ public class ball : MonoBehaviour
     public ScoreManager scoreManager;
 
     private Rigidbody2D rb;
+    private Collider2D col2d;
     private SpriteRenderer sr;
+
     private Vector2 initialPosition;
     private Coroutine resetRoutine;
-    private bool waitingForLaunch;
+
+    private bool ignoreTriggers;
+    private float lastGoalTime;
+    private const float GOAL_COOLDOWN = 0.5f;
 
     private float lastCollisionTime;
     private int lastCollisionFrame;
     private int lastColliderId;
+    private float lastSpeedUpTime;
 
     void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
+        col2d = GetComponent<Collider2D>();
         sr = GetComponent<SpriteRenderer>();
 
         if (rb != null)
@@ -60,6 +73,12 @@ public class ball : MonoBehaviour
         StartResetSequence();
     }
 
+    void OnDisable()
+    {
+        StopAllCoroutines();
+        resetRoutine = null;
+    }
+
     void FixedUpdate()
     {
         if (rb == null) return;
@@ -68,11 +87,9 @@ public class ball : MonoBehaviour
         float spd = v.magnitude;
         if (spd < 0.001f) return;
 
-        // Clamp max speed
         if (spd > maxSpeed)
             rb.linearVelocity = (v / spd) * maxSpeed;
 
-        // Prevent near-horizontal lock
         Vector2 dir = rb.linearVelocity.normalized;
         if (Mathf.Abs(dir.y) < minVerticalDot)
         {
@@ -86,54 +103,78 @@ public class ball : MonoBehaviour
         }
     }
 
+    public void HardStopAndHide()
+    {
+        StopAllCoroutines();
+        resetRoutine = null;
+
+        ignoreTriggers = true;
+
+        if (rb != null)
+        {
+            rb.linearVelocity = Vector2.zero;
+            rb.angularVelocity = 0f;
+            rb.simulated = false;
+        }
+
+        if (col2d != null) col2d.enabled = false;
+        if (sr != null) sr.enabled = false;
+        if (trailEffect != null) trailEffect.SetActive(false);
+    }
+
     private void StartResetSequence()
     {
+        if (!isActiveAndEnabled) return;
+
         if (resetRoutine != null)
         {
             StopCoroutine(resetRoutine);
             resetRoutine = null;
         }
+
         resetRoutine = StartCoroutine(ResetBallRoutine());
     }
 
     private IEnumerator ResetBallRoutine()
     {
-        if (rb != null) rb.linearVelocity = Vector2.zero;
+        ignoreTriggers = true;
+        lastGoalTime = Time.time;
 
-        if (rb != null) rb.position = initialPosition;
-        else transform.position = initialPosition;
+        if (rb != null)
+        {
+            rb.linearVelocity = Vector2.zero;
+            rb.angularVelocity = 0f;
+            rb.simulated = false;
+            rb.position = initialPosition;
+        }
+        else
+        {
+            transform.position = initialPosition;
+        }
 
-        waitingForLaunch = true;
-
-        if (sr) sr.enabled = false;
+        if (col2d != null) col2d.enabled = false;
+        if (sr != null) sr.enabled = false;
         if (trailEffect != null) trailEffect.SetActive(false);
 
-        yield return new WaitForSeconds(0.75f);
+        yield return new WaitForSecondsRealtime(0.75f);
 
-        if (sr) sr.enabled = true;
-
-        GameSettings.ForceReload();
-
-        if (GameSettings.CurrentStartMode == StartMode.AutoAfterCountdown)
-        {
-            LaunchBall();
-            waitingForLaunch = false;
+        if (scoreManager != null && scoreManager.IsGameOver)
             yield break;
-        }
 
-        while (waitingForLaunch)
-        {
-            if (Input.GetMouseButtonDown(0) || Input.touchCount > 0)
-            {
-                LaunchBall();
-                waitingForLaunch = false;
-            }
-            yield return null;
-        }
+        if (sr != null) sr.enabled = true;
+        if (col2d != null) col2d.enabled = true;
+        if (rb != null) rb.simulated = true;
+
+        LaunchBall();
+
+        yield return new WaitForSecondsRealtime(0.10f);
+        ignoreTriggers = false;
     }
 
     private void LaunchBall()
     {
+        if (rb == null) return;
+
         float angle = Random.Range(25f, 55f);
         float signX = Random.value < 0.5f ? -1f : 1f;
         float signY = Random.value < 0.5f ? -1f : 1f;
@@ -141,36 +182,39 @@ public class ball : MonoBehaviour
         Vector2 baseDir = signY > 0 ? Vector2.up : Vector2.down;
         Vector2 dir = Quaternion.Euler(0, 0, angle * signX) * baseDir;
 
-        if (rb != null)
-            rb.linearVelocity = dir.normalized * launchSpeed;
+        rb.linearVelocity = dir.normalized * launchSpeed;
 
         if (trailEffect != null)
             trailEffect.SetActive(true);
     }
 
-    private void OnCollisionEnter2D(Collision2D col)
+    private void OnCollisionEnter2D(Collision2D c)
     {
-        if (rb == null || col == null || col.collider == null) return;
+        if (rb == null || c == null || c.collider == null) return;
 
-        // tag filter
-        string tag = col.collider.tag;
-        if (tag != "racket" && tag != "wall")
-            return;
+        bool isRacket = c.collider.CompareTag("racket");
+        bool isWall = c.collider.CompareTag("wall");
+        if (!isRacket && !isWall) return;
 
-        // spam guard
-        int id = col.collider.GetInstanceID();
-        if (Time.time - lastCollisionTime < collisionCooldown)
+        if (isWall && !increaseSpeedOnWalls)
+        {
+            PlayBounce();
             return;
+        }
 
-        if (Time.frameCount == lastCollisionFrame && id == lastColliderId)
-            return;
+        int id = c.collider.GetInstanceID();
+
+        if (Time.time - lastCollisionTime < collisionCooldown) return;
+        if (Time.frameCount == lastCollisionFrame && id == lastColliderId) return;
 
         lastCollisionTime = Time.time;
         lastCollisionFrame = Time.frameCount;
         lastColliderId = id;
 
-        if (bounceSound != null)
-            bounceSound.Play();
+        PlayBounce();
+
+        if (Time.time - lastSpeedUpTime < speedUpCooldown) return;
+        lastSpeedUpTime = Time.time;
 
         Vector2 v = rb.linearVelocity;
         float spd = v.magnitude;
@@ -182,22 +226,32 @@ public class ball : MonoBehaviour
             rb.linearVelocity = Vector2.up * launchSpeed;
     }
 
-    private void OnTriggerEnter2D(Collider2D col)
+    private void PlayBounce()
     {
-        if (col == null) return;
+        if (bounceSound != null) bounceSound.Play();
+    }
 
-        // Cursor raporundaki gibi:
-        // Goal1 = top/enemy side -> Player scores
-        // Goal2 = bottom/player side -> Enemy scores
-        if (col.CompareTag("Goal1"))
+    private void OnTriggerEnter2D(Collider2D c)
+    {
+        if (c == null) return;
+        if (ignoreTriggers) return;
+        if (Time.time - lastGoalTime < GOAL_COOLDOWN) return;
+
+        if (c.CompareTag("Goal1"))
         {
-            if (scoreManager != null) scoreManager.PlayerScored();
-            StartResetSequence();
+            ignoreTriggers = true;
+            lastGoalTime = Time.time;
+
+            bool ended = (scoreManager != null) && scoreManager.PlayerScored();
+            if (!ended) StartResetSequence();
         }
-        else if (col.CompareTag("Goal2"))
+        else if (c.CompareTag("Goal2"))
         {
-            if (scoreManager != null) scoreManager.EnemyScored();
-            StartResetSequence();
+            ignoreTriggers = true;
+            lastGoalTime = Time.time;
+
+            bool ended = (scoreManager != null) && scoreManager.EnemyScored();
+            if (!ended) StartResetSequence();
         }
     }
 

@@ -7,77 +7,101 @@ public class ScoreManager : MonoBehaviour
     public Text playerText;
     public Text enemyText;
 
-    [Header("Win Condition")]
-    public int diffNeed = 3;
+    [Header("Bars / Win Logic")]
+    [Tooltip("Bars per side. Example: 3 bars fill; 4th goal ends the match.")]
+    public int barsPerSide = 3;
+
+    [Header("Manager Reference")]
     public manager gameManager;
 
     private int playerScore;
     private int enemyScore;
 
+    public bool IsGameOver { get; private set; }
+
     void Awake()
     {
-        // manager auto-find
+        if (barsPerSide < 1) barsPerSide = 3;
+
         if (gameManager == null)
             gameManager = FindAny<manager>();
 
-        // UI auto-bind (best-effort)
         if (playerText == null || enemyText == null)
             AutoBindTexts();
     }
 
     void Start()
     {
-        GameSettings.ForceReload();
-        diffNeed = GameSettings.DiffNeed;
-        RefreshUI();
+        ResetScores();
     }
 
     public void ResetScores()
     {
         playerScore = 0;
         enemyScore = 0;
+        IsGameOver = false;
         RefreshUI();
     }
 
-    public void PlayerScored()
+    public bool PlayerScored()
     {
+        if (IsGameOver) return true;
+
         playerScore++;
         RefreshUI();
-        CheckEnd();
+        return CheckGameOver();
     }
 
-    public void EnemyScored()
+    public bool EnemyScored()
     {
+        if (IsGameOver) return true;
+
         enemyScore++;
         RefreshUI();
-        CheckEnd();
+        return CheckGameOver();
     }
 
     public int GetPlayerScore() => playerScore;
     public int GetEnemyScore() => enemyScore;
 
-    private void RefreshUI()
+    private bool CheckGameOver()
     {
-        if (playerText) playerText.text = playerScore.ToString();
-        if (enemyText) enemyText.text = enemyScore.ToString();
+        int winScore = barsPerSide + 1;
+
+        if (playerScore >= winScore)
+        {
+            IsGameOver = true;
+            if (gameManager != null) gameManager.GameEnding(true);
+            return true;
+        }
+
+        if (enemyScore >= winScore)
+        {
+            IsGameOver = true;
+            if (gameManager != null) gameManager.GameEnding(false);
+            return true;
+        }
+
+        return false;
     }
 
-    private void CheckEnd()
+    private void RefreshUI()
     {
-        int diff = playerScore - enemyScore;
-        if (gameManager != null && Mathf.Abs(diff) >= diffNeed)
-            gameManager.GameEnding(diff > 0);
+        if (playerText != null) playerText.text = playerScore.ToString();
+        if (enemyText != null) enemyText.text = enemyScore.ToString();
     }
 
     private void AutoBindTexts()
     {
-        // Canvas altındaki Text'leri tarayıp isimden yakalamaya çalışır
         var texts = GetComponentsInChildren<Text>(true);
         foreach (var t in texts)
         {
+            if (t == null) continue;
             string n = t.gameObject.name.ToLowerInvariant();
+
             if (playerText == null && n.Contains("player") && n.Contains("score"))
                 playerText = t;
+
             if (enemyText == null && (n.Contains("enemy") || n.Contains("ai")) && n.Contains("score"))
                 enemyText = t;
         }
