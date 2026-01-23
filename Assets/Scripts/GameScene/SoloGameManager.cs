@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using TMPro;
 
 public class SoloGameManager : MonoBehaviour
 {
@@ -10,8 +11,8 @@ public class SoloGameManager : MonoBehaviour
     public SoloScoreManager score;
 
     [Header("UI (Optional)")]
-    public Text scoreText;
-    public Text bestText;
+    public TMP_Text scoreText;
+    public TMP_Text bestText;
     public GameObject gameOverRoot;
     public Button retryButton;
 
