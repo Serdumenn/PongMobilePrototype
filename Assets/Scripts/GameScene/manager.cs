@@ -12,8 +12,6 @@ public class manager : MonoBehaviour
     public GameObject enemy;
 
     [Header("Optional")]
-    public ScoreManager scoreManager;
-
     private ball ballcs;
 
     void Start()

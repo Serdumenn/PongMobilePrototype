@@ -30,7 +30,6 @@ public class ball : MonoBehaviour
     public AudioSource bounceSound;
 
     [Header("Scoring")]
-    public ScoreManager scoreManager;
 
     private Rigidbody2D rb;
     private Collider2D col2d;
