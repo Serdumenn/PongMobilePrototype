@@ -6,19 +6,12 @@ TagManager:
   tags:
   - racket
   - wall
-  - roof
   - bottom
   - text
   - Manager
-  - powerUp
   - ball
-  - racket1
-  - racket2
-  - Goal1
-  - Goal2
   - sfx source
   - music source
-  - Paddle
   layers:
   - Default
   - TransparentFX
