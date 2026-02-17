@@ -1,284 +1,217 @@
 using System.Collections;
 using UnityEngine;
 
-public class SoloBall : MonoBehaviour
+[RequireComponent(typeof(Rigidbody2D))]
+[RequireComponent(typeof(Collider2D))]
+public sealed class SoloBall : MonoBehaviour
 {
     [Header("Launch")]
     [SerializeField] private float LaunchSpeed = 8f;
     [SerializeField] private float MaxSpeed = 16f;
-    [SerializeField] private float SpeedIncreasePercent = 0.02f;
-    [SerializeField] private float ResetDelay = 0.75f;
+    [SerializeField] private float SpeedIncreasePercent = 0.02f; // ONLY when hitting objects tagged "wall"
+    [SerializeField] private float ResetDelay = 0.15f;
 
     [Header("Stability")]
-    [SerializeField] private float MinVerticalDot = 0.30f;
-
-    [Tooltip("Cooldown used for wall speed-ups (prevents too fast acceleration on jittery contacts).")]
-    [SerializeField] private float SpeedUpCooldown = 0.12f;
-
-    [Header("Variation (Optional)")]
-    [SerializeField, Range(0f, 1f)] private float PaddleAimStrength = 0.6f;
-
-    [Header("Anti-Stick")]
-    [SerializeField] private float PaddleSeparation = 0.03f;
+    [SerializeField, Range(0.05f, 0.95f)] private float MinVerticalDot = 0.30f; // prevents near-horizontal loops
 
     [Header("Serve Point (IMPORTANT)")]
     [SerializeField] private Transform ServePoint;
-
-    [Header("Effects (Optional)")]
-    [SerializeField] private GameObject TrailEffect;
-    [SerializeField] private AudioSource BounceSound;
 
     [Header("Refs")]
     [SerializeField] private SoloScoreManager Score;
     [SerializeField] private SoloGameManager Game;
 
     [Header("Control")]
-    [Tooltip("If true, the ball launches automatically when enabled. For a MenuPanel-first flow, keep this OFF and let SoloGameManager call StartRound().")]
     [SerializeField] private bool AutoStart = false;
 
-    private Rigidbody2D Rb;
-    private Collider2D Col;
-    private SpriteRenderer Sr;
+    private Rigidbody2D rb;
+    private Collider2D col;
 
-    private Vector2 InitialPos;
-    private Coroutine ResetRoutine;
-    private bool IsStopping;
+    private float currentSpeed;
+    private bool roundActive;
 
-    private float LastWallSpeedUpTime;
-    private float LastRacketHitTime;
-
-    private const float RacketHitCooldown = 0.05f;
+    private Vector2 lastVelocity; // for clean reflection (independent from paddle movement)
 
     private void Awake()
     {
-        Rb = GetComponent<Rigidbody2D>();
-        Col = GetComponent<Collider2D>();
-        Sr = GetComponent<SpriteRenderer>();
+        rb = GetComponent<Rigidbody2D>();
+        col = GetComponent<Collider2D>();
+
+        // Physics baseline for Pong feel
+        rb.gravityScale = 0f;
+        rb.linearDamping = 0f;
+        rb.angularDamping = 0f;
+        rb.constraints = RigidbodyConstraints2D.FreezeRotation;
+        rb.collisionDetectionMode = CollisionDetectionMode2D.Continuous;
+        rb.interpolation = RigidbodyInterpolation2D.Interpolate;
+
+        // Ball should be a solid collider (bottom should be trigger)
+        col.isTrigger = false;
 
         if (Score == null) Score = FindFirstObjectByType<SoloScoreManager>();
         if (Game == null) Game = FindFirstObjectByType<SoloGameManager>();
-
-        InitialPos = (ServePoint != null) ? (Vector2)ServePoint.position : Rb.position;
-
-        Rb.gravityScale = 0f;
-        Rb.freezeRotation = true;
-        Rb.collisionDetectionMode = CollisionDetectionMode2D.Continuous;
-        Rb.interpolation = RigidbodyInterpolation2D.Interpolate;
     }
 
     private void Start()
     {
-        if (AutoStart) StartRound();
-        else StopAndHide();
-    }
+        rb.simulated = false;
+        col.enabled = false;
 
-    private void OnDisable()
-    {
-        if (ResetRoutine != null)
-        {
-            StopCoroutine(ResetRoutine);
-            ResetRoutine = null;
-        }
+        // put ball to serve point at boot
+        SnapToServePoint();
+
+        if (AutoStart)
+            StartRound();
     }
 
     private void FixedUpdate()
     {
-        if (IsStopping) return;
-        ClampMaxSpeed();
-        EnforceMinVertical();
+        if (!roundActive || !rb.simulated) return;
+
+        lastVelocity = rb.linearVelocity;
+
+        // Keep magnitude stable (paddle should not change speed)
+        float speed = lastVelocity.magnitude;
+        if (speed < 0.001f)
+        {
+            // dead ball failsafe
+            rb.linearVelocity = GetUpwardLaunchDir() * currentSpeed;
+            return;
+        }
+
+        if (Mathf.Abs(speed - currentSpeed) > 0.05f)
+            rb.linearVelocity = (lastVelocity / speed) * currentSpeed;
     }
 
     public void StartRound()
     {
-        IsStopping = false;
+        StopAllCoroutines();
 
-        if (ResetRoutine != null) StopCoroutine(ResetRoutine);
-        ResetRoutine = StartCoroutine(ResetAndServe());
+        roundActive = true;
+        currentSpeed = Mathf.Clamp(LaunchSpeed, 0.1f, MaxSpeed);
+
+        rb.simulated = true;
+        col.enabled = true;
+
+        SnapToServePoint();
+        rb.linearVelocity = Vector2.zero;
+        rb.angularVelocity = 0f;
+
+        StartCoroutine(CoLaunch());
     }
 
-    private IEnumerator ResetAndServe()
+    public void OnGameOver()
     {
-        Rb.linearVelocity = Vector2.zero;
-        Rb.angularVelocity = 0f;
-        Rb.simulated = false;
+        roundActive = false;
+        StopAllCoroutines();
 
-        Col.enabled = false;
-        if (Sr != null) Sr.enabled = false;
-        if (TrailEffect != null) TrailEffect.SetActive(false);
+        rb.linearVelocity = Vector2.zero;
+        rb.angularVelocity = 0f;
 
-        Vector2 ServePos = (ServePoint != null) ? (Vector2)ServePoint.position : InitialPos;
-        Rb.position = ServePos;
+        rb.simulated = false;
+        col.enabled = false;
 
-        yield return new WaitForSeconds(ResetDelay);
-
-        if (Score != null && Score.IsGameOver) yield break;
-
-        if (Sr != null) Sr.enabled = true;
-        Col.enabled = true;
-        Rb.simulated = true;
-
-        LaunchDownRandom();
-        if (TrailEffect != null) TrailEffect.SetActive(true);
+        SnapToServePoint();
     }
 
-    private void LaunchDownRandom()
+    private IEnumerator CoLaunch()
     {
-        float Angle = Random.Range(25f, 55f);
-        float SignX = Random.value < 0.5f ? -1f : 1f;
+        if (ResetDelay > 0f)
+            yield return new WaitForSeconds(ResetDelay);
 
-        Vector2 Dir = (Vector2)(Quaternion.Euler(0, 0, Angle * SignX) * Vector2.down);
+        if (!roundActive) yield break;
 
-        if (Mathf.Abs(Dir.y) < MinVerticalDot)
-            Dir = new Vector2(Dir.x, Mathf.Sign(Dir.y == 0 ? -1f : Dir.y) * MinVerticalDot).normalized;
-
-        Rb.linearVelocity = Dir.normalized * LaunchSpeed;
+        rb.WakeUp();
+        rb.linearVelocity = GetUpwardLaunchDir() * currentSpeed;
     }
 
-    private void OnCollisionEnter2D(Collision2D C)
+    private Vector2 GetUpwardLaunchDir()
     {
-        if (IsStopping || C == null || C.collider == null) return;
+        // Always upward at start. Never downward.
+        float x = (Random.value < 0.5f) ? -1f : 1f;
+        float y = Random.Range(0.60f, 1.00f); // guaranteed up
+        Vector2 dir = new Vector2(x, y).normalized;
 
-        if (C.collider.CompareTag("bottom"))
+        // ensure not too horizontal
+        if (Mathf.Abs(Vector2.Dot(dir, Vector2.up)) < MinVerticalDot)
+            dir = EnforceMinVertical(dir);
+
+        return dir;
+    }
+
+    private Vector2 EnforceMinVertical(Vector2 dirNormalized)
+    {
+        dirNormalized = dirNormalized.normalized;
+
+        float signY = (dirNormalized.y >= 0f) ? 1f : -1f;
+        float y = MinVerticalDot * signY;
+
+        float signX = (dirNormalized.x == 0f)
+            ? ((Random.value < 0.5f) ? -1f : 1f)
+            : Mathf.Sign(dirNormalized.x);
+
+        float x = signX * Mathf.Sqrt(Mathf.Max(0f, 1f - y * y));
+        return new Vector2(x, y).normalized;
+    }
+
+    private void SnapToServePoint()
+    {
+        if (ServePoint != null)
+            rb.position = ServePoint.position;
+        else
+            rb.position = Vector2.zero;
+
+        transform.position = rb.position;
+    }
+
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        if (!roundActive) return;
+
+        // Treat "paddle" by component presence (tag bağımlılığı yok)
+        bool hitPaddle = collision.collider.GetComponentInParent<RacketController>() != null;
+
+        // Reflect using contact normal & last velocity (paddle movement won't affect speed/direction)
+        Vector2 inVel = (lastVelocity.sqrMagnitude > 0.0001f) ? lastVelocity : rb.linearVelocity;
+        Vector2 normal = (collision.contactCount > 0) ? collision.GetContact(0).normal : Vector2.up;
+
+        Vector2 outDir = Vector2.Reflect(inVel.normalized, normal).normalized;
+
+        if (hitPaddle)
         {
-            HandleBottomHit();
+            // Score +1 each paddle hit
+            Score?.AddPoint();
+
+            // After paddle bounce, MUST go upward
+            if (outDir.y < 0f) outDir.y = Mathf.Abs(outDir.y);
+
+            // Keep from being too horizontal
+            if (Mathf.Abs(Vector2.Dot(outDir, Vector2.up)) < MinVerticalDot)
+                outDir = EnforceMinVertical(outDir);
+
+            rb.linearVelocity = outDir * currentSpeed;
             return;
         }
 
-        if (C.collider.CompareTag("wall"))
+        // Walls tagged "wall" gradually increase speed (only here!)
+        if (collision.collider.CompareTag("wall"))
+            currentSpeed = Mathf.Min(currentSpeed * (1f + SpeedIncreasePercent), MaxSpeed);
+
+        // Keep from being too horizontal (applies to roof/side walls too)
+        if (Mathf.Abs(Vector2.Dot(outDir, Vector2.up)) < MinVerticalDot)
+            outDir = EnforceMinVertical(outDir);
+
+        rb.linearVelocity = outDir * currentSpeed;
+    }
+
+    private void OnTriggerEnter2D(Collider2D other)
+    {
+        if (!roundActive) return;
+
+        if (other.CompareTag("bottom"))
         {
-            PlayBounce();
-            TryWallSpeedUp();
-            return;
+            // GameOver flow is owned by GameManager
+            Game?.GameOver();
         }
-
-        if (C.collider.CompareTag("racket"))
-        {
-            HandleRacketHit(C);
-            return;
-        }
-    }
-
-    private void OnTriggerEnter2D(Collider2D Other)
-    {
-        if (IsStopping || Other == null) return;
-
-        if (Other.CompareTag("bottom"))
-            HandleBottomHit();
-    }
-
-    private void HandleBottomHit()
-    {
-        if (Score != null) Score.GameOver();
-        if (Game != null) Game.GameOver();
-        StopAndHide();
-    }
-
-    private void HandleRacketHit(Collision2D C)
-    {
-        if (Time.time - LastRacketHitTime < RacketHitCooldown) return;
-        LastRacketHitTime = Time.time;
-
-        PlayBounce();
-
-        if (Score != null) Score.AddPoint();
-
-        Vector2 V0 = Rb.linearVelocity;
-        float Spd = V0.magnitude;
-
-        Vector2 N = C.GetContact(0).normal;
-        Vector2 Dir = Vector2.Reflect((Spd > 0.001f ? V0 / Spd : Vector2.down), N);
-
-        Dir.y = Mathf.Abs(Dir.y);
-
-        if (PaddleAimStrength > 0f)
-        {
-            Collider2D Paddle = C.collider;
-            float BallX = Rb.position.x;
-
-            Bounds Bounds = Paddle.bounds;
-            float Half = Mathf.Max(0.0001f, Bounds.extents.x);
-            float Offset01 = Mathf.Clamp((BallX - Bounds.center.x) / Half, -1f, 1f);
-
-            Dir.x += Offset01 * (PaddleAimStrength * 0.35f);
-        }
-
-        Dir = Dir.normalized;
-        if (Dir.y < MinVerticalDot)
-            Dir = new Vector2(Dir.x, MinVerticalDot).normalized;
-
-        Rb.linearVelocity = Dir * Mathf.Clamp(Spd, 0f, MaxSpeed);
-
-        SeparateFromPaddle(C.collider);
-    }
-
-    private void SeparateFromPaddle(Collider2D Paddle)
-    {
-        if (Paddle == null) return;
-        float YTop = Paddle.bounds.max.y + PaddleSeparation;
-        Rb.position = new Vector2(Rb.position.x, YTop);
-    }
-
-    private void TryWallSpeedUp()
-    {
-        if (SpeedIncreasePercent <= 0f) return;
-        if (Time.time - LastWallSpeedUpTime < SpeedUpCooldown) return;
-
-        LastWallSpeedUpTime = Time.time;
-
-        Vector2 V = Rb.linearVelocity;
-        float Spd = V.magnitude;
-        if (Spd <= 0.001f) return;
-
-        float NewSpd = Mathf.Min(MaxSpeed, Spd * (1f + SpeedIncreasePercent));
-        Rb.linearVelocity = V.normalized * NewSpd;
-    }
-
-    private void ClampMaxSpeed()
-    {
-        Vector2 V = Rb.linearVelocity;
-        float Spd = V.magnitude;
-        if (Spd > MaxSpeed && Spd > 0.001f)
-            Rb.linearVelocity = V / Spd * MaxSpeed;
-    }
-
-    private void EnforceMinVertical()
-    {
-        Vector2 V = Rb.linearVelocity;
-        float Spd = V.magnitude;
-        if (Spd <= 0.001f) return;
-
-        Vector2 Dir = V / Spd;
-        float AbsY = Mathf.Abs(Dir.y);
-        if (AbsY >= MinVerticalDot) return;
-
-        float SignY = Mathf.Sign(Dir.y);
-        if (SignY == 0f) SignY = 1f;
-
-        Vector2 NewDir = new Vector2(Dir.x, SignY * MinVerticalDot).normalized;
-        Rb.linearVelocity = NewDir * Spd;
-    }
-
-    private void PlayBounce()
-    {
-        if (BounceSound != null) BounceSound.Play();
-    }
-
-    public void StopAndHide()
-    {
-        IsStopping = true;
-
-        if (ResetRoutine != null)
-        {
-            StopCoroutine(ResetRoutine);
-            ResetRoutine = null;
-        }
-
-        Rb.linearVelocity = Vector2.zero;
-        Rb.angularVelocity = 0f;
-        Rb.simulated = false;
-
-        Col.enabled = false;
-        if (Sr != null) Sr.enabled = false;
-        if (TrailEffect != null) TrailEffect.SetActive(false);
     }
 }

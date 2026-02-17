@@ -33,8 +33,8 @@ public class SoloGameManager : MonoBehaviour
         if (SoloBall == null) SoloBall = FindFirstObjectByType<SoloBall>();
         if (Score == null) Score = FindFirstObjectByType<SoloScoreManager>();
 
-        if (RetryButton != null) RetryButton.onClick.AddListener(OnRetryClicked);
-        if (MenuButton != null) MenuButton.onClick.AddListener(OnMenuClicked);
+        // NOTE: Button listeners are managed by GameOverAdGate (ad flow).
+        // Do NOT add duplicate listeners here.
 
         if (GameOverPanel != null) GameOverPanel.SetActive(false);
     }
@@ -54,7 +54,7 @@ public class SoloGameManager : MonoBehaviour
                 DisableOnGameOver[i].SetActive(false);
         }
 
-        if (SoloBall != null) SoloBall.StopAndHide();
+        if (SoloBall != null) SoloBall.OnGameOver();
     }
 
     public void RestartRun()
@@ -87,7 +87,7 @@ public class SoloGameManager : MonoBehaviour
             MenuPanel.SetActive(true);
 
             if (StopBallWhenMenuOpen && SoloBall != null)
-                SoloBall.StopAndHide();
+                SoloBall.OnGameOver();
 
             IsGameOverInternal = false;
             return;

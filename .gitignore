@@ -1,25 +1,43 @@
+# =====================
+# Unity
+# =====================
 [Ll]ibrary/
 [Tt]emp/
 [Oo]bj/
-[Ll]ogs/
-[Mm]emoryCaptures/
-UserSettings/
 [Bb]uild/
 [Bb]uilds/
-sysinfo.txt
+[Ll]ogs/
+[Uu]ser[Ss]ettings/
+[Mm]emoryCaptures/
 
-.vscode/
+# Visual Studio / Rider
+.vs/
 .idea/
+*.csproj
+*.sln
+*.user
+*.userprefs
+*.pidb
+*.booproj
+*.svd
+
+# OS junk
 .DS_Store
 Thumbs.db
 
+# Gradle / Android
 .gradle/
-*.apk
-*.aab
-*.keystore
-*.jks
+**/Android/.gradle/
+**/Android/gradle/
+**/Android/gradleBuild/
+**/Android/*.apk
+**/Android/*.aab
 
-*.tmp
-*.bak
-*~
-!**/*.meta
+# Unity Addressables cache
+**/AddressableAssetsData/*/Android/
+**/AddressableAssetsData/*/iOS/
+
+# =====================
+# AdMob / Google Mobile Ads
+# =====================
+Assets/GoogleMobileAds/Resources/GoogleMobileAdsSettings.asset
