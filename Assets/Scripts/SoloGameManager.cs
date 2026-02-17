@@ -6,101 +6,111 @@ using UnityEngine.UI;
 public class SoloGameManager : MonoBehaviour
 {
     [Header("Refs")]
-    [SerializeField] SoloBall soloBall;
-    [SerializeField] SoloScoreManager score;
+    [SerializeField] private SoloBall SoloBall;
+    [SerializeField] private SoloScoreManager Score;
 
     [Header("UI")]
-    [SerializeField] GameObject gameOverPanel;
-    [SerializeField] Button retryButton;
-    [SerializeField] Button menuButton;
+    [SerializeField] private GameObject GameOverPanel;
+    [SerializeField] private Button RetryButton;
+    [SerializeField] private Button MenuButton;
 
     [Header("Single-scene Menu (Optional)")]
-    [SerializeField] GameObject menuPanel;
-    [SerializeField] GameObject hudPanel;
+    [SerializeField] private GameObject MenuPanel;
+    [SerializeField] private GameObject HudPanel;
 
     [Header("Behavior")]
-    [SerializeField] bool pauseTimeOnGameOver = true;
-    [SerializeField] bool stopBallWhenMenuOpen = true;
+    [SerializeField] private bool PauseTimeOnGameOver = true;
+    [SerializeField] private bool StopBallWhenMenuOpen = true;
 
     [Header("Other")]
-    [SerializeField] List<GameObject> disableOnGameOver = new List<GameObject>();
+    [SerializeField] private List<GameObject> DisableOnGameOver = new List<GameObject>();
 
-    bool isGameOver;
-    public bool IsGameOver => isGameOver;
+    private bool IsGameOverInternal;
+    public bool IsGameOver => IsGameOverInternal;
 
-    void Awake()
+    private void Awake()
     {
-        if (soloBall == null) soloBall = FindFirstObjectByType<SoloBall>();
-        if (score == null) score = FindFirstObjectByType<SoloScoreManager>();
+        if (SoloBall == null) SoloBall = FindFirstObjectByType<SoloBall>();
+        if (Score == null) Score = FindFirstObjectByType<SoloScoreManager>();
 
-        if (retryButton != null) retryButton.onClick.AddListener(OnRetryClicked);
-        if (menuButton != null) menuButton.onClick.AddListener(OnMenuClicked);
+        if (RetryButton != null) RetryButton.onClick.AddListener(OnRetryClicked);
+        if (MenuButton != null) MenuButton.onClick.AddListener(OnMenuClicked);
 
-        if (gameOverPanel != null) gameOverPanel.SetActive(false);
+        if (GameOverPanel != null) GameOverPanel.SetActive(false);
     }
 
     public void GameOver()
     {
-        if (isGameOver) return;
-        isGameOver = true;
+        if (IsGameOverInternal) return;
+        IsGameOverInternal = true;
 
-        if (pauseTimeOnGameOver) Time.timeScale = 0f;
+        if (PauseTimeOnGameOver) Time.timeScale = 0f;
 
-        if (gameOverPanel != null) gameOverPanel.SetActive(true);
+        if (GameOverPanel != null) GameOverPanel.SetActive(true);
 
-        for (int i = 0; i < disableOnGameOver.Count; i++)
+        for (int i = 0; i < DisableOnGameOver.Count; i++)
         {
-            if (disableOnGameOver[i] != null)
-                disableOnGameOver[i].SetActive(false);
+            if (DisableOnGameOver[i] != null)
+                DisableOnGameOver[i].SetActive(false);
         }
 
-        if (soloBall != null) soloBall.HardStopAndHide();
+        if (SoloBall != null) SoloBall.StopAndHide();
     }
 
-    void OnRetryClicked()
+    public void RestartRun()
+    {
+        OnRetryClicked();
+    }
+
+    public void ReturnToMenu()
+    {
+        OnMenuClicked();
+    }
+
+    private void OnRetryClicked()
     {
         Time.timeScale = 1f;
-        if (gameOverPanel != null) gameOverPanel.SetActive(false);
+        if (GameOverPanel != null) GameOverPanel.SetActive(false);
 
         StartNewRun();
     }
 
-    void OnMenuClicked()
+    private void OnMenuClicked()
     {
         Time.timeScale = 1f;
 
-        if (menuPanel != null)
+        if (MenuPanel != null)
         {
-            if (hudPanel != null) hudPanel.SetActive(false);
-            if (gameOverPanel != null) gameOverPanel.SetActive(false);
+            if (HudPanel != null) HudPanel.SetActive(false);
+            if (GameOverPanel != null) GameOverPanel.SetActive(false);
 
-            menuPanel.SetActive(true);
+            MenuPanel.SetActive(true);
 
-            if (stopBallWhenMenuOpen && soloBall != null)
-                soloBall.HardStopAndHide();
+            if (StopBallWhenMenuOpen && SoloBall != null)
+                SoloBall.StopAndHide();
 
-            isGameOver = false;
+            IsGameOverInternal = false;
             return;
         }
 
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
     }
 
-    void StartNewRun()
+    private void StartNewRun()
     {
-        isGameOver = false;
+        IsGameOverInternal = false;
 
-        for (int i = 0; i < disableOnGameOver.Count; i++)
+        for (int i = 0; i < DisableOnGameOver.Count; i++)
         {
-            if (disableOnGameOver[i] != null)
-                disableOnGameOver[i].SetActive(true);
+            if (DisableOnGameOver[i] != null)
+                DisableOnGameOver[i].SetActive(true);
         }
 
-        if (score != null) score.ResetScore();
-        if (soloBall != null) soloBall.StartRound();
+        if (Score != null) Score.ResetScore();
+        if (SoloBall != null) SoloBall.StartRound();
 
-        if (hudPanel != null) hudPanel.SetActive(true);
-        if (menuPanel != null) menuPanel.SetActive(false);
+        if (HudPanel != null) HudPanel.SetActive(true);
+        if (MenuPanel != null) MenuPanel.SetActive(false);
     }
 
     public void StartGameFromMenu()

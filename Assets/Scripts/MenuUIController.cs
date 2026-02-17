@@ -1,88 +1,77 @@
 using UnityEngine;
-using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class MenuUIController : MonoBehaviour
 {
-    [Header("Scenes")]
-    public string gameSceneName = "game";
+    [Header("Refs")]
+    [SerializeField] private SoloGameManager GameManager;
 
     [Header("Roots")]
-    public GameObject menuScreenRoot;
-    public GameObject settingsScreenRoot;
+    [SerializeField] private GameObject MenuPanel;
+    [SerializeField] private GameObject SettingsPanel;
 
-    [Header("Navigation Buttons")]
-    public Button playButton;
-    public Button openSettingsButton;
-    public Button backButton;
+    [Header("Buttons")]
+    [SerializeField] private Button PlayButton;
+    [SerializeField] private Button SettingsButton;
+    [SerializeField] private Button BackButton;
 
-    [Header("Difficulty (0=easy, 1=medium, 2=hard)")]
-    public Button difficultyCycleButton;
+    [Header("Optional")]
+    [SerializeField] private AudioSource ClickSfx;
 
-    [Header("Optional Click SFX")]
-    public AudioSource clickSfx;
-
-    const string KEY_DIFFICULTY = "difficulty";
-
-    void Start()
+    private void Awake()
     {
-        Rebind(playButton, StartGame);
-        Rebind(openSettingsButton, OpenSettings);
-        Rebind(backButton, BackToMenu);
-        if (difficultyCycleButton) Rebind(difficultyCycleButton, CycleDifficulty);
+        if (GameManager == null) GameManager = FindFirstObjectByType<SoloGameManager>();
 
+        Bind(PlayButton, OnPlayPressed);
+        Bind(SettingsButton, OnSettingsPressed);
+        Bind(BackButton, OnBackPressed);
+    }
+
+    private void Start()
+    {
+        Time.timeScale = 1f;
         ShowMenu();
     }
 
-    void Rebind(Button btn, UnityEngine.Events.UnityAction action)
+    private void Bind(Button Button, UnityEngine.Events.UnityAction Action)
     {
-        if (!btn) return;
-        btn.onClick.RemoveAllListeners();
-        btn.onClick.AddListener(action);
+        if (Button == null) return;
+        Button.onClick.RemoveAllListeners();
+        Button.onClick.AddListener(Action);
     }
 
-    void Click()
+    private void Click()
     {
-        if (clickSfx) clickSfx.Play();
+        if (ClickSfx != null) ClickSfx.Play();
     }
 
-    public void StartGame()
+    private void OnPlayPressed()
     {
         Click();
-        Time.timeScale = 1f;
-        SceneManager.LoadScene(gameSceneName);
+        if (GameManager != null) GameManager.StartGameFromMenu();
     }
 
-    public void OpenSettings()
+    private void OnSettingsPressed()
     {
         Click();
         ShowSettings();
     }
 
-    public void BackToMenu()
+    private void OnBackPressed()
     {
         Click();
         ShowMenu();
     }
 
-    void ShowMenu()
+    public void ShowMenu()
     {
-        if (menuScreenRoot) menuScreenRoot.SetActive(true);
-        if (settingsScreenRoot) settingsScreenRoot.SetActive(false);
+        if (MenuPanel != null) MenuPanel.SetActive(true);
+        if (SettingsPanel != null) SettingsPanel.SetActive(false);
     }
 
-    void ShowSettings()
+    public void ShowSettings()
     {
-        if (menuScreenRoot) menuScreenRoot.SetActive(false);
-        if (settingsScreenRoot) settingsScreenRoot.SetActive(true);
-    }
-
-    public void CycleDifficulty()
-    {
-        Click();
-        int current = PlayerPrefs.GetInt(KEY_DIFFICULTY, 0);
-        int next = (current >= 2) ? 0 : (current + 1);
-        PlayerPrefs.SetInt(KEY_DIFFICULTY, next);
-        PlayerPrefs.Save();
+        if (MenuPanel != null) MenuPanel.SetActive(false);
+        if (SettingsPanel != null) SettingsPanel.SetActive(true);
     }
 }

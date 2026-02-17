@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class responsiveWalls : MonoBehaviour
+public class ResponsiveWalls : MonoBehaviour
 {
     public GameObject solWall;
     public GameObject sagWall;

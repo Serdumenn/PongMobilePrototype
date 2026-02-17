@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class racketController : MonoBehaviour
+public class RacketController : MonoBehaviour
 {
     public Camera cam;
     public Rigidbody2D rb;
