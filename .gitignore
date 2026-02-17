@@ -1,43 +1,37 @@
-# =====================
-# Unity
-# =====================
+# Unity generated
 [Ll]ibrary/
 [Tt]emp/
 [Oo]bj/
 [Bb]uild/
 [Bb]uilds/
 [Ll]ogs/
-[Uu]ser[Ss]ettings/
+[Uu]serSettings/
 [Mm]emoryCaptures/
 
-# Visual Studio / Rider
+# IDE / OS
 .vs/
 .idea/
 *.csproj
 *.sln
 *.user
-*.userprefs
+*.unityproj
 *.pidb
 *.booproj
 *.svd
-
-# OS junk
+*.pdb
+*.mdb
+*.opendb
+*.VC.db
 .DS_Store
 Thumbs.db
 
-# Gradle / Android
+# Gradle / Android Studio noise
 .gradle/
-**/Android/.gradle/
-**/Android/gradle/
-**/Android/gradleBuild/
-**/Android/*.apk
-**/Android/*.aab
+**/.gradle/
+local.properties
 
-# Unity Addressables cache
-**/AddressableAssetsData/*/Android/
-**/AddressableAssetsData/*/iOS/
+# Crashlytics (if any)
+crashlytics-build.properties
 
-# =====================
-# AdMob / Google Mobile Ads
-# =====================
-Assets/GoogleMobileAds/Resources/GoogleMobileAdsSettings.asset
+# Addressables (optional; keep if you want deterministic builds)
+# [Aa]ssets/[Aa]ddressableAssetsData/*/*.bin*
