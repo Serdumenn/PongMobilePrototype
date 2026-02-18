@@ -25,13 +25,8 @@
 .DS_Store
 Thumbs.db
 
-# Gradle / Android Studio noise
 .gradle/
 **/.gradle/
 local.properties
 
-# Crashlytics (if any)
 crashlytics-build.properties
-
-# Addressables (optional; keep if you want deterministic builds)
-# [Aa]ssets/[Aa]ddressableAssetsData/*/*.bin*
