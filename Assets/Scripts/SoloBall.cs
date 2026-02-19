@@ -37,7 +37,6 @@ public sealed class SoloBall : MonoBehaviour
         rb = GetComponent<Rigidbody2D>();
         col = GetComponent<Collider2D>();
 
-        // Physics baseline for Pong feel
         rb.gravityScale = 0f;
         rb.linearDamping = 0f;
         rb.angularDamping = 0f;
@@ -45,7 +44,6 @@ public sealed class SoloBall : MonoBehaviour
         rb.collisionDetectionMode = CollisionDetectionMode2D.Continuous;
         rb.interpolation = RigidbodyInterpolation2D.Interpolate;
 
-        // Ball should be a solid collider (bottom should be trigger)
         col.isTrigger = false;
 
         if (Score == null) Score = FindFirstObjectByType<SoloScoreManager>();
@@ -57,7 +55,6 @@ public sealed class SoloBall : MonoBehaviour
         rb.simulated = false;
         col.enabled = false;
 
-        // put ball to serve point at boot
         SnapToServePoint();
 
         if (AutoStart)
@@ -70,11 +67,9 @@ public sealed class SoloBall : MonoBehaviour
 
         lastVelocity = rb.linearVelocity;
 
-        // Keep magnitude stable (paddle should not change speed)
         float speed = lastVelocity.magnitude;
         if (speed < 0.001f)
         {
-            // dead ball failsafe
             rb.linearVelocity = GetUpwardLaunchDir() * currentSpeed;
             return;
         }
@@ -127,12 +122,10 @@ public sealed class SoloBall : MonoBehaviour
 
     private Vector2 GetUpwardLaunchDir()
     {
-        // Always upward at start. Never downward.
         float x = (Random.value < 0.5f) ? -1f : 1f;
         float y = Random.Range(0.60f, 1.00f); // guaranteed up
         Vector2 dir = new Vector2(x, y).normalized;
 
-        // ensure not too horizontal
         if (Mathf.Abs(Vector2.Dot(dir, Vector2.up)) < MinVerticalDot)
             dir = EnforceMinVertical(dir);
 
@@ -168,10 +161,8 @@ public sealed class SoloBall : MonoBehaviour
     {
         if (!roundActive) return;
 
-        // Treat "paddle" by component presence (tag bağımlılığı yok)
         bool hitPaddle = collision.collider.GetComponentInParent<RacketController>() != null;
 
-        // Reflect using contact normal & last velocity (paddle movement won't affect speed/direction)
         Vector2 inVel = (lastVelocity.sqrMagnitude > 0.0001f) ? lastVelocity : rb.linearVelocity;
         Vector2 normal = (collision.contactCount > 0) ? collision.GetContact(0).normal : Vector2.up;
 
@@ -179,13 +170,10 @@ public sealed class SoloBall : MonoBehaviour
 
         if (hitPaddle)
         {
-            // Score +1 each paddle hit
             Score?.AddPoint();
 
-            // After paddle bounce, MUST go upward
             if (outDir.y < 0f) outDir.y = Mathf.Abs(outDir.y);
 
-            // Keep from being too horizontal
             if (Mathf.Abs(Vector2.Dot(outDir, Vector2.up)) < MinVerticalDot)
                 outDir = EnforceMinVertical(outDir);
 
@@ -193,11 +181,9 @@ public sealed class SoloBall : MonoBehaviour
             return;
         }
 
-        // Walls tagged "wall" gradually increase speed (only here!)
         if (collision.collider.CompareTag("wall"))
             currentSpeed = Mathf.Min(currentSpeed * (1f + SpeedIncreasePercent), MaxSpeed);
 
-        // Keep from being too horizontal (applies to roof/side walls too)
         if (Mathf.Abs(Vector2.Dot(outDir, Vector2.up)) < MinVerticalDot)
             outDir = EnforceMinVertical(outDir);
 
@@ -210,7 +196,6 @@ public sealed class SoloBall : MonoBehaviour
 
         if (other.CompareTag("bottom"))
         {
-            // GameOver flow is owned by GameManager
             Game?.GameOver();
         }
     }

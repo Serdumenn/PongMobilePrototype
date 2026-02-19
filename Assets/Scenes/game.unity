@@ -1018,7 +1018,7 @@ Transform:
   m_GameObject: {fileID: 664251433}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: -642, y: -1389, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1849,13 +1849,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1148f9d3dfceae54b8f5896d6de5bbae, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  cam: {fileID: 1822548374}
-  rb: {fileID: 1185500008}
-  maxSpeed: 10
-  followGain: 12
-  acceleration: 60
-  deceleration: 80
-  wallMargin: 0.25
+  MoveSpeed: 12
+  UseMouseInEditor: 1
 --- !u!4 &1185500011
 Transform:
   m_ObjectHideFlags: 0
@@ -2153,21 +2148,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d439fe9b50c31bc4f9a15d4ade2b2ed3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  LaunchSpeed: 8
-  MaxSpeed: 16
+  LaunchSpeed: 5
+  MaxSpeed: 14
   SpeedIncreasePercent: 0.02
   ResetDelay: 0.75
   MinVerticalDot: 0.3
-  SpeedUpCooldown: 0.12
-  PaddleAimStrength: 0.6
-  PaddleSeparation: 0.03
   ServePoint: {fileID: 664251434}
-  TrailEffect: {fileID: 0}
-  BounceSound: {fileID: 0}
   Score: {fileID: 325603702}
   Game: {fileID: 7019952436038793779}
   AutoStart: 0
-  SpawnSafeTime: 0.15
 --- !u!1 &1406160481
 GameObject:
   m_ObjectHideFlags: 0
@@ -2488,7 +2477,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c98e8c27f0b235a4d8f014e60e70383a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  parentRb: {fileID: 1185500008}
+  parentTransform: {fileID: 0}
   maxTiltDeg: 18
   speedToMax: 8
   smooth: 15
@@ -2819,7 +2808,7 @@ BoxCollider2D:
   m_CallbackLayers:
     serializedVersion: 2
     m_Bits: 4294967295
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
