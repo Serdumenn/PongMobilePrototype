@@ -1,8 +1,13 @@
 using UnityEngine;
+using TMPro;
 
 public class SoloScoreManager : MonoBehaviour
 {
     public const string BestScoreKey = "bestScore";
+
+    [Header("UI")]
+    [SerializeField] private TMP_Text HudScoreText;
+    [SerializeField] private TMP_Text GameOverScoreText;
 
     [Header("Debug")]
     public bool logScoreChanges = false;
@@ -21,9 +26,7 @@ public class SoloScoreManager : MonoBehaviour
     {
         Score = 0;
         IsGameOver = false;
-
-        if (logScoreChanges)
-            Debug.Log($"[SoloScoreManager] Reset. Best={BestScore}");
+        UpdateHudText();
     }
 
     public void AddPoint()
@@ -39,8 +42,7 @@ public class SoloScoreManager : MonoBehaviour
             PlayerPrefs.Save();
         }
 
-        if (logScoreChanges)
-            Debug.Log($"[SoloScoreManager] Score={Score}, Best={BestScore}");
+        UpdateHudText();
     }
 
     public void GameOver()
@@ -48,7 +50,18 @@ public class SoloScoreManager : MonoBehaviour
         if (IsGameOver) return;
         IsGameOver = true;
 
-        if (logScoreChanges)
-            Debug.Log($"[SoloScoreManager] GameOver. Final={Score}, Best={BestScore}");
+        if (GameOverScoreText != null)
+        {
+            bool isNewRecord = (Score >= BestScore);
+            GameOverScoreText.text = isNewRecord
+                ? $"BEST: {BestScore}"
+                : $"{Score}";
+        }
+    }
+
+    private void UpdateHudText()
+    {
+        if (HudScoreText != null)
+            HudScoreText.text = Score.ToString();
     }
 }

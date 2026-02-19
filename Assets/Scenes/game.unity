@@ -131,7 +131,7 @@ GameObject:
   - component: {fileID: 94044296}
   - component: {fileID: 94044295}
   m_Layer: 5
-  m_Name: ScoreText
+  m_Name: GameOverScoreText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -435,6 +435,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 22ce1fa0f55c58a4e9f6fbba6d7bd5d4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  HudScoreText: {fileID: 989636285}
+  GameOverScoreText: {fileID: 94044295}
   logScoreChanges: 1
 --- !u!222 &325603703
 CanvasRenderer:
@@ -1084,7 +1086,7 @@ GameObject:
   - component: {fileID: 721428746}
   - component: {fileID: 721428745}
   m_Layer: 5
-  m_Name: ScoreTable
+  m_Name: LeadershipButton
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1850,7 +1852,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   MoveSpeed: 12
-  UseMouseInEditor: 1
+  MaxTiltDeg: 18
+  SpeedForMaxTilt: 10
+  TiltSmooth: 15
 --- !u!4 &1185500011
 Transform:
   m_ObjectHideFlags: 0
@@ -2094,7 +2098,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: -642, y: -1389, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 1.35, y: 1.35, z: 1.35}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 764209564}
@@ -2151,12 +2155,12 @@ MonoBehaviour:
   LaunchSpeed: 5
   MaxSpeed: 14
   SpeedIncreasePercent: 0.02
-  ResetDelay: 0.75
   MinVerticalDot: 0.3
+  WallBounceJitter: 3
+  CollisionSeparation: 0.05
   ServePoint: {fileID: 664251434}
   Score: {fileID: 325603702}
   Game: {fileID: 7019952436038793779}
-  AutoStart: 0
 --- !u!1 &1406160481
 GameObject:
   m_ObjectHideFlags: 0
@@ -2387,7 +2391,6 @@ GameObject:
   m_Component:
   - component: {fileID: 1469351843}
   - component: {fileID: 1469351844}
-  - component: {fileID: 1469351845}
   m_Layer: 0
   m_Name: Capsule
   m_TagString: Untagged
@@ -2465,22 +2468,6 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
---- !u!114 &1469351845
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1469351842}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c98e8c27f0b235a4d8f014e60e70383a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  parentTransform: {fileID: 0}
-  maxTiltDeg: 18
-  speedToMax: 8
-  smooth: 15
 --- !u!1 &1503063515
 GameObject:
   m_ObjectHideFlags: 0

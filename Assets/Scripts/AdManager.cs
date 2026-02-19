@@ -11,7 +11,7 @@ public sealed class AdManager : MonoBehaviour
 {
     public static AdManager Instance { get; private set; }
 
-    [Header("Ad Unit Ids (Use Test Ids In Development)")]
+    [Header("Ad Unit Ids")]
 #if UNITY_ANDROID
     [SerializeField] private string InterstitialAdUnitId = "ca-app-pub-3940256099942544/1033173712";
 #elif UNITY_IOS
@@ -21,7 +21,7 @@ public sealed class AdManager : MonoBehaviour
 #endif
 
     [Header("Rules")]
-    [SerializeField] private int CooldownSeconds = 180; // 3 minutes
+    [SerializeField] private int CooldownSeconds = 180;
     [SerializeField] private bool EnableAdsInEditor = false;
 
     private const string LastInterstitialClosedUtcKey = "LastInterstitialClosedUtc";

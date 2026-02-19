@@ -3,26 +3,30 @@ using UnityEngine;
 [RequireComponent(typeof(Rigidbody2D))]
 public sealed class RacketController : MonoBehaviour
 {
+    [Header("Movement")]
     [SerializeField] private float MoveSpeed = 12f;
-    [SerializeField] private bool UseMouseInEditor = true;
+
+    [Header("Tilt")]
+    [SerializeField] private float MaxTiltDeg = 18f;
+    [SerializeField] private float SpeedForMaxTilt = 10f;
+    [SerializeField] private float TiltSmooth = 15f;
 
     private Rigidbody2D rb;
     private Camera mainCam;
 
     private float baseY;
     private float halfWidthWorld;
+    private float currentTiltAngle;
 
     private void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
         mainCam = Camera.main;
 
-        // Pong paddle must not be pushed by ball
         rb.bodyType = RigidbodyType2D.Kinematic;
         rb.gravityScale = 0f;
         rb.linearDamping = 0f;
         rb.angularDamping = 0f;
-        rb.constraints = RigidbodyConstraints2D.FreezeRotation;
         rb.collisionDetectionMode = CollisionDetectionMode2D.Continuous;
         rb.interpolation = RigidbodyInterpolation2D.Interpolate;
 
@@ -32,10 +36,8 @@ public sealed class RacketController : MonoBehaviour
 
     private void CacheHalfWidth()
     {
-        // Use sprite bounds if present; fallback to small value
         var sr = GetComponentInChildren<SpriteRenderer>();
-        if (sr != null) halfWidthWorld = sr.bounds.extents.x;
-        else halfWidthWorld = 0.5f;
+        halfWidthWorld = (sr != null) ? sr.bounds.extents.x : 0.5f;
     }
 
     private void FixedUpdate()
@@ -46,13 +48,21 @@ public sealed class RacketController : MonoBehaviour
         float targetX = GetTargetWorldX();
         float clampedX = ClampToCamera(targetX);
 
-        float newX = Mathf.MoveTowards(rb.position.x, clampedX, MoveSpeed * Time.fixedDeltaTime);
+        float oldX = rb.position.x;
+        float newX = Mathf.MoveTowards(oldX, clampedX, MoveSpeed * Time.fixedDeltaTime);
+
         rb.MovePosition(new Vector2(newX, baseY));
+
+        float velocityX = (newX - oldX) / Time.fixedDeltaTime;
+        float tiltNormalized = Mathf.Clamp(velocityX / Mathf.Max(0.01f, SpeedForMaxTilt), -1f, 1f);
+        float targetAngle = -tiltNormalized * MaxTiltDeg;
+
+        currentTiltAngle = Mathf.Lerp(currentTiltAngle, targetAngle, TiltSmooth * Time.fixedDeltaTime);
+        rb.MoveRotation(currentTiltAngle);
     }
 
     private float GetTargetWorldX()
     {
-        // Touch
         if (Input.touchCount > 0)
         {
             Touch t = Input.GetTouch(0);
@@ -60,14 +70,11 @@ public sealed class RacketController : MonoBehaviour
             return w.x;
         }
 
-        // Mouse (Editor)
-#if UNITY_EDITOR
-        if (UseMouseInEditor && Input.GetMouseButton(0))
+        if (Input.GetMouseButton(0))
         {
             Vector3 w = mainCam.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, -mainCam.transform.position.z));
             return w.x;
         }
-#endif
 
         return rb.position.x;
     }
