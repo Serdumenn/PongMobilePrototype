@@ -20,6 +20,7 @@ public sealed class SoloBall : MonoBehaviour
     [Header("Refs")]
     [SerializeField] private SoloScoreManager Score;
     [SerializeField] private SoloGameManager Game;
+    [SerializeField] private RacketController Paddle;
 
     private Rigidbody2D rb;
     private Collider2D col;
@@ -52,6 +53,7 @@ public sealed class SoloBall : MonoBehaviour
 
         if (Score == null) Score = FindFirstObjectByType<SoloScoreManager>();
         if (Game == null) Game = FindFirstObjectByType<SoloGameManager>();
+        if (Paddle == null) Paddle = FindFirstObjectByType<RacketController>();
     }
 
     private void Start()
@@ -66,8 +68,8 @@ public sealed class SoloBall : MonoBehaviour
     {
         if (!waitingForServe) return;
 
-        bool tapped = Input.touchCount > 0 || Input.GetMouseButtonDown(0);
-        if (tapped) Launch();
+        if (Paddle != null && Paddle.HasActiveInput)
+            Launch();
     }
 
     private void FixedUpdate()
@@ -76,6 +78,10 @@ public sealed class SoloBall : MonoBehaviour
 
         if (rb.linearVelocity.sqrMagnitude > 0.0001f)
             lastVelocity = rb.linearVelocity;
+
+        float actualSpeed = rb.linearVelocity.magnitude;
+        if (actualSpeed > 0.01f && actualSpeed < currentSpeed * 0.95f)
+            rb.linearVelocity = rb.linearVelocity.normalized * currentSpeed;
     }
 
     public void StartRound()

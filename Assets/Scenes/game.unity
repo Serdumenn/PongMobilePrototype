@@ -306,9 +306,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3abf7e61d0a27d344bcdeb942fb918b4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  solWall: {fileID: 0}
-  sagWall: {fileID: 0}
-  wallThickness: 0.5
+  LeftWall: {fileID: 1278500348}
+  RightWall: {fileID: 1503063516}
+  Roof: {fileID: 937802655}
+  Bottom: {fileID: 1799850297}
+  WallThickness: 0.5
+  EdgeOffset: 0.25
 --- !u!1 &250823335
 GameObject:
   m_ObjectHideFlags: 0
@@ -1820,7 +1823,7 @@ Rigidbody2D:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1185500007}
-  m_BodyType: 0
+  m_BodyType: 1
   m_Simulated: 1
   m_UseFullKinematicContacts: 0
   m_UseAutoMass: 0
@@ -1835,9 +1838,9 @@ Rigidbody2D:
   m_ExcludeLayers:
     serializedVersion: 2
     m_Bits: 0
-  m_Interpolate: 0
+  m_Interpolate: 1
   m_SleepingMode: 1
-  m_CollisionDetection: 0
+  m_CollisionDetection: 1
   m_Constraints: 0
 --- !u!114 &1185500009
 MonoBehaviour:
@@ -1855,6 +1858,7 @@ MonoBehaviour:
   MaxTiltDeg: 18
   SpeedForMaxTilt: 10
   TiltSmooth: 15
+  InputZoneRatio: 0.5
 --- !u!4 &1185500011
 Transform:
   m_ObjectHideFlags: 0
@@ -2075,7 +2079,7 @@ Rigidbody2D:
   m_UseAutoMass: 0
   m_Mass: 1
   m_LinearDamping: 0
-  m_AngularDamping: 0.05
+  m_AngularDamping: 0
   m_GravityScale: 0
   m_Material: {fileID: 0}
   m_IncludeLayers:
@@ -2084,9 +2088,9 @@ Rigidbody2D:
   m_ExcludeLayers:
     serializedVersion: 2
     m_Bits: 0
-  m_Interpolate: 0
+  m_Interpolate: 1
   m_SleepingMode: 1
-  m_CollisionDetection: 0
+  m_CollisionDetection: 1
   m_Constraints: 4
 --- !u!4 &1378371383
 Transform:
@@ -2152,15 +2156,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d439fe9b50c31bc4f9a15d4ade2b2ed3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  LaunchSpeed: 5
-  MaxSpeed: 14
-  SpeedIncreasePercent: 0.02
-  MinVerticalDot: 0.3
+  LaunchSpeed: 6
+  MaxSpeed: 16
+  SpeedIncreasePercent: 0.01
+  MinVerticalDot: 0.4
   WallBounceJitter: 3
   CollisionSeparation: 0.05
   ServePoint: {fileID: 664251434}
   Score: {fileID: 325603702}
   Game: {fileID: 7019952436038793779}
+  Paddle: {fileID: 1185500009}
 --- !u!1 &1406160481
 GameObject:
   m_ObjectHideFlags: 0
@@ -2821,7 +2826,6 @@ GameObject:
   m_Component:
   - component: {fileID: 1822548375}
   - component: {fileID: 1822548374}
-  - component: {fileID: 1822548373}
   m_Layer: 0
   m_Name: Camera
   m_TagString: MainCamera
@@ -2829,14 +2833,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!81 &1822548373
-AudioListener:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1822548372}
-  m_Enabled: 1
 --- !u!20 &1822548374
 Camera:
   m_ObjectHideFlags: 0
@@ -2869,7 +2865,7 @@ Camera:
     width: 1
     height: 1
   near clip plane: 0.3
-  far clip plane: 1000
+  far clip plane: 100
   field of view: 60
   orthographic: 1
   orthographic size: 5
@@ -2897,7 +2893,7 @@ Transform:
   m_GameObject: {fileID: 1822548372}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: -1}
+  m_LocalPosition: {x: 0, y: 0, z: -10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -3396,6 +3392,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   SoloBall: {fileID: 1378371385}
   Score: {fileID: 325603702}
+  Paddle: {fileID: 1185500009}
   GameOverPanel: {fileID: 656048621}
   RetryButton: {fileID: 482246522}
   MenuButton: {fileID: 1406160483}

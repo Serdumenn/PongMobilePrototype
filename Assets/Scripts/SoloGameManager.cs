@@ -8,6 +8,7 @@ public class SoloGameManager : MonoBehaviour
     [Header("Refs")]
     [SerializeField] private SoloBall SoloBall;
     [SerializeField] private SoloScoreManager Score;
+    [SerializeField] private RacketController Paddle;
 
     [Header("UI")]
     [SerializeField] private GameObject GameOverPanel;
@@ -30,9 +31,14 @@ public class SoloGameManager : MonoBehaviour
 
     private void Awake()
     {
+        Application.targetFrameRate = 60;
+        QualitySettings.vSyncCount = 0;
+
         if (SoloBall == null) SoloBall = FindFirstObjectByType<SoloBall>();
         if (Score == null) Score = FindFirstObjectByType<SoloScoreManager>();
+        if (Paddle == null) Paddle = FindFirstObjectByType<RacketController>();
 
+        if (Paddle != null) Paddle.InputEnabled = false;
         if (GameOverPanel != null) GameOverPanel.SetActive(false);
     }
 
@@ -52,6 +58,7 @@ public class SoloGameManager : MonoBehaviour
         }
 
         if (SoloBall != null) SoloBall.StopRound();
+        if (Paddle != null) Paddle.InputEnabled = false;
     }
 
     public void RestartRun()
@@ -86,6 +93,8 @@ public class SoloGameManager : MonoBehaviour
             if (StopBallWhenMenuOpen && SoloBall != null)
                 SoloBall.StopRound();
 
+            if (Paddle != null) Paddle.InputEnabled = false;
+
             IsGameOverInternal = false;
             return;
         }
@@ -105,6 +114,7 @@ public class SoloGameManager : MonoBehaviour
 
         if (Score != null) Score.ResetScore();
         if (SoloBall != null) SoloBall.StartRound();
+        if (Paddle != null) Paddle.InputEnabled = true;
 
         if (HudPanel != null) HudPanel.SetActive(true);
         if (MenuPanel != null) MenuPanel.SetActive(false);

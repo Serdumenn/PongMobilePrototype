@@ -11,12 +11,18 @@ public sealed class RacketController : MonoBehaviour
     [SerializeField] private float SpeedForMaxTilt = 10f;
     [SerializeField] private float TiltSmooth = 15f;
 
+    [Header("Input Zone")]
+    [SerializeField, Range(0.1f, 1f)] private float InputZoneRatio = 0.5f;
+
     private Rigidbody2D rb;
     private Camera mainCam;
 
     private float baseY;
     private float halfWidthWorld;
     private float currentTiltAngle;
+
+    public bool InputEnabled { get; set; }
+    public bool HasActiveInput { get; private set; }
 
     private void Awake()
     {
@@ -29,6 +35,12 @@ public sealed class RacketController : MonoBehaviour
         rb.angularDamping = 0f;
         rb.collisionDetectionMode = CollisionDetectionMode2D.Continuous;
         rb.interpolation = RigidbodyInterpolation2D.Interpolate;
+
+        var noBounce = new PhysicsMaterial2D("PaddleNoBounce");
+        noBounce.bounciness = 0f;
+        noBounce.friction = 0f;
+        foreach (var col in GetComponentsInChildren<Collider2D>())
+            col.sharedMaterial = noBounce;
 
         baseY = rb.position.y;
         CacheHalfWidth();
@@ -63,17 +75,30 @@ public sealed class RacketController : MonoBehaviour
 
     private float GetTargetWorldX()
     {
+        HasActiveInput = false;
+        if (!InputEnabled) return rb.position.x;
+
+        float threshold = Screen.height * InputZoneRatio;
+
         if (Input.touchCount > 0)
         {
             Touch t = Input.GetTouch(0);
-            Vector3 w = mainCam.ScreenToWorldPoint(new Vector3(t.position.x, t.position.y, -mainCam.transform.position.z));
-            return w.x;
+            if (t.position.y < threshold)
+            {
+                HasActiveInput = true;
+                Vector3 w = mainCam.ScreenToWorldPoint(new Vector3(t.position.x, t.position.y, -mainCam.transform.position.z));
+                return w.x;
+            }
         }
 
         if (Input.GetMouseButton(0))
         {
-            Vector3 w = mainCam.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, -mainCam.transform.position.z));
-            return w.x;
+            if (Input.mousePosition.y < threshold)
+            {
+                HasActiveInput = true;
+                Vector3 w = mainCam.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, -mainCam.transform.position.z));
+                return w.x;
+            }
         }
 
         return rb.position.x;
