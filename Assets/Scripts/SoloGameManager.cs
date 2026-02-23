@@ -10,14 +10,19 @@ public class SoloGameManager : MonoBehaviour
     [SerializeField] private SoloScoreManager Score;
     [SerializeField] private RacketController Paddle;
 
+    [Header("Entrance")]
+    [SerializeField] private GameObjectEntrance BallEntrance;
+    [SerializeField] private GameObjectEntrance RacketEntrance;
+
     [Header("UI")]
-    [SerializeField] private GameObject GameOverPanel;
+    [SerializeField] private PanelTransition GameOverPanel;
     [SerializeField] private Button RetryButton;
     [SerializeField] private Button MenuButton;
 
     [Header("Single-scene Menu")]
-    [SerializeField] private GameObject MenuPanel;
+    [SerializeField] private PanelTransition MenuPanel;
     [SerializeField] private GameObject HudPanel;
+    [SerializeField] private MenuUIController MenuController;
 
     [Header("Behavior")]
     [SerializeField] private bool PauseTimeOnGameOver = true;
@@ -37,9 +42,20 @@ public class SoloGameManager : MonoBehaviour
         if (SoloBall == null) SoloBall = FindFirstObjectByType<SoloBall>();
         if (Score == null) Score = FindFirstObjectByType<SoloScoreManager>();
         if (Paddle == null) Paddle = FindFirstObjectByType<RacketController>();
+        if (MenuController == null) MenuController = FindFirstObjectByType<MenuUIController>();
+
+        if (BallEntrance == null && SoloBall != null)
+            BallEntrance = SoloBall.GetComponent<GameObjectEntrance>();
+        if (RacketEntrance == null && Paddle != null)
+            RacketEntrance = Paddle.GetComponent<GameObjectEntrance>();
 
         if (Paddle != null) Paddle.InputEnabled = false;
-        if (GameOverPanel != null) GameOverPanel.SetActive(false);
+        if (GameOverPanel != null) GameOverPanel.HideInstant();
+    }
+
+    private void Start()
+    {
+        PlayEntranceAnimations();
     }
 
     public void GameOver()
@@ -49,7 +65,7 @@ public class SoloGameManager : MonoBehaviour
 
         if (PauseTimeOnGameOver) Time.timeScale = 0f;
 
-        if (GameOverPanel != null) GameOverPanel.SetActive(true);
+        if (GameOverPanel != null) GameOverPanel.FadeIn();
 
         for (int i = 0; i < DisableOnGameOver.Count; i++)
         {
@@ -59,6 +75,7 @@ public class SoloGameManager : MonoBehaviour
 
         if (SoloBall != null) SoloBall.StopRound();
         if (Paddle != null) Paddle.InputEnabled = false;
+        if (Paddle != null) Paddle.SetVisible(false);
     }
 
     public void RestartRun()
@@ -74,7 +91,7 @@ public class SoloGameManager : MonoBehaviour
     private void OnRetryClicked()
     {
         Time.timeScale = 1f;
-        if (GameOverPanel != null) GameOverPanel.SetActive(false);
+        if (GameOverPanel != null) GameOverPanel.FadeOut();
 
         StartNewRun();
     }
@@ -86,14 +103,19 @@ public class SoloGameManager : MonoBehaviour
         if (MenuPanel != null)
         {
             if (HudPanel != null) HudPanel.SetActive(false);
-            if (GameOverPanel != null) GameOverPanel.SetActive(false);
+            if (GameOverPanel != null) GameOverPanel.HideInstant();
 
-            MenuPanel.SetActive(true);
+            if (MenuController != null)
+                MenuController.ShowMenu();
+            else if (MenuPanel != null)
+                MenuPanel.FadeIn();
 
             if (StopBallWhenMenuOpen && SoloBall != null)
-                SoloBall.StopRound();
+                SoloBall.StopRoundKeepVisible();
 
             if (Paddle != null) Paddle.InputEnabled = false;
+
+            PlayEntranceAnimations();
 
             IsGameOverInternal = false;
             return;
@@ -117,12 +139,37 @@ public class SoloGameManager : MonoBehaviour
         if (Paddle != null) Paddle.InputEnabled = true;
 
         if (HudPanel != null) HudPanel.SetActive(true);
-        if (MenuPanel != null) MenuPanel.SetActive(false);
+        if (MenuPanel != null) MenuPanel.FadeOut();
+
+        PlayEntranceAnimations();
     }
 
     public void StartGameFromMenu()
     {
         Time.timeScale = 1f;
         StartNewRun();
+    }
+
+    private void PlayEntranceAnimations()
+    {
+        if (Paddle != null) Paddle.ResetPosition();
+        if (SoloBall != null) SoloBall.SnapToServePoint();
+
+        if (RacketEntrance != null)
+            RacketEntrance.PlayEntrance(GameObjectEntrance.Direction.Left);
+        if (BallEntrance != null)
+            BallEntrance.PlayEntrance(GameObjectEntrance.Direction.Right);
+    }
+
+    public void HideGameObjects()
+    {
+        if (SoloBall != null) SoloBall.SetBallVisible(false);
+        if (Paddle != null) Paddle.SetVisible(false);
+    }
+
+    public void ShowGameObjects()
+    {
+        if (SoloBall != null) SoloBall.SetBallVisible(true);
+        if (Paddle != null) Paddle.SetVisible(true);
     }
 }

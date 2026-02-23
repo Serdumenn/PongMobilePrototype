@@ -58,7 +58,6 @@ public sealed class SoloBall : MonoBehaviour
 
     private void Start()
     {
-        SetBallVisible(false);
         rb.simulated = false;
         col.enabled = false;
         SnapToServePoint();
@@ -111,6 +110,19 @@ public sealed class SoloBall : MonoBehaviour
         col.enabled = false;
 
         SetBallVisible(false);
+        SnapToServePoint();
+    }
+
+    public void StopRoundKeepVisible()
+    {
+        roundActive = false;
+        waitingForServe = false;
+
+        rb.linearVelocity = Vector2.zero;
+        rb.angularVelocity = 0f;
+        rb.simulated = false;
+        col.enabled = false;
+
         SnapToServePoint();
     }
 
@@ -229,14 +241,14 @@ public sealed class SoloBall : MonoBehaviour
             rb.position += normal * CollisionSeparation;
     }
 
-    private void SnapToServePoint()
+    public void SnapToServePoint()
     {
         Vector2 pos = (ServePoint != null) ? (Vector2)ServePoint.position : Vector2.zero;
         rb.position = pos;
         transform.position = pos;
     }
 
-    private void SetBallVisible(bool visible)
+    public void SetBallVisible(bool visible)
     {
         if (sr != null) sr.enabled = visible;
     }

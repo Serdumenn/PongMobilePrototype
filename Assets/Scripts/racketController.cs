@@ -46,6 +46,20 @@ public sealed class RacketController : MonoBehaviour
         CacheHalfWidth();
     }
 
+    public void ResetPosition()
+    {
+        rb.position = new Vector2(0f, baseY);
+        transform.position = new Vector3(0f, baseY, 0f);
+        transform.rotation = Quaternion.identity;
+        currentTiltAngle = 0f;
+    }
+
+    public void SetVisible(bool visible)
+    {
+        var sr = GetComponentInChildren<SpriteRenderer>();
+        if (sr != null) sr.enabled = visible;
+    }
+
     private void CacheHalfWidth()
     {
         var sr = GetComponentInChildren<SpriteRenderer>();
