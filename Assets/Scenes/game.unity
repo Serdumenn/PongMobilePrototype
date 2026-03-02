@@ -1952,8 +1952,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9f4ba447cec72c64fb9861e2577f3fb9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Duration: 0.3
-  Delay: 0.08
+  Duration: 1
+  Delay: 0.15
   OffScreenOffset: 3
 --- !u!1 &1278500347
 GameObject:
@@ -2222,8 +2222,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9f4ba447cec72c64fb9861e2577f3fb9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Duration: 0.3
-  Delay: 0.08
+  Duration: 1
+  Delay: 0.15
   OffScreenOffset: 3
 --- !u!1 &1406160481
 GameObject:

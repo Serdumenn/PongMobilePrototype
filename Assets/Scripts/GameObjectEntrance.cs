@@ -3,7 +3,7 @@ using UnityEngine;
 
 public sealed class GameObjectEntrance : MonoBehaviour
 {
-    [SerializeField] private float Duration = 0.30f;
+    [SerializeField] private float Duration = 0.55f;
     [SerializeField] private float Delay = 0f;
     [SerializeField] private float OffScreenOffset = 3f;
 
@@ -71,7 +71,7 @@ public sealed class GameObjectEntrance : MonoBehaviour
         while (elapsed < Duration)
         {
             elapsed += Time.unscaledDeltaTime;
-            float t = EaseOutCubic(Mathf.Clamp01(elapsed / Duration));
+            float t = EaseOutBack(Mathf.Clamp01(elapsed / Duration));
 
             transform.position = Vector3.Lerp(startPos, targetPosition, t);
             SetAlpha(t);
@@ -106,9 +106,11 @@ public sealed class GameObjectEntrance : MonoBehaviour
         sr.color = c;
     }
 
-    private static float EaseOutCubic(float t)
+    private static float EaseOutBack(float t)
     {
-        return 1f - Mathf.Pow(1f - t, 3f);
+        const float c1 = 2.5f;
+        const float c3 = c1 + 1f;
+        return 1f + c3 * Mathf.Pow(t - 1f, 3f) + c1 * Mathf.Pow(t - 1f, 2f);
     }
 
     public enum Direction
