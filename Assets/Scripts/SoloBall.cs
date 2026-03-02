@@ -181,6 +181,7 @@ public sealed class SoloBall : MonoBehaviour
 
             outDir = SafeDirection(outDir);
             ApplyVelocity(outDir);
+            HapticManager.Light();
             return;
         }
 
@@ -203,6 +204,7 @@ public sealed class SoloBall : MonoBehaviour
             Score?.GameOver();
             Game?.GameOver();
             StopRound();
+            HapticManager.Medium();
         }
     }
 

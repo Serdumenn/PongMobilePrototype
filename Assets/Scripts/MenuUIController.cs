@@ -45,6 +45,7 @@ public class MenuUIController : MonoBehaviour
     private void Click()
     {
         if (ClickSfx != null) ClickSfx.Play();
+        HapticManager.Soft();
     }
 
     private void OnPlayPressed()
