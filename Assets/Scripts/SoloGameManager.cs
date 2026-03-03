@@ -158,7 +158,10 @@ public class SoloGameManager : MonoBehaviour
         if (RacketEntrance != null)
             RacketEntrance.PlayEntrance(GameObjectEntrance.Direction.Left);
         if (BallEntrance != null)
-            BallEntrance.PlayEntrance(GameObjectEntrance.Direction.Right);
+            BallEntrance.PlayEntrance(GameObjectEntrance.Direction.Right, () =>
+            {
+                if (SoloBall != null) SoloBall.EnableServe();
+            });
     }
 
     public void HideGameObjects()

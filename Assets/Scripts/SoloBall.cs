@@ -96,6 +96,11 @@ public sealed class SoloBall : MonoBehaviour
         SnapToServePoint();
         SetBallVisible(true);
 
+        waitingForServe = false;
+    }
+
+    public void EnableServe()
+    {
         waitingForServe = true;
     }
 

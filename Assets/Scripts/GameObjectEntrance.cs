@@ -20,11 +20,11 @@ public sealed class GameObjectEntrance : MonoBehaviour
         rb = GetComponent<Rigidbody2D>();
     }
 
-    public void PlayEntrance(Direction from)
+    public void PlayEntrance(Direction from, System.Action onComplete = null)
     {
         EnsureInit();
         if (activeEntrance != null) StopCoroutine(activeEntrance);
-        activeEntrance = StartCoroutine(RunEntrance(from));
+        activeEntrance = StartCoroutine(RunEntrance(from, onComplete));
     }
 
     public void ResetToTarget(Vector3 target)
@@ -34,7 +34,7 @@ public sealed class GameObjectEntrance : MonoBehaviour
         SetAlpha(1f);
     }
 
-    private IEnumerator RunEntrance(Direction from)
+    private IEnumerator RunEntrance(Direction from, System.Action onComplete)
     {
         transform.rotation = Quaternion.identity;
 
@@ -85,6 +85,7 @@ public sealed class GameObjectEntrance : MonoBehaviour
         if (rb != null) rb.simulated = hadSimulated;
 
         activeEntrance = null;
+        onComplete?.Invoke();
     }
 
     private IEnumerator WaitUnscaled(float seconds)
