@@ -46,9 +46,7 @@ public sealed class SoloBall : MonoBehaviour
         rb.interpolation = RigidbodyInterpolation2D.Interpolate;
         col.isTrigger = false;
 
-        var noBounce = new PhysicsMaterial2D("NoBounce");
-        noBounce.bounciness = 0f;
-        noBounce.friction = 0f;
+        var noBounce = GetSharedNoBounce();
         col.sharedMaterial = noBounce;
 
         if (Score == null) Score = FindFirstObjectByType<SoloScoreManager>();
@@ -175,7 +173,7 @@ public sealed class SoloBall : MonoBehaviour
 
         SeparateFromSurface(normal);
 
-        bool hitPaddle = collision.collider.GetComponentInParent<RacketController>() != null;
+        bool hitPaddle = Paddle != null && collision.collider.transform.IsChildOf(Paddle.transform);
         if (hitPaddle)
         {
             Score?.AddPoint();
@@ -258,5 +256,17 @@ public sealed class SoloBall : MonoBehaviour
     public void SetBallVisible(bool visible)
     {
         if (sr != null) sr.enabled = visible;
+    }
+
+    private static PhysicsMaterial2D sharedNoBounce;
+    public static PhysicsMaterial2D GetSharedNoBounce()
+    {
+        if (sharedNoBounce == null)
+        {
+            sharedNoBounce = new PhysicsMaterial2D("NoBounce");
+            sharedNoBounce.bounciness = 0f;
+            sharedNoBounce.friction = 0f;
+        }
+        return sharedNoBounce;
     }
 }

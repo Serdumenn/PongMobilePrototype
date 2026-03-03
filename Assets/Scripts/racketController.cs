@@ -15,6 +15,7 @@ public sealed class RacketController : MonoBehaviour
     [SerializeField, Range(0.1f, 1f)] private float InputZoneRatio = 0.5f;
 
     private Rigidbody2D rb;
+    private SpriteRenderer sr;
     private Camera mainCam;
 
     private float baseY;
@@ -27,6 +28,7 @@ public sealed class RacketController : MonoBehaviour
     private void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
+        sr = GetComponentInChildren<SpriteRenderer>();
         mainCam = Camera.main;
 
         rb.bodyType = RigidbodyType2D.Kinematic;
@@ -56,13 +58,11 @@ public sealed class RacketController : MonoBehaviour
 
     public void SetVisible(bool visible)
     {
-        var sr = GetComponentInChildren<SpriteRenderer>();
         if (sr != null) sr.enabled = visible;
     }
 
     private void CacheHalfWidth()
     {
-        var sr = GetComponentInChildren<SpriteRenderer>();
         halfWidthWorld = (sr != null) ? sr.bounds.extents.x : 0.5f;
     }
 

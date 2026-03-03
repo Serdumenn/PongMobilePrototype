@@ -18,9 +18,7 @@ public sealed class ResponsiveWalls : MonoBehaviour
 
     private void Awake()
     {
-        var noBounce = new PhysicsMaterial2D("WallNoBounce");
-        noBounce.bounciness = 0f;
-        noBounce.friction = 0f;
+        var noBounce = SoloBall.GetSharedNoBounce();
 
         AssignMaterial(LeftWall, noBounce);
         AssignMaterial(RightWall, noBounce);

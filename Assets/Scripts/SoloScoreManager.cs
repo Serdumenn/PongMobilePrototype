@@ -39,7 +39,6 @@ public class SoloScoreManager : MonoBehaviour
         {
             BestScore = Score;
             PlayerPrefs.SetInt(BestScoreKey, BestScore);
-            PlayerPrefs.Save();
         }
 
         UpdateHudText();
@@ -49,6 +48,8 @@ public class SoloScoreManager : MonoBehaviour
     {
         if (IsGameOver) return;
         IsGameOver = true;
+
+        PlayerPrefs.Save();
 
         if (GameOverScoreText != null)
         {
