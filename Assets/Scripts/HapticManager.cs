@@ -4,17 +4,17 @@ public static class HapticManager
 {
     public static void Light()
     {
-        Vibrate(20, 40);
+        Vibrate(20, 80);
     }
 
     public static void Soft()
     {
-        Vibrate(10, 25);
+        Vibrate(10, 50);
     }
 
     public static void Medium()
     {
-        Vibrate(35, 80);
+        Vibrate(35, 160);
     }
 
     private static void Vibrate(long milliseconds, int amplitude)

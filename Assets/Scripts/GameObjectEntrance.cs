@@ -3,7 +3,7 @@ using UnityEngine;
 
 public sealed class GameObjectEntrance : MonoBehaviour
 {
-    [SerializeField] private float Duration = 0.55f;
+    [SerializeField] private float Duration = 0.30f;
     [SerializeField] private float Delay = 0f;
     [SerializeField] private float OffScreenOffset = 3f;
 
@@ -67,14 +67,14 @@ public sealed class GameObjectEntrance : MonoBehaviour
             yield return WaitUnscaled(Delay);
 
         float elapsed = 0f;
-
         while (elapsed < Duration)
         {
             elapsed += Time.unscaledDeltaTime;
-            float t = EaseOutBack(Mathf.Clamp01(elapsed / Duration));
+            float t = Mathf.Clamp01(elapsed / Duration);
+            float ease = EaseOutCubic(t);
 
-            transform.position = Vector3.Lerp(startPos, targetPosition, t);
-            SetAlpha(t);
+            transform.position = Vector3.Lerp(startPos, targetPosition, ease);
+            SetAlpha(Mathf.Clamp01(t * 3f));
 
             yield return null;
         }
@@ -82,10 +82,17 @@ public sealed class GameObjectEntrance : MonoBehaviour
         transform.position = targetPosition;
         SetAlpha(1f);
 
+        transform.position = targetPosition;
+
         if (rb != null) rb.simulated = hadSimulated;
 
         activeEntrance = null;
         onComplete?.Invoke();
+    }
+
+    private static float EaseOutCubic(float t)
+    {
+        return 1f - Mathf.Pow(1f - t, 3f);
     }
 
     private IEnumerator WaitUnscaled(float seconds)
@@ -105,13 +112,6 @@ public sealed class GameObjectEntrance : MonoBehaviour
         Color c = sr.color;
         c.a = a;
         sr.color = c;
-    }
-
-    private static float EaseOutBack(float t)
-    {
-        const float c1 = 2.5f;
-        const float c3 = c1 + 1f;
-        return 1f + c3 * Mathf.Pow(t - 1f, 3f) + c1 * Mathf.Pow(t - 1f, 2f);
     }
 
     public enum Direction

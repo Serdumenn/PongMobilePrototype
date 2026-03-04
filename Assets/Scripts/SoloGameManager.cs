@@ -141,7 +141,7 @@ public class SoloGameManager : MonoBehaviour
         if (HudPanel != null) HudPanel.SetActive(true);
         if (MenuPanel != null) MenuPanel.FadeOut();
 
-        PlayEntranceAnimations();
+        PlayEntranceAnimations(true);
     }
 
     public void StartGameFromMenu()
@@ -150,15 +150,18 @@ public class SoloGameManager : MonoBehaviour
         StartNewRun();
     }
 
-    private void PlayEntranceAnimations()
+    private void PlayEntranceAnimations(bool forGameplay = false)
     {
         if (Paddle != null) Paddle.ResetPosition();
         if (SoloBall != null) SoloBall.SnapToServePoint();
 
+        var racketDir = forGameplay ? GameObjectEntrance.Direction.Right : GameObjectEntrance.Direction.Left;
+        var ballDir = forGameplay ? GameObjectEntrance.Direction.Left : GameObjectEntrance.Direction.Right;
+
         if (RacketEntrance != null)
-            RacketEntrance.PlayEntrance(GameObjectEntrance.Direction.Left);
+            RacketEntrance.PlayEntrance(racketDir);
         if (BallEntrance != null)
-            BallEntrance.PlayEntrance(GameObjectEntrance.Direction.Right, () =>
+            BallEntrance.PlayEntrance(ballDir, () =>
             {
                 if (SoloBall != null) SoloBall.EnableServe();
             });
