@@ -8,6 +8,7 @@ public class SoloScoreManager : MonoBehaviour
     [Header("UI")]
     [SerializeField] private TMP_Text HudScoreText;
     [SerializeField] private TMP_Text GameOverScoreText;
+    [SerializeField] private TMP_Text MenuBestScoreText;
 
     [Header("Debug")]
     public bool logScoreChanges = false;
@@ -20,6 +21,7 @@ public class SoloScoreManager : MonoBehaviour
     {
         BestScore = PlayerPrefs.GetInt(BestScoreKey, 0);
         ResetScore();
+        UpdateMenuBestText();
     }
 
     public void ResetScore()
@@ -52,17 +54,36 @@ public class SoloScoreManager : MonoBehaviour
         PlayerPrefs.Save();
 
         if (GameOverScoreText != null)
-        {
-            bool isNewRecord = (Score >= BestScore);
-            GameOverScoreText.text = isNewRecord
-                ? $"BEST: {BestScore}"
-                : $"{Score}";
-        }
+            GameOverScoreText.text = Score.ToString();
+
+        UpdateMenuBestText();
     }
 
     private void UpdateHudText()
     {
         if (HudScoreText != null)
             HudScoreText.text = Score.ToString();
+    }
+
+    private void UpdateMenuBestText()
+    {
+        if (MenuBestScoreText == null) return;
+
+        if (BestScore > 0)
+        {
+            MenuBestScoreText.gameObject.SetActive(true);
+            MenuBestScoreText.text = $"Best Score: {BestScore}";
+        }
+        else
+        {
+            MenuBestScoreText.gameObject.SetActive(false);
+        }
+    }
+
+    /// <summary>Debug: PlayerPrefs best score sıfırlama.</summary>
+    public static void ClearBestScore()
+    {
+        PlayerPrefs.DeleteKey(BestScoreKey);
+        PlayerPrefs.Save();
     }
 }

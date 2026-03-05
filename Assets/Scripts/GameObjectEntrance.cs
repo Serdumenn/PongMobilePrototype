@@ -11,6 +11,7 @@ public sealed class GameObjectEntrance : MonoBehaviour
     private Rigidbody2D rb;
     private Coroutine activeEntrance;
     private bool initialized;
+    private bool savedSimulated;
 
     private void EnsureInit()
     {
@@ -23,7 +24,11 @@ public sealed class GameObjectEntrance : MonoBehaviour
     public void PlayEntrance(Direction from, System.Action onComplete = null)
     {
         EnsureInit();
-        if (activeEntrance != null) StopCoroutine(activeEntrance);
+        if (activeEntrance != null)
+        {
+            StopCoroutine(activeEntrance);
+            if (rb != null) rb.simulated = savedSimulated;
+        }
         activeEntrance = StartCoroutine(RunEntrance(from, onComplete));
     }
 
@@ -40,10 +45,9 @@ public sealed class GameObjectEntrance : MonoBehaviour
 
         Vector3 targetPosition = transform.position;
 
-        bool hadSimulated = false;
         if (rb != null)
         {
-            hadSimulated = rb.simulated;
+            savedSimulated = rb.simulated;
             rb.simulated = false;
             rb.linearVelocity = Vector2.zero;
             rb.angularVelocity = 0f;
@@ -82,9 +86,7 @@ public sealed class GameObjectEntrance : MonoBehaviour
         transform.position = targetPosition;
         SetAlpha(1f);
 
-        transform.position = targetPosition;
-
-        if (rb != null) rb.simulated = hadSimulated;
+        if (rb != null) rb.simulated = savedSimulated;
 
         activeEntrance = null;
         onComplete?.Invoke();
