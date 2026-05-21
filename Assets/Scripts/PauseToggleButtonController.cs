@@ -9,6 +9,11 @@ public sealed class PauseToggleButtonController : MonoBehaviour
     [SerializeField] private Sprite PauseSprite;
     [SerializeField] private Sprite PlaySprite;
 
+    [Header("Pause Panel")]
+    [SerializeField] private PanelTransition PausePanelTransition;
+    [SerializeField] private Button ResumeButton;
+    [SerializeField] private Button MenuButton;
+
     [Header("Refs")]
     [SerializeField] private SoloGameManager SoloGameManager;
 
@@ -22,6 +27,18 @@ public sealed class PauseToggleButtonController : MonoBehaviour
         {
             PauseToggleButton.onClick.RemoveAllListeners();
             PauseToggleButton.onClick.AddListener(TogglePause);
+        }
+
+        if (ResumeButton != null)
+        {
+            ResumeButton.onClick.RemoveAllListeners();
+            ResumeButton.onClick.AddListener(TogglePause);
+        }
+
+        if (MenuButton != null)
+        {
+            MenuButton.onClick.RemoveAllListeners();
+            MenuButton.onClick.AddListener(OnMenuPressed);
         }
 
         SetPaused(false);
@@ -42,5 +59,17 @@ public sealed class PauseToggleButtonController : MonoBehaviour
 
         if (PauseToggleIcon != null)
             PauseToggleIcon.sprite = IsPaused ? PlaySprite : PauseSprite;
+
+        if (PausePanelTransition != null)
+        {
+            if (IsPaused) PausePanelTransition.FadeIn();
+            else          PausePanelTransition.FadeOut();
+        }
+    }
+
+    private void OnMenuPressed()
+    {
+        SetPaused(false);
+        if (SoloGameManager != null) SoloGameManager.ReturnToMenu();
     }
 }

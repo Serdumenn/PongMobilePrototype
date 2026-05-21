@@ -4,21 +4,22 @@ public static class HapticManager
 {
     public static void Light()
     {
-        Vibrate(20, 80);
+        Vibrate(30, 150);
     }
 
     public static void Soft()
     {
-        Vibrate(10, 50);
+        Vibrate(20, 100);
     }
 
     public static void Medium()
     {
-        Vibrate(35, 160);
+        Vibrate(50, 255);
     }
 
     private static void Vibrate(long milliseconds, int amplitude)
     {
+        if (PlayerPrefs.GetInt(SettingsPanelController.HapticsKey, 1) == 0) return;
 #if UNITY_ANDROID && !UNITY_EDITOR
         try
         {

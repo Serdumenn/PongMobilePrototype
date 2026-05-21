@@ -80,6 +80,14 @@ public class SoloScoreManager : MonoBehaviour
         }
     }
 
+    /// <summary>Best score'u hem PlayerPrefs'ten hem bellekten siler ve menu metnini günceller.</summary>
+    public void ResetBestScore()
+    {
+        ClearBestScore();
+        BestScore = 0;
+        UpdateMenuBestText();
+    }
+
     /// <summary>Debug: PlayerPrefs best score sıfırlama.</summary>
     public static void ClearBestScore()
     {
