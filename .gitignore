@@ -60,3 +60,7 @@ crashlytics-build.properties
 
 # Agent/AI workflow files
 .agent/
+.claude/
+
+# Third-party UI asset packs (large, downloadable from Asset Store)
+Assets/Textures/UI/Prinbles_*
