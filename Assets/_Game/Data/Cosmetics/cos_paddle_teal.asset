@@ -1,0 +1,28 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9cff33aa0ba42fb44aad9d9ad5277cef, type: 3}
+  m_Name: cos_paddle_teal
+  m_EditorClassIdentifier: Assembly-CSharp::CosmeticItem
+  <Id>k__BackingField: paddle_teal
+  <Category>k__BackingField: 1
+  <DisplayName>k__BackingField: Teal
+  <Unlock>k__BackingField: 0
+  <UnlockValue>k__BackingField: 0
+  <ProductId>k__BackingField: 
+  <Idle>k__BackingField: {fileID: 0}
+  <Happy>k__BackingField: {fileID: 0}
+  <Sad>k__BackingField: {fileID: 0}
+  <PaddleSprite>k__BackingField: {fileID: 3286163911610860551, guid: c973e90435242b44c92aa70e0bef74f7, type: 3}
+  <BackgroundColor>k__BackingField: {r: 1, g: 1, b: 1, a: 1}
+  <BlobPrimary>k__BackingField: {r: 1, g: 1, b: 1, a: 1}
+  <BlobSecondary>k__BackingField: {r: 1, g: 1, b: 1, a: 1}
+  <UiClass>k__BackingField: 

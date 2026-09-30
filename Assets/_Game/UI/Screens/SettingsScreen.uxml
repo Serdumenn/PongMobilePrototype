@@ -1,0 +1,35 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" editor-extension-mode="False">
+    <ui:VisualElement class="safe" picking-mode="Ignore">
+        <ui:VisualElement class="topbar" picking-mode="Ignore">
+            <ui:Button name="back-button" class="btn btn--icon">
+                <ui:VisualElement class="btn__face" picking-mode="Ignore">
+                    <ui:VisualElement class="icon icon--back" picking-mode="Ignore" />
+                </ui:VisualElement>
+            </ui:Button>
+            <ui:Label text="Settings" class="screen-title" picking-mode="Ignore" />
+            <ui:VisualElement class="topbar__side" picking-mode="Ignore" />
+        </ui:VisualElement>
+        <ui:VisualElement class="list" picking-mode="Ignore">
+            <ui:VisualElement class="row" picking-mode="Ignore">
+                <ui:VisualElement class="icon icon--vibration row__icon" picking-mode="Ignore" />
+                <ui:Label text="Vibration" class="row__label" picking-mode="Ignore" />
+                <ui:VisualElement name="vibration-switch" class="switch">
+                    <ui:VisualElement class="switch__knob" picking-mode="Ignore" />
+                </ui:VisualElement>
+            </ui:VisualElement>
+            <ui:VisualElement class="divider" picking-mode="Ignore" />
+            <ui:VisualElement class="row" picking-mode="Ignore">
+                <ui:VisualElement class="icon icon--trash row__icon" picking-mode="Ignore" />
+                <ui:Label text="Best scores" class="row__label" picking-mode="Ignore" />
+                <ui:Label name="best-value" text="0" class="row__value" picking-mode="Ignore" />
+                <ui:Button name="reset-button" class="btn btn--pill">
+                    <ui:VisualElement class="btn__face" picking-mode="Ignore">
+                        <ui:Label name="reset-label" text="Reset" class="btn__label" picking-mode="Ignore" />
+                    </ui:VisualElement>
+                </ui:Button>
+            </ui:VisualElement>
+        </ui:VisualElement>
+        <ui:VisualElement class="spacer" picking-mode="Ignore" />
+        <ui:Label name="version-label" text="Pingi Pongi" class="caption settings-footer" picking-mode="Ignore" />
+    </ui:VisualElement>
+</ui:UXML>

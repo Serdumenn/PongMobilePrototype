@@ -1,0 +1,17 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" editor-extension-mode="False">
+    <ui:VisualElement class="scrim" />
+    <ui:VisualElement class="safe overlay" picking-mode="Ignore">
+        <ui:VisualElement class="card">
+            <ui:VisualElement name="art" class="card__mascot" picking-mode="Ignore" />
+            <ui:Label name="title" text="New costume!" class="card__title" picking-mode="Ignore" />
+            <ui:Label name="text" text="" class="caption dialog__text" picking-mode="Ignore" />
+            <ui:Button name="equip-button" class="btn btn--primary btn--wide btn--teal">
+                <ui:VisualElement class="btn__face" picking-mode="Ignore">
+                    <ui:VisualElement class="icon icon--check icon--light" picking-mode="Ignore" />
+                    <ui:Label text="Equip now" class="btn__label" picking-mode="Ignore" />
+                </ui:VisualElement>
+            </ui:Button>
+            <ui:Button name="later-button" text="Later" class="link" />
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>

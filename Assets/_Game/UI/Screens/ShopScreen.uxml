@@ -1,0 +1,61 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" editor-extension-mode="False">
+    <ui:VisualElement class="safe" picking-mode="Ignore">
+        <ui:VisualElement class="topbar" picking-mode="Ignore">
+            <ui:Button name="back-button" class="btn btn--icon">
+                <ui:VisualElement class="btn__face" picking-mode="Ignore">
+                    <ui:VisualElement class="icon icon--back" picking-mode="Ignore" />
+                </ui:VisualElement>
+            </ui:Button>
+            <ui:Label text="Collection" class="screen-title" picking-mode="Ignore" />
+            <ui:VisualElement class="topbar__side" picking-mode="Ignore" />
+        </ui:VisualElement>
+        <ui:VisualElement class="tabs" picking-mode="Ignore">
+            <ui:Button name="tab-ball" text="Pingi" class="tab" />
+            <ui:Button name="tab-paddle" text="Paddles" class="tab" />
+            <ui:Button name="tab-theme" text="Themes" class="tab" />
+        </ui:VisualElement>
+        <ui:ScrollView name="shop-scroll" mode="Vertical" horizontal-scroller-visibility="Hidden" vertical-scroller-visibility="Hidden" class="shop-scroll">
+            <ui:Button name="pass-button" class="offer offer--pass">
+                <ui:VisualElement class="offer__face" picking-mode="Ignore">
+                    <ui:VisualElement name="pass-art" class="offer__art" picking-mode="Ignore" />
+                    <ui:VisualElement class="offer__text" picking-mode="Ignore">
+                        <ui:Label text="Pingi Pass" class="offer__title" picking-mode="Ignore" />
+                        <ui:Label text="All items + Golden set" class="offer__sub" picking-mode="Ignore" />
+                    </ui:VisualElement>
+                    <ui:Label name="pass-price" text="..." class="price" picking-mode="Ignore" />
+                </ui:VisualElement>
+            </ui:Button>
+            <ui:VisualElement name="grid" class="grid" picking-mode="Ignore" />
+            <ui:Button name="noads-button" class="offer offer--noads">
+                <ui:VisualElement class="offer__face" picking-mode="Ignore">
+                    <ui:Label text="Remove ads" class="offer__title offer__title--grow" picking-mode="Ignore" />
+                    <ui:Label name="noads-price" text="..." class="price" picking-mode="Ignore" />
+                </ui:VisualElement>
+            </ui:Button>
+            <ui:VisualElement class="shop-end" picking-mode="Ignore" />
+        </ui:ScrollView>
+    </ui:VisualElement>
+    <ui:VisualElement name="dialog" class="dialog dialog--hidden">
+        <ui:VisualElement name="dialog-scrim" class="scrim" />
+        <ui:VisualElement class="safe overlay" picking-mode="Ignore">
+            <ui:VisualElement class="card">
+                <ui:VisualElement name="dialog-art" class="card__mascot" picking-mode="Ignore" />
+                <ui:Label name="dialog-title" text="Kitty" class="card__title" picking-mode="Ignore" />
+                <ui:Label name="dialog-text" text="" class="caption dialog__text" picking-mode="Ignore" />
+                <ui:VisualElement name="dialog-dots" class="dots" picking-mode="Ignore" />
+                <ui:Button name="dialog-primary" class="btn btn--primary btn--wide">
+                    <ui:VisualElement class="btn__face" picking-mode="Ignore">
+                        <ui:VisualElement name="dialog-primary-icon" class="icon icon--play icon--light" picking-mode="Ignore" />
+                        <ui:Label name="dialog-primary-label" text="Watch ad" class="btn__label" picking-mode="Ignore" />
+                    </ui:VisualElement>
+                </ui:Button>
+                <ui:Button name="dialog-buy" class="btn btn--buy">
+                    <ui:VisualElement class="btn__face" picking-mode="Ignore">
+                        <ui:Label name="dialog-buy-label" text="Buy" class="btn__label" picking-mode="Ignore" />
+                    </ui:VisualElement>
+                </ui:Button>
+                <ui:Button name="dialog-pass" text="or unlock everything with Pingi Pass" class="link" />
+            </ui:VisualElement>
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>

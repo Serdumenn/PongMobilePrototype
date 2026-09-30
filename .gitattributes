@@ -1,2 +1,21 @@
 * text=auto
 *.sh text eol=lf
+
+# Git LFS — only for the new asset structure (see docs/design/tech-spec.md)
+Assets/_Game/**/*.png filter=lfs diff=lfs merge=lfs -text
+Assets/_Game/**/*.jpg filter=lfs diff=lfs merge=lfs -text
+Assets/_Game/**/*.psd filter=lfs diff=lfs merge=lfs -text
+Assets/_Game/**/*.tga filter=lfs diff=lfs merge=lfs -text
+Assets/_Game/**/*.wav filter=lfs diff=lfs merge=lfs -text
+Assets/_Game/**/*.mp3 filter=lfs diff=lfs merge=lfs -text
+Assets/_Game/**/*.ogg filter=lfs diff=lfs merge=lfs -text
+Assets/_Game/**/*.ttf filter=lfs diff=lfs merge=lfs -text
+Assets/_Game/**/*.otf filter=lfs diff=lfs merge=lfs -text
+Assets/_Game/**/*.fbx filter=lfs diff=lfs merge=lfs -text
+Assets/_Game/**/*.mp4 filter=lfs diff=lfs merge=lfs -text
+ArtSource/**/*.png filter=lfs diff=lfs merge=lfs -text
+ArtSource/**/*.jpg filter=lfs diff=lfs merge=lfs -text
+ArtSource/**/*.psd filter=lfs diff=lfs merge=lfs -text
+ArtSource/**/*.wav filter=lfs diff=lfs merge=lfs -text
+ArtSource/**/*.ttf filter=lfs diff=lfs merge=lfs -text
+ArtSource/**/*.otf filter=lfs diff=lfs merge=lfs -text

@@ -1,0 +1,28 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9cff33aa0ba42fb44aad9d9ad5277cef, type: 3}
+  m_Name: cos_ball_froggy
+  m_EditorClassIdentifier: Assembly-CSharp::CosmeticItem
+  <Id>k__BackingField: ball_froggy
+  <Category>k__BackingField: 0
+  <DisplayName>k__BackingField: Froggy
+  <Unlock>k__BackingField: 2
+  <UnlockValue>k__BackingField: 15
+  <ProductId>k__BackingField: skin_froggy
+  <Idle>k__BackingField: {fileID: 3286163911610860551, guid: a657e08eb05e0ff4da207240db44e311, type: 3}
+  <Happy>k__BackingField: {fileID: 3286163911610860551, guid: 33574008150eb354b815da211f43bc2a, type: 3}
+  <Sad>k__BackingField: {fileID: 3286163911610860551, guid: 746c114c9b31e4a44b5e3dc09b370a19, type: 3}
+  <PaddleSprite>k__BackingField: {fileID: 0}
+  <BackgroundColor>k__BackingField: {r: 1, g: 1, b: 1, a: 1}
+  <BlobPrimary>k__BackingField: {r: 1, g: 1, b: 1, a: 1}
+  <BlobSecondary>k__BackingField: {r: 1, g: 1, b: 1, a: 1}
+  <UiClass>k__BackingField: 

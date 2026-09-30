@@ -1,13 +1,17 @@
 {
   "dependencies": {
     "com.unity.device-simulator.devices": "1.0.1",
-    "com.unity.feature.2d": "2.0.1",
-    "com.unity.ide.rider": "3.0.39",
+    "com.unity.feature.2d": "2.0.2",
+    "com.unity.ide.rider": "3.0.40",
     "com.unity.ide.visualstudio": "2.0.27",
     "com.unity.ide.vscode": "1.2.5",
+    "com.unity.inputsystem": "1.20.0",
+    "com.unity.pipeline": "0.8.0-exp.1",
+    "com.unity.purchasing": "5.4.3",
     "com.unity.ugui": "2.0.0",
-    "com.unity.vectorgraphics": "2.0.0-preview.25",
+    "com.unity.vectorgraphics": "3.0.0-preview.7",
     "com.unity.modules.accessibility": "1.0.0",
+    "com.unity.modules.adaptiveperformance": "1.0.0",
     "com.unity.modules.androidjni": "1.0.0",
     "com.unity.modules.animation": "1.0.0",
     "com.unity.modules.assetbundle": "1.0.0",
@@ -22,6 +26,7 @@
     "com.unity.modules.uielements": "1.0.0",
     "com.unity.modules.unityanalytics": "1.0.0",
     "com.unity.modules.unitywebrequest": "1.0.0",
-    "com.unity.modules.unitywebrequesttexture": "1.0.0"
+    "com.unity.modules.unitywebrequesttexture": "1.0.0",
+    "com.unity.modules.vectorgraphics": "1.0.0"
   }
 }

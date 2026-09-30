@@ -1,0 +1,58 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" editor-extension-mode="False">
+    <ui:VisualElement class="safe" picking-mode="Ignore">
+        <ui:VisualElement class="topbar" picking-mode="Ignore">
+            <ui:Button name="settings-button" class="btn btn--icon">
+                <ui:VisualElement class="btn__face" picking-mode="Ignore">
+                    <ui:VisualElement class="icon icon--settings" picking-mode="Ignore" />
+                </ui:VisualElement>
+            </ui:Button>
+            <ui:VisualElement class="topbar__group" picking-mode="Ignore">
+                <ui:Button name="scores-button" class="btn btn--icon">
+                    <ui:VisualElement class="btn__face" picking-mode="Ignore">
+                        <ui:VisualElement class="icon icon--rank" picking-mode="Ignore" />
+                    </ui:VisualElement>
+                </ui:Button>
+                <ui:Button name="shop-button" class="btn btn--icon">
+                    <ui:VisualElement class="btn__face" picking-mode="Ignore">
+                        <ui:VisualElement class="icon icon--wardrobe" picking-mode="Ignore" />
+                    </ui:VisualElement>
+                </ui:Button>
+            </ui:VisualElement>
+        </ui:VisualElement>
+        <ui:VisualElement class="spacer" picking-mode="Ignore" />
+        <ui:VisualElement class="title" picking-mode="Ignore">
+            <ui:Label text="Pingi" class="title__line title__line--pingi" picking-mode="Ignore" />
+            <ui:Label text="Pongi" class="title__line title__line--pongi" picking-mode="Ignore" />
+        </ui:VisualElement>
+        <ui:VisualElement class="spacer" picking-mode="Ignore" />
+        <ui:VisualElement class="mode-selector" picking-mode="Ignore">
+            <ui:Button name="mode-prev" class="btn btn--round">
+                <ui:VisualElement class="btn__face" picking-mode="Ignore">
+                    <ui:VisualElement class="icon icon--chevron-left" picking-mode="Ignore" />
+                </ui:VisualElement>
+            </ui:Button>
+            <ui:VisualElement name="mode-card" class="mode-card">
+                <ui:VisualElement name="mode-art" class="mode-card__art" picking-mode="Ignore" />
+                <ui:Label name="mode-name" text="Classic" class="mode-card__name" picking-mode="Ignore" />
+                <ui:Label name="mode-tagline" text="" class="caption mode-card__tagline" picking-mode="Ignore" />
+                <ui:VisualElement name="mode-best" class="mode-card__best" picking-mode="Ignore">
+                    <ui:VisualElement name="mode-best-icon" class="icon icon--crown" picking-mode="Ignore" />
+                    <ui:Label name="mode-best-label" text="Best 0" class="mode-card__best-label" picking-mode="Ignore" />
+                </ui:VisualElement>
+            </ui:VisualElement>
+            <ui:Button name="mode-next" class="btn btn--round">
+                <ui:VisualElement class="btn__face" picking-mode="Ignore">
+                    <ui:VisualElement class="icon icon--chevron-right" picking-mode="Ignore" />
+                </ui:VisualElement>
+            </ui:Button>
+        </ui:VisualElement>
+        <ui:VisualElement name="mode-dots" class="mode-dots" picking-mode="Ignore" />
+        <ui:VisualElement class="spacer spacer--2" picking-mode="Ignore" />
+        <ui:Button name="play-button" class="btn btn--play menu-play">
+            <ui:VisualElement class="btn__face" picking-mode="Ignore">
+                <ui:VisualElement class="icon icon--play" picking-mode="Ignore" />
+            </ui:VisualElement>
+        </ui:Button>
+        <ui:VisualElement class="world-reserve" picking-mode="Ignore" />
+    </ui:VisualElement>
+</ui:UXML>

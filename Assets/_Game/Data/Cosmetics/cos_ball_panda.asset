@@ -1,0 +1,28 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9cff33aa0ba42fb44aad9d9ad5277cef, type: 3}
+  m_Name: cos_ball_panda
+  m_EditorClassIdentifier: Assembly-CSharp::CosmeticItem
+  <Id>k__BackingField: ball_panda
+  <Category>k__BackingField: 0
+  <DisplayName>k__BackingField: Panda
+  <Unlock>k__BackingField: 2
+  <UnlockValue>k__BackingField: 10
+  <ProductId>k__BackingField: skin_panda
+  <Idle>k__BackingField: {fileID: 3286163911610860551, guid: 0ee6e5c9d56049e498cfe54283198341, type: 3}
+  <Happy>k__BackingField: {fileID: 3286163911610860551, guid: 39c9b92d9c2a3934fa540943c79a169c, type: 3}
+  <Sad>k__BackingField: {fileID: 3286163911610860551, guid: 8095d747787f0bc478399ce2e2e77ef0, type: 3}
+  <PaddleSprite>k__BackingField: {fileID: 0}
+  <BackgroundColor>k__BackingField: {r: 1, g: 1, b: 1, a: 1}
+  <BlobPrimary>k__BackingField: {r: 1, g: 1, b: 1, a: 1}
+  <BlobSecondary>k__BackingField: {r: 1, g: 1, b: 1, a: 1}
+  <UiClass>k__BackingField: 

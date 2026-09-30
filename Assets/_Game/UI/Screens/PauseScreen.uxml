@@ -1,0 +1,23 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" editor-extension-mode="False">
+    <ui:VisualElement class="scrim" />
+    <ui:VisualElement class="safe overlay" picking-mode="Ignore">
+        <ui:VisualElement class="card">
+            <ui:VisualElement name="mascot" class="card__mascot" picking-mode="Ignore" />
+            <ui:Label text="Paused" class="card__title" picking-mode="Ignore" />
+            <ui:Label text="Take a breath." class="caption card__subtitle" picking-mode="Ignore" />
+            <ui:VisualElement class="card__actions" picking-mode="Ignore">
+                <ui:Button name="home-button" class="btn btn--secondary">
+                    <ui:VisualElement class="btn__face" picking-mode="Ignore">
+                        <ui:VisualElement class="icon icon--home" picking-mode="Ignore" />
+                    </ui:VisualElement>
+                </ui:Button>
+                <ui:Button name="resume-button" class="btn btn--primary">
+                    <ui:VisualElement class="btn__face" picking-mode="Ignore">
+                        <ui:VisualElement class="icon icon--play icon--light" picking-mode="Ignore" />
+                        <ui:Label text="Resume" class="btn__label" picking-mode="Ignore" />
+                    </ui:VisualElement>
+                </ui:Button>
+            </ui:VisualElement>
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>

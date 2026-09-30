@@ -1,0 +1,156 @@
+.topbar {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: flex-start;
+    flex-shrink: 0;
+    margin: 32px 56px 0 56px;
+}
+
+.topbar__side {
+    width: 176px;
+    height: 176px;
+    flex-shrink: 0;
+}
+
+.spacer--2 {
+    flex-grow: 2;
+}
+
+.spacer--3 {
+    flex-grow: 3;
+}
+
+.title {
+    align-self: center;
+    align-items: center;
+    flex-shrink: 0;
+    rotate: -4deg;
+}
+
+.title__line {
+    font-size: var(--font-size-display);
+    -unity-font-definition: url("/Assets/_Game/Fonts/fnt_fredoka_bold_sdf.asset");
+    -unity-text-align: middle-center;
+    text-shadow: 0 16px 0 rgba(43, 45, 66, 0.1);
+}
+
+.title__line--pingi {
+    color: var(--color-pingi);
+}
+
+.title__line--pongi {
+    margin-top: -72px;
+    color: var(--color-teal);
+}
+
+.best-chip {
+    margin-top: 40px;
+    flex-shrink: 0;
+}
+
+.menu-play {
+    align-self: center;
+}
+
+.menu-caption {
+    margin-top: 48px;
+    flex-shrink: 0;
+}
+
+.world-reserve {
+    height: 20%;
+    flex-shrink: 0;
+}
+
+.hud-score {
+    flex-grow: 1;
+    margin-top: -40px;
+    font-size: var(--font-size-score);
+    -unity-font-definition: url("/Assets/_Game/Fonts/fnt_fredoka_bold_sdf.asset");
+    -unity-text-align: upper-center;
+    scale: 1 1;
+    transition-property: scale;
+    transition-duration: 320ms;
+    transition-timing-function: ease-out-back;
+}
+
+.hud-score--pop {
+    scale: 1.18 1.18;
+    transition-duration: 60ms;
+}
+
+.hint {
+    position: absolute;
+    left: 56px;
+    right: 56px;
+    top: 52%;
+    bottom: 72px;
+    align-items: center;
+    padding-top: 10%;
+    border-radius: 96px;
+    background-color: var(--color-hint);
+    opacity: 1;
+    transition-property: opacity;
+    transition-duration: 220ms;
+}
+
+.hint--hidden {
+    opacity: 0;
+}
+
+.hint .icon {
+    width: 104px;
+    height: 104px;
+    -unity-background-image-tint-color: var(--color-hint-icon);
+}
+
+.hint__label {
+    margin-top: 16px;
+}
+
+.screen-title {
+    flex-grow: 1;
+    height: 176px;
+    font-size: var(--font-size-title);
+    -unity-font-definition: url("/Assets/_Game/Fonts/fnt_fredoka_bold_sdf.asset");
+    -unity-text-align: middle-center;
+}
+
+.list {
+    flex-shrink: 0;
+    margin: 64px 56px 0 56px;
+    padding: 16px 56px;
+    border-radius: 80px;
+    border-bottom-width: 20px;
+    border-color: var(--color-surface-edge);
+    background-color: var(--color-surface);
+}
+
+.row {
+    flex-direction: row;
+    align-items: center;
+    height: 208px;
+}
+
+.row__icon {
+    -unity-background-image-tint-color: var(--color-teal);
+}
+
+.row__label {
+    flex-grow: 1;
+    margin-left: 32px;
+}
+
+.row__value {
+    margin-right: 32px;
+    color: var(--color-ink-muted);
+}
+
+.divider {
+    height: 4px;
+    background-color: var(--color-divider);
+}
+
+.settings-footer {
+    margin-bottom: 64px;
+}

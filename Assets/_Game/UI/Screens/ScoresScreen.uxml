@@ -1,0 +1,61 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" editor-extension-mode="False">
+    <ui:VisualElement class="safe" picking-mode="Ignore">
+        <ui:VisualElement class="topbar" picking-mode="Ignore">
+            <ui:Button name="back-button" class="btn btn--icon">
+                <ui:VisualElement class="btn__face" picking-mode="Ignore">
+                    <ui:VisualElement class="icon icon--back" picking-mode="Ignore" />
+                </ui:VisualElement>
+            </ui:Button>
+            <ui:Label text="Scores" class="screen-title" picking-mode="Ignore" />
+            <ui:VisualElement class="topbar__side" picking-mode="Ignore" />
+        </ui:VisualElement>
+        <ui:VisualElement class="tabs" picking-mode="Ignore">
+            <ui:Button name="tab-me" text="Me" class="tab" />
+            <ui:Button name="tab-world" text="World" class="tab" />
+        </ui:VisualElement>
+        <ui:ScrollView name="scores-scroll" mode="Vertical" horizontal-scroller-visibility="Hidden" vertical-scroller-visibility="Hidden" class="shop-scroll">
+            <ui:VisualElement name="me-panel" picking-mode="Ignore">
+                <ui:VisualElement class="stat-grid" picking-mode="Ignore">
+                    <ui:VisualElement class="stat" picking-mode="Ignore">
+                        <ui:Label name="stat-games" text="0" class="stat__value" picking-mode="Ignore" />
+                        <ui:Label text="games" class="caption stat__label" picking-mode="Ignore" />
+                    </ui:VisualElement>
+                    <ui:VisualElement class="stat" picking-mode="Ignore">
+                        <ui:Label name="stat-hits" text="0" class="stat__value" picking-mode="Ignore" />
+                        <ui:Label text="total hits" class="caption stat__label" picking-mode="Ignore" />
+                    </ui:VisualElement>
+                    <ui:VisualElement class="stat" picking-mode="Ignore">
+                        <ui:Label name="stat-streak" text="0" class="stat__value" picking-mode="Ignore" />
+                        <ui:Label text="longest rally" class="caption stat__label" picking-mode="Ignore" />
+                    </ui:VisualElement>
+                    <ui:VisualElement class="stat" picking-mode="Ignore">
+                        <ui:Label name="stat-time" text="0m" class="stat__value" picking-mode="Ignore" />
+                        <ui:Label text="play time" class="caption stat__label" picking-mode="Ignore" />
+                    </ui:VisualElement>
+                </ui:VisualElement>
+                <ui:VisualElement class="panel" picking-mode="Ignore">
+                    <ui:Label text="Your records" class="panel__title" picking-mode="Ignore" />
+                    <ui:VisualElement name="records" picking-mode="Ignore" />
+                </ui:VisualElement>
+                <ui:VisualElement class="panel" picking-mode="Ignore">
+                    <ui:VisualElement class="panel__head" picking-mode="Ignore">
+                        <ui:VisualElement class="icon icon--flame" picking-mode="Ignore" />
+                        <ui:Label name="streak-title" text="Daily streak" class="panel__title" picking-mode="Ignore" />
+                    </ui:VisualElement>
+                    <ui:VisualElement name="streak-days" class="streak-days" picking-mode="Ignore" />
+                    <ui:Label name="streak-note" text="" class="caption streak-note" picking-mode="Ignore" />
+                </ui:VisualElement>
+            </ui:VisualElement>
+            <ui:VisualElement name="world-panel" picking-mode="Ignore">
+                <ui:VisualElement name="world-modes" class="mode-chips" picking-mode="Ignore" />
+                <ui:VisualElement class="panel empty" picking-mode="Ignore">
+                    <ui:VisualElement class="icon icon--rank empty__icon" picking-mode="Ignore" />
+                    <ui:Label text="World rankings" class="panel__title" picking-mode="Ignore" />
+                    <ui:Label name="world-text" text="" class="caption dialog__text" picking-mode="Ignore" />
+                    <ui:Label name="world-best" text="" class="mode-card__best-label world-best" picking-mode="Ignore" />
+                </ui:VisualElement>
+            </ui:VisualElement>
+            <ui:VisualElement class="shop-end" picking-mode="Ignore" />
+        </ui:ScrollView>
+    </ui:VisualElement>
+</ui:UXML>

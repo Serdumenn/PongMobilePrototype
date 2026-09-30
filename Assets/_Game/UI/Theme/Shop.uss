@@ -1,0 +1,388 @@
+.tabs {
+    flex-direction: row;
+    flex-shrink: 0;
+    margin: 40px 56px 0 56px;
+    padding: 12px;
+    border-radius: 80px;
+    border-bottom-width: 10px;
+    border-color: var(--color-surface-edge);
+    background-color: var(--color-surface);
+}
+
+.tab {
+    flex-grow: 1;
+    height: 112px;
+    margin: 0;
+    padding: 0;
+    border-width: 0;
+    border-radius: 56px;
+    background-color: rgba(0, 0, 0, 0);
+    color: var(--color-ink-muted);
+    font-size: 48px;
+    -unity-font-definition: url("/Assets/_Game/Fonts/fnt_fredoka_bold_sdf.asset");
+    -unity-text-align: middle-center;
+}
+
+.tab--active {
+    background-color: var(--color-teal);
+    color: #FFFFFF;
+}
+
+.shop-scroll {
+    flex-grow: 1;
+    margin-top: 16px;
+}
+
+.shop-end {
+    height: 120px;
+    flex-shrink: 0;
+}
+
+.offer {
+    flex-shrink: 0;
+    height: 232px;
+    margin: 32px 56px 0 56px;
+    padding: 0;
+    border-width: 0;
+    border-radius: 64px;
+    background-color: var(--color-sun-edge);
+}
+
+.offer__face {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 18px;
+    flex-direction: row;
+    align-items: center;
+    padding: 0 40px;
+    border-radius: 64px;
+    background-color: var(--color-sun);
+    transition-property: translate;
+    transition-duration: 90ms;
+    transition-timing-function: ease-out;
+}
+
+.offer:active > .offer__face {
+    translate: 0 14px;
+}
+
+.offer__art {
+    width: 176px;
+    height: 176px;
+    flex-shrink: 0;
+}
+
+.offer__text {
+    flex-grow: 1;
+    margin-left: 24px;
+}
+
+.offer__title {
+    color: #2B2D42;
+    font-size: 56px;
+    -unity-font-definition: url("/Assets/_Game/Fonts/fnt_fredoka_bold_sdf.asset");
+}
+
+.offer__title--grow {
+    flex-grow: 1;
+}
+
+.offer__sub {
+    color: #5A4A1A;
+    font-size: 40px;
+    -unity-font-definition: url("/Assets/_Game/Fonts/fnt_fredoka_medium_sdf.asset");
+}
+
+.offer--noads {
+    height: 176px;
+    background-color: var(--color-surface-edge);
+}
+
+.offer--noads > .offer__face {
+    bottom: 14px;
+    background-color: var(--color-surface);
+}
+
+.offer--noads .offer__title {
+    color: var(--color-ink);
+}
+
+.price {
+    flex-shrink: 0;
+    padding: 16px 32px;
+    border-radius: 40px;
+    border-bottom-width: 8px;
+    border-color: #11121D;
+    background-color: #2B2D42;
+    color: #FFFFFF;
+    font-size: 44px;
+    -unity-font-definition: url("/Assets/_Game/Fonts/fnt_fredoka_bold_sdf.asset");
+}
+
+.grid {
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    margin: 40px 44px 0 44px;
+}
+
+.item {
+    width: 31.3%;
+    height: 408px;
+    margin: 0 1% 32px 1%;
+    padding: 0;
+    border-width: 0;
+    border-radius: 56px;
+    background-color: var(--color-surface-edge);
+}
+
+.item__face {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 14px;
+    align-items: center;
+    padding-top: 24px;
+    border-radius: 56px;
+    background-color: var(--color-surface);
+    transition-property: translate;
+    transition-duration: 90ms;
+    transition-timing-function: ease-out;
+}
+
+.item:active > .item__face {
+    translate: 0 10px;
+}
+
+.item--equipped > .item__face {
+    border-width: 10px;
+    border-color: var(--color-teal);
+    padding-top: 14px;
+}
+
+.item__art {
+    width: 184px;
+    height: 184px;
+    flex-shrink: 0;
+    -unity-background-scale-mode: scale-to-fit;
+}
+
+.item__art--paddle {
+    width: 240px;
+    height: 184px;
+}
+
+.item__art--locked {
+    opacity: 0.45;
+}
+
+.item__name {
+    margin-top: 4px;
+    font-size: 44px;
+    -unity-text-align: middle-center;
+}
+
+.item__status {
+    flex-direction: row;
+    align-items: center;
+    margin-top: 10px;
+    padding: 6px 24px;
+    border-radius: 40px;
+}
+
+.item__status .icon {
+    width: 40px;
+    height: 40px;
+    margin-right: 8px;
+}
+
+.item__status-label {
+    font-size: 38px;
+    -unity-font-definition: url("/Assets/_Game/Fonts/fnt_fredoka_bold_sdf.asset");
+}
+
+.status--equipped {
+    background-color: var(--color-teal);
+}
+
+.status--equipped .item__status-label {
+    color: #FFFFFF;
+}
+
+.status--equipped .icon {
+    -unity-background-image-tint-color: #FFFFFF;
+}
+
+.status--owned {
+    background-color: var(--color-divider);
+}
+
+.status--owned .item__status-label,
+.status--score .item__status-label {
+    color: var(--color-ink-muted);
+}
+
+.status--score .icon {
+    -unity-background-image-tint-color: var(--color-ink-muted);
+}
+
+.status--ads {
+    background-color: var(--color-sun);
+}
+
+.status--ads .item__status-label {
+    color: #2B2D42;
+}
+
+.status--ads .icon {
+    -unity-background-image-tint-color: #2B2D42;
+}
+
+.status--pass {
+    background-color: #2B2D42;
+}
+
+.status--pass .item__status-label {
+    color: #FFD65A;
+}
+
+.item__bar {
+    width: 64%;
+    height: 12px;
+    margin-top: 10px;
+    border-radius: 6px;
+    overflow: hidden;
+    background-color: var(--color-divider);
+}
+
+.item__bar-fill {
+    height: 100%;
+    background-color: var(--color-sun);
+}
+
+.swatch {
+    width: 184px;
+    height: 184px;
+    flex-shrink: 0;
+    overflow: hidden;
+    border-radius: 92px;
+    border-width: 6px;
+    border-color: var(--color-divider);
+}
+
+.swatch__blob {
+    position: absolute;
+    border-radius: 999px;
+}
+
+.swatch__blob--a {
+    width: 130px;
+    height: 130px;
+    right: -34px;
+    top: -30px;
+}
+
+.swatch__blob--b {
+    width: 140px;
+    height: 140px;
+    left: -54px;
+    bottom: -60px;
+}
+
+.dialog {
+    position: absolute;
+    left: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
+}
+
+.dialog--hidden {
+    display: none;
+}
+
+.dialog__text {
+    align-self: stretch;
+    margin-top: 16px;
+    white-space: normal;
+}
+
+.dialog__art--paddle {
+    top: -80px;
+    width: 440px;
+    height: 160px;
+    margin-left: -220px;
+    -unity-background-scale-mode: scale-to-fit;
+}
+
+.dialog__art--theme {
+    top: -120px;
+    width: 240px;
+    height: 240px;
+    margin-left: -120px;
+}
+
+.dots {
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin-top: 32px;
+}
+
+.dot {
+    width: 48px;
+    height: 48px;
+    margin: 6px;
+    border-radius: 24px;
+    background-color: var(--color-divider);
+}
+
+.dot--filled {
+    background-color: var(--color-sun);
+}
+
+.btn--wide {
+    flex-grow: 0;
+    align-self: stretch;
+    margin-left: 0;
+    margin-top: 40px;
+}
+
+.btn--teal {
+    background-color: var(--color-teal-edge);
+}
+
+.btn--teal > .btn__face {
+    background-color: var(--color-teal);
+}
+
+.btn--buy {
+    align-self: stretch;
+    height: 176px;
+    margin-top: 24px;
+}
+
+.btn--buy > .btn__face {
+    border-width: 6px;
+    border-color: var(--color-divider);
+}
+
+.btn--buy .btn__label {
+    margin-left: 0;
+    color: var(--color-ink);
+    font-size: 56px;
+}
+
+.link {
+    margin: 32px 0 0 0;
+    padding: 8px;
+    border-width: 0;
+    background-color: rgba(0, 0, 0, 0);
+    color: var(--color-ink-muted);
+    font-size: 44px;
+    -unity-font-definition: url("/Assets/_Game/Fonts/fnt_fredoka_medium_sdf.asset");
+    -unity-text-align: middle-center;
+}

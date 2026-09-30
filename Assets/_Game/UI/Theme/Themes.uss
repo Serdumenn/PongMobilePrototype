@@ -1,0 +1,33 @@
+.root.theme-mint {
+    --color-bg: #E6FAF3;
+    --color-surface-edge: #CBE9DD;
+    --color-card-edge: #C3E3D6;
+    --color-ink: #1F3B36;
+    --color-ink-muted: #4F6B66;
+    --color-divider: #DDF1EA;
+    --color-track-off: #CFE7DE;
+}
+
+.root.theme-sunset {
+    --color-bg: #FFE6D9;
+    --color-surface-edge: #F2CDBD;
+    --color-card-edge: #EDC4B3;
+    --color-ink: #3A2430;
+    --color-ink-muted: #7A5A63;
+    --color-divider: #F6E0D6;
+    --color-track-off: #EBD2C6;
+}
+
+.root.theme-night {
+    --color-bg: #1E2140;
+    --color-surface: #2E3358;
+    --color-surface-edge: #171A36;
+    --color-card-edge: #151833;
+    --color-ink: #F4F1FF;
+    --color-ink-muted: #B4B6D6;
+    --color-divider: #3A3F6A;
+    --color-track-off: #454A78;
+    --color-scrim: rgba(8, 9, 24, 0.55);
+    --color-hint: rgba(255, 255, 255, 0.05);
+    --color-hint-icon: rgba(255, 255, 255, 0.35);
+}

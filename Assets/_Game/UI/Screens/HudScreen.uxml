@@ -1,0 +1,27 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" editor-extension-mode="False">
+    <ui:VisualElement name="hint" class="hint hint--hidden" picking-mode="Ignore">
+        <ui:VisualElement class="icon icon--drag" picking-mode="Ignore" />
+        <ui:Label text="Drag here to move" class="caption hint__label" picking-mode="Ignore" />
+    </ui:VisualElement>
+    <ui:VisualElement class="safe" picking-mode="Ignore">
+        <ui:VisualElement class="topbar" picking-mode="Ignore">
+            <ui:VisualElement name="rush" class="rush rush--hidden" picking-mode="Ignore">
+                <ui:VisualElement class="rush-bar" picking-mode="Ignore">
+                    <ui:VisualElement name="rush-fill" class="rush-bar__fill" picking-mode="Ignore" />
+                </ui:VisualElement>
+                <ui:VisualElement class="rush-time" picking-mode="Ignore">
+                    <ui:VisualElement class="icon icon--clock" picking-mode="Ignore" />
+                    <ui:Label name="rush-time" text="1:00" class="rush-time__label" picking-mode="Ignore" />
+                </ui:VisualElement>
+            </ui:VisualElement>
+            <ui:Button name="pause-button" class="btn btn--icon">
+                <ui:VisualElement class="btn__face" picking-mode="Ignore">
+                    <ui:VisualElement class="icon icon--pause" picking-mode="Ignore" />
+                </ui:VisualElement>
+            </ui:Button>
+        </ui:VisualElement>
+        <ui:Label name="score-label" text="0" class="hud-score" picking-mode="Ignore" />
+        <ui:Label name="combo" text="" class="combo combo--hidden" picking-mode="Ignore" />
+    </ui:VisualElement>
+    <ui:Label name="perfect" text="Perfect! +2" class="perfect" picking-mode="Ignore" />
+</ui:UXML>

@@ -1,0 +1,399 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Pingi Pongi — Style Frames</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Exo+2:wght@400;600&family=Fredoka:wght@400;500;600;700&family=Inter:wght@400;500;600;700&family=Orbitron:wght@500;700;800&family=Space+Grotesk:wght@300;400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --board-bg:#131316; --board-card:#1c1c21; --board-text:#ececf1; --board-muted:#9b9ba8; --board-line:#2c2c34; --board-accent:#ffc93c;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--board-bg);color:var(--board-text);font-family:Inter,system-ui,sans-serif;line-height:1.5;-webkit-font-smoothing:antialiased}
+.wrap{max-width:1180px;margin:0 auto;padding:0 16px}
+.board-head{padding:56px 0 32px;border-bottom:1px solid var(--board-line);margin-bottom:56px}
+.eyebrow{font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--board-muted)}
+.board-head h1{font-size:40px;line-height:1.1;margin:10px 0 12px;font-weight:700;letter-spacing:-.02em}
+.board-head p{max-width:760px;color:#c9c9d3;margin:0 0 20px}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{font-size:12px;padding:6px 10px;border:1px solid var(--board-line);border-radius:999px;color:#cfcfd8;background:#18181c}
+
+.direction{margin-bottom:88px}
+.dir-head{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;flex-wrap:wrap;margin-bottom:28px}
+.dir-head .letter{font-size:13px;letter-spacing:.14em;color:var(--board-muted);text-transform:uppercase}
+.dir-head h2{margin:4px 0 6px;font-size:30px;letter-spacing:-.01em}
+.dir-head p{margin:0;color:#c9c9d3;max-width:640px}
+.badge{font-size:12px;font-weight:600;padding:6px 12px;border-radius:999px;background:var(--board-accent);color:#1b1b1f;white-space:nowrap}
+
+.phones{display:flex;flex-wrap:wrap;gap:28px;justify-content:center}
+.phone-wrap{display:flex;flex-direction:column;align-items:center;gap:12px}
+.caption{font-size:13px;color:var(--board-muted)}
+.phone{width:300px;height:650px;padding:8px;box-sizing:content-box;border-radius:40px;background:#0b0b0d;box-shadow:0 30px 60px rgba(0,0,0,.45),inset 0 0 0 1px #2b2b31}
+.screen{position:relative;width:300px;height:650px;border-radius:32px;overflow:hidden}
+.cam{position:absolute;top:12px;left:50%;width:11px;height:11px;margin-left:-5.5px;border-radius:50%;background:#050506;box-shadow:0 0 0 2px rgba(255,255,255,.06);z-index:20}
+.sb{position:absolute;top:9px;left:24px;font:600 11px Inter,sans-serif;opacity:.55;z-index:20}
+.abs{position:absolute}
+.cx{left:50%;transform:translateX(-50%)}
+.ic{width:24px;height:24px;display:block;stroke-width:2}
+
+.info{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;margin-top:32px}
+.card{background:var(--board-card);border:1px solid var(--board-line);border-radius:16px;padding:18px 20px}
+.card h3{margin:0 0 12px;font-size:13px;letter-spacing:.1em;text-transform:uppercase;color:var(--board-muted);font-weight:600}
+.swatches{display:grid;grid-template-columns:repeat(5,1fr);gap:8px}
+.sw{display:flex;flex-direction:column;gap:6px;font-size:11px;color:#cfcfd8}
+.sw i{display:block;height:44px;border-radius:10px;border:1px solid rgba(255,255,255,.08)}
+.sw b{font-weight:600;color:var(--board-text);font-size:11px}
+.type-sample{margin:4px 0 10px}
+.type-meta{font-size:12px;color:var(--board-muted)}
+.rows{display:grid;gap:8px;font-size:13px}
+.row{display:flex;justify-content:space-between;gap:12px}
+.dots{letter-spacing:2px;color:var(--board-accent);white-space:nowrap}
+.dots s{color:#4a4a55;text-decoration:none}
+.note{font-size:12px;color:#c9c9d3;margin-top:12px;border-top:1px solid var(--board-line);padding-top:10px}
+.foot{border-top:1px solid var(--board-line);padding:32px 0 64px;color:var(--board-muted);font-size:14px}
+@media (max-width:900px){.info{grid-template-columns:1fr}.board-head h1{font-size:30px}}
+
+/* ============ A · NEON ARCADE ============ */
+.t-neon .screen{background:radial-gradient(120% 70% at 50% 0%,#17224f 0%,#0a0f26 45%,#060918 100%);color:#e8f7ff;font-family:"Exo 2",sans-serif}
+.t-neon .grid{position:absolute;inset:0;background-image:linear-gradient(rgba(0,240,255,.07) 1px,transparent 1px),linear-gradient(90deg,rgba(0,240,255,.07) 1px,transparent 1px);background-size:30px 30px;-webkit-mask-image:linear-gradient(to bottom,transparent 0%,#000 70%);mask-image:linear-gradient(to bottom,transparent 0%,#000 70%)}
+.t-neon .wall-l,.t-neon .wall-r{position:absolute;top:0;bottom:0;width:2px;background:#00f0ff;box-shadow:0 0 10px #00f0ff,0 0 22px rgba(0,240,255,.6)}
+.t-neon .wall-l{left:0}.t-neon .wall-r{right:0}
+.t-neon .roof{position:absolute;top:0;left:0;right:0;height:2px;background:#00f0ff;box-shadow:0 0 10px #00f0ff}
+.t-neon .danger{position:absolute;left:0;right:0;bottom:0;height:70px;background:linear-gradient(to top,rgba(255,43,214,.35),transparent)}
+.t-neon .ib{width:48px;height:48px;border-radius:14px;border:1.5px solid rgba(0,240,255,.55);display:grid;place-items:center;color:#00f0ff;box-shadow:0 0 12px rgba(0,240,255,.25),inset 0 0 10px rgba(0,240,255,.15)}
+.t-neon .ic{stroke-width:1.8;filter:drop-shadow(0 0 4px rgba(0,240,255,.8))}
+.t-neon .title{top:122px;font:800 40px/1.02 Orbitron,sans-serif;letter-spacing:4px;text-align:center;background:linear-gradient(90deg,#00f0ff,#ff2bd6);-webkit-background-clip:text;background-clip:text;color:transparent;filter:drop-shadow(0 0 10px rgba(0,240,255,.45))}
+.t-neon .best{top:232px;font:500 13px Orbitron,sans-serif;letter-spacing:4px;color:#7fa7c9;white-space:nowrap}
+.t-neon .best b{color:#e8f7ff;font-weight:700}
+.t-neon .play{top:298px;width:116px;height:116px;border-radius:50%;border:2px solid #00f0ff;display:grid;place-items:center;color:#00f0ff;box-shadow:0 0 22px rgba(0,240,255,.55),inset 0 0 22px rgba(0,240,255,.35)}
+.t-neon .play .ic{width:46px;height:46px;margin-left:6px}
+.t-neon .tap{top:432px;font:500 11px Orbitron,sans-serif;letter-spacing:4px;color:#7fa7c9;white-space:nowrap}
+.t-neon .paddle{width:96px;height:12px;border-radius:6px;background:#00f0ff;box-shadow:0 0 12px #00f0ff,0 0 30px rgba(0,240,255,.55)}
+.t-neon .ball{width:18px;height:18px;border-radius:50%;background:#ff2bd6;box-shadow:0 0 12px #ff2bd6,0 0 28px rgba(255,43,214,.65)}
+.t-neon .trail{border-radius:50%;background:#ff2bd6}
+.t-neon .score{top:58px;font:700 72px Orbitron,sans-serif;color:#e8f7ff;text-shadow:0 0 18px rgba(0,240,255,.85)}
+.t-neon .hint{top:372px;left:16px;right:16px;bottom:24px;border:1.5px dashed rgba(0,240,255,.25);border-radius:22px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;color:rgba(127,167,201,.8);font:500 11px Orbitron,sans-serif;letter-spacing:3px}
+.t-neon .dim{position:absolute;inset:0;background:rgba(6,9,24,.72);backdrop-filter:blur(2px)}
+.t-neon .panel{left:28px;right:28px;top:168px;padding:26px 22px 22px;border-radius:20px;border:1.5px solid rgba(0,240,255,.6);background:rgba(10,16,42,.92);box-shadow:0 0 30px rgba(0,240,255,.25);text-align:center}
+.t-neon .go{font:700 22px Orbitron,sans-serif;letter-spacing:3px;color:#ff2bd6;text-shadow:0 0 14px rgba(255,43,214,.9)}
+.t-neon .big{font:700 68px/1.1 Orbitron,sans-serif;margin:10px 0 2px;text-shadow:0 0 18px rgba(0,240,255,.7)}
+.t-neon .newbest{display:inline-block;font:700 11px Orbitron,sans-serif;letter-spacing:3px;color:#00f0ff;border:1px solid #00f0ff;border-radius:6px;padding:5px 8px;box-shadow:0 0 12px rgba(0,240,255,.5)}
+.t-neon .btnrow{display:flex;gap:12px;margin-top:24px}
+.t-neon .primary{flex:1;height:56px;border-radius:14px;background:#00f0ff;color:#041018;font:800 16px Orbitron,sans-serif;letter-spacing:3px;display:flex;align-items:center;justify-content:center;gap:8px;box-shadow:0 0 22px rgba(0,240,255,.6)}
+.t-neon .primary .ic{filter:none;stroke-width:2.4}
+.t-neon .secondary{width:56px;height:56px}
+
+/* ============ B · SOFT POP ============ */
+.t-pop .screen{background:#fff1e0;color:#2b2d42;font-family:Fredoka,sans-serif}
+.t-pop .blob{position:absolute;border-radius:50%}
+.t-pop .ib{width:48px;height:48px;border-radius:16px;background:#fff;display:grid;place-items:center;color:#2b2d42;box-shadow:0 4px 0 #f0d9c0}
+.t-pop .ic{stroke-width:2.5}
+.t-pop .title{top:104px;text-align:center;transform:translateX(-50%) rotate(-4deg);font:700 58px/.9 Fredoka,sans-serif;text-shadow:0 5px 0 rgba(43,45,66,.1)}
+.t-pop .title .p1{color:#ff6b57}.t-pop .title .p2{color:#2ec4b6}
+.t-pop .best{top:250px;display:flex;align-items:center;gap:8px;padding:8px 16px 8px 12px;border-radius:999px;background:#fff;box-shadow:0 3px 0 #f0d9c0;font:600 16px Fredoka,sans-serif;white-space:nowrap}
+.t-pop .best .ic{color:#2ec4b6;width:20px;height:20px}
+.t-pop .play{top:318px;width:124px;height:124px;border-radius:50%;background:#ffc93c;display:grid;place-items:center;color:#2b2d42;box-shadow:0 8px 0 #e5a800,0 18px 26px rgba(229,168,0,.35)}
+.t-pop .play .ic{width:50px;height:50px;margin-left:6px}
+.t-pop .tap{top:468px;font:500 14px Fredoka,sans-serif;color:#8d8fa3;white-space:nowrap}
+.t-pop .paddle{width:112px;height:18px;border-radius:9px;background:#2ec4b6;box-shadow:0 5px 0 #1e9c90}
+.t-pop .shadow{border-radius:50%;background:rgba(43,45,66,.12)}
+.t-pop .score{top:54px;font:700 76px Fredoka,sans-serif;color:#2b2d42}
+.t-pop .plus{font:700 20px Fredoka,sans-serif;color:#ff6b57;transform:rotate(-8deg)}
+.t-pop .hint{top:372px;left:16px;right:16px;bottom:24px;border:2px dashed rgba(43,45,66,.14);border-radius:28px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;color:#8d8fa3;font:500 14px Fredoka,sans-serif}
+.t-pop .dim{position:absolute;inset:0;background:rgba(43,45,66,.38)}
+.t-pop .gocard{left:26px;right:26px;top:196px;padding:52px 22px 22px;border-radius:30px;background:#fff;text-align:center;box-shadow:0 8px 0 #e9d6c2,0 24px 40px rgba(43,45,66,.25)}
+.t-pop .go{font:700 28px Fredoka,sans-serif}
+.t-pop .lbl{font:500 14px Fredoka,sans-serif;color:#8d8fa3;margin-top:8px}
+.t-pop .big{font:700 64px/1 Fredoka,sans-serif;color:#ff6b57}
+.t-pop .newbest{position:absolute;top:118px;right:-10px;transform:rotate(8deg);background:#ffc93c;color:#2b2d42;font:700 13px Fredoka,sans-serif;padding:6px 10px;border-radius:10px;box-shadow:0 3px 0 #e5a800}
+.t-pop .btnrow{display:flex;gap:12px;margin-top:22px}
+.t-pop .primary{flex:1;height:58px;border-radius:18px;background:#ff6b57;color:#fff;font:700 20px Fredoka,sans-serif;display:flex;align-items:center;justify-content:center;gap:8px;box-shadow:0 6px 0 #d94c39}
+.t-pop .primary .ic{stroke-width:2.8}
+.t-pop .secondary{width:58px;height:58px;box-shadow:0 6px 0 #ecdcca;border:2px solid #f3e6d6}
+
+/* ============ C · MINIMAL INK ============ */
+.t-ink .screen{background:#f4f1ea;color:#141414;font-family:"Space Grotesk",sans-serif}
+.t-ink .ib{width:48px;height:48px;display:grid;place-items:center;color:#141414}
+.t-ink .ic{stroke-width:1.6}
+.t-ink .title{top:112px;left:28px;font:700 60px/.9 "Space Grotesk",sans-serif;letter-spacing:-3px}
+.t-ink .title i{font-style:normal;color:#e4412f}
+.t-ink .sub{top:240px;left:30px;font:400 13px "Space Grotesk",sans-serif;color:#8a857c}
+.t-ink .rule{top:290px;left:30px;right:30px;height:1px;background:#d9d4c9}
+.t-ink .best{top:306px;left:30px}
+.t-ink .best small{display:block;font:500 11px "Space Grotesk",sans-serif;letter-spacing:2.5px;color:#8a857c}
+.t-ink .best b{font:500 36px/1.1 "Space Grotesk",sans-serif}
+.t-ink .play{top:470px;left:28px;right:28px;height:60px;border-radius:30px;background:#141414;color:#f4f1ea;display:flex;align-items:center;justify-content:space-between;padding:0 22px 0 26px;font:500 18px "Space Grotesk",sans-serif}
+.t-ink .paddle{width:96px;height:8px;border-radius:4px;background:#141414}
+.t-ink .ball{width:18px;height:18px;border-radius:50%;background:#e4412f}
+.t-ink .trail{border-radius:50%;background:#e4412f}
+.t-ink .score{top:46px;font:300 96px "Space Grotesk",sans-serif;letter-spacing:-4px}
+.t-ink .hint{left:30px;right:30px;top:470px;display:flex;align-items:center;gap:10px;color:#8a857c;font:400 12px "Space Grotesk",sans-serif;letter-spacing:1px}
+.t-ink .hint span{flex:1;height:1px;background:#d9d4c9}
+.t-ink .eyebrow2{top:64px;left:30px;font:500 11px "Space Grotesk",sans-serif;letter-spacing:2.5px;color:#8a857c}
+.t-ink .big{top:96px;left:22px;font:500 170px/1 "Space Grotesk",sans-serif;letter-spacing:-10px}
+.t-ink .newbest{top:300px;left:30px;display:flex;align-items:center;gap:8px;font:500 13px "Space Grotesk",sans-serif;color:#e4412f}
+.t-ink .newbest i{width:8px;height:8px;border-radius:50%;background:#e4412f;display:block}
+.t-ink .prev{top:326px;left:30px;font:400 13px "Space Grotesk",sans-serif;color:#8a857c}
+.t-ink .again{top:500px;left:28px;right:28px;height:60px;border-radius:30px;background:#141414;color:#f4f1ea;display:flex;align-items:center;justify-content:space-between;padding:0 22px 0 26px;font:500 18px "Space Grotesk",sans-serif}
+.t-ink .home{top:580px;font:500 14px "Space Grotesk",sans-serif;text-decoration:underline;text-underline-offset:4px;display:flex;align-items:center;gap:6px}
+</style>
+</head>
+<body>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <symbol id="i-play" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5.6v12.8a1 1 0 0 0 1.53.85l10.1-6.4a1 1 0 0 0 0-1.7L9.53 4.75A1 1 0 0 0 8 5.6z"/></symbol>
+    <symbol id="i-pause" viewBox="0 0 24 24" fill="currentColor"><rect x="6.5" y="5" width="3.6" height="14" rx="1.2"/><rect x="13.9" y="5" width="3.6" height="14" rx="1.2"/></symbol>
+    <symbol id="i-settings" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h9M17 7h3M4 17h3M11 17h9"/><circle cx="15" cy="7" r="2.2"/><circle cx="9" cy="17" r="2.2"/></symbol>
+    <symbol id="i-rank" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 20h17M5 20v-6h4.5v6M9.5 20V8.5h5V20M14.5 20v-8H19v8"/></symbol>
+    <symbol id="i-home" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M4 10.5 12 4l8 6.5V19a1 1 0 0 1-1 1h-4.5v-5.5h-5V20H5a1 1 0 0 1-1-1z"/></symbol>
+    <symbol id="i-retry" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M19.5 12a7.5 7.5 0 1 1-2.2-5.3"/><path d="M19.5 4.5v4.5H15"/></symbol>
+    <symbol id="i-drag" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12h16M7.5 8.5 4 12l3.5 3.5M16.5 8.5 20 12l-3.5 3.5"/></symbol>
+    <symbol id="i-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></symbol>
+    <symbol id="i-crown" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M4 17.5 3 7.5l5 4 4-6 4 6 5-4-1 10z"/></symbol>
+    <symbol id="pingi" viewBox="0 0 40 40"><circle cx="20" cy="20" r="20" fill="#ff6b57"/><circle cx="12" cy="10.5" r="3.2" fill="#fff" opacity=".55"/><ellipse cx="14.5" cy="18" rx="2.6" ry="3.4" fill="#2b2d42"/><ellipse cx="25.5" cy="18" rx="2.6" ry="3.4" fill="#2b2d42"/><path d="M15.5 25.5q4.5 3.6 9 0" fill="none" stroke="#2b2d42" stroke-width="2.2" stroke-linecap="round"/></symbol>
+    <symbol id="pingi-sad" viewBox="0 0 40 40"><circle cx="20" cy="20" r="20" fill="#ff6b57"/><circle cx="12" cy="10.5" r="3.2" fill="#fff" opacity=".55"/><path d="M11.5 18.5q3 -2.2 6 0M22.5 18.5q3 -2.2 6 0" fill="none" stroke="#2b2d42" stroke-width="2.2" stroke-linecap="round"/><path d="M15.5 28q4.5 -3.4 9 0" fill="none" stroke="#2b2d42" stroke-width="2.2" stroke-linecap="round"/></symbol>
+  </defs>
+</svg>
+
+<div class="wrap">
+  <header class="board-head">
+    <div class="eyebrow">Pingi Pongi · Faz 1 · Kapı 1 · v1 · 30 Eylül 2026</div>
+    <h1>Style Frames: üç görsel yön</h1>
+    <p>Aynı üç ekran (menü, oyun, game over) üç farklı görsel dille. Birini seçebilir ya da karıştırabilirsin, örneğin “B'nin renkleri, C'nin tipografisi”. Seçilen yön Faz 2'de renk, tipografi, bileşen ve animasyon kurallarına dönüşür.</p>
+    <div class="chips">
+      <span class="chip">1080×2340 ekran, burada 1/3.6 ölçek</span>
+      <span class="chip">Etkileşimli her şey safe area içinde</span>
+      <span class="chip">Dokunma hedefleri ≥ 48dp</span>
+      <span class="chip">Tüm fontlar SIL OFL</span>
+      <span class="chip">Metinler TR/EN yerelleştirilecek</span>
+    </div>
+  </header>
+
+  <!-- ================= A ================= -->
+  <section class="direction t-neon">
+    <div class="dir-head">
+      <div>
+        <div class="letter">Yön A</div>
+        <h2>Neon Arcade</h2>
+        <p>Karanlık arena, parlayan kenarlar, top arkasında iz. Hız ve ritim hissi en güçlü yön; her vuruşta ışık patlamasıyla bol “juice”.</p>
+      </div>
+    </div>
+    <div class="phones">
+      <div class="phone-wrap"><div class="phone"><div class="screen">
+        <div class="grid"></div><div class="wall-l"></div><div class="wall-r"></div><div class="roof"></div><div class="danger"></div>
+        <div class="cam"></div><div class="sb">9:41</div>
+        <div class="abs" style="top:40px;left:16px"><div class="ib"><svg class="ic"><use href="#i-settings"/></svg></div></div>
+        <div class="abs" style="top:40px;right:16px"><div class="ib"><svg class="ic"><use href="#i-rank"/></svg></div></div>
+        <div class="abs cx title">PINGI<br>PONGI</div>
+        <div class="abs cx best">BEST <b>041</b></div>
+        <div class="abs cx play"><svg class="ic"><use href="#i-play"/></svg></div>
+        <div class="abs cx tap">TAP TO PLAY</div>
+        <div class="abs cx ball" style="top:556px"></div>
+        <div class="abs cx paddle" style="top:586px"></div>
+      </div></div><div class="caption">Menü</div></div>
+
+      <div class="phone-wrap"><div class="phone"><div class="screen">
+        <div class="grid"></div><div class="wall-l"></div><div class="wall-r"></div><div class="roof"></div><div class="danger"></div>
+        <div class="cam"></div><div class="sb">9:41</div>
+        <div class="abs" style="top:40px;right:16px"><div class="ib"><svg class="ic"><use href="#i-pause"/></svg></div></div>
+        <div class="abs cx score">27</div>
+        <div class="abs hint"><svg class="ic" style="color:rgba(0,240,255,.5)"><use href="#i-drag"/></svg>DRAG TO MOVE</div>
+        <div class="abs trail" style="left:128px;top:328px;width:10px;height:10px;opacity:.12"></div>
+        <div class="abs trail" style="left:146px;top:306px;width:12px;height:12px;opacity:.22"></div>
+        <div class="abs trail" style="left:164px;top:284px;width:14px;height:14px;opacity:.38"></div>
+        <div class="abs ball" style="left:182px;top:260px"></div>
+        <div class="abs paddle" style="left:62px;top:590px;transform:rotate(-6deg)"></div>
+      </div></div><div class="caption">Oyun</div></div>
+
+      <div class="phone-wrap"><div class="phone"><div class="screen">
+        <div class="grid"></div><div class="wall-l"></div><div class="wall-r"></div><div class="roof"></div><div class="danger"></div>
+        <div class="abs paddle" style="left:102px;top:590px"></div>
+        <div class="dim"></div>
+        <div class="cam"></div><div class="sb">9:41</div>
+        <div class="abs panel">
+          <div class="go">GAME OVER</div>
+          <div class="big">27</div>
+          <span class="newbest">NEW BEST</span>
+          <div class="btnrow">
+            <div class="ib secondary"><svg class="ic"><use href="#i-home"/></svg></div>
+            <div class="primary"><svg class="ic"><use href="#i-retry"/></svg>RETRY</div>
+          </div>
+        </div>
+      </div></div><div class="caption">Game Over</div></div>
+    </div>
+    <div class="info">
+      <div class="card"><h3>Palet</h3><div class="swatches">
+        <div class="sw"><i style="background:#060918"></i><b>#060918</b>Zemin</div>
+        <div class="sw"><i style="background:#00F0FF"></i><b>#00F0FF</b>Birincil</div>
+        <div class="sw"><i style="background:#FF2BD6"></i><b>#FF2BD6</b>Vurgu</div>
+        <div class="sw"><i style="background:#E8F7FF"></i><b>#E8F7FF</b>Metin</div>
+        <div class="sw"><i style="background:#7FA7C9"></i><b>#7FA7C9</b>İkincil</div>
+      </div></div>
+      <div class="card"><h3>Tipografi</h3>
+        <div class="type-sample" style="font:800 30px Orbitron,sans-serif">PINGI 027</div>
+        <div class="type-meta">Orbitron (başlık, sayılar) · Exo 2 (metin) · SIL OFL</div>
+      </div>
+      <div class="card"><h3>Değerlendirme</h3><div class="rows">
+        <div class="row"><span>İsme uygunluk</span><span class="dots">●●<s>●●●</s></span></div>
+        <div class="row"><span>Juice potansiyeli</span><span class="dots">●●●●●</span></div>
+        <div class="row"><span>Zamansızlık</span><span class="dots">●●●<s>●●</s></span></div>
+        <div class="row"><span>Üretim maliyeti</span><span>Orta</span></div>
+      </div><div class="note">Risk: türde çok yaygın bir görünüm. Glow efektleri için UI Toolkit'te özel shader gerekir.</div></div>
+    </div>
+  </section>
+
+  <!-- ================= B ================= -->
+  <section class="direction t-pop">
+    <div class="dir-head">
+      <div>
+        <div class="letter">Yön B</div>
+        <h2>Soft Pop</h2>
+        <p>Sıcak krem zemin, tombul basılabilir butonlar ve topun kendisi bir karakter: <b>Pingi</b>. Vurunca gülümser, düşünce üzülür. Oyunun adıyla en uyumlu ve en sevimli yön.</p>
+      </div>
+      <span class="badge">Önerim</span>
+    </div>
+    <div class="phones">
+      <div class="phone-wrap"><div class="phone"><div class="screen">
+        <div class="blob" style="width:260px;height:260px;right:-90px;top:-70px;background:#ffe2c4"></div>
+        <div class="blob" style="width:300px;height:300px;left:-140px;bottom:120px;background:#ffdce4"></div>
+        <div class="cam"></div><div class="sb">9:41</div>
+        <div class="abs" style="top:40px;left:16px"><div class="ib"><svg class="ic"><use href="#i-settings"/></svg></div></div>
+        <div class="abs" style="top:40px;right:16px"><div class="ib"><svg class="ic"><use href="#i-rank"/></svg></div></div>
+        <div class="abs cx title"><span class="p1">Pingi</span><br><span class="p2">Pongi</span></div>
+        <div class="abs cx best"><svg class="ic"><use href="#i-crown"/></svg>Best 41</div>
+        <div class="abs cx play"><svg class="ic"><use href="#i-play"/></svg></div>
+        <div class="abs cx tap">Tap to play</div>
+        <div class="abs cx shadow" style="top:574px;width:44px;height:8px"></div>
+        <svg class="abs cx" style="top:526px;width:50px;height:50px"><use href="#pingi"/></svg>
+        <div class="abs cx paddle" style="top:582px"></div>
+      </div></div><div class="caption">Menü</div></div>
+
+      <div class="phone-wrap"><div class="phone"><div class="screen">
+        <div class="blob" style="width:260px;height:260px;right:-90px;top:-70px;background:#ffe2c4"></div>
+        <div class="blob" style="width:300px;height:300px;left:-140px;bottom:120px;background:#ffdce4"></div>
+        <div class="cam"></div><div class="sb">9:41</div>
+        <div class="abs" style="top:40px;right:16px"><div class="ib"><svg class="ic"><use href="#i-pause"/></svg></div></div>
+        <div class="abs cx score">27</div>
+        <div class="abs hint"><svg class="ic" style="color:rgba(43,45,66,.35)"><use href="#i-drag"/></svg>Drag here to move</div>
+        <svg class="abs" style="left:170px;top:236px;width:34px;height:34px;transform:rotate(-12deg)"><use href="#pingi"/></svg>
+        <div class="abs" style="left:150px;top:282px;width:14px;height:3px;border-radius:2px;background:rgba(255,107,87,.35);transform:rotate(-50deg)"></div>
+        <div class="abs" style="left:160px;top:292px;width:10px;height:3px;border-radius:2px;background:rgba(255,107,87,.25);transform:rotate(-50deg)"></div>
+        <div class="abs plus" style="left:58px;top:548px">+1</div>
+        <div class="abs paddle" style="left:62px;top:590px;transform:rotate(-6deg)"></div>
+      </div></div><div class="caption">Oyun</div></div>
+
+      <div class="phone-wrap"><div class="phone"><div class="screen">
+        <div class="blob" style="width:260px;height:260px;right:-90px;top:-70px;background:#ffe2c4"></div>
+        <div class="blob" style="width:300px;height:300px;left:-140px;bottom:120px;background:#ffdce4"></div>
+        <div class="abs paddle" style="left:94px;top:590px"></div>
+        <div class="dim"></div>
+        <div class="cam"></div><div class="sb">9:41</div>
+        <div class="abs gocard">
+          <svg class="abs cx" style="top:-34px;width:68px;height:68px"><use href="#pingi-sad"/></svg>
+          <div class="go">So close!</div>
+          <div class="lbl">Score</div>
+          <div class="big">27</div>
+          <div class="newbest">New best!</div>
+          <div class="btnrow">
+            <div class="ib secondary"><svg class="ic"><use href="#i-home"/></svg></div>
+            <div class="primary"><svg class="ic"><use href="#i-retry"/></svg>Play again</div>
+          </div>
+        </div>
+      </div></div><div class="caption">Game Over</div></div>
+    </div>
+    <div class="info">
+      <div class="card"><h3>Palet</h3><div class="swatches">
+        <div class="sw"><i style="background:#FFF1E0"></i><b>#FFF1E0</b>Zemin</div>
+        <div class="sw"><i style="background:#FF6B57"></i><b>#FF6B57</b>Pingi / Birincil</div>
+        <div class="sw"><i style="background:#2EC4B6"></i><b>#2EC4B6</b>Raket</div>
+        <div class="sw"><i style="background:#FFC93C"></i><b>#FFC93C</b>Aksiyon</div>
+        <div class="sw"><i style="background:#2B2D42"></i><b>#2B2D42</b>Metin</div>
+      </div></div>
+      <div class="card"><h3>Tipografi</h3>
+        <div class="type-sample" style="font:700 32px Fredoka,sans-serif;color:#ff6b57">Pingi <span style="color:#2ec4b6">027</span></div>
+        <div class="type-meta">Fredoka (tek aile, 400–700) · SIL OFL · Türkçe karakter desteği var</div>
+      </div>
+      <div class="card"><h3>Değerlendirme</h3><div class="rows">
+        <div class="row"><span>İsme uygunluk</span><span class="dots">●●●●●</span></div>
+        <div class="row"><span>Juice potansiyeli</span><span class="dots">●●●●<s>●</s></span></div>
+        <div class="row"><span>Zamansızlık</span><span class="dots">●●●●<s>●</s></span></div>
+        <div class="row"><span>Üretim maliyeti</span><span>Orta</span></div>
+      </div><div class="note">Artı: Pingi maskotu uygulama ikonu ve mağaza görselleri için hazır bir marka. Her şey SVG ile üretilebilir.</div></div>
+    </div>
+  </section>
+
+  <!-- ================= C ================= -->
+  <section class="direction t-ink">
+    <div class="dir-head">
+      <div>
+        <div class="letter">Yön C</div>
+        <h2>Minimal Ink</h2>
+        <p>Kâğıt zemin, mürekkep siyahı, tek bir kırmızı vurgu. Bugünkü siyah-beyaz görünümün olgunlaşmış, İsviçre tipografisi tarzı hali. Sakin, şık ve üretimi en ucuz yön.</p>
+      </div>
+    </div>
+    <div class="phones">
+      <div class="phone-wrap"><div class="phone"><div class="screen">
+        <div class="cam"></div><div class="sb">9:41</div>
+        <div class="abs" style="top:40px;left:16px"><div class="ib"><svg class="ic"><use href="#i-settings"/></svg></div></div>
+        <div class="abs" style="top:40px;right:16px"><div class="ib"><svg class="ic"><use href="#i-rank"/></svg></div></div>
+        <div class="abs title">Pingi<br>Pongi<i>.</i></div>
+        <div class="abs sub">A one-thumb reflex game</div>
+        <div class="abs rule"></div>
+        <div class="abs best"><small>BEST</small><b>41</b></div>
+        <div class="abs play">Play<svg class="ic"><use href="#i-arrow"/></svg></div>
+        <div class="abs cx ball" style="top:572px"></div>
+        <div class="abs cx paddle" style="top:598px"></div>
+      </div></div><div class="caption">Menü</div></div>
+
+      <div class="phone-wrap"><div class="phone"><div class="screen">
+        <div class="cam"></div><div class="sb">9:41</div>
+        <div class="abs" style="top:40px;right:16px"><div class="ib"><svg class="ic"><use href="#i-pause"/></svg></div></div>
+        <div class="abs cx score">27</div>
+        <div class="abs trail" style="left:132px;top:326px;width:6px;height:6px;opacity:.15"></div>
+        <div class="abs trail" style="left:150px;top:304px;width:8px;height:8px;opacity:.3"></div>
+        <div class="abs ball" style="left:170px;top:278px"></div>
+        <div class="abs paddle" style="left:64px;top:596px;transform:rotate(-6deg)"></div>
+        <div class="abs hint"><span></span>drag to move<span></span></div>
+      </div></div><div class="caption">Oyun</div></div>
+
+      <div class="phone-wrap"><div class="phone"><div class="screen">
+        <div class="cam"></div><div class="sb">9:41</div>
+        <div class="abs eyebrow2">GAME OVER</div>
+        <div class="abs big">27</div>
+        <div class="abs newbest"><i></i>New best</div>
+        <div class="abs prev">Previous best 24</div>
+        <div class="abs again">Play again<svg class="ic"><use href="#i-retry"/></svg></div>
+        <div class="abs cx home"><svg class="ic" style="width:18px;height:18px"><use href="#i-home"/></svg>Home</div>
+      </div></div><div class="caption">Game Over</div></div>
+    </div>
+    <div class="info">
+      <div class="card"><h3>Palet</h3><div class="swatches">
+        <div class="sw"><i style="background:#F4F1EA"></i><b>#F4F1EA</b>Zemin</div>
+        <div class="sw"><i style="background:#141414"></i><b>#141414</b>Mürekkep</div>
+        <div class="sw"><i style="background:#E4412F"></i><b>#E4412F</b>Vurgu</div>
+        <div class="sw"><i style="background:#8A857C"></i><b>#8A857C</b>İkincil</div>
+        <div class="sw"><i style="background:#D9D4C9"></i><b>#D9D4C9</b>Çizgi</div>
+      </div></div>
+      <div class="card"><h3>Tipografi</h3>
+        <div class="type-sample" style="font:500 32px 'Space Grotesk',sans-serif;letter-spacing:-1px">Pingi 027</div>
+        <div class="type-meta">Space Grotesk (tek aile, 300–700) · SIL OFL</div>
+      </div>
+      <div class="card"><h3>Değerlendirme</h3><div class="rows">
+        <div class="row"><span>İsme uygunluk</span><span class="dots">●●<s>●●●</s></span></div>
+        <div class="row"><span>Juice potansiyeli</span><span class="dots">●●<s>●●●</s></span></div>
+        <div class="row"><span>Zamansızlık</span><span class="dots">●●●●●</span></div>
+        <div class="row"><span>Üretim maliyeti</span><span>Düşük</span></div>
+      </div><div class="note">Risk: mağazada dikkat çekmesi zor. Oyun hissini neredeyse tamamen ses ve animasyon taşımak zorunda.</div></div>
+    </div>
+  </section>
+
+  <footer class="foot">
+    Sonraki adım: seçilen yön Faz 2'de (Design System) renk token'larına, tipografi ölçeğine, bileşenlere (buton durumları dahil), animasyon sürelerine ve ses paletine dönüşür.
+  </footer>
+</div>
+</body>
+</html>

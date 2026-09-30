@@ -6,7 +6,7 @@ on:
   workflow_dispatch:
 
 env:
-  UNITY_VERSION: 6000.0.58f2
+  UNITY_VERSION: 6000.3.25f1
   BUILD_NAME: PongMobilePrototype
   BUILDS_PATH: builds
 

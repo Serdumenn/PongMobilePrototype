@@ -1,0 +1,33 @@
+:root {
+    --color-bg: #FFF1E0;
+    --color-surface: #FFFFFF;
+    --color-surface-edge: #F0D9C0;
+    --color-card-edge: #E9D6C2;
+    --color-ink: #2B2D42;
+    --color-ink-muted: #6B6D82;
+    --color-pingi: #FF6B57;
+    --color-coral: #E04E3A;
+    --color-coral-edge: #B83A28;
+    --color-coral-soft: #FAD4CD;
+    --color-teal: #2EC4B6;
+    --color-teal-edge: #1E9C90;
+    --color-sun: #FFC93C;
+    --color-sun-edge: #E5A800;
+    --color-scrim: rgba(43, 45, 66, 0.38);
+    --color-track-off: #E6D6C4;
+    --color-divider: #F3E6D6;
+    --color-hint: rgba(43, 45, 66, 0.05);
+    --color-hint-icon: rgba(43, 45, 66, 0.35);
+
+    --font-size-display: 176px;
+    --font-size-score: 264px;
+    --font-size-number: 224px;
+    --font-size-title: 96px;
+    --font-size-button: 72px;
+    --font-size-body: 56px;
+    --font-size-caption: 48px;
+
+    --radius-icon: 56px;
+    --radius-button: 64px;
+    --radius-card: 104px;
+}

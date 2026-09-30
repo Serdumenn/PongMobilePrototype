@@ -3,7 +3,7 @@
 A lightweight 2D Pong prototype built with Unity, designed for mobile (touch) controls.  
 The project focuses on responsive paddle feel, consistent ball physics, and a clean iteration loop supported by CI.
 
-> Unity Version: **6000.0.58f2** (can be changed via repo variable)
+> Unity Version: **6000.3.25f1** (can be changed via repo variable)
 
 ## What this project includes
 

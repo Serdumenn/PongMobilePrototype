@@ -62,5 +62,6 @@ crashlytics-build.properties
 .agent/
 .claude/
 
-# Third-party UI asset packs (large, downloadable from Asset Store)
+# Licensed packs that must not be redistributed (repo is public)
 Assets/Textures/UI/Prinbles_*
+ArtSource/_licensed/

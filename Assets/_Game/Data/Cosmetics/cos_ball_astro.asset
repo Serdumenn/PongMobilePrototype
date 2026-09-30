@@ -1,0 +1,28 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9cff33aa0ba42fb44aad9d9ad5277cef, type: 3}
+  m_Name: cos_ball_astro
+  m_EditorClassIdentifier: Assembly-CSharp::CosmeticItem
+  <Id>k__BackingField: ball_astro
+  <Category>k__BackingField: 0
+  <DisplayName>k__BackingField: Astro
+  <Unlock>k__BackingField: 4
+  <UnlockValue>k__BackingField: 7
+  <ProductId>k__BackingField: 
+  <Idle>k__BackingField: {fileID: 3286163911610860551, guid: 2a9850d93c18bf74aae04704822d9629, type: 3}
+  <Happy>k__BackingField: {fileID: 3286163911610860551, guid: e044092e0ff647a4bb7dfc69d6c82c6d, type: 3}
+  <Sad>k__BackingField: {fileID: 3286163911610860551, guid: 64719fbab33603548838a68e59d055eb, type: 3}
+  <PaddleSprite>k__BackingField: {fileID: 0}
+  <BackgroundColor>k__BackingField: {r: 1, g: 1, b: 1, a: 1}
+  <BlobPrimary>k__BackingField: {r: 1, g: 1, b: 1, a: 1}
+  <BlobSecondary>k__BackingField: {r: 1, g: 1, b: 1, a: 1}
+  <UiClass>k__BackingField: 
