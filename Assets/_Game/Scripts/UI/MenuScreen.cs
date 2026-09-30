@@ -100,7 +100,7 @@ public sealed class MenuScreen : UIScreen
         float delta = position.x - swipeStart.x;
         if (Mathf.Abs(delta) < SwipeThreshold) return;
 
-        HapticManager.Soft();
+        UiFeedback.Tap();
         onStepMode?.Invoke(delta < 0f ? 1 : -1);
     }
 }

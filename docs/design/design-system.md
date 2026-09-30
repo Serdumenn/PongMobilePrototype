@@ -88,12 +88,27 @@ Kural: UI animasyonları `Time.timeScale`'dan etkilenmez (pause ve game over sı
 | `happy` | Kısık "^ ^" gözler, geniş gülüş | Raket vuruşunda 150 ms |
 | `sad` | Düşük kaşlar, ters ağız | Game Over |
 
-## Ses paleti (Faz 4)
+## Ses paleti (Faz 4) — uygulandı
 
-`sfx_ui_tap` · `sfx_ui_back` · `sfx_paddle_hit` (seri vuruşta perdesi yükselir) · `sfx_wall_bounce` (yumuşak) · `sfx_new_best` · `sfx_game_over`
+Tüm efektler bize ait. `ArtSource/tools/generate_sfx.py` ile sentezleniyor (mono, 44.1 kHz, 16 bit, tepe -3 dBFS). Lisans gerektirmez; betik yeniden çalıştırılınca aynı dosyalar üretilir.
+
+| Efekt | Karakter | Süre | Oyun içi ses seviyesi | Ne zaman |
+|---|---|---|---|---|
+| `sfx_paddle_hit` | Marimba "tok", C5 | 0.20 s | 0.80 | Raket vuruşu. Seri boyunca her vuruşta +0.5 yarım ton, en fazla 1 oktav; top yeniden servis edilince sıfırlanır |
+| `sfx_wall_bounce` | Yumuşak, alçak "tup" | 0.12 s | 0.45 | Duvar ve tavan |
+| `sfx_perfect` | Parlak "ding", E6 + B6 | 0.50 s | 0.55 | Rush'ta Perfect vuruş (raket sesinin üstüne) |
+| `sfx_ui_tap` | Yukarı kayan baloncuk | 0.08 s | 0.50 | Buton, kart, sekme |
+| `sfx_ui_back` | Aşağı kayan baloncuk | 0.09 s | 0.50 | Geri, ana menü, "Later" |
+| `sfx_new_best` | Marimba arpej C–E–G–C | 0.97 s | 0.80 | Rekorla biten oyun |
+| `sfx_game_over` | İnen iki nota, E4 → C4 | 0.77 s | 0.70 | Rekorsuz oyun sonu (cezalandırıcı değil) |
+| `sfx_unlock` | Yükselen arpej ve pırıltı | 0.71 s | 0.80 | Ödül penceresi ve Dolap'ta kilit açılması |
+
+- **Yönlendirme:** `AudioManager` (Services) 6 kanalı döngüyle kullanır ve hepsini `MainMixer` → `SFX` grubuna gönderir. `Music` grubu ileride müzik için hazır.
+- **Kamera:** Kamerada `AudioListener` olmalı.
+- **Ayarlar:** "Sound" anahtarı (`GameSettings.SoundEnabled`) kapatılınca tüm sesler anında susar.
 
 ## Erişilebilirlik
 
 - Metin kontrastı ≥ 4.5:1, büyük metin (≥ 72 px bold) ≥ 3:1
 - Dokunma hedefi ≥ 176 px (≈ 64dp)
-- Titreşim ayardan kapatılabilir; ses eklendiğinde ses de kapatılabilir olacak
+- Titreşim ve ses ayrı ayrı kapatılabilir (Ayarlar)

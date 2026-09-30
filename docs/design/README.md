@@ -27,8 +27,8 @@ Bu klasör oyunun görsel ve UX kararlarının tek kaynağıdır. Her faz bir **
 | 1 · Art Direction | Creative Brief + 3 style frame | Kapı 1: stil seçimi | ✅ B · Soft Pop seçildi |
 | 2 · Design System | Token'lar, tipografi, bileşenler, animasyon, ses paleti | Kapı 2 | ✅ Kapı 3 ile birleştirildi |
 | 3 · UX | Ekran envanteri, akış, 3 oranda doğrulama | Kapı 3 | ✅ Ekranlar uygulandı |
-| 4 · Asset üretimi | İkon, sprite, font ✅ · ses, uygulama ikonu ⏳ | Her asset DoD'den geçer | Kısmen |
-| 5 · Uygulama | UI Toolkit ekranları, tema, safe area, animasyon ✅ · AudioMixer ⏳ | Kapı 4: cihaz testi | Cihaz testi bekliyor |
+| 4 · Asset üretimi | İkon, sprite, font, ses, uygulama ikonu ✅ | Her asset DoD'den geçer | Kısmen |
+| 5 · Uygulama | UI Toolkit ekranları, tema, safe area, animasyon, AudioMixer ✅ | Kapı 4: cihaz testi | Cihaz testi bekliyor |
 | 6 · Polish & QA | Cihaz matrisi, erişilebilirlik, performans ve boyut bütçesi | Kapı 5 | — |
 | 7 · Mağaza | İkon, feature graphic, ekran görüntüleri, metinler, gizlilik politikası | Kapı 6: yayın | — |
 
@@ -59,6 +59,10 @@ Bu klasör oyunun görsel ve UX kararlarının tek kaynağıdır. Her faz bir **
 | 2026-09-30 | Android en-boy: Custom 3.0, tam ekran açık | 2.1 sınırı 20:9 ve daha uzun telefonlarda siyah bant çıkarıyordu |
 | 2026-09-30 | **Sabit saha** (en fazla 9:16) + tablette kenar çizgileri | Ürün sahibinin kararı; her cihazda aynı zorluk, adil dünya sıralaması |
 | 2026-09-30 | Geniş ekranlarda UI 1080 px içerik sütunu | Tablette kartlar ve butonlar gereksiz genişlemiyor; saha ile hizalı |
+| 2026-09-30 | Giriş: **Input System 1.20** (Input Manager kapatıldı) | Unity 6.3'te Input Manager kullanımdan kalkıyor. Raket tüm parmaklar arasından alt yarıdakini izliyor; Android geri tuşu `Keyboard.escapeKey`. IAP sahte mağazası için Editor'e özel `InputSystemUIInputModule` |
+| 2026-10-01 | Ses paleti sentezle üretildi (8 efekt) + AudioMixer + Ses anahtarı | Eski aday seslerin lisansı belirsizdi, stereo ve uzun kuyrukluydu. Kendi seslerimiz lisans derdi olmadan tarzımıza uygun |
+| 2026-10-01 | Reklam eklentisi androidlib paket adı `com.google.unity.ads.plugin` | Unity 6.3 (AGP 9) aynı isim alanını hata sayıyor; CI build'i bu yüzden düşüyordu ([googleads-mobile-unity #4212](https://github.com/googleads/googleads-mobile-unity/issues/4212)) |
+| 2026-10-01 | Uygulama ikonu: **Güneş** varyantı (Pingi + raket, sarı zemin) | Krem varyant açık duvar kâğıtlarında kayboluyordu; sarı zemin her arka planda ve 48 px'de okunuyor, Play butonuyla aynı marka rengi |
 
 ## Asset takibi
 
@@ -76,8 +80,9 @@ Durumlar: `Brief → WIP → Review → Approved → Integrated`
 | Temalar (4) | USS + veri | Integrated | Soft Pop, Mint, Sunset, Night |
 | `ui_icon_wardrobe/lock/check` | SVG ikon | Integrated | — |
 | `ui_icon_clock/flame/chevron_left/chevron_right` | SVG ikon | Integrated | Rush, seri ve mod seçici |
-| Ses paleti (6 efekt) | SFX | Brief | Adaylar: `Audio/SFX/_Library` |
-| Uygulama ikonu | Adaptive icon | Brief | Şimdilik `app_icon_legacy.png` |
+| `ui_icon_sound` | SVG ikon | Integrated | Ayarlar → Sound |
+| Ses paleti (8 efekt) | SFX | Integrated | `generate_sfx.py` ile sentezlendi, lisans gerektirmez. `_Library` adayları kullanılmadı |
+| Uygulama ikonu | Adaptive + round + legacy | Integrated | "Güneş" varyantı. `generate_app_icon.py` ile üretiliyor; kaynak SVG'ler `ArtSource/app_icon/`. Mağaza 512 px sürümü yayın hazırlığında |
 
 ## Lisans kaydı
 

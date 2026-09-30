@@ -48,5 +48,6 @@ public sealed class RewardScreen : UIScreen
         }
 
         Show();
+        AudioManager.PlayOne(Sfx.Unlock);
     }
 }

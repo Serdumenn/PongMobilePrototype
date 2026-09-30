@@ -9,6 +9,7 @@ public sealed class SettingsScreen : UIScreen
     private const long ResetConfirmMs = 2500;
 
     private readonly VisualElement vibrationSwitch;
+    private readonly VisualElement soundSwitch;
     private readonly Label bestValue;
     private readonly Button resetButton;
     private readonly Label resetLabel;
@@ -24,11 +25,13 @@ public sealed class SettingsScreen : UIScreen
         this.onReset = onReset;
 
         vibrationSwitch = root.Q("vibration-switch");
+        soundSwitch = root.Q("sound-switch");
         bestValue = root.Q<Label>("best-value");
         resetLabel = root.Q<Label>("reset-label");
         root.Q<Label>("version-label").text = $"Pingi Pongi · v{Application.version}";
 
         vibrationSwitch.RegisterCallback<ClickEvent>(_ => ToggleVibration());
+        soundSwitch.RegisterCallback<ClickEvent>(_ => ToggleSound());
         Bind("back-button", onBack);
         resetButton = Bind("reset-button", OnResetPressed);
     }
@@ -36,6 +39,7 @@ public sealed class SettingsScreen : UIScreen
     protected override void OnShow()
     {
         vibrationSwitch.EnableInClassList(SwitchOnClass, GameSettings.HapticsEnabled);
+        soundSwitch.EnableInClassList(SwitchOnClass, GameSettings.SoundEnabled);
         RefreshBest();
         Disarm();
     }
@@ -51,6 +55,16 @@ public sealed class SettingsScreen : UIScreen
         GameSettings.HapticsEnabled = enabled;
         vibrationSwitch.EnableInClassList(SwitchOnClass, enabled);
         if (enabled) HapticManager.Soft();
+    }
+
+    private void ToggleSound()
+    {
+        bool enabled = !GameSettings.SoundEnabled;
+        GameSettings.SoundEnabled = enabled;
+        soundSwitch.EnableInClassList(SwitchOnClass, enabled);
+
+        if (enabled) AudioManager.PlayOne(Sfx.UiTap);
+        else if (AudioManager.Instance != null) AudioManager.Instance.StopAll();
     }
 
     private void OnResetPressed()

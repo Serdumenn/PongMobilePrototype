@@ -17,6 +17,7 @@ public sealed class PurchaseService : MonoBehaviour
     private string pendingProductId;
 
     public bool IsReady { get; private set; }
+    public bool IsPurchasing => !string.IsNullOrEmpty(pendingProductId);
 
     private void Awake()
     {

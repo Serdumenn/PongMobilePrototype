@@ -192,6 +192,7 @@ GameObject:
   - component: {fileID: 315089629}
   - component: {fileID: 315089628}
   - component: {fileID: 315089632}
+  - component: {fileID: 315089633}
   m_Layer: 0
   m_Name: Services
   m_TagString: Untagged
@@ -273,6 +274,56 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f971428acaa60c740ad1c47a719292a8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::RecordsService
+--- !u!114 &315089633
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 315089627}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 20247274908dc6645b0becb02eba1be7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::AudioManager
+  Output: {fileID: 5462437309182733527, guid: 5af8ca9990e6c7342bc30e2f65b7f141, type: 2}
+  Sounds:
+  - Id: 0
+    Clip: {fileID: 8300000, guid: e0f186d3ce758e34992681c7d5e96f56, type: 3}
+    Volume: 0.8
+    PitchJitter: 0.02
+  - Id: 1
+    Clip: {fileID: 8300000, guid: 24399b506d03dae43a863db5d165080c, type: 3}
+    Volume: 0.45
+    PitchJitter: 0.05
+  - Id: 2
+    Clip: {fileID: 8300000, guid: 54c692b355fa93f44958ac4a5755ef3e, type: 3}
+    Volume: 0.55
+    PitchJitter: 0
+  - Id: 3
+    Clip: {fileID: 8300000, guid: 0003e7b6de624fb4c93f27ed544ab9ac, type: 3}
+    Volume: 0.5
+    PitchJitter: 0.03
+  - Id: 4
+    Clip: {fileID: 8300000, guid: 9db05941fab4e794bb5b7cd273f6543a, type: 3}
+    Volume: 0.5
+    PitchJitter: 0.03
+  - Id: 5
+    Clip: {fileID: 8300000, guid: 02bb099428ccd0847a89f6ddd58da3ac, type: 3}
+    Volume: 0.8
+    PitchJitter: 0
+  - Id: 6
+    Clip: {fileID: 8300000, guid: 1d534b56d16ca3946999e402ac5ad4de, type: 3}
+    Volume: 0.7
+    PitchJitter: 0
+  - Id: 7
+    Clip: {fileID: 8300000, guid: d1171527a05a5e84a972bc0c5ce532cf, type: 3}
+    Volume: 0.8
+    PitchJitter: 0
+  Voices: 6
+  SemitonesPerHit: 0.5
+  MaxSemitones: 12
+  Game: {fileID: 7019952436038793779}
 --- !u!1 &517429098
 GameObject:
   m_ObjectHideFlags: 0
@@ -1832,6 +1883,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1822548375}
   - component: {fileID: 1822548374}
+  - component: {fileID: 1822548376}
   m_Layer: 0
   m_Name: Camera
   m_TagString: MainCamera
@@ -1905,6 +1957,14 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!81 &1822548376
+AudioListener:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1822548372}
+  m_Enabled: 1
 --- !u!1 &2060388130
 GameObject:
   m_ObjectHideFlags: 0

@@ -73,6 +73,43 @@
     opacity: 0.4;
 }
 
+.offer:disabled {
+    opacity: 0.5;
+}
+
+.toast {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 14%;
+    align-items: center;
+    opacity: 1;
+    translate: 0 0;
+    transition-property: opacity, translate;
+    transition-duration: 200ms, 260ms;
+    transition-timing-function: ease-out, ease-out-back;
+}
+
+.toast--hidden {
+    opacity: 0;
+    translate: 0 40px;
+}
+
+.toast__pill {
+    max-width: 88%;
+    padding: 24px 44px;
+    border-radius: 48px;
+    background-color: #2B2D42;
+}
+
+.toast__label {
+    color: #FFFFFF;
+    font-size: 40px;
+    -unity-font-definition: url("/Assets/_Game/Fonts/fnt_fredoka_semibold_sdf.asset");
+    -unity-text-align: middle-center;
+    white-space: normal;
+}
+
 .btn__label {
     margin-left: 24px;
     color: #FFFFFF;
@@ -211,6 +248,7 @@
 .icon--settings { background-image: url("/Assets/_Game/Art/UI/Icons/ui_icon_settings.svg"); }
 .icon--trash { background-image: url("/Assets/_Game/Art/UI/Icons/ui_icon_trash.svg"); }
 .icon--vibration { background-image: url("/Assets/_Game/Art/UI/Icons/ui_icon_vibration.svg"); }
+.icon--sound { background-image: url("/Assets/_Game/Art/UI/Icons/ui_icon_sound.svg"); }
 
 .caption {
     color: var(--color-ink-muted);

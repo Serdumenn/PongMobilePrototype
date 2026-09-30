@@ -11,6 +11,14 @@
         </ui:VisualElement>
         <ui:VisualElement class="list" picking-mode="Ignore">
             <ui:VisualElement class="row" picking-mode="Ignore">
+                <ui:VisualElement class="icon icon--sound row__icon" picking-mode="Ignore" />
+                <ui:Label text="Sound" class="row__label" picking-mode="Ignore" />
+                <ui:VisualElement name="sound-switch" class="switch">
+                    <ui:VisualElement class="switch__knob" picking-mode="Ignore" />
+                </ui:VisualElement>
+            </ui:VisualElement>
+            <ui:VisualElement class="divider" picking-mode="Ignore" />
+            <ui:VisualElement class="row" picking-mode="Ignore">
                 <ui:VisualElement class="icon icon--vibration row__icon" picking-mode="Ignore" />
                 <ui:Label text="Vibration" class="row__label" picking-mode="Ignore" />
                 <ui:VisualElement name="vibration-switch" class="switch">

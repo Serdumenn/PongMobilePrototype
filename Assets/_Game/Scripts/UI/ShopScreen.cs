@@ -16,6 +16,7 @@ public sealed class ShopScreen : UIScreen
     }
 
     private readonly CosmeticsService cosmetics;
+    private readonly Action<string> notify;
     private readonly Sprite passArt;
     private readonly VisualElement grid;
     private readonly ScrollView scroll;
@@ -41,12 +42,14 @@ public sealed class ShopScreen : UIScreen
     private DialogMode dialogMode;
     private CosmeticItem dialogItem;
     private bool waitingForAd;
+    private int unlockedCount;
 
     public bool IsDialogOpen => dialogMode != DialogMode.None;
 
-    public ShopScreen(VisualElement root, CosmeticsService cosmetics, Action onBack) : base(root)
+    public ShopScreen(VisualElement root, CosmeticsService cosmetics, Action onBack, Action<string> notify) : base(root)
     {
         this.cosmetics = cosmetics;
+        this.notify = notify;
 
         grid = root.Q("grid");
         scroll = root.Q<ScrollView>("shop-scroll");
@@ -76,7 +79,7 @@ public sealed class ShopScreen : UIScreen
         tabs[CosmeticCategory.Paddle] = Bind("tab-paddle", () => SelectCategory(CosmeticCategory.Paddle));
         tabs[CosmeticCategory.Theme] = Bind("tab-theme", () => SelectCategory(CosmeticCategory.Theme));
         Bind("pass-button", OpenPassDialog);
-        Bind("noads-button", () => cosmetics.Buy(CosmeticCatalog.RemoveAdsProductId));
+        Bind("noads-button", () => StartPurchase(CosmeticCatalog.RemoveAdsProductId));
         Bind("dialog-primary", OnDialogPrimary);
         Bind("dialog-buy", OnDialogBuy);
         Bind("dialog-pass", OpenPassDialog);
@@ -84,7 +87,12 @@ public sealed class ShopScreen : UIScreen
 
         cosmetics.Changed += OnCosmeticsChanged;
         var purchases = PurchaseService.Instance;
-        if (purchases != null) purchases.ProductsChanged += OnCosmeticsChanged;
+        if (purchases != null)
+        {
+            purchases.ProductsChanged += OnCosmeticsChanged;
+            purchases.PurchaseSucceeded += OnPurchaseSucceeded;
+            purchases.PurchaseFailed += OnPurchaseFailed;
+        }
     }
 
     public void CloseDialog()
@@ -97,6 +105,7 @@ public sealed class ShopScreen : UIScreen
 
     protected override void OnShow()
     {
+        unlockedCount = CountUnlocked();
         CloseDialog();
         SelectCategory(category);
         scroll.scrollOffset = Vector2.zero;
@@ -105,6 +114,14 @@ public sealed class ShopScreen : UIScreen
     protected override void OnHide()
     {
         CloseDialog();
+    }
+
+    private int CountUnlocked()
+    {
+        int count = cosmetics.Inventory.NoAds ? 1 : 0;
+        foreach (var item in cosmetics.CatalogAsset.Items)
+            if (item != null && cosmetics.IsUnlocked(item)) count++;
+        return count;
     }
 
     private void SelectCategory(CosmeticCategory next)
@@ -117,6 +134,11 @@ public sealed class ShopScreen : UIScreen
     private void OnCosmeticsChanged()
     {
         if (!IsVisible) return;
+
+        int count = CountUnlocked();
+        if (count > unlockedCount) AudioManager.PlayOne(Sfx.Unlock);
+        unlockedCount = count;
+
         Refresh();
         if (dialogMode == DialogMode.Item) FillItemDialog(dialogItem);
         else if (dialogMode == DialogMode.Pass) FillPassDialog();
@@ -134,6 +156,8 @@ public sealed class ShopScreen : UIScreen
         grid.Clear();
         foreach (var item in cosmetics.CatalogAsset.InCategory(category))
             grid.Add(BuildCard(item));
+
+        RefreshPurchaseState();
     }
 
     private VisualElement BuildCard(CosmeticItem item)
@@ -148,7 +172,7 @@ public sealed class ShopScreen : UIScreen
         card.focusable = false;
         card.clicked += () =>
         {
-            HapticManager.Soft();
+            UiFeedback.Tap();
             OnCardClicked(item);
         };
 
@@ -337,7 +361,7 @@ public sealed class ShopScreen : UIScreen
 
         string price = cosmetics.PriceOf(CosmeticCatalog.PassProductId);
         SetPrimary(true, null, price != null ? $"Get Pass · {price}" : "Store unavailable");
-        dialogPrimary.SetEnabled(price != null);
+        dialogPrimary.SetEnabled(price != null && !IsPurchasing);
     }
 
     private void SetDialogArt(CosmeticItem item)
@@ -380,13 +404,14 @@ public sealed class ShopScreen : UIScreen
         string price = string.IsNullOrEmpty(productId) ? null : cosmetics.PriceOf(productId);
         dialogBuy.style.display = price != null ? DisplayStyle.Flex : DisplayStyle.None;
         if (price != null) dialogBuyLabel.text = $"Buy · {price}";
+        dialogBuy.SetEnabled(!IsPurchasing);
     }
 
     private void OnDialogPrimary()
     {
         if (dialogMode == DialogMode.Pass)
         {
-            cosmetics.Buy(CosmeticCatalog.PassProductId);
+            StartPurchase(CosmeticCatalog.PassProductId);
             return;
         }
 
@@ -402,18 +427,85 @@ public sealed class ShopScreen : UIScreen
 
         if (item.Unlock != UnlockKind.Ads || waitingForAd) return;
 
+        var ads = AdManager.Instance;
+        bool adReady = ads != null && ads.IsRewardedReady;
+
         waitingForAd = true;
         FillItemDialog(item);
-        cosmetics.WatchAdFor(item, _ =>
+        cosmetics.WatchAdFor(item, earned =>
         {
             waitingForAd = false;
+            if (!earned) notify?.Invoke(adReady ? "The ad was closed early, so it didn't count." : "No ad available right now. Please try again in a moment.");
             if (dialogItem == item) FillItemDialog(item);
         });
     }
 
     private void OnDialogBuy()
     {
-        if (dialogItem != null && dialogItem.IsPurchasable) cosmetics.Buy(dialogItem.ProductId);
+        if (dialogItem != null && dialogItem.IsPurchasable) StartPurchase(dialogItem.ProductId);
+    }
+
+    private static bool IsPurchasing => PurchaseService.Instance != null && PurchaseService.Instance.IsPurchasing;
+
+    private void StartPurchase(string productId)
+    {
+        var store = PurchaseService.Instance;
+        if (store == null || !store.IsReady)
+        {
+            notify?.Invoke("The store isn't available right now. Please try again later.");
+            return;
+        }
+
+        if (store.IsPurchasing)
+        {
+            notify?.Invoke("A purchase is already in progress.");
+            return;
+        }
+
+        if (!cosmetics.Buy(productId))
+        {
+            notify?.Invoke("This item can't be purchased right now.");
+            return;
+        }
+
+        RefreshPurchaseState();
+    }
+
+    private void RefreshPurchaseState()
+    {
+        bool busy = IsPurchasing;
+        passButton.SetEnabled(!busy);
+        noAdsButton.SetEnabled(!busy);
+        dialogBuy.SetEnabled(!busy);
+        if (dialogMode == DialogMode.Pass) dialogPrimary.SetEnabled(!busy && cosmetics.PriceOf(CosmeticCatalog.PassProductId) != null);
+    }
+
+    private void OnPurchaseSucceeded(string productId)
+    {
+        RefreshPurchaseState();
+        if (productId == CosmeticCatalog.RemoveAdsProductId) notify?.Invoke("Ads removed. Thank you!");
+        else if (productId == CosmeticCatalog.PassProductId) notify?.Invoke("Pingi Pass unlocked. Enjoy!");
+    }
+
+    private void OnPurchaseFailed(string productId, string reason)
+    {
+        RefreshPurchaseState();
+        notify?.Invoke(PurchaseFailureMessage(reason));
+    }
+
+    private static string PurchaseFailureMessage(string reason)
+    {
+        return reason switch
+        {
+            "UserCancelled" or "OrderCancelled" => "Purchase cancelled.",
+            "Deferred" => "Your purchase is waiting for approval.",
+            "ExistingPurchasePending" or "DuplicateTransaction" => "This purchase is already being processed.",
+            "PurchasingUnavailable" or "StoreNotConnected" => "The store isn't available right now. Please try again later.",
+            "ProductUnavailable" => "This item isn't available right now.",
+            "PaymentDeclined" => "Payment was declined.",
+            "UserNotAuthenticated" => "Please sign in to Google Play and try again.",
+            _ => "Purchase couldn't be completed. Please try again."
+        };
     }
 
     private string PriceLabel(string productId)

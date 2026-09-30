@@ -29,6 +29,7 @@ public sealed class GameUI : MonoBehaviour
     private ShopScreen shop;
     private RewardScreen reward;
     private ScoresScreen scores;
+    private ToastView toast;
 
     private SoloGameManager.GameState lastState;
     private Rect lastSafeArea;
@@ -49,7 +50,8 @@ public sealed class GameUI : MonoBehaviour
         pause = new PauseScreen(root.Q("pause"), () => Game.SetPaused(false), Game.ReturnToMenu);
         gameOver = new GameOverScreen(root.Q("game-over"), () => ContinueAfterAd(Game.RestartRun), () => ContinueAfterAd(Game.ReturnToMenu));
         settings = new SettingsScreen(root.Q("settings"), CloseSettings, () => Game.ScoreManager.BestFor(SoloScoreManager.BestScoreKey), Game.ResetAllBests);
-        shop = new ShopScreen(root.Q("shop"), Cosmetics, CloseShop);
+        toast = new ToastView(root.Q("toast"));
+        shop = new ShopScreen(root.Q("shop"), Cosmetics, CloseShop, toast.Show);
         reward = new RewardScreen(root.Q("reward"), EquipReward, CloseReward);
         scores = new ScoresScreen(root.Q("scores"), Game, Cosmetics, CloseScores);
 

@@ -65,9 +65,11 @@ public abstract class UIScreen
         if (button == null) return null;
 
         button.focusable = false;
+        bool back = name == "back-button" || name == "home-button" || name == "later-button";
         button.clicked += () =>
         {
-            HapticManager.Soft();
+            if (back) UiFeedback.Back();
+            else UiFeedback.Tap();
             action?.Invoke();
         };
         return button;

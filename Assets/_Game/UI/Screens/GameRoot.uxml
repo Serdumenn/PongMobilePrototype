@@ -16,5 +16,10 @@
         <ui:Instance template="Pause" name="pause" class="screen" picking-mode="Ignore" />
         <ui:Instance template="GameOver" name="game-over" class="screen" picking-mode="Ignore" />
         <ui:Instance template="Reward" name="reward" class="screen" picking-mode="Ignore" />
+        <ui:VisualElement name="toast" class="toast toast--hidden" picking-mode="Ignore">
+            <ui:VisualElement class="toast__pill" picking-mode="Ignore">
+                <ui:Label name="toast-label" text="" class="toast__label" picking-mode="Ignore" />
+            </ui:VisualElement>
+        </ui:VisualElement>
     </ui:VisualElement>
 </ui:UXML>

@@ -26,6 +26,7 @@ public sealed class SoloBall : MonoBehaviour
 
     public event Action Launched;
     public event Action PaddleHit;
+    public event Action WallHit;
     public event Action Missed;
     public event Action RoundReset;
 
@@ -212,6 +213,7 @@ public sealed class SoloBall : MonoBehaviour
 
         outDir = SafeDirection(outDir);
         ApplyVelocity(outDir);
+        WallHit?.Invoke();
     }
 
     private void OnTriggerEnter2D(Collider2D other)

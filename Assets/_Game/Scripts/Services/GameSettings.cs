@@ -3,6 +3,7 @@ using UnityEngine;
 public static class GameSettings
 {
     private const string HapticsKey = "HapticsEnabled";
+    private const string SoundKey = "SoundEnabled";
     private const string HintRunsKey = "HintRunsShown";
 
     public static bool HapticsEnabled
@@ -11,6 +12,16 @@ public static class GameSettings
         set
         {
             PlayerPrefs.SetInt(HapticsKey, value ? 1 : 0);
+            PlayerPrefs.Save();
+        }
+    }
+
+    public static bool SoundEnabled
+    {
+        get => PlayerPrefs.GetInt(SoundKey, 1) == 1;
+        set
+        {
+            PlayerPrefs.SetInt(SoundKey, value ? 1 : 0);
             PlayerPrefs.Save();
         }
     }

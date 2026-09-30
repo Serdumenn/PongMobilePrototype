@@ -141,7 +141,7 @@ public sealed class ScoresScreen : UIScreen
             var captured = mode;
             chip.clicked += () =>
             {
-                HapticManager.Soft();
+                UiFeedback.Tap();
                 worldMode = captured;
                 RefreshWorld();
             };
