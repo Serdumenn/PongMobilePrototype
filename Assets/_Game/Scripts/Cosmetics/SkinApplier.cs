@@ -32,6 +32,11 @@ public sealed class SkinApplier : MonoBehaviour
         if (Cosmetics != null) Cosmetics.Changed -= Apply;
     }
 
+    public void Refresh()
+    {
+        if (Cosmetics != null) Apply();
+    }
+
     private void Apply()
     {
         var ball = Cosmetics.Equipped(CosmeticCategory.Ball);

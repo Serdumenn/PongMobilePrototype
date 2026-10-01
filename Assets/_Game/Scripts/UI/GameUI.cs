@@ -9,6 +9,8 @@ public sealed class GameUI : MonoBehaviour
     [Header("Refs")]
     [SerializeField] private SoloGameManager Game;
     [SerializeField] private CosmeticsService Cosmetics;
+    [SerializeField] private LocalMatchController Match;
+    [SerializeField] private FieldLayout Layout;
 
     [Header("Onboarding")]
     [SerializeField] private int HintRuns = 3;
@@ -19,6 +21,7 @@ public sealed class GameUI : MonoBehaviour
     [Header("Layout")]
     [SerializeField] private float MaxContentWidth = 1080f;
     [SerializeField] private float HintInset = 56f;
+    [SerializeField] private float ToastInset = 32f;
 
     private VisualElement root;
     private MenuScreen menu;
@@ -30,6 +33,11 @@ public sealed class GameUI : MonoBehaviour
     private RewardScreen reward;
     private ScoresScreen scores;
     private ToastView toast;
+    private HubScreen hub;
+    private MatchSetupScreen setup;
+    private MatchHudScreen matchHud;
+    private MatchResultScreen matchResult;
+    private bool togetherSelected;
 
     private SoloGameManager.GameState lastState;
     private Rect lastSafeArea;
@@ -41,19 +49,27 @@ public sealed class GameUI : MonoBehaviour
     {
         if (Game == null) Game = FindFirstObjectByType<SoloGameManager>();
         if (Cosmetics == null) Cosmetics = FindFirstObjectByType<CosmeticsService>();
+        if (Match == null) Match = FindFirstObjectByType<LocalMatchController>();
+        if (Layout == null) Layout = FindFirstObjectByType<FieldLayout>();
 
         root = GetComponent<UIDocument>().rootVisualElement;
         root.Query<Button>().ForEach(b => b.RemoveFromClassList(Button.ussClassName));
 
-        menu = new MenuScreen(root.Q("menu"), Game.StartGameFromMenu, OpenSettings, OpenShop, OpenScores, StepMode);
+        menu = new MenuScreen(root.Q("menu"), OnMenuPlay, OpenSettings, OpenShop, OpenScores, StepMode);
         hud = new HudScreen(root.Q("hud"), () => Game.SetPaused(true));
-        pause = new PauseScreen(root.Q("pause"), () => Game.SetPaused(false), Game.ReturnToMenu);
-        gameOver = new GameOverScreen(root.Q("game-over"), () => ContinueAfterAd(Game.RestartRun), () => ContinueAfterAd(Game.ReturnToMenu));
+        pause = new PauseScreen(root.Q("pause"), Resume, LeaveFromPause);
+        gameOver = new GameOverScreen(root.Q("game-over"), () => ContinueAfterAd(Game.RestartRun, gameOver.SetInteractable), () => ContinueAfterAd(Game.ReturnToMenu, gameOver.SetInteractable));
         settings = new SettingsScreen(root.Q("settings"), CloseSettings, () => Game.ScoreManager.BestFor(SoloScoreManager.BestScoreKey), Game.ResetAllBests);
         toast = new ToastView(root.Q("toast"));
         shop = new ShopScreen(root.Q("shop"), Cosmetics, CloseShop, toast.Show);
         reward = new RewardScreen(root.Q("reward"), EquipReward, CloseReward);
         scores = new ScoresScreen(root.Q("scores"), Game, Cosmetics, CloseScores);
+        hub = new HubScreen(root.Q("hub"), Match, Cosmetics, CloseHub, PickMatchMode);
+        setup = new MatchSetupScreen(root.Q("match-setup"), Cosmetics, CancelSetup, entries => Match.Begin(entries));
+        matchHud = new MatchHudScreen(root.Q("match-hud"), () => Match.SetPaused(true));
+        matchResult = new MatchResultScreen(root.Q("match-result"),
+            () => ContinueAfterAd(Match.Rematch, matchResult.SetInteractable),
+            () => ContinueAfterAd(Match.Exit, matchResult.SetInteractable));
 
         root.RegisterCallback<GeometryChangedEvent>(_ => ApplySafeArea());
 
@@ -63,6 +79,14 @@ public sealed class GameUI : MonoBehaviour
         Game.ScoreManager.ScoreChanged += OnScoreChanged;
         Game.Ball.Launched += OnBallLaunched;
         if (Cosmetics != null) Cosmetics.Changed += RefreshMenuMode;
+        if (Match != null)
+        {
+            Match.StateChanged += OnMatchState;
+            Match.CountdownTick += matchHud.ShowCount;
+            Match.HitScored += OnMatchHit;
+            Match.PointLost += OnMatchPoint;
+            Match.PlayerEliminated += OnMatchPoint;
+        }
 
         built = true;
         lastState = Game.State;
@@ -79,6 +103,14 @@ public sealed class GameUI : MonoBehaviour
         if (Game.ScoreManager != null) Game.ScoreManager.ScoreChanged -= OnScoreChanged;
         if (Game.Ball != null) Game.Ball.Launched -= OnBallLaunched;
         if (Cosmetics != null) Cosmetics.Changed -= RefreshMenuMode;
+        if (Match != null)
+        {
+            Match.StateChanged -= OnMatchState;
+            Match.CountdownTick -= matchHud.ShowCount;
+            Match.HitScored -= OnMatchHit;
+            Match.PointLost -= OnMatchPoint;
+            Match.PlayerEliminated -= OnMatchPoint;
+        }
     }
 
     private void Update()
@@ -88,9 +120,9 @@ public sealed class GameUI : MonoBehaviour
         var keyboard = Keyboard.current;
         if (keyboard != null && keyboard.escapeKey.wasPressedThisFrame) HandleBack();
 
-        var runner = Game.Runner;
-        if (Game.State == SoloGameManager.GameState.Playing && runner != null && runner.IsTimed)
-            hud.SetTime(runner.TimeRemaining, runner.TimeLimit);
+        var rules = Game.Rules;
+        if (Game.State == SoloGameManager.GameState.Playing && rules != null && rules.IsTimed)
+            hud.SetTime(rules.TimeRemaining, rules.TimeLimit);
 
         if (Screen.safeArea != lastSafeArea || Screen.width != lastScreenSize.x || Screen.height != lastScreenSize.y)
             ApplySafeArea();
@@ -101,29 +133,167 @@ public sealed class GameUI : MonoBehaviour
         RefreshMenuMode();
     }
 
+    private bool HasTogether => Match != null && Match.ModeList.Count > 0;
+
     private void RefreshMenuMode()
     {
+        var modes = Game.ModeList;
+        int count = modes.Count + (HasTogether ? 1 : 0);
+
+        if (togetherSelected && HasTogether)
+        {
+            var friend = Cosmetics != null ? Cosmetics.CatalogAsset.Find("ball_minty") : null;
+            menu.SetTogether(modes.Count, count, EquippedBall()?.Happy, friend != null ? friend.Happy : null);
+            return;
+        }
+
         var mode = Game.CurrentMode;
         if (mode == null) return;
 
-        var modes = Game.ModeList;
         int index = 0;
         for (int i = 0; i < modes.Count; i++) if (modes[i] == mode) index = i;
 
         Sprite art = mode.Kind == GameModeKind.Classic ? EquippedBall()?.Happy : null;
-        menu.SetMode(mode, index, modes.Count, Game.BestFor(mode), Game.IsModeUnlocked(mode), art);
+        menu.SetMode(mode, index, count, Game.BestFor(mode), Game.IsModeUnlocked(mode), art);
     }
 
     private void StepMode(int direction)
     {
         var modes = Game.ModeList;
-        if (modes.Count < 2) return;
+        int count = modes.Count + (HasTogether ? 1 : 0);
+        if (count < 2) return;
 
-        int index = 0;
-        for (int i = 0; i < modes.Count; i++) if (modes[i] == Game.CurrentMode) index = i;
+        int index = togetherSelected ? modes.Count : 0;
+        if (!togetherSelected)
+            for (int i = 0; i < modes.Count; i++) if (modes[i] == Game.CurrentMode) index = i;
 
-        index = (index + direction + modes.Count) % modes.Count;
-        Game.SelectMode(modes[index]);
+        index = (index + direction + count) % count;
+        togetherSelected = index >= modes.Count;
+        if (!togetherSelected) Game.SelectMode(modes[index]);
+        RefreshMenuMode();
+    }
+
+    private void OnMenuPlay()
+    {
+        if (togetherSelected && HasTogether) OpenHub();
+        else Game.StartGameFromMenu();
+    }
+
+    private void OpenHub()
+    {
+        menu.Hide();
+        hub.Show();
+        Game.HideGameObjects();
+    }
+
+    private void CloseHub()
+    {
+        hub.Hide();
+        ShowMenuFromOverlay();
+    }
+
+    private void PickMatchMode(GameModeDefinition mode)
+    {
+        if (!LocalMatchController.FitsScreen(mode))
+        {
+            toast.Show(mode.DisplayName + " needs a tablet. Gather " + mode.MinPlayers + "–" + mode.MaxPlayers + " players around a bigger screen.");
+            return;
+        }
+
+        Match.Open(mode);
+    }
+
+    private void CancelSetup()
+    {
+        Match.Cancel();
+        setup.Hide();
+        hub.Show();
+    }
+
+    private void Resume()
+    {
+        if (Match != null && Match.IsActive) Match.SetPaused(false);
+        else Game.SetPaused(false);
+    }
+
+    private void LeaveFromPause()
+    {
+        if (Match != null && Match.IsActive) Match.Exit();
+        else Game.ReturnToMenu();
+    }
+
+    private void OnMatchState(LocalMatchController.MatchState state)
+    {
+        switch (state)
+        {
+            case LocalMatchController.MatchState.Setup:
+                menu.Hide();
+                hub.Hide();
+                matchResult.Hide();
+                setup.Present(Match.Mode);
+                break;
+
+            case LocalMatchController.MatchState.Countdown:
+                setup.Hide();
+                hub.Hide();
+                pause.Hide();
+                reward.Hide();
+                matchResult.Hide();
+                matchHud.Begin(Match, FieldOnPanel);
+                matchHud.Show();
+                break;
+
+            case LocalMatchController.MatchState.Playing:
+                pause.Hide();
+                matchHud.Show();
+                break;
+
+            case LocalMatchController.MatchState.Paused:
+                pause.SetMascot(EquippedBall()?.Idle);
+                pause.Show();
+                break;
+
+            case LocalMatchController.MatchState.Result:
+                matchHud.Hide();
+                pause.Hide();
+                matchHud.Refresh();
+                matchResult.Present(Match);
+                root.schedule.Execute(ShowNextReward).StartingIn(RewardDelayMs);
+                break;
+
+            default:
+                setup.Hide();
+                matchHud.Hide();
+                matchResult.Hide();
+                pause.Hide();
+                break;
+        }
+    }
+
+    private void OnMatchHit(HitResult hit)
+    {
+        matchHud.Refresh();
+    }
+
+    private void OnMatchPoint(Participant participant)
+    {
+        matchHud.Refresh();
+    }
+
+    private Rect FieldOnPanel()
+    {
+        var cam = Camera.main;
+        if (cam == null || Layout == null || root?.panel == null || Screen.width <= 0 || Screen.height <= 0) return default;
+
+        Vector2 size = root.layout.size;
+        if (float.IsNaN(size.x) || size.x <= 0f) return default;
+
+        Rect f = Layout.Field;
+        Vector3 a = cam.WorldToScreenPoint(new Vector3(f.xMin, f.yMax, 0f));
+        Vector3 b = cam.WorldToScreenPoint(new Vector3(f.xMax, f.yMin, 0f));
+        float sx = size.x / Screen.width;
+        float sy = size.y / Screen.height;
+        return Rect.MinMaxRect(a.x * sx, (Screen.height - a.y) * sy, b.x * sx, (Screen.height - b.y) * sy);
     }
 
     private void OnHitScored(HitResult hit)
@@ -143,7 +313,7 @@ public sealed class GameUI : MonoBehaviour
                 pause.Hide();
                 gameOver.Hide();
                 reward.Hide();
-                if (!settings.IsVisible && !shop.IsVisible && !scores.IsVisible)
+                if (!settings.IsVisible && !shop.IsVisible && !scores.IsVisible && !hub.IsVisible && (Match == null || !Match.IsActive))
                 {
                     RefreshMenuMode();
                     menu.Show();
@@ -190,10 +360,10 @@ public sealed class GameUI : MonoBehaviour
 
     private void BeginRun()
     {
-        var runner = Game.Runner;
-        bool timed = runner != null && runner.IsTimed;
+        var rules = Game.Rules;
+        bool timed = rules != null && rules.IsTimed;
         hud.SetTimed(timed);
-        if (timed) hud.SetTime(runner.TimeRemaining, runner.TimeLimit);
+        if (timed) hud.SetTime(rules.TimeRemaining, rules.TimeLimit);
         hud.SetScore(Game.ScoreManager.Score, false);
         SetHint(GameSettings.HintRunsShown < HintRuns);
     }
@@ -217,14 +387,18 @@ public sealed class GameUI : MonoBehaviour
         hud.SetHintVisible(visible);
     }
 
+    private bool InMatchResult => Match != null && Match.State == LocalMatchController.MatchState.Result;
+
     private void ShowNextReward()
     {
-        if (Cosmetics == null || Game.State != SoloGameManager.GameState.GameOver || reward.IsVisible) return;
+        if (Cosmetics == null || reward.IsVisible) return;
+        if (Game.State != SoloGameManager.GameState.GameOver && !InMatchResult) return;
 
         var item = Cosmetics.TakeNextReward();
         if (item == null) return;
 
         gameOver.Hide();
+        matchResult.Hide();
         reward.Present(item);
     }
 
@@ -241,6 +415,12 @@ public sealed class GameUI : MonoBehaviour
         if (Cosmetics != null && Cosmetics.PendingRewards.Count > 0)
         {
             root.schedule.Execute(ShowNextReward).StartingIn(RewardDelayMs / 2);
+            return;
+        }
+
+        if (InMatchResult)
+        {
+            matchResult.Show();
             return;
         }
 
@@ -295,9 +475,9 @@ public sealed class GameUI : MonoBehaviour
         Game.ShowGameObjects();
     }
 
-    private void ContinueAfterAd(Action next)
+    private void ContinueAfterAd(Action next, Action<bool> setInteractable)
     {
-        gameOver.SetInteractable(false);
+        setInteractable?.Invoke(false);
 
         var ads = AdManager.Instance;
         if (ads == null)
@@ -336,6 +516,32 @@ public sealed class GameUI : MonoBehaviour
             return;
         }
 
+        if (hub.IsVisible)
+        {
+            CloseHub();
+            return;
+        }
+
+        if (Match != null && Match.IsActive)
+        {
+            switch (Match.State)
+            {
+                case LocalMatchController.MatchState.Setup:
+                    CancelSetup();
+                    break;
+                case LocalMatchController.MatchState.Playing:
+                    Match.SetPaused(true);
+                    break;
+                case LocalMatchController.MatchState.Paused:
+                    Match.SetPaused(false);
+                    break;
+                case LocalMatchController.MatchState.Result:
+                    ContinueAfterAd(Match.Exit, matchResult.SetInteractable);
+                    break;
+            }
+            return;
+        }
+
         switch (Game.State)
         {
             case SoloGameManager.GameState.Playing:
@@ -345,7 +551,7 @@ public sealed class GameUI : MonoBehaviour
                 Game.SetPaused(false);
                 break;
             case SoloGameManager.GameState.GameOver:
-                ContinueAfterAd(Game.ReturnToMenu);
+                ContinueAfterAd(Game.ReturnToMenu, gameOver.SetInteractable);
                 break;
         }
     }
@@ -388,5 +594,13 @@ public sealed class GameUI : MonoBehaviour
             e.style.left = HintInset + left;
             e.style.right = HintInset + right;
         });
+
+        matchHud?.Arrange();
+
+        var toastRoot = root.Q("toast");
+        if (toastRoot == null) return;
+        toastRoot.style.top = ToastInset + top;
+        toastRoot.style.left = left;
+        toastRoot.style.right = right;
     }
 }

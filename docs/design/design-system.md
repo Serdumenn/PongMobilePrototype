@@ -102,10 +102,28 @@ Tüm efektler bize ait. `ArtSource/tools/generate_sfx.py` ile sentezleniyor (mon
 | `sfx_new_best` | Marimba arpej C–E–G–C | 0.97 s | 0.80 | Rekorla biten oyun |
 | `sfx_game_over` | İnen iki nota, E4 → C4 | 0.77 s | 0.70 | Rekorsuz oyun sonu (cezalandırıcı değil) |
 | `sfx_unlock` | Yükselen arpej ve pırıltı | 0.71 s | 0.80 | Ödül penceresi ve Dolap'ta kilit açılması |
+| `sfx_countdown_tick` | Kısa marimba G5 | 0.18 s | 0.60 | Maç öncesi 3-2-1 |
+| `sfx_countdown_go` | C6 + E6 ikilisi ve pırıltı | 0.40 s | 0.75 | Geri sayımın sonu |
+| `sfx_point` | E5 → A5 iki nota | 0.48 s | 0.70 | Yerel maçta sayı ya da can kaybı |
+| `sfx_match_win` | C-E-G-C arpeji, uzun E6 ve pırıltı | 1.24 s | 0.85 | Düello ve partide kazanan; ortak rallide yeni rekor |
 
 - **Yönlendirme:** `AudioManager` (Services) 6 kanalı döngüyle kullanır ve hepsini `MainMixer` → `SFX` grubuna gönderir. `Music` grubu ileride müzik için hazır.
 - **Kamera:** Kamerada `AudioListener` olmalı.
 - **Ayarlar:** "Sound" anahtarı (`GameSettings.SoundEnabled`) kapatılınca tüm sesler anında susar.
+
+## Oyuncu renkleri (çok oyunculu, M1)
+
+| Oyuncu | Taraf | Renk | Kenar | Metin |
+|---|---|---|---|---|
+| P1 | Alt | `#E04E3A` | `#B83A28` | `#E04E3A` |
+| P2 | Üst | `#2EC4B6` | `#1E9C90` | `#1E8C81` |
+| P3 | Sol | `#FFC93C` | `#E5A800` | `#9A6E00` |
+| P4 | Sağ | `#8C6CF2` | `#6A4FD0` | `#6A4FD0` |
+
+- Token'lar `UI/Theme/Match.uss` içindedir (`--color-player-N`).
+- Raketler `Art/Sprites/Players/spr_paddle_player_*.svg` ile oyuncu renginde çizilir.
+- Oyuncu kimliği renk ve konumla birlikte verilir; yalnız renge dayanılmaz.
+- Üst oyuncunun yazıları 180°, yan oyuncularınkiler ±90° döndürülür, böylece her oyuncu kendi yazısını düz okur.
 
 ## Erişilebilirlik
 

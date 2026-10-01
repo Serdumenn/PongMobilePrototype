@@ -1,0 +1,535 @@
+:root {
+    --color-player-0: #E04E3A;
+    --color-player-0-edge: #B83A28;
+    --color-player-1: #2EC4B6;
+    --color-player-1-edge: #1E9C90;
+    --color-player-1-text: #1E8C81;
+    --color-player-2: #FFC93C;
+    --color-player-2-edge: #E5A800;
+    --color-player-2-text: #9A6E00;
+    --color-player-3: #8C6CF2;
+    --color-player-3-edge: #6A4FD0;
+    --color-player-3-text: #6A4FD0;
+}
+
+.mode-card__duo {
+    flex-direction: row;
+    width: 200px;
+    height: 112px;
+    justify-content: center;
+}
+
+.mode-card__duo-ball {
+    width: 112px;
+    height: 112px;
+    margin: 0 -14px;
+    -unity-background-scale-mode: scale-to-fit;
+}
+
+.board {
+    flex-grow: 1;
+}
+
+.hub-tab {
+    font-size: 44px;
+}
+
+.hub-panel {
+    flex-grow: 1;
+    margin: 48px 56px 0 56px;
+}
+
+.hub-tile {
+    flex-direction: row;
+    align-items: center;
+    flex-shrink: 0;
+    height: 320px;
+    margin: 0 0 44px 0;
+    padding: 0 44px 20px 44px;
+    border-width: 0;
+    border-radius: 72px;
+    border-bottom-width: 20px;
+    border-color: var(--color-surface-edge);
+    background-color: var(--color-surface);
+    transition-property: translate;
+    transition-duration: 90ms;
+}
+
+.hub-tile:active {
+    translate: 0 10px;
+}
+
+.hub-tile__art {
+    width: 230px;
+    height: 220px;
+    flex-shrink: 0;
+    align-items: center;
+    justify-content: center;
+}
+
+.hub-tile__text {
+    flex-grow: 1;
+    flex-shrink: 1;
+    margin: 0 32px;
+}
+
+.hub-tile__name {
+    font-size: 64px;
+    -unity-font-definition: url("/Assets/_Game/Fonts/fnt_fredoka_bold_sdf.asset");
+}
+
+.hub-tile__sub {
+    margin-top: 4px;
+    color: var(--color-ink-muted);
+    font-size: 40px;
+    white-space: normal;
+    -unity-font-definition: url("/Assets/_Game/Fonts/fnt_fredoka_medium_sdf.asset");
+}
+
+.hub-tile__lock {
+    flex-direction: row;
+    align-items: center;
+    align-self: flex-start;
+    margin-top: 14px;
+    padding: 6px 24px;
+    border-radius: 40px;
+    background-color: var(--color-divider);
+}
+
+.hub-tile__lock .icon {
+    width: 40px;
+    height: 40px;
+    margin-right: 8px;
+    -unity-background-image-tint-color: var(--color-ink-muted);
+}
+
+.hub-tile__lock-label {
+    color: var(--color-ink-muted);
+    font-size: 36px;
+}
+
+.hub-tile--locked .hub-tile__art,
+.hub-tile--locked .hub-tile__name,
+.hub-tile--locked .players-chip {
+    opacity: 0.45;
+}
+
+.players-chip {
+    flex-shrink: 0;
+    padding: 12px 32px;
+    border-radius: 48px;
+    background-color: #FFE3DE;
+    color: var(--color-coral-edge);
+    font-size: 44px;
+    -unity-font-definition: url("/Assets/_Game/Fonts/fnt_fredoka_bold_sdf.asset");
+}
+
+.players-chip--team {
+    background-color: #DFF5F2;
+    color: #12695F;
+}
+
+.hub-art-ball {
+    width: 120px;
+    height: 120px;
+    -unity-background-scale-mode: scale-to-fit;
+}
+
+.hub-art-row {
+    flex-direction: row;
+}
+
+.hub-art-row > .hub-art-ball {
+    margin: 0 -10px;
+}
+
+.hub-art-grid {
+    flex-direction: row;
+    flex-wrap: wrap;
+    width: 216px;
+    justify-content: center;
+}
+
+.hub-art-grid > .hub-art-ball {
+    width: 96px;
+    height: 96px;
+    margin: 2px;
+}
+
+.hub-art-paddle {
+    width: 176px;
+    height: 54px;
+    -unity-background-scale-mode: scale-to-fit;
+}
+
+.hub-art-paddle--flip {
+    rotate: 180deg;
+}
+
+.hub-art-vs {
+    margin: 6px 0;
+    color: var(--color-ink-muted);
+    font-size: 36px;
+    -unity-font-definition: url("/Assets/_Game/Fonts/fnt_fredoka_bold_sdf.asset");
+}
+
+.hub-soon {
+    align-items: center;
+    padding: 72px 64px;
+    border-radius: 72px;
+    border-bottom-width: 20px;
+    border-color: var(--color-surface-edge);
+    background-color: var(--color-surface);
+}
+
+.hub-soon .icon {
+    width: 144px;
+    height: 144px;
+    -unity-background-image-tint-color: var(--color-teal);
+}
+
+.hub-soon__title {
+    margin-top: 24px;
+    font-size: 72px;
+    -unity-font-definition: url("/Assets/_Game/Fonts/fnt_fredoka_bold_sdf.asset");
+    -unity-text-align: middle-center;
+}
+
+.hub-soon__text {
+    margin-top: 12px;
+    white-space: normal;
+}
+
+.hub-note {
+    flex-direction: row;
+    align-items: center;
+    margin: 24px 56px 72px 56px;
+    padding: 32px 40px;
+    border-radius: 48px;
+    background-color: rgba(255, 255, 255, 0.7);
+}
+
+.hub-note .icon {
+    width: 56px;
+    height: 56px;
+    margin-right: 24px;
+    -unity-background-image-tint-color: var(--color-ink-muted);
+}
+
+.hub-note__label {
+    flex-shrink: 1;
+    color: var(--color-ink-muted);
+    font-size: 40px;
+    white-space: normal;
+    -unity-font-definition: url("/Assets/_Game/Fonts/fnt_fredoka_medium_sdf.asset");
+}
+
+.side-panel {
+    position: absolute;
+    align-items: center;
+    justify-content: center;
+}
+
+.setup-name {
+    font-size: 72px;
+    -unity-font-definition: url("/Assets/_Game/Fonts/fnt_fredoka_bold_sdf.asset");
+    -unity-text-align: middle-center;
+}
+
+.player-text-0 { color: var(--color-player-0); }
+.player-text-1 { color: var(--color-player-1-text); }
+.player-text-2 { color: var(--color-player-2-text); }
+.player-text-3 { color: var(--color-player-3-text); }
+
+.setup-picker {
+    flex-direction: row;
+    align-items: center;
+    margin-top: 24px;
+}
+
+.setup-ball {
+    width: 230px;
+    height: 230px;
+    margin: 0 40px;
+    -unity-background-scale-mode: scale-to-fit;
+}
+
+.setup-ready {
+    width: 600px;
+    height: 176px;
+    margin-top: 48px;
+    border-radius: 64px;
+}
+
+.setup-ready > .btn__face {
+    bottom: 18px;
+    border-radius: 64px;
+}
+
+.setup-ready:active > .btn__face {
+    translate: 0 14px;
+}
+
+.setup-ready .btn__label {
+    margin-left: 0;
+}
+
+.setup-ready .icon {
+    width: 64px;
+    height: 64px;
+    margin-right: 16px;
+}
+
+.setup-ready--on > .btn__face {
+    translate: 0 14px;
+}
+
+.player-btn-0 { background-color: var(--color-player-0-edge); }
+.player-btn-0 > .btn__face { background-color: var(--color-player-0); }
+.player-btn-1 { background-color: var(--color-player-1-edge); }
+.player-btn-1 > .btn__face { background-color: var(--color-player-1); }
+.player-btn-2 { background-color: var(--color-player-2-edge); }
+.player-btn-2 > .btn__face { background-color: var(--color-player-2); }
+.player-btn-2 .btn__label { color: var(--color-ink); }
+.player-btn-2 .icon { -unity-background-image-tint-color: var(--color-ink); }
+.player-btn-3 { background-color: var(--color-player-3-edge); }
+.player-btn-3 > .btn__face { background-color: var(--color-player-3); }
+
+.join-btn {
+    background-color: var(--color-surface-edge);
+}
+
+.join-btn > .btn__face {
+    background-color: var(--color-surface);
+    border-width: 6px;
+    border-color: var(--color-divider);
+}
+
+.join-btn .btn__label {
+    color: var(--color-ink);
+}
+
+.setup-line {
+    position: absolute;
+    left: 0;
+    right: 0;
+    height: 8px;
+    background-color: var(--color-divider);
+}
+
+.setup-mid {
+    position: absolute;
+    left: 56px;
+    right: 56px;
+    height: 176px;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.ink-chip {
+    padding: 16px 40px;
+    border-radius: 48px;
+    background-color: var(--color-ink);
+    color: #FFFFFF;
+    font-size: 44px;
+    -unity-font-definition: url("/Assets/_Game/Fonts/fnt_fredoka_bold_sdf.asset");
+}
+
+.setup-start {
+    width: 480px;
+    height: 176px;
+    flex-grow: 0;
+    margin: 0;
+}
+
+.setup-start .btn__label {
+    margin-left: 0;
+}
+
+.court-gap {
+    width: 176px;
+    height: 176px;
+}
+
+.mhud {
+    position: absolute;
+    left: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
+}
+
+.mhud-score {
+    position: absolute;
+    width: 300px;
+    height: 220px;
+    font-size: 200px;
+    -unity-font-definition: url("/Assets/_Game/Fonts/fnt_fredoka_bold_sdf.asset");
+    -unity-text-align: middle-center;
+}
+
+.mhud-pause {
+    position: absolute;
+    width: 144px;
+    height: 152px;
+    border-radius: 48px;
+}
+
+.mhud-pause > .btn__face {
+    bottom: 12px;
+    border-radius: 48px;
+}
+
+.mhud-pause .icon {
+    width: 72px;
+    height: 72px;
+}
+
+.mhud-count {
+    position: absolute;
+    left: 0;
+    right: 0;
+    height: 440px;
+    color: var(--color-coral);
+    font-size: 400px;
+    -unity-font-definition: url("/Assets/_Game/Fonts/fnt_fredoka_bold_sdf.asset");
+    -unity-text-align: middle-center;
+    scale: 1 1;
+    transition-property: scale, opacity;
+    transition-duration: 320ms, 160ms;
+    transition-timing-function: ease-out-back, ease-out;
+}
+
+.mhud-count--pop {
+    scale: 1.25 1.25;
+    transition-duration: 40ms, 40ms;
+}
+
+.mhud-count--hidden {
+    opacity: 0;
+}
+
+.mhud-tag {
+    position: absolute;
+    flex-direction: row;
+    align-items: center;
+    padding: 10px 32px;
+    border-radius: 48px;
+    border-bottom-width: 10px;
+    border-color: var(--color-surface-edge);
+    background-color: var(--color-surface);
+}
+
+.mhud-tag__name {
+    font-size: 44px;
+    -unity-font-definition: url("/Assets/_Game/Fonts/fnt_fredoka_bold_sdf.asset");
+}
+
+.mhud-tag--out {
+    opacity: 0.45;
+}
+
+.life {
+    width: 34px;
+    height: 34px;
+    margin-left: 10px;
+    border-radius: 17px;
+    background-color: var(--color-coral);
+}
+
+.life--lost {
+    background-color: var(--color-track-off);
+}
+
+.mhud-passes {
+    position: absolute;
+    width: 360px;
+    height: 200px;
+    color: rgba(43, 45, 66, 0.55);
+    font-size: 180px;
+    -unity-font-definition: url("/Assets/_Game/Fonts/fnt_fredoka_bold_sdf.asset");
+    -unity-text-align: middle-center;
+}
+
+.mhud-lives {
+    position: absolute;
+    flex-direction: row;
+    align-items: center;
+    padding: 12px 24px 12px 14px;
+    border-radius: 48px;
+    background-color: var(--color-surface);
+}
+
+.mhud-lives .life {
+    width: 40px;
+    height: 40px;
+    border-radius: 20px;
+}
+
+.result-half {
+    position: absolute;
+    left: 0;
+    right: 0;
+    align-items: center;
+    justify-content: center;
+}
+
+.result-title {
+    font-size: 104px;
+    -unity-font-definition: url("/Assets/_Game/Fonts/fnt_fredoka_bold_sdf.asset");
+    -unity-text-align: middle-center;
+}
+
+.result-number {
+    margin-top: -24px;
+    font-size: 280px;
+    -unity-font-definition: url("/Assets/_Game/Fonts/fnt_fredoka_bold_sdf.asset");
+    -unity-text-align: middle-center;
+}
+
+.result-caption {
+    margin-top: -16px;
+}
+
+.result-badge {
+    flex-direction: row;
+    align-items: center;
+    padding: 12px 40px;
+    border-radius: 48px;
+    border-bottom-width: 10px;
+    border-color: var(--color-sun-edge);
+    background-color: var(--color-sun);
+}
+
+.result-badge .icon {
+    width: 56px;
+    height: 56px;
+    margin-right: 14px;
+}
+
+.result-badge__label {
+    font-size: 48px;
+    -unity-font-definition: url("/Assets/_Game/Fonts/fnt_fredoka_bold_sdf.asset");
+}
+
+.result-ball {
+    width: 220px;
+    height: 220px;
+    margin-top: 16px;
+    -unity-background-scale-mode: scale-to-fit;
+}
+
+.result-mid {
+    position: absolute;
+    left: 56px;
+    right: 56px;
+    height: 208px;
+    flex-direction: row;
+    align-items: center;
+}
+
+.result-mid > .btn--primary {
+    margin-left: 0;
+    margin-right: 32px;
+}

@@ -106,8 +106,9 @@ Assets/
     Prefabs/
     Scenes/
     Data/               ScriptableObject verileri (kostümler, modlar)
-    Scripts/Core | Gameplay | UI | Services | Cosmetics
-    Scripts/Editor/     yalnızca Editor'de çalışan araçlar (import kuralları)
+    Scripts/Core | Gameplay | UI | Services | Cosmetics   Pingi.Runtime.asmdef
+    Scripts/Editor/     yalnızca Editor'de çalışan araçlar (import kuralları) · Pingi.Editor.asmdef
+    Scripts/Tests/EditMode | PlayMode   otomatik testler · Pingi.Tests.*.asmdef
     Settings/Presets/
     UI/                 UXML, USS, PanelSettings, tema
   ThirdParty/           yolu sabit olmayan 3. parti içerik (örn. TextMesh Pro)
@@ -119,6 +120,40 @@ docs/design/            tasarım dokümanları
 ```
 
 Taşımalar ve yeniden adlandırmalar **Unity içinden** yapılır; böylece GUID'ler ve referanslar korunur.
+
+## Kod yapısı ve testler
+
+**Assembly'ler** (2026-10-01):
+
+| Assembly | Klasör | Not |
+|---|---|---|
+| `Pingi.Runtime` | `Scripts/` | Oyun kodu. Input System, Unity IAP ve UGUI'ye referans verir; GMA DLL'leri otomatik bağlanır |
+| `Pingi.Editor` | `Scripts/Editor/` | Yalnız Editor |
+| `Pingi.Tests.EditMode` | `Scripts/Tests/EditMode/` | Kurallar, kayıtlar, envanter, veri bütünlüğü, rastgelelik |
+| `Pingi.Tests.PlayMode` | `Scripts/Tests/PlayMode/` | `Game` sahnesinde uçtan uca akış, gerçek dokunuşla ralli |
+| `Pingi.Multiplayer` | `Scripts/Multiplayer/` | M2'de, online paketlerle birlikte gelecek |
+
+**Maç çekirdeği** (M0 refaktörü; tek oyunculu davranış testlerle aynı tutuldu):
+
+| Sınıf | Görev |
+|---|---|
+| `FieldSide` | Taraf (Bottom, Top, Left, Right), içe dönük yön, servis yönü dönüşümü |
+| `Participant` | Oyuncu: taraf, raket, vuruş serisi, en uzun seri, Perfect serisi |
+| `MatchRules` → `ClassicRules`, `RushRules` | Puanlama, kaçırma sonucu, süre. Eski `ModeRunner` |
+| `MatchRandom` | Tohumlu, platformdan bağımsız rastgelelik (mulberry32). Servis yönü ve sekme sapması bundan gelir; `SoloGameManager.SetSeedForNextRun` ile sabitlenebilir |
+| `Ball` | Fizik ve servis. Oyun yöneticisini tanımaz; `PaddleStruck(raket, sapma)` ve `GoalEntered(kale)` olaylarını yayınlar. Eski `SoloBall` |
+| `Paddle` + `IPaddleController` | Taraf ve eksen bilgisi olan raket; girdi kontrolcüden gelir. Eski `RacketController` |
+| `TouchZoneController` | Tarafın kenarındaki ekran şeridine düşen dokunuşu raket hedefine çevirir |
+| `Goal` | Kale; tarafını bilir. `bottom` etiketinin yerini aldı |
+| `FieldLayout` | Güvenli alan içindeki saha, duvarlar ve raylar. Eski `ResponsiveWalls` |
+| `SaveLocation` | Kayıt dosyalarının kökü; testler geçici klasöre yönlendirir |
+| `LocalMatchController` | Yerel maç akışı (M1). Katılımcılar, raket klonları, toplar, geri sayım, servis, sonuç ve kayıt. Tek oyunculu `SoloGameManager` maç sırasında menü durumunda bekler ve dünyayı paylaşırlar |
+| `TableDuelRules`, `CoopRallyRules`, `PartyRules` | Yerel modların kuralları; skor ve can `Participant` üzerinde |
+| `FieldTopology` (Solo, TopBottom, FourSides) | `FieldLayout.SetTopology` kaleleri açar ya da kapatır ve sahayı yeniden kurar. Parti sahası güvenli alanın kısa kenarına sığan karedir |
+
+Yeniden adlandırılan betiklerin `.meta` GUID'leri korundu; sahne bağlantıları `FormerlySerializedAs` ile taşındı.
+
+**Testleri çalıştırma:** Unity'de *Window → General → Test Runner*. CI'da her push'ta önce testler (`game-ci/unity-test-runner`), sonra APK build'i çalışır; test düşerse build başlamaz. PlayMode testleri kullanıcı verisine dokunmaz: kayıt dosyaları geçici klasöre gider, PlayerPrefs test öncesi diske yedeklenir ve sonra geri yüklenir. Yarıda kesilen bir koşudan kalan yedek bir sonraki testte otomatik geri yüklenir.
 
 ## Versiyon kontrol
 - Git LFS: png, jpg, psd, tga, wav, mp3, ogg, ttf, otf, fbx, mp4

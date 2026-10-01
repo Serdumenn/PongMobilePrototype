@@ -22,6 +22,8 @@ public sealed class PlayerRecords
         public string LastPlayedDay;
         public int DayStreak;
         public int BestDayStreak;
+        public int MatchesPlayed;
+        public int BestCoopRally;
     }
 
     private readonly string path;
@@ -32,6 +34,8 @@ public sealed class PlayerRecords
     public int LongestStreak => data.LongestStreak;
     public float PlayTimeSeconds => data.PlayTimeSeconds;
     public int BestDayStreak => data.BestDayStreak;
+    public int MatchesPlayed => data.MatchesPlayed;
+    public int BestCoopRally => data.BestCoopRally;
 
     private PlayerRecords(string path, SaveData data)
     {
@@ -94,13 +98,29 @@ public sealed class PlayerRecords
             else data.BestDates[index] = Day(now.Date);
         }
 
+        MarkPlayed(now);
+    }
+
+    public bool RecordMatch(int coopRally, float seconds, DateTime now)
+    {
+        data.MatchesPlayed++;
+        data.PlayTimeSeconds += Mathf.Max(0f, seconds);
+
+        bool newBestRally = coopRally > data.BestCoopRally;
+        if (newBestRally) data.BestCoopRally = coopRally;
+
+        MarkPlayed(now);
+        return newBestRally;
+    }
+
+    private void MarkPlayed(DateTime now)
+    {
         string today = Day(now.Date);
-        if (data.LastPlayedDay != today)
-        {
-            data.DayStreak = data.LastPlayedDay == Day(now.Date.AddDays(-1)) ? data.DayStreak + 1 : 1;
-            data.LastPlayedDay = today;
-            data.BestDayStreak = Mathf.Max(data.BestDayStreak, data.DayStreak);
-        }
+        if (data.LastPlayedDay == today) return;
+
+        data.DayStreak = data.LastPlayedDay == Day(now.Date.AddDays(-1)) ? data.DayStreak + 1 : 1;
+        data.LastPlayedDay = today;
+        data.BestDayStreak = Mathf.Max(data.BestDayStreak, data.DayStreak);
     }
 
     public void ClearBestDates()

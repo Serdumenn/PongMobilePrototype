@@ -81,7 +81,7 @@
     position: absolute;
     left: 0;
     right: 0;
-    bottom: 14%;
+    top: 32px;
     align-items: center;
     opacity: 1;
     translate: 0 0;
@@ -92,7 +92,7 @@
 
 .toast--hidden {
     opacity: 0;
-    translate: 0 40px;
+    translate: 0 -40px;
 }
 
 .toast__pill {
@@ -249,6 +249,8 @@
 .icon--trash { background-image: url("/Assets/_Game/Art/UI/Icons/ui_icon_trash.svg"); }
 .icon--vibration { background-image: url("/Assets/_Game/Art/UI/Icons/ui_icon_vibration.svg"); }
 .icon--sound { background-image: url("/Assets/_Game/Art/UI/Icons/ui_icon_sound.svg"); }
+.icon--people { background-image: url("/Assets/_Game/Art/UI/Icons/ui_icon_people.svg"); }
+.icon--heart { background-image: url("/Assets/_Game/Art/UI/Icons/ui_icon_heart.svg"); }
 
 .caption {
     color: var(--color-ink-muted);

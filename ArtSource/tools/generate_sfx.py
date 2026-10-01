@@ -118,6 +118,33 @@ def unlock():
     return s
 
 
+def countdown_tick():
+    return marimba(note("G5"), 0.18, 0.05, 0.22)
+
+
+def countdown_go():
+    s = marimba(note("C6"), 0.4, 0.12, 0.3)
+    mix(s, marimba(note("E6"), 0.4, 0.12, 0.25), 0.0, 0.8)
+    mix(s, tone(note("G7"), note("G7"), 0.3, 0.07), 0.02, 0.1)
+    return s
+
+
+def point():
+    s = marimba(note("E5"), 0.22, 0.06, 0.25)
+    mix(s, marimba(note("A5"), 0.4, 0.11, 0.25), 0.08)
+    return s
+
+
+def match_win():
+    s = silence(0.0)
+    for i, n in enumerate(("C5", "E5", "G5", "C6")):
+        mix(s, marimba(note(n), 0.32, 0.09, 0.24), i * 0.085)
+    mix(s, marimba(note("E6"), 0.9, 0.26, 0.2), 0.34)
+    for i, n in enumerate(("G6", "C7", "E7")):
+        mix(s, tone(note(n), note(n), 0.45, 0.1), 0.38 + i * 0.06, 0.1)
+    return s
+
+
 SOUNDS = {
     "sfx_paddle_hit": paddle_hit,
     "sfx_wall_bounce": wall_bounce,
@@ -127,6 +154,10 @@ SOUNDS = {
     "sfx_new_best": new_best,
     "sfx_game_over": game_over,
     "sfx_unlock": unlock,
+    "sfx_countdown_tick": countdown_tick,
+    "sfx_countdown_go": countdown_go,
+    "sfx_point": point,
+    "sfx_match_win": match_win,
 }
 
 
@@ -142,7 +173,10 @@ def write(name, samples):
 
 
 if __name__ == "__main__":
+    import sys
     os.makedirs(OUT, exist_ok=True)
-    for name, make in SOUNDS.items():
+    wanted = sys.argv[1:] or list(SOUNDS)
+    for name in wanted:
+        make = SOUNDS[name]
         path, seconds = write(name, make())
         print(f"{name}: {seconds:.2f}s -> {path}")

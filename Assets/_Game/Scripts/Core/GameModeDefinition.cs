@@ -3,7 +3,17 @@ using UnityEngine;
 public enum GameModeKind
 {
     Classic,
-    Rush
+    Rush,
+    TableDuel,
+    CoopRally,
+    PartyTable
+}
+
+public enum FieldTopology
+{
+    Solo,
+    TopBottom,
+    FourSides
 }
 
 [CreateAssetMenu(menuName = "Pingi/Game Mode", fileName = "mode")]
@@ -30,4 +40,18 @@ public sealed class GameModeDefinition : ScriptableObject
     [field: SerializeField] public int PerfectPoints { get; private set; } = 2;
     [field: SerializeField] public int ComboPoints { get; private set; } = 3;
     [field: SerializeField] public int ComboThreshold { get; private set; } = 3;
+
+    [field: Header("Players")]
+    [field: SerializeField] public FieldTopology Topology { get; private set; } = FieldTopology.Solo;
+    [field: SerializeField] public int MinPlayers { get; private set; } = 1;
+    [field: SerializeField] public int MaxPlayers { get; private set; } = 1;
+    [field: SerializeField] public bool TabletOnly { get; private set; }
+
+    [field: Header("Match")]
+    [field: SerializeField] public int PointsToWin { get; private set; } = 5;
+    [field: SerializeField] public int Lives { get; private set; } = 3;
+    [field: SerializeField] public int ExtraBallAtHits { get; private set; } = 15;
+    [field: SerializeField, Range(0f, 0.5f)] public float PerfectSlowdown { get; private set; } = 0.06f;
+
+    public bool IsMultiplayer => MaxPlayers > 1;
 }

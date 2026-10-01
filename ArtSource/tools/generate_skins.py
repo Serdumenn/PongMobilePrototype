@@ -1,7 +1,7 @@
 """Generates Pingi ball skins (idle/happy/sad) and paddle skins as SVG.
 
 Ball canvas is 200x200 with the 156 px body centred, so the collider (0.405 units at 384 PPU) is unchanged.
-Add a skin by adding one entry to BALLS or PADDLES and re-running: python ArtSource/tools/generate_skins.py
+Add a skin by adding one entry to BALLS, PADDLES or PLAYER_PADDLES and re-running: python ArtSource/tools/generate_skins.py
 """
 import os
 INK = "#2B2D42"
@@ -98,9 +98,17 @@ PADDLES = {
     "gold":    paddle("url(#gp)", "#C98F00", '<path d="M360 30l4 10 10 4-10 4-4 10-4-10-10-4 10-4z" fill="#FFFFFF"/>', gold_d),
 }
 
+PLAYER_PADDLES = {
+    "coral": paddle("#FF6B57", "#D94C39"),
+    "teal":  paddle("#2EC4B6", "#1E9C90"),
+    "sun":   paddle("#FFC93C", "#E5A800"),
+    "grape": paddle("#8C6CF2", "#6A4FD0"),
+}
+
 ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
 BALL_DIR = os.path.join(ROOT, "Assets", "_Game", "Art", "Sprites", "Skins", "Balls")
 PADDLE_DIR = os.path.join(ROOT, "Assets", "_Game", "Art", "Sprites", "Skins", "Paddles")
+PLAYER_DIR = os.path.join(ROOT, "Assets", "_Game", "Art", "Sprites", "Players")
 
 if __name__ == "__main__":
     os.makedirs(BALL_DIR, exist_ok=True)
@@ -112,4 +120,8 @@ if __name__ == "__main__":
     for name, svg in PADDLES.items():
         with open(os.path.join(PADDLE_DIR, f"spr_paddle_{name}.svg"), "w", encoding="utf-8") as f:
             f.write(svg)
-    print(len(BALLS) * 3, "ball sprites,", len(PADDLES), "paddles")
+    os.makedirs(PLAYER_DIR, exist_ok=True)
+    for name, svg in PLAYER_PADDLES.items():
+        with open(os.path.join(PLAYER_DIR, f"spr_paddle_player_{name}.svg"), "w", encoding="utf-8") as f:
+            f.write(svg)
+    print(len(BALLS) * 3, "ball sprites,", len(PADDLES), "paddles,", len(PLAYER_PADDLES), "player paddles")

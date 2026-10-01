@@ -1,0 +1,6 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" editor-extension-mode="False">
+    <ui:VisualElement class="scrim" />
+    <ui:VisualElement class="safe" picking-mode="Ignore">
+        <ui:VisualElement name="result-board" class="board" picking-mode="Ignore" />
+    </ui:VisualElement>
+</ui:UXML>

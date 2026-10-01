@@ -11,6 +11,8 @@ Bu klasör oyunun görsel ve UX kararlarının tek kaynağıdır. Her faz bir **
 | [tech-spec.md](tech-spec.md) | Teknik şartname: çözünürlük, formatlar, adlandırma, klasörler |
 | [cosmetics.md](cosmetics.md) | Kostümler, temalar, kilitler ve satın alma |
 | [modes.md](modes.md) | Oyun modları (Classic, Rush), skor tablosu, günlük seri |
+| [multiplayer.md](multiplayer.md) | Çok oyunculu modlar: mimari, fazlar (M0–M5), test ve riskler |
+| [multiplayer/index.html](multiplayer/index.html) | Çok oyunculu ekran tasarımları (Kapı M0, onaylandı) |
 
 ## Roller
 
@@ -63,6 +65,15 @@ Bu klasör oyunun görsel ve UX kararlarının tek kaynağıdır. Her faz bir **
 | 2026-10-01 | Ses paleti sentezle üretildi (8 efekt) + AudioMixer + Ses anahtarı | Eski aday seslerin lisansı belirsizdi, stereo ve uzun kuyrukluydu. Kendi seslerimiz lisans derdi olmadan tarzımıza uygun |
 | 2026-10-01 | Reklam eklentisi androidlib paket adı `com.google.unity.ads.plugin` | Unity 6.3 (AGP 9) aynı isim alanını hata sayıyor; CI build'i bu yüzden düşüyordu ([googleads-mobile-unity #4212](https://github.com/googleads/googleads-mobile-unity/issues/4212)) |
 | 2026-10-01 | Uygulama ikonu: **Güneş** varyantı (Pingi + raket, sarı zemin) | Krem varyant açık duvar kâğıtlarında kayboluyordu; sarı zemin her arka planda ve 48 px'de okunuyor, Play butonuyla aynı marka rengi |
+| 2026-10-01 | **Kapsam:** yedi çok oyunculu modun hepsi, M0–M5 fazlarıyla ([multiplayer.md](multiplayer.md)) | Ürün sahibinin kararı |
+| 2026-10-01 | Online altyapı: **UGS tek çatı**; sıralamalar **UGS Leaderboards** (Play Games sıralama planının yerine) | Tek panel, tek kimlik; günlük ve çift sıralamaları kolay |
+| 2026-10-01 | Canlı Düello: **kendi deterministik simülasyonumuz + rollback** | Pong fiziği küçük; ek servis ve motor bağımlılığı yok |
+| 2026-10-01 | Dolap bildirimi ekranın **üstüne**, güvenli alanın içine taşındı | Altta kartların ve fiyatların üstüne biniyordu; üst çubukta zamanla değişen bilgi yok |
+| 2026-10-01 | Otomatik testler ve CI test adımı (EditMode + PlayMode); build testlere bağlı | Çok oyunculu refaktörden önce tek oyunculu davranışı kilitlemek |
+| 2026-10-01 | Maç çekirdeği: `Ball`, `Paddle`, `Goal`, `FieldLayout`, `MatchRules`, `Participant`, tohumlu `MatchRandom` | Çok oyunculu modların ortak zemini; tek oyunculu davranış aynı |
+| 2026-10-01 | Yerel maçlarda raketler oyuncu renginde; top en son vuranın kostümünü giyer | Kimlik renk ve konumla verilir; kostümler maçta da görünür |
+| 2026-10-01 | Parti servisi ortadan otomatik; düello ve ortak rallide sayıyı kaybeden servis atar | Dört kişide kimin servis atacağını beklemek akışı keser |
+| 2026-10-01 | **Kapı M0 geçildi.** Ekran tasarımları önerilen seçeneklerle onaylandı ([multiplayer/index.html](multiplayer/index.html)) | Ürün sahibinin onayı |
 
 ## Asset takibi
 

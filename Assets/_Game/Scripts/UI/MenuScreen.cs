@@ -47,9 +47,41 @@ public sealed class MenuScreen : UIScreen
         modeCard.RegisterCallback<PointerLeaveEvent>(e => EndSwipe(e.position));
     }
 
+    public void SetTogether(int index, int count, Sprite left, Sprite right)
+    {
+        modeName.text = "Together";
+        modeTagline.text = "Play with your friends";
+        modeCard.EnableInClassList("mode-card--locked", false);
+        playButton?.SetEnabled(true);
+
+        modeArt.Clear();
+        modeArt.EnableInClassList("mode-card__art--icon", false);
+        modeArt.style.backgroundImage = new StyleBackground(StyleKeyword.None);
+
+        var duo = new VisualElement { pickingMode = PickingMode.Ignore };
+        duo.AddToClassList("mode-card__duo");
+        foreach (var sprite in new[] { left, right })
+        {
+            var ball = new VisualElement { pickingMode = PickingMode.Ignore };
+            ball.AddToClassList("mode-card__duo-ball");
+            if (sprite != null) ball.style.backgroundImage = new StyleBackground(sprite);
+            duo.Add(ball);
+        }
+        modeArt.Add(duo);
+
+        modeBestIcon.EnableInClassList("icon--crown", false);
+        modeBestIcon.EnableInClassList("icon--lock", false);
+        modeBestIcon.EnableInClassList("icon--people", true);
+        modeBestLabel.text = "2–4 players";
+
+        SetDots(index, count);
+    }
+
     public void SetMode(GameModeDefinition mode, int index, int count, int best, bool unlocked, Sprite art)
     {
         if (mode == null) return;
+
+        modeBestIcon.EnableInClassList("icon--people", false);
 
         modeName.text = mode.DisplayName;
         modeCard.EnableInClassList("mode-card--locked", !unlocked);
@@ -82,6 +114,11 @@ public sealed class MenuScreen : UIScreen
             modeBestLabel.text = $"Classic best {mode.RequiredClassicBest} to unlock";
         }
 
+        SetDots(index, count);
+    }
+
+    private void SetDots(int index, int count)
+    {
         modeDots.Clear();
         for (int i = 0; i < count; i++)
         {

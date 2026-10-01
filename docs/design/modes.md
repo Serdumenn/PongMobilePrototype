@@ -1,12 +1,12 @@
 # Özellik: Oyun modları ve skor tablosu
 
-*v1 · 2026-09-30 · Durum: **A aşaması uygulandı ve Editor'de test edildi · B aşaması hesap bekliyor***
+*v1.1 · 2026-10-01 · Durum: **A aşaması uygulandı ve Editor'de test edildi · B aşaması çok oyunculu plan M4'te (UGS Leaderboards)***
 
 Görsel öneri (v1 öncesi, 4 modlu taslak): [modes/index.html](modes/index.html)
 
 ## Kapı kararları (2026-09-30)
 - **Modlar:** v1'de yalnızca **Classic + Rush**. Party ve Daily yedekte.
-- **Skor tablosu:** Kişisel tablo şimdi. Google Play Games dünya sıralaması hesaplar hazır olunca (B aşaması).
+- **Skor tablosu:** Kişisel tablo şimdi. Dünya sıralaması B aşamasında. *2026-10-01 güncellemesi:* Google Play Games yerine UGS Leaderboards.
 - **Mod kilitleri:** Önerildiği gibi. Rush baştan açık.
 - **Seri ödülü:** 7 gün üst üste oynayana yeni kostüm **Astro** verilir. Daily modu olmadığı için seri, hangi mod olursa olsun "o gün en az bir oyun bitirmek" ile sayılır.
 
@@ -36,18 +36,19 @@ Görsel öneri (v1 öncesi, 4 modlu taslak): [modes/index.html](modes/index.html
   - Oyun sayısı, toplam vuruş, en uzun seri, toplam oyun süresi
   - Mod başına rekor ve tarihi (Bugün / Dün / gün ay). Kayıt sisteminden önce kırılmış rekorlar "earlier" olarak görünür.
 - **Seri paneli:** 7 daire var; 7. dairede Astro görünür. Altındaki not durumu söyler: "yarın gel", "bugün oyna" ya da "açıldı".
-- **Dünya sekmesi:** Mod çipleri (Classic / Rush) ve "Coming soon with Google Play Games" durumu var; oyuncunun o moddaki rekoru gösterilir.
+- **Dünya sekmesi:** Mod çipleri (Classic / Rush) ve "Coming soon" durumu var; oyuncunun o moddaki rekoru gösterilir. Metin M4'te UGS'ye göre güncellenecek.
 
-### Dünya (Google Play Games) — B aşaması
-- **Tablolar:** 2 skor tablosu (Classic, Rush), her biri Bugün / Bu hafta / Tüm zamanlar. `GameModeDefinition.LeaderboardId` alanı hazır.
-- **Gösterim:** Oyun içinde Soft Pop tasarımıyla (`LoadScores`): ilk 25 sıra ve oyuncunun kendi sırası. Google'ın hazır ekranı yedek olarak açılabilir.
-- **Giriş:** Otomatik (Play Games v2). Giriş yapılmamışsa "Play Games ile bağlan" butonu çıkar.
+### Dünya (UGS Leaderboards) — B aşaması
+> **Karar 2026-10-01:** Play Games planının yerine **Unity Gaming Services Leaderboards** kullanılacak. Çok oyunculu modlarla aynı kimlik ve panel paylaşılır ([multiplayer.md](multiplayer.md)). B aşaması, çok oyunculu planın **M4** fazında yapılacak.
+
+- **Tablolar:** Classic ve Rush; her biri Bugün / Bu hafta / Tüm zamanlar (UGS sıfırlama planlarıyla). Günün Meydan Okuması için ayrıca günlük tablo eklenecek. `GameModeDefinition.LeaderboardId` alanı hazır.
+- **Gösterim:** Oyun içinde Soft Pop tasarımıyla. İlk 25 sıra ve oyuncunun kendi sırası gösterilir.
+- **Kimlik:** UGS anonim giriş, otomatik; hesap ekranı yok. Oyuncu adı üretilmiş bir addır (sohbet yok). Google Play Games bağlama, yayın fazında isteğe bağlı.
 - **Game Over:** Skor gönderilir ve sıra değişimi gösterilir.
-- **Hileye karşı:** Play Console'da her tablo için izin verilen en düşük ve en yüksek skor tanımlanır, kurcalama koruması açılır.
-- **Eklenti:** Google Play Games Plugin for Unity **v2.3.0**, PGS v2 kullanıyor. En düşük Android API 24; projemiz 25. İndirme için ayrıca izin istenecek.
+- **Hileye karşı:** Skor Cloud Code üzerinden gönderilir. Mod başına üst sınır ve süreye göre makul skor kontrolü yapılır.
 
-### Neden Google Play Games?
-Ücretsiz ve Android'de standart; oyuncu adı ve kimliği hazır geliyor; günlük ve haftalık sıfırlamayı Google yapıyor. Unity'nin bulut skor tablosu (UGS) şu an "sınırlı süre ücretsiz" ve uzun vadeli fiyatı belirsiz.
+### Neden UGS Leaderboards?
+Çok oyunculu modlar zaten UGS (kimlik, oturum, Relay) kullanacak. Sıralamaları aynı çatıda tutmak tek kimlik, tek panel ve Play Console'a bağlı olmayan bir kurulum demek. Günlük ve çift tabloları da kolayca açılabiliyor. Fiyatlandırma, ücretsiz kotayla izlenecek (multiplayer.md, riskler).
 
 ## Teknik yapı (uygulanan)
 
@@ -70,11 +71,8 @@ Görsel öneri (v1 öncesi, 4 modlu taslak): [modes/index.html](modes/index.html
      - Dolap'ta Astro kartı ve penceresi
      - 7. gün ödülü ve giydirme
      - Duraklatma akışları
-2. **B — Google Play Games (hesap hazır olunca):** eklenti, giriş, skor gönderme, canlı sıralama.
+2. **B — UGS Leaderboards (çok oyunculu plan M4):** anonim giriş, Cloud Code ile skor gönderme, canlı sıralama.
 
 ## Senin yapman gerekenler (B aşaması için)
-1. Play Console'da uygulamayı oluştur (`com.SERDUMEN.PingiPongi`).
-2. **Release keystore** oluştur. Şifreyi sen belirlersin; ben şifre girmem.
-3. Play Games Services projesini kur. SHA-1 parmak izleriyle (upload ve app signing) OAuth istemcisi oluştur.
-4. 2 skor tablosunu (Classic, Rush) oluştur ve bana kaynak XML'ini ya da kimlikleri ver.
-5. Test kullanıcılarını ekle.
+1. Unity Cloud'da projeyi oluşturup Editor'e bağla (multiplayer.md, M2). Ücretsizdir; kart bilgisi gerekmez.
+2. Leaderboards servisini panelde aç. Tabloları ben tanımlayıp sana kimlikleri veririm.

@@ -1,6 +1,6 @@
 using UnityEngine;
 
-[RequireComponent(typeof(SoloBall))]
+[RequireComponent(typeof(Ball))]
 public sealed class BallFace : MonoBehaviour
 {
     [Header("Visual")]
@@ -16,14 +16,14 @@ public sealed class BallFace : MonoBehaviour
     [SerializeField] private float PunchScale = 1.18f;
     [SerializeField] private float PunchDuration = 0.14f;
 
-    private SoloBall ball;
+    private Ball ball;
     private Vector3 baseScale;
     private float happyUntil;
     private float punchStart = -1f;
 
     private void Awake()
     {
-        ball = GetComponent<SoloBall>();
+        ball = GetComponent<Ball>();
         if (Visual == null) Visual = GetComponentInChildren<SpriteRenderer>();
         if (Visual != null) baseScale = Visual.transform.localScale;
     }

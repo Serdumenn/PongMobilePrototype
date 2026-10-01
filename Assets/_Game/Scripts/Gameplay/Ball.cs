@@ -1,10 +1,10 @@
 using System;
 using UnityEngine;
-using Random = UnityEngine.Random;
+using UnityEngine.Serialization;
 
 [RequireComponent(typeof(Rigidbody2D))]
 [RequireComponent(typeof(Collider2D))]
-public sealed class SoloBall : MonoBehaviour
+public sealed class Ball : MonoBehaviour
 {
     [Header("Speed")]
     [SerializeField] private float LaunchSpeed = 5f;
@@ -20,25 +20,33 @@ public sealed class SoloBall : MonoBehaviour
     [SerializeField] private Transform ServePoint;
 
     [Header("Refs")]
-    [SerializeField] private SoloScoreManager Score;
-    [SerializeField] private SoloGameManager Game;
-    [SerializeField] private RacketController Paddle;
+    [SerializeField, FormerlySerializedAs("Paddle")] private Paddle DefaultServer;
 
     public event Action Launched;
     public event Action PaddleHit;
     public event Action WallHit;
     public event Action Missed;
     public event Action RoundReset;
+    public event Action<Paddle, float> PaddleStruck;
+    public event Action<Goal> GoalEntered;
 
     private Rigidbody2D rb;
     private Collider2D col;
     private SpriteRenderer sr;
 
+    private Paddle server;
+    private Vector2? serveOrigin;
+    private float serveGap = 1f;
     private float currentSpeed;
     private Vector2 lastVelocity;
 
     private bool roundActive;
     private bool waitingForServe;
+
+    public MatchRandom Rng { get; set; }
+    public Paddle Server => server;
+    public float CurrentSpeed => currentSpeed;
+    public bool InPlay => roundActive && !waitingForServe && rb.simulated;
 
     private void Awake()
     {
@@ -53,19 +61,19 @@ public sealed class SoloBall : MonoBehaviour
         rb.collisionDetectionMode = CollisionDetectionMode2D.Continuous;
         rb.interpolation = RigidbodyInterpolation2D.Interpolate;
         col.isTrigger = false;
+        col.sharedMaterial = GetSharedNoBounce();
 
-        var noBounce = GetSharedNoBounce();
-        col.sharedMaterial = noBounce;
-
-        if (Score == null) Score = FindFirstObjectByType<SoloScoreManager>();
-        if (Game == null) Game = FindFirstObjectByType<SoloGameManager>();
-        if (Paddle == null) Paddle = FindFirstObjectByType<RacketController>();
+        if (DefaultServer == null) DefaultServer = FindFirstObjectByType<Paddle>();
+        server = DefaultServer;
+        if (Rng == null) Rng = new MatchRandom(Environment.TickCount);
     }
 
     private void Start()
     {
         rb.simulated = false;
         col.enabled = false;
+        if (ServePoint != null && DefaultServer != null)
+            serveGap = Mathf.Max(0.1f, ServePoint.position.y - DefaultServer.Home.y);
         SnapToServePoint();
     }
 
@@ -73,7 +81,7 @@ public sealed class SoloBall : MonoBehaviour
     {
         if (!waitingForServe) return;
 
-        if (Paddle != null && Paddle.HasActiveInput)
+        if (server != null && server.HasActiveInput)
             Launch();
     }
 
@@ -87,6 +95,47 @@ public sealed class SoloBall : MonoBehaviour
         float actualSpeed = rb.linearVelocity.magnitude;
         if (actualSpeed > 0.01f && actualSpeed < currentSpeed * 0.95f)
             rb.linearVelocity = rb.linearVelocity.normalized * currentSpeed;
+    }
+
+    public void SetServer(Paddle paddle)
+    {
+        server = paddle;
+    }
+
+    public void ServeFrom(Paddle paddle)
+    {
+        server = paddle;
+        serveOrigin = paddle != null ? paddle.Home + paddle.Inward * serveGap : (Vector2?)null;
+    }
+
+    public void ClearServeOrigin()
+    {
+        serveOrigin = null;
+    }
+
+    public void ServeToward(Vector2 origin, Vector2 direction)
+    {
+        roundActive = true;
+        waitingForServe = false;
+        currentSpeed = Mathf.Clamp(LaunchSpeed, 0.1f, MaxSpeed);
+
+        SnapTo(origin);
+        SetBallVisible(true);
+        RoundReset?.Invoke();
+
+        rb.simulated = true;
+        col.enabled = true;
+        rb.WakeUp();
+
+        Vector2 dir = SafeDirection(direction.sqrMagnitude > 0.0001f ? direction : Vector2.up);
+        ApplyVelocity(dir);
+        Launched?.Invoke();
+    }
+
+    public void ScaleSpeed(float factor)
+    {
+        currentSpeed = Mathf.Clamp(currentSpeed * factor, Mathf.Min(LaunchSpeed, MaxSpeed), MaxSpeed);
+        if (rb.simulated && lastVelocity.sqrMagnitude > 0.0001f) ApplyVelocity(lastVelocity.normalized);
     }
 
     public void StartRound()
@@ -147,23 +196,24 @@ public sealed class SoloBall : MonoBehaviour
         col.enabled = true;
         rb.WakeUp();
 
-        Vector2 dir = GetUpwardLaunchDir();
+        Vector2 dir = GetLaunchDir();
         lastVelocity = dir * currentSpeed;
         rb.linearVelocity = lastVelocity;
 
         Launched?.Invoke();
     }
 
-    private Vector2 GetUpwardLaunchDir()
+    private Vector2 GetLaunchDir()
     {
-        float x = (Random.value < 0.5f) ? -1f : 1f;
-        float y = Random.Range(0.60f, 1.00f);
+        float x = Rng.Sign();
+        float y = Rng.Range(0.60f, 1.00f);
         Vector2 dir = new Vector2(x, y).normalized;
 
         if (Mathf.Abs(dir.y) < MinVerticalDot)
             dir = EnforceMinVertical(dir);
 
-        return dir;
+        FieldSide side = server != null ? server.Side : FieldSide.Bottom;
+        return side.FromBottomFrame(dir);
     }
 
     private void OnCollisionEnter2D(Collision2D collision)
@@ -185,18 +235,17 @@ public sealed class SoloBall : MonoBehaviour
 
         SeparateFromSurface(normal);
 
-        bool hitPaddle = Paddle != null && collision.collider.transform.IsChildOf(Paddle.transform);
-        if (hitPaddle)
+        var paddle = collision.collider.GetComponentInParent<Paddle>();
+        if (paddle != null)
         {
-            float halfWidth = Mathf.Max(0.01f, Paddle.HalfWidth);
-            float paddleOffset = Mathf.Clamp((rb.position.x - Paddle.transform.position.x) / halfWidth, -1f, 1f);
-            if (Game != null) Game.RegisterPaddleHit(paddleOffset);
-            else Score?.AddPoints(1);
+            PaddleStruck?.Invoke(paddle, paddle.AxisOffset(rb.position));
 
             currentSpeed = Mathf.Min(currentSpeed * (1f + SpeedIncreasePercent), MaxSpeed);
 
-            if (outDir.y < 0f)
-                outDir.y = Mathf.Abs(outDir.y);
+            Vector2 inward = paddle.Inward;
+            float along = Vector2.Dot(outDir, inward);
+            if (along < 0f)
+                outDir -= 2f * along * inward;
 
             outDir = SafeDirection(outDir);
             ApplyVelocity(outDir);
@@ -207,7 +256,7 @@ public sealed class SoloBall : MonoBehaviour
 
         if (WallBounceJitter > 0f)
         {
-            float jitter = Random.Range(-WallBounceJitter, WallBounceJitter);
+            float jitter = Rng.Range(-WallBounceJitter, WallBounceJitter);
             outDir = (Quaternion.Euler(0f, 0f, jitter) * outDir).normalized;
         }
 
@@ -220,13 +269,13 @@ public sealed class SoloBall : MonoBehaviour
     {
         if (!roundActive) return;
 
-        if (other.CompareTag("bottom"))
-        {
-            Missed?.Invoke();
-            StopRound();
-            HapticManager.Medium();
-            if (Game != null) Game.OnBallMissed();
-        }
+        var goal = other.GetComponent<Goal>();
+        if (goal == null || !goal.IsOpen) return;
+
+        Missed?.Invoke();
+        StopRound();
+        HapticManager.Medium();
+        GoalEntered?.Invoke(goal);
     }
 
     private void ApplyVelocity(Vector2 dir)
@@ -250,9 +299,7 @@ public sealed class SoloBall : MonoBehaviour
         float signY = (dir.y >= 0f) ? 1f : -1f;
         float y = MinVerticalDot * signY;
 
-        float signX = (dir.x == 0f)
-            ? ((Random.value < 0.5f) ? -1f : 1f)
-            : Mathf.Sign(dir.x);
+        float signX = (dir.x == 0f) ? Rng.Sign() : Mathf.Sign(dir.x);
 
         float x = signX * Mathf.Sqrt(Mathf.Max(0f, 1f - y * y));
         return new Vector2(x, y).normalized;
@@ -266,6 +313,12 @@ public sealed class SoloBall : MonoBehaviour
 
     public void SnapToServePoint()
     {
+        if (serveOrigin.HasValue)
+        {
+            SnapTo(serveOrigin.Value);
+            return;
+        }
+
         SnapTo((ServePoint != null) ? (Vector2)ServePoint.position : Vector2.zero);
     }
 

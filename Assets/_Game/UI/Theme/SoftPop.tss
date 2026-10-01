@@ -4,6 +4,7 @@
 @import url("Screens.uss");
 @import url("Shop.uss");
 @import url("Modes.uss");
+@import url("Match.uss");
 @import url("Themes.uss");
 
 VisualElement {}

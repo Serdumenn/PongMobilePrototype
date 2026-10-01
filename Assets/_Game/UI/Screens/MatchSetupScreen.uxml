@@ -1,0 +1,5 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" editor-extension-mode="False">
+    <ui:VisualElement class="safe" picking-mode="Ignore">
+        <ui:VisualElement name="setup-board" class="board" picking-mode="Ignore" />
+    </ui:VisualElement>
+</ui:UXML>

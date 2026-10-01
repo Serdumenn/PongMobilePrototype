@@ -1,5 +1,4 @@
 using System;
-using System.IO;
 using UnityEngine;
 
 public sealed class RecordsService : MonoBehaviour
@@ -12,13 +11,20 @@ public sealed class RecordsService : MonoBehaviour
 
     private void Awake()
     {
-        Records = PlayerRecords.Load(Path.Combine(Application.persistentDataPath, SaveFileName));
+        Records = PlayerRecords.Load(SaveLocation.PathFor(SaveFileName));
     }
 
     public void RecordRun(GameModeDefinition mode, bool newBest, int longestStreak, float seconds)
     {
         Records.RecordRun(mode != null ? mode.Id : "classic", newBest, longestStreak, seconds, DateTime.Now);
         Records.Save();
+    }
+
+    public bool RecordMatch(int coopRally, float seconds)
+    {
+        bool newBest = Records.RecordMatch(coopRally, seconds, DateTime.Now);
+        Records.Save();
+        return newBest;
     }
 
     public void AddHit()

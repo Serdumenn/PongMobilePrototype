@@ -16,9 +16,9 @@ public sealed class SoloGameManager : MonoBehaviour
     private const string SelectedModeKey = "SelectedMode";
 
     [Header("Refs")]
-    [SerializeField] private SoloBall SoloBall;
+    [SerializeField] private Ball SoloBall;
     [SerializeField] private SoloScoreManager Score;
-    [SerializeField] private RacketController Paddle;
+    [SerializeField] private Paddle Paddle;
     [SerializeField] private RecordsService Records;
 
     [Header("Entrance")]
@@ -38,14 +38,16 @@ public sealed class SoloGameManager : MonoBehaviour
     public GameState State { get; private set; } = GameState.Menu;
     public bool IsGameOver => State == GameState.GameOver;
     public SoloScoreManager ScoreManager => Score;
-    public SoloBall Ball => SoloBall;
+    public Ball Ball => SoloBall;
     public RecordsService RecordsSource => Records;
     public IReadOnlyList<GameModeDefinition> ModeList => Modes;
     public GameModeDefinition CurrentMode { get; private set; }
-    public ModeRunner Runner { get; private set; }
+    public MatchRules Rules { get; private set; }
+    public Participant Player { get; private set; }
+    public int RunSeed { get; private set; }
 
-    private int runStreak;
-    private int runLongestStreak;
+    private readonly List<Participant> participants = new List<Participant>();
+    private int? nextSeed;
     private float runSeconds;
     private Coroutine respawnRoutine;
 
@@ -54,9 +56,9 @@ public sealed class SoloGameManager : MonoBehaviour
         Application.targetFrameRate = 60;
         QualitySettings.vSyncCount = 0;
 
-        if (SoloBall == null) SoloBall = FindFirstObjectByType<SoloBall>();
+        if (SoloBall == null) SoloBall = FindFirstObjectByType<Ball>();
         if (Score == null) Score = FindFirstObjectByType<SoloScoreManager>();
-        if (Paddle == null) Paddle = FindFirstObjectByType<RacketController>();
+        if (Paddle == null) Paddle = FindFirstObjectByType<Paddle>();
         if (Records == null) Records = FindFirstObjectByType<RecordsService>();
 
         if (BallEntrance == null && SoloBall != null)
@@ -66,6 +68,9 @@ public sealed class SoloGameManager : MonoBehaviour
 
         if (Paddle != null) Paddle.InputEnabled = false;
 
+        Player = new Participant(0, Paddle != null ? Paddle.Side : FieldSide.Bottom, Paddle);
+        participants.Add(Player);
+
         CurrentMode = FindMode(PlayerPrefs.GetString(SelectedModeKey, null));
         if (CurrentMode == null || !IsModeUnlocked(CurrentMode)) CurrentMode = Modes.Count > 0 ? Modes[0] : null;
         if (Score != null && CurrentMode != null) Score.SetBestKey(CurrentMode.BestScoreKey);
@@ -73,7 +78,12 @@ public sealed class SoloGameManager : MonoBehaviour
 
     private void Start()
     {
-        if (SoloBall != null) SoloBall.Launched += OnBallLaunched;
+        if (SoloBall != null)
+        {
+            SoloBall.Launched += OnBallLaunched;
+            SoloBall.PaddleStruck += OnPaddleStruck;
+            SoloBall.GoalEntered += OnGoalEntered;
+        }
 
         Time.timeScale = 1f;
         PlayEntranceAnimations(false);
@@ -83,15 +93,19 @@ public sealed class SoloGameManager : MonoBehaviour
 
     private void OnDestroy()
     {
-        if (SoloBall != null) SoloBall.Launched -= OnBallLaunched;
+        if (SoloBall == null) return;
+
+        SoloBall.Launched -= OnBallLaunched;
+        SoloBall.PaddleStruck -= OnPaddleStruck;
+        SoloBall.GoalEntered -= OnGoalEntered;
     }
 
     private void Update()
     {
-        if (State != GameState.Playing || Runner == null) return;
+        if (State != GameState.Playing || Rules == null) return;
 
         runSeconds += Time.deltaTime;
-        if (Runner.Tick(Time.deltaTime)) GameOver();
+        if (Rules.Tick(Time.deltaTime)) GameOver();
     }
 
     public GameModeDefinition FindMode(string id)
@@ -169,25 +183,39 @@ public sealed class SoloGameManager : MonoBehaviour
         SetState(paused ? GameState.Paused : GameState.Playing);
     }
 
+    public void SetSeedForNextRun(int seed)
+    {
+        nextSeed = seed;
+    }
+
     public void RegisterPaddleHit(float paddleOffset)
     {
-        if (State != GameState.Playing || Runner == null) return;
-
-        var hit = Runner.ScoreHit(paddleOffset);
-        if (Score != null) Score.AddPoints(hit.Points);
-        if (Records != null) Records.AddHit();
-
-        runStreak++;
-        runLongestStreak = Mathf.Max(runLongestStreak, runStreak);
-        HitScored?.Invoke(hit);
+        RegisterHit(Player, paddleOffset);
     }
 
     public void OnBallMissed()
     {
-        if (State != GameState.Playing) return;
+        Concede(Player);
+    }
 
-        runStreak = 0;
-        if (Runner == null || Runner.OnMiss())
+    private void RegisterHit(Participant hitter, float paddleOffset)
+    {
+        if (State != GameState.Playing || Rules == null || hitter == null) return;
+
+        var hit = Rules.ScoreHit(hitter, paddleOffset);
+        if (Score != null) Score.AddPoints(hit.Points);
+        if (Records != null) Records.AddHit();
+
+        hitter.RegisterHit();
+        HitScored?.Invoke(hit);
+    }
+
+    private void Concede(Participant conceded)
+    {
+        if (State != GameState.Playing || conceded == null) return;
+
+        conceded.BreakStreak();
+        if (Rules == null || Rules.OnMiss(conceded))
         {
             GameOver();
             return;
@@ -195,6 +223,30 @@ public sealed class SoloGameManager : MonoBehaviour
 
         StopRespawn();
         respawnRoutine = StartCoroutine(RespawnBall());
+    }
+
+    private void OnPaddleStruck(Paddle paddle, float paddleOffset)
+    {
+        RegisterHit(FindParticipant(paddle), paddleOffset);
+    }
+
+    private void OnGoalEntered(Goal goal)
+    {
+        Concede(FindParticipant(goal.Side));
+    }
+
+    private Participant FindParticipant(Paddle paddle)
+    {
+        for (int i = 0; i < participants.Count; i++)
+            if (participants[i].Paddle == paddle) return participants[i];
+        return null;
+    }
+
+    private Participant FindParticipant(FieldSide side)
+    {
+        for (int i = 0; i < participants.Count; i++)
+            if (participants[i].Side == side) return participants[i];
+        return null;
     }
 
     public void GameOver()
@@ -208,7 +260,7 @@ public sealed class SoloGameManager : MonoBehaviour
         if (Paddle != null) Paddle.InputEnabled = false;
 
         if (Score != null) Score.GameOver();
-        if (Records != null) Records.RecordRun(CurrentMode, Score != null && Score.IsNewBest, runLongestStreak, runSeconds);
+        if (Records != null) Records.RecordRun(CurrentMode, Score != null && Score.IsNewBest, Player.LongestStreak, runSeconds);
 
         SetState(GameState.GameOver);
     }
@@ -236,13 +288,19 @@ public sealed class SoloGameManager : MonoBehaviour
             Score.ResetScore();
         }
 
-        Runner = ModeRunner.Create(CurrentMode);
-        Runner.Begin();
-        runStreak = 0;
-        runLongestStreak = 0;
+        Rules = MatchRules.Create(CurrentMode);
+        Rules.Begin(participants);
         runSeconds = 0f;
 
-        if (SoloBall != null) SoloBall.StartRound();
+        RunSeed = nextSeed ?? unchecked((int)DateTime.UtcNow.Ticks);
+        nextSeed = null;
+
+        if (SoloBall != null)
+        {
+            SoloBall.Rng = new MatchRandom(RunSeed);
+            SoloBall.SetServer(Paddle);
+            SoloBall.StartRound();
+        }
         if (Paddle != null)
         {
             Paddle.InputEnabled = true;
@@ -274,7 +332,7 @@ public sealed class SoloGameManager : MonoBehaviour
 
     private void OnBallLaunched()
     {
-        if (State == GameState.Playing) Runner?.OnLaunched();
+        if (State == GameState.Playing) Rules?.OnLaunched();
     }
 
     private void PlayEntranceAnimations(bool forGameplay)

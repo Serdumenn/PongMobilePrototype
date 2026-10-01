@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.IO;
 using UnityEngine;
 using UnityEngine.Purchasing;
 
@@ -28,7 +27,7 @@ public sealed class CosmeticsService : MonoBehaviour
         if (Purchases == null) Purchases = FindFirstObjectByType<PurchaseService>();
         if (Records == null) Records = FindFirstObjectByType<RecordsService>();
 
-        Inventory = CosmeticInventory.Load(Path.Combine(Application.persistentDataPath, SaveFileName));
+        Inventory = CosmeticInventory.Load(SaveLocation.PathFor(SaveFileName));
         EnsureEquippedDefaults();
         GrantScoreUnlocks(PlayerPrefs.GetInt(SoloScoreManager.BestScoreKey, 0), false);
         Inventory.Save();
@@ -127,6 +126,15 @@ public sealed class CosmeticsService : MonoBehaviour
             Inventory.Save();
             Changed?.Invoke();
         }
+    }
+
+    public bool EvaluateStreakRewards()
+    {
+        if (!GrantStreakUnlocks(CurrentDayStreak)) return false;
+
+        Inventory.Save();
+        Changed?.Invoke();
+        return true;
     }
 
     private bool GrantScoreUnlocks(int best, bool announce)

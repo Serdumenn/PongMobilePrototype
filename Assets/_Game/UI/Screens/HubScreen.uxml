@@ -1,0 +1,37 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" editor-extension-mode="False">
+    <ui:VisualElement class="safe" picking-mode="Ignore">
+        <ui:VisualElement class="topbar" picking-mode="Ignore">
+            <ui:Button name="back-button" class="btn btn--icon">
+                <ui:VisualElement class="btn__face" picking-mode="Ignore">
+                    <ui:VisualElement class="icon icon--back" picking-mode="Ignore" />
+                </ui:VisualElement>
+            </ui:Button>
+            <ui:Label text="Play together" class="screen-title" picking-mode="Ignore" />
+            <ui:VisualElement class="topbar__side" picking-mode="Ignore" />
+        </ui:VisualElement>
+        <ui:VisualElement class="tabs" picking-mode="Ignore">
+            <ui:Button name="tab-local" text="This device" class="tab hub-tab" />
+            <ui:Button name="tab-online" text="Online" class="tab hub-tab" />
+            <ui:Button name="tab-challenges" text="Challenges" class="tab hub-tab" />
+        </ui:VisualElement>
+        <ui:ScrollView name="hub-local" mode="Vertical" horizontal-scroller-visibility="Hidden" vertical-scroller-visibility="Hidden" class="hub-panel" />
+        <ui:VisualElement name="hub-online" class="hub-panel" picking-mode="Ignore">
+            <ui:VisualElement class="hub-soon" picking-mode="Ignore">
+                <ui:VisualElement class="icon icon--people" picking-mode="Ignore" />
+                <ui:Label text="Online play is on its way" class="hub-soon__title" picking-mode="Ignore" />
+                <ui:Label text="Quick match, private codes and Portal Duel arrive in a coming update." class="caption hub-soon__text" picking-mode="Ignore" />
+            </ui:VisualElement>
+        </ui:VisualElement>
+        <ui:VisualElement name="hub-challenges" class="hub-panel" picking-mode="Ignore">
+            <ui:VisualElement class="hub-soon" picking-mode="Ignore">
+                <ui:VisualElement class="icon icon--flame" picking-mode="Ignore" />
+                <ui:Label text="Challenges are coming" class="hub-soon__title" picking-mode="Ignore" />
+                <ui:Label text="A daily run with the same serves for everyone, and ghost races against your friends." class="caption hub-soon__text" picking-mode="Ignore" />
+            </ui:VisualElement>
+        </ui:VisualElement>
+        <ui:VisualElement name="hub-note" class="hub-note" picking-mode="Ignore">
+            <ui:VisualElement class="icon icon--people" picking-mode="Ignore" />
+            <ui:Label text="Everyone plays on this device. No internet needed." class="hub-note__label" picking-mode="Ignore" />
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>

@@ -11,7 +11,11 @@ public enum Sfx
     UiBack,
     NewBest,
     GameOver,
-    Unlock
+    Unlock,
+    CountdownTick,
+    CountdownGo,
+    Point,
+    MatchWin
 }
 
 public sealed class AudioManager : MonoBehaviour
@@ -37,6 +41,7 @@ public sealed class AudioManager : MonoBehaviour
 
     [Header("Refs")]
     [SerializeField] private SoloGameManager Game;
+    [SerializeField] private LocalMatchController Match;
 
     private AudioSource[] sources;
     private int nextSource;
@@ -68,6 +73,15 @@ public sealed class AudioManager : MonoBehaviour
 
     private void Start()
     {
+        if (Match == null) Match = FindFirstObjectByType<LocalMatchController>();
+        if (Match != null)
+        {
+            Match.HitScored += OnHitScored;
+            Match.PointLost += OnPointLost;
+            Match.CountdownTick += OnCountdown;
+            Match.StateChanged += OnMatchState;
+        }
+
         if (Game == null) Game = FindFirstObjectByType<SoloGameManager>();
         if (Game == null) return;
 
@@ -83,6 +97,14 @@ public sealed class AudioManager : MonoBehaviour
     private void OnDestroy()
     {
         if (Instance == this) Instance = null;
+        if (Match != null)
+        {
+            Match.HitScored -= OnHitScored;
+            Match.PointLost -= OnPointLost;
+            Match.CountdownTick -= OnCountdown;
+            Match.StateChanged -= OnMatchState;
+        }
+
         if (Game == null) return;
 
         Game.HitScored -= OnHitScored;
@@ -125,6 +147,26 @@ public sealed class AudioManager : MonoBehaviour
 
         Play(Sfx.PaddleHit, Mathf.Pow(2f, semitones / 12f));
         if (hit.Perfect) Play(Sfx.Perfect);
+    }
+
+    private void OnPointLost(Participant participant)
+    {
+        ResetRally();
+
+        var rules = Match != null ? Match.Rules : null;
+        bool over = rules != null && (rules.Winner != null || (rules.IsTeamMatch && rules.TeamLives <= 0));
+        if (!over) Play(Sfx.Point);
+    }
+
+    private void OnCountdown(int value)
+    {
+        Play(value > 0 ? Sfx.CountdownTick : Sfx.CountdownGo);
+    }
+
+    private void OnMatchState(LocalMatchController.MatchState state)
+    {
+        if (state != LocalMatchController.MatchState.Result || Match.Rules == null) return;
+        Play(Match.Rules.IsTeamMatch && !Match.NewBestRally ? Sfx.GameOver : Sfx.MatchWin);
     }
 
     private void OnWallHit()

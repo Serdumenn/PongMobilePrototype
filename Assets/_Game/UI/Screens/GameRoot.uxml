@@ -7,12 +7,20 @@
     <ui:Template name="Shop" src="ShopScreen.uxml" />
     <ui:Template name="Reward" src="RewardScreen.uxml" />
     <ui:Template name="Scores" src="ScoresScreen.uxml" />
+    <ui:Template name="Hub" src="HubScreen.uxml" />
+    <ui:Template name="MatchSetup" src="MatchSetupScreen.uxml" />
+    <ui:Template name="MatchHud" src="MatchHudScreen.uxml" />
+    <ui:Template name="MatchResult" src="MatchResultScreen.uxml" />
     <ui:VisualElement name="root" class="root" picking-mode="Ignore">
         <ui:Instance template="Hud" name="hud" class="screen" picking-mode="Ignore" />
         <ui:Instance template="Menu" name="menu" class="screen" picking-mode="Ignore" />
         <ui:Instance template="Settings" name="settings" class="screen screen--solid" />
         <ui:Instance template="Shop" name="shop" class="screen screen--solid" />
         <ui:Instance template="Scores" name="scores" class="screen screen--solid" />
+        <ui:Instance template="Hub" name="hub" class="screen screen--solid" />
+        <ui:Instance template="MatchSetup" name="match-setup" class="screen screen--solid" />
+        <ui:Instance template="MatchHud" name="match-hud" class="screen" picking-mode="Ignore" />
+        <ui:Instance template="MatchResult" name="match-result" class="screen" picking-mode="Ignore" />
         <ui:Instance template="Pause" name="pause" class="screen" picking-mode="Ignore" />
         <ui:Instance template="GameOver" name="game-over" class="screen" picking-mode="Ignore" />
         <ui:Instance template="Reward" name="reward" class="screen" picking-mode="Ignore" />
