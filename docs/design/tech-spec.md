@@ -153,7 +153,7 @@ Taşımalar ve yeniden adlandırmalar **Unity içinden** yapılır; böylece GUI
 
 Yeniden adlandırılan betiklerin `.meta` GUID'leri korundu; sahne bağlantıları `FormerlySerializedAs` ile taşındı.
 
-**Testleri çalıştırma:** Unity'de *Window → General → Test Runner*. CI'da her push'ta önce testler (`game-ci/unity-test-runner`), sonra APK build'i çalışır; test düşerse build başlamaz. PlayMode testleri kullanıcı verisine dokunmaz: kayıt dosyaları geçici klasöre gider, PlayerPrefs test öncesi diske yedeklenir ve sonra geri yüklenir. Yarıda kesilen bir koşudan kalan yedek bir sonraki testte otomatik geri yüklenir.
+**Testleri çalıştırma:** Unity'de *Window → General → Test Runner*. CI'da her push'ta önce testler (`game-ci/unity-test-runner@v4.3.2`), sonra APK build'i çalışır; test düşerse build başlamaz. v4.4.0 yeni "game-ci CLI" sarmalayıcısına geçtiği için ilk koşuda Unity'yi hiç başlatmadan düştü (2026-10-02); bu yüzden aynı düzeltmeleri eski, kararlı mimaride taşıyan v4.3.2 kullanılıyor. Unity'nin test günlükleri CI loguna ve `test-results` artifact'ına yazılır. PlayMode testleri kullanıcı verisine dokunmaz: kayıt dosyaları geçici klasöre gider, PlayerPrefs test öncesi diske yedeklenir ve sonra geri yüklenir. Yarıda kesilen bir koşudan kalan yedek bir sonraki testte otomatik geri yüklenir.
 
 ## Versiyon kontrol
 - Git LFS: png, jpg, psd, tga, wav, mp3, ogg, ttf, otf, fbx, mp4
