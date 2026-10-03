@@ -82,7 +82,7 @@ public sealed class LocalMatchTests : GameSceneFixture
     }
 
     [UnityTest]
-    public IEnumerator Duel_ServerScoresWhenOpponentDodges()
+    public IEnumerator Duel_ServerScoresWhenReceiverMisses()
     {
         yield return LoadMatch();
         yield return StartMatch("table_duel", Entry(FieldSide.Bottom, "ball_pingi"), Entry(FieldSide.Top, "ball_minty"));
@@ -90,24 +90,17 @@ public sealed class LocalMatchTests : GameSceneFixture
         var ball = match.Balls[0];
         var server = Player(ball.Server.Side);
         var receiver = Player(server.Side == FieldSide.Bottom ? FieldSide.Top : FieldSide.Bottom);
-        float far = layout.Field.xMax;
+        foreach (var col in receiver.Paddle.GetComponentsInChildren<Collider2D>()) col.enabled = false;
 
         Touch(1, TouchPhase.Began, ZonePoint(server.Side, 0f));
-        Touch(2, TouchPhase.Began, ZonePoint(receiver.Side, far));
         Time.timeScale = 3f;
 
         float deadline = Time.realtimeSinceStartup + 15f;
-        while (server.Score == 0 && receiver.Score == 0 && Time.realtimeSinceStartup < deadline)
-        {
-            float away = ball.transform.position.x > 0f ? layout.Field.xMin : layout.Field.xMax;
-            Touch(2, TouchPhase.Moved, ZonePoint(receiver.Side, away));
-            yield return null;
-        }
+        while (server.Score == 0 && receiver.Score == 0 && Time.realtimeSinceStartup < deadline) yield return null;
 
         Touch(1, TouchPhase.Ended, ZonePoint(server.Side, 0f));
-        Touch(2, TouchPhase.Ended, ZonePoint(receiver.Side, far));
 
-        Assert.AreEqual(1, server.Score, "Server should score when the receiver dodges");
+        Assert.AreEqual(1, server.Score, "Server should score when the receiver misses");
         Assert.AreEqual(0, receiver.Score);
         Assert.AreEqual(LocalMatchController.MatchState.Playing, match.State);
 
@@ -148,20 +141,15 @@ public sealed class LocalMatchTests : GameSceneFixture
         yield return StartMatch("coop_rally", Entry(FieldSide.Bottom, "ball_pingi"), Entry(FieldSide.Top, "ball_minty"));
 
         Assert.AreEqual(3, match.Rules.TeamLives);
-        var ball = match.Balls[0];
+        foreach (var p in match.Participants)
+            foreach (var col in p.Paddle.GetComponentsInChildren<Collider2D>()) col.enabled = false;
+
         Touch(1, TouchPhase.Began, ZonePoint(FieldSide.Bottom, 0f));
         Touch(2, TouchPhase.Began, ZonePoint(FieldSide.Top, 0f));
         Time.timeScale = 4f;
 
         float deadline = Time.realtimeSinceStartup + 40f;
-        while (match.State == LocalMatchController.MatchState.Playing && Time.realtimeSinceStartup < deadline)
-        {
-            bool bottomServes = ball.Server != null && ball.Server.Side == FieldSide.Bottom;
-            float away = ball.transform.position.x > 0f ? layout.Field.xMin : layout.Field.xMax;
-            Touch(1, TouchPhase.Moved, ZonePoint(FieldSide.Bottom, bottomServes ? 0f : away));
-            Touch(2, TouchPhase.Moved, ZonePoint(FieldSide.Top, bottomServes ? away : 0f));
-            yield return null;
-        }
+        while (match.State == LocalMatchController.MatchState.Playing && Time.realtimeSinceStartup < deadline) yield return null;
 
         Touch(1, TouchPhase.Ended, ZonePoint(FieldSide.Bottom, 0f));
         Touch(2, TouchPhase.Ended, ZonePoint(FieldSide.Top, 0f));

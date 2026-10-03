@@ -206,6 +206,7 @@ Her fazın sonunda bir onay kapısı var. Kapıdan geçmeyen iş bir sonraki faz
 - **Parti etiketleri:** Tabletlerde sol ve sağ oyuncu etiketleri ekrandan taşıyordu. Kort payı 0,55'ten 0,8 birime çıktı.
 - **Ortak ralli HUD'u:** Pas sayısı servis noktasındaki topun üstüne biniyordu; düellodaki skorlar gibi sola alındı.
 - **Koruma:** Tek oyunculu oyun sürerken maç açılamaz.
+- **Skorlar (2026-10-03):** "Me" sekmesine "With friends" paneli eklendi: oynanan maç sayısı ve en uzun ortak ralli.
 
 **Tasarım ayrıntıları (onaylı tasarımla uyumlu, uygulamada netleşti):**
 - **Raketler:** Oyuncu renginde (P1 mercan, P2 turkuaz, P3 güneş, P4 üzüm). Kimliği renk ve konum birlikte verir.

@@ -18,6 +18,7 @@ public sealed class ScoresScreen : UIScreen
     private readonly Label statHits;
     private readonly Label statStreak;
     private readonly Label statTime;
+    private readonly VisualElement matchRecords;
     private readonly VisualElement records;
     private readonly Label streakTitle;
     private readonly VisualElement streakDays;
@@ -40,6 +41,7 @@ public sealed class ScoresScreen : UIScreen
         statHits = root.Q<Label>("stat-hits");
         statStreak = root.Q<Label>("stat-streak");
         statTime = root.Q<Label>("stat-time");
+        matchRecords = root.Q("match-records");
         records = root.Q("records");
         streakTitle = root.Q<Label>("streak-title");
         streakDays = root.Q("streak-days");
@@ -90,6 +92,10 @@ public sealed class ScoresScreen : UIScreen
             int best = game.BestFor(mode);
             records.Add(RecordRow(mode.DisplayName, best > 0 ? best.ToString() : "-", FormatDate(data.BestDate(mode.Id), best > 0)));
         }
+
+        matchRecords.Clear();
+        matchRecords.Add(RecordRow("Matches", data.MatchesPlayed.ToString("N0", CultureInfo.InvariantCulture), ""));
+        matchRecords.Add(RecordRow("Best co-op rally", data.BestCoopRally > 0 ? data.BestCoopRally.ToString() : "-", ""));
 
         int streak = source.DayStreak;
         streakTitle.text = streak > 0 ? $"{streak}-day streak" : "Daily streak";
