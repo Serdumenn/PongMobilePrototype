@@ -17,6 +17,7 @@ public abstract class GameSceneFixture
     private PrefsSnapshot prefs;
     private string saveRoot;
     private Touchscreen touchscreen;
+    private InputSettings.BackgroundBehavior backgroundBehavior;
 #if UNITY_EDITOR
     private InputSettings.EditorInputBehaviorInPlayMode inputBehavior;
 #endif
@@ -30,8 +31,12 @@ public abstract class GameSceneFixture
         inputBehavior = InputSystem.settings.editorInputBehaviorInPlayMode;
         InputSystem.settings.editorInputBehaviorInPlayMode = InputSettings.EditorInputBehaviorInPlayMode.AllDeviceInputAlwaysGoesToGameView;
 #endif
+        backgroundBehavior = InputSystem.settings.backgroundBehavior;
+        InputSystem.settings.backgroundBehavior = InputSettings.BackgroundBehavior.IgnoreFocus;
         Application.runInBackground = true;
         touchscreen = InputSystem.AddDevice<Touchscreen>("PingiTestTouchscreen");
+        if (!touchscreen.enabled) InputSystem.EnableDevice(touchscreen);
+        Assert.IsTrue(touchscreen.enabled, "Test touchscreen is disabled, touches would be ignored");
 
         prefs = PrefsSnapshot.Capture();
         PrefsSnapshot.UseCleanProfile();
@@ -52,6 +57,7 @@ public abstract class GameSceneFixture
         prefs?.Restore();
         if (Directory.Exists(saveRoot)) Directory.Delete(saveRoot, true);
         if (touchscreen != null && touchscreen.added) InputSystem.RemoveDevice(touchscreen);
+        InputSystem.settings.backgroundBehavior = backgroundBehavior;
 #if UNITY_EDITOR
         InputSystem.settings.editorInputBehaviorInPlayMode = inputBehavior;
 #endif
