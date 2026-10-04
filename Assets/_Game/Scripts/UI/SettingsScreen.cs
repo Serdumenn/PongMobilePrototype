@@ -6,34 +6,77 @@ public sealed class SettingsScreen : UIScreen
 {
     private const string SwitchOnClass = "switch--on";
     private const string ArmedClass = "is-armed";
-    private const long ResetConfirmMs = 2500;
+    private const long ConfirmMs = 2500;
+
+    private sealed class ConfirmPill
+    {
+        private readonly Button button;
+        private readonly Label label;
+        private readonly string idleText;
+        private IVisualElementScheduledItem disarmJob;
+
+        public bool Armed { get; private set; }
+
+        public ConfirmPill(Button button, Label label, string idleText)
+        {
+            this.button = button;
+            this.label = label;
+            this.idleText = idleText;
+        }
+
+        public void Arm()
+        {
+            Armed = true;
+            button.AddToClassList(ArmedClass);
+            label.text = "Tap again";
+            disarmJob?.Pause();
+            disarmJob = button.schedule.Execute(Disarm).StartingIn(ConfirmMs);
+        }
+
+        public void Disarm()
+        {
+            Armed = false;
+            disarmJob?.Pause();
+            button?.RemoveFromClassList(ArmedClass);
+            if (label != null) label.text = idleText;
+        }
+
+        public void SetEnabled(bool enabled)
+        {
+            button?.SetEnabled(enabled);
+        }
+    }
 
     private readonly VisualElement vibrationSwitch;
     private readonly VisualElement soundSwitch;
     private readonly Label bestValue;
-    private readonly Button resetButton;
-    private readonly Label resetLabel;
+    private readonly ConfirmPill reset;
+    private readonly ConfirmPill deleteOnline;
     private readonly Func<int> getBest;
     private readonly Action onReset;
+    private readonly Action onDeleteOnline;
 
-    private IVisualElementScheduledItem disarmJob;
-    private bool armed;
-
-    public SettingsScreen(VisualElement root, Action onBack, Func<int> getBest, Action onReset) : base(root)
+    public SettingsScreen(VisualElement root, Action onBack, Func<int> getBest, Action onReset, Action onDeleteOnline) : base(root)
     {
         this.getBest = getBest;
         this.onReset = onReset;
+        this.onDeleteOnline = onDeleteOnline;
 
         vibrationSwitch = root.Q("vibration-switch");
         soundSwitch = root.Q("sound-switch");
         bestValue = root.Q<Label>("best-value");
-        resetLabel = root.Q<Label>("reset-label");
         root.Q<Label>("version-label").text = $"Pingi Pongi · v{Application.version}";
 
         vibrationSwitch.RegisterCallback<ClickEvent>(_ => ToggleVibration());
         soundSwitch.RegisterCallback<ClickEvent>(_ => ToggleSound());
         Bind("back-button", onBack);
-        resetButton = Bind("reset-button", OnResetPressed);
+        reset = new ConfirmPill(Bind("reset-button", OnResetPressed), root.Q<Label>("reset-label"), "Reset");
+        deleteOnline = new ConfirmPill(Bind("online-button", OnDeleteOnlinePressed), root.Q<Label>("online-label"), "Delete");
+    }
+
+    public void SetOnlineBusy(bool busy)
+    {
+        deleteOnline.SetEnabled(!busy);
     }
 
     protected override void OnShow()
@@ -41,12 +84,15 @@ public sealed class SettingsScreen : UIScreen
         vibrationSwitch.EnableInClassList(SwitchOnClass, GameSettings.HapticsEnabled);
         soundSwitch.EnableInClassList(SwitchOnClass, GameSettings.SoundEnabled);
         RefreshBest();
-        Disarm();
+        reset.Disarm();
+        deleteOnline.Disarm();
+        deleteOnline.SetEnabled(true);
     }
 
     protected override void OnHide()
     {
-        Disarm();
+        reset.Disarm();
+        deleteOnline.Disarm();
     }
 
     private void ToggleVibration()
@@ -69,34 +115,35 @@ public sealed class SettingsScreen : UIScreen
 
     private void OnResetPressed()
     {
-        if (!armed)
+        if (!reset.Armed)
         {
-            armed = true;
-            resetButton.AddToClassList(ArmedClass);
-            resetLabel.text = "Tap again";
-            disarmJob?.Pause();
-            disarmJob = resetButton.schedule.Execute(Disarm).StartingIn(ResetConfirmMs);
+            reset.Arm();
             return;
         }
 
-        Disarm();
+        reset.Disarm();
         onReset?.Invoke();
         HapticManager.Medium();
         RefreshBest();
     }
 
-    private void Disarm()
+    private void OnDeleteOnlinePressed()
     {
-        armed = false;
-        disarmJob?.Pause();
-        resetButton?.RemoveFromClassList(ArmedClass);
-        if (resetLabel != null) resetLabel.text = "Reset";
+        if (!deleteOnline.Armed)
+        {
+            deleteOnline.Arm();
+            return;
+        }
+
+        deleteOnline.Disarm();
+        HapticManager.Medium();
+        onDeleteOnline?.Invoke();
     }
 
     private void RefreshBest()
     {
         int best = getBest != null ? getBest() : 0;
         bestValue.text = best.ToString();
-        resetButton?.SetEnabled(best > 0);
+        reset.SetEnabled(best > 0);
     }
 }

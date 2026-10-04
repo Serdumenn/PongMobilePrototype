@@ -15,13 +15,58 @@
             <ui:Button name="tab-challenges" text="Challenges" class="tab hub-tab" />
         </ui:VisualElement>
         <ui:ScrollView name="hub-local" mode="Vertical" horizontal-scroller-visibility="Hidden" vertical-scroller-visibility="Hidden" class="hub-panel" />
-        <ui:VisualElement name="hub-online" class="hub-panel" picking-mode="Ignore">
-            <ui:VisualElement class="hub-soon" picking-mode="Ignore">
-                <ui:VisualElement class="icon icon--people" picking-mode="Ignore" />
-                <ui:Label text="Online play is on its way" class="hub-soon__title" picking-mode="Ignore" />
-                <ui:Label text="Quick match, private codes and Portal Duel arrive in a coming update." class="caption hub-soon__text" picking-mode="Ignore" />
+        <ui:ScrollView name="hub-online" mode="Vertical" horizontal-scroller-visibility="Hidden" vertical-scroller-visibility="Hidden" class="hub-panel online-scroll">
+            <ui:VisualElement name="online-ready" picking-mode="Ignore">
+                <ui:VisualElement class="me-card" picking-mode="Ignore">
+                    <ui:VisualElement name="me-ball" class="me-card__ball" picking-mode="Ignore" />
+                    <ui:VisualElement class="me-card__text" picking-mode="Ignore">
+                        <ui:Label text="You play as" class="me-card__caption" picking-mode="Ignore" />
+                        <ui:Label name="me-name" text="Connecting…" class="me-card__name" picking-mode="Ignore" />
+                    </ui:VisualElement>
+                    <ui:Button name="look-button" class="btn me-card__look">
+                        <ui:VisualElement class="btn__face" picking-mode="Ignore">
+                            <ui:VisualElement class="icon icon--wardrobe" picking-mode="Ignore" />
+                        </ui:VisualElement>
+                    </ui:Button>
+                </ui:VisualElement>
+                <ui:VisualElement class="online-gap" picking-mode="Ignore" />
+                <ui:Button name="quick-button" class="btn btn--primary online-quick">
+                    <ui:VisualElement class="btn__face" picking-mode="Ignore">
+                        <ui:VisualElement class="icon icon--bolt icon--light" picking-mode="Ignore" />
+                        <ui:Label name="quick-label" text="Quick match" class="btn__label" picking-mode="Ignore" />
+                    </ui:VisualElement>
+                </ui:Button>
+                <ui:VisualElement class="online-gap" picking-mode="Ignore" />
+                <ui:VisualElement class="online-pair" picking-mode="Ignore">
+                    <ui:Button name="create-button" class="btn">
+                        <ui:VisualElement class="btn__face" picking-mode="Ignore">
+                            <ui:VisualElement class="icon icon--share" picking-mode="Ignore" />
+                            <ui:Label text="Create code" class="btn__label" picking-mode="Ignore" />
+                        </ui:VisualElement>
+                    </ui:Button>
+                    <ui:VisualElement class="online-pair__gap" picking-mode="Ignore" />
+                    <ui:Button name="join-button" class="btn">
+                        <ui:VisualElement class="btn__face" picking-mode="Ignore">
+                            <ui:VisualElement class="icon icon--join" picking-mode="Ignore" />
+                            <ui:Label text="Join code" class="btn__label" picking-mode="Ignore" />
+                        </ui:VisualElement>
+                    </ui:Button>
+                </ui:VisualElement>
+                <ui:VisualElement class="online-gap" picking-mode="Ignore" />
+                <ui:VisualElement name="online-modes" class="online-modes" picking-mode="Ignore" />
+                <ui:VisualElement class="online-end" picking-mode="Ignore" />
             </ui:VisualElement>
-        </ui:VisualElement>
+            <ui:VisualElement name="online-status" class="online-status" picking-mode="Ignore">
+                <ui:VisualElement name="status-icon" class="icon icon--wifi-off" picking-mode="Ignore" />
+                <ui:Label name="status-title" text="You're offline" class="hub-soon__title" picking-mode="Ignore" />
+                <ui:Label name="status-text" text="Online play needs the internet. Games on this device still work." class="caption hub-soon__text" picking-mode="Ignore" />
+                <ui:Button name="retry-button" class="btn btn--primary online-status__retry">
+                    <ui:VisualElement class="btn__face" picking-mode="Ignore">
+                        <ui:Label text="Try again" class="btn__label" picking-mode="Ignore" />
+                    </ui:VisualElement>
+                </ui:Button>
+            </ui:VisualElement>
+        </ui:ScrollView>
         <ui:VisualElement name="hub-challenges" class="hub-panel" picking-mode="Ignore">
             <ui:VisualElement class="hub-soon" picking-mode="Ignore">
                 <ui:VisualElement class="icon icon--flame" picking-mode="Ignore" />
@@ -32,6 +77,23 @@
         <ui:VisualElement name="hub-note" class="hub-note" picking-mode="Ignore">
             <ui:VisualElement class="icon icon--people" picking-mode="Ignore" />
             <ui:Label text="Everyone plays on this device. No internet needed." class="hub-note__label" picking-mode="Ignore" />
+        </ui:VisualElement>
+    </ui:VisualElement>
+    <ui:VisualElement name="join-dialog" class="dialog dialog--hidden">
+        <ui:VisualElement name="join-scrim" class="scrim" />
+        <ui:VisualElement class="safe overlay" picking-mode="Ignore">
+            <ui:VisualElement class="card online-card">
+                <ui:Label text="Join a friend" class="card__title" picking-mode="Ignore" />
+                <ui:Label text="Type the code on your friend's screen." class="caption dialog__text" picking-mode="Ignore" />
+                <ui:TextField name="code-field" max-length="6" class="code-field" />
+                <ui:Button name="join-confirm" class="btn btn--primary btn--wide">
+                    <ui:VisualElement class="btn__face" picking-mode="Ignore">
+                        <ui:VisualElement class="icon icon--join icon--light" picking-mode="Ignore" />
+                        <ui:Label name="join-confirm-label" text="Join" class="btn__label" picking-mode="Ignore" />
+                    </ui:VisualElement>
+                </ui:Button>
+                <ui:Button name="join-cancel" text="Cancel" class="link" />
+            </ui:VisualElement>
         </ui:VisualElement>
     </ui:VisualElement>
 </ui:UXML>

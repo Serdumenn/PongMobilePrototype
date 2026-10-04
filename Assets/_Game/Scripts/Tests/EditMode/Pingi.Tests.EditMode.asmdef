@@ -3,6 +3,7 @@
     "rootNamespace": "",
     "references": [
         "Pingi.Runtime",
+        "Unity.Services.Multiplayer",
         "UnityEngine.TestRunner",
         "UnityEditor.TestRunner"
     ],

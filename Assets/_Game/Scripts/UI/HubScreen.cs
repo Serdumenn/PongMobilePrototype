@@ -1,28 +1,83 @@
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UIElements;
 
 public sealed class HubScreen : UIScreen
 {
+    private const string DialogHiddenClass = "dialog--hidden";
+
     private readonly LocalMatchController match;
     private readonly CosmeticsService cosmetics;
+    private readonly OnlineService online;
+    private readonly OnlineLobby lobby;
     private readonly Action<GameModeDefinition> onPick;
+    private readonly Action<GameModeDefinition> onQuick;
+    private readonly Action<GameModeDefinition> onCreate;
+    private readonly Action<string> onJoin;
+    private readonly Action<string> toast;
+
     private readonly ScrollView local;
-    private readonly VisualElement online;
+    private readonly ScrollView onlinePanel;
     private readonly VisualElement challenges;
     private readonly VisualElement note;
     private readonly Button[] tabs;
 
-    public HubScreen(VisualElement root, LocalMatchController match, CosmeticsService cosmetics, Action onBack, Action<GameModeDefinition> onPick) : base(root)
+    private readonly VisualElement onlineReady;
+    private readonly VisualElement onlineStatus;
+    private readonly Label statusTitle;
+    private readonly Label statusText;
+    private readonly VisualElement meBall;
+    private readonly Label meName;
+    private readonly Button lookButton;
+    private readonly Button quickButton;
+    private readonly Label quickLabel;
+    private readonly Button createButton;
+    private readonly Button joinButton;
+    private readonly VisualElement modeList;
+
+    private readonly VisualElement joinDialog;
+    private readonly TextField codeField;
+    private readonly Button joinConfirm;
+
+    private readonly List<CosmeticItem> looks = new List<CosmeticItem>();
+    private GameModeDefinition selectedMode;
+    private int tab;
+    private bool busy;
+
+    public HubScreen(VisualElement root, LocalMatchController match, CosmeticsService cosmetics, OnlineService online, OnlineLobby lobby,
+        Action onBack, Action<GameModeDefinition> onPick, Action<GameModeDefinition> onQuick, Action<GameModeDefinition> onCreate,
+        Action<string> onJoin, Action<string> toast) : base(root)
     {
         this.match = match;
         this.cosmetics = cosmetics;
+        this.online = online;
+        this.lobby = lobby;
         this.onPick = onPick;
+        this.onQuick = onQuick;
+        this.onCreate = onCreate;
+        this.onJoin = onJoin;
+        this.toast = toast;
 
         local = root.Q<ScrollView>("hub-local");
-        online = root.Q("hub-online");
+        onlinePanel = root.Q<ScrollView>("hub-online");
         challenges = root.Q("hub-challenges");
         note = root.Q("hub-note");
+
+        onlineReady = root.Q("online-ready");
+        onlineStatus = root.Q("online-status");
+        statusTitle = root.Q<Label>("status-title");
+        statusText = root.Q<Label>("status-text");
+        meBall = root.Q("me-ball");
+        meName = root.Q<Label>("me-name");
+        quickLabel = root.Q<Label>("quick-label");
+        modeList = root.Q("online-modes");
+
+        joinDialog = root.Q("join-dialog");
+        codeField = root.Q<TextField>("code-field");
+        codeField.keyboardType = TouchScreenKeyboardType.ASCIICapable;
+        codeField.RegisterValueChangedCallback(OnCodeChanged);
+        root.Q("join-scrim").RegisterCallback<ClickEvent>(_ => CloseJoin());
 
         Bind("back-button", onBack);
         tabs = new[]
@@ -31,22 +86,225 @@ public sealed class HubScreen : UIScreen
             Bind("tab-online", () => SelectTab(1)),
             Bind("tab-challenges", () => SelectTab(2))
         };
+        lookButton = Bind("look-button", NextLook);
+        quickButton = Bind("quick-button", () => onQuick?.Invoke(selectedMode));
+        createButton = Bind("create-button", () => onCreate?.Invoke(selectedMode));
+        joinButton = Bind("join-button", OpenJoin);
+        joinConfirm = Bind("join-confirm", ConfirmJoin);
+        Bind("join-cancel", CloseJoin);
+        Bind("retry-button", Connect);
+
+        if (online != null) online.StateChanged += _ => RefreshOnline();
+    }
+
+    public bool IsJoinOpen => !joinDialog.ClassListContains(DialogHiddenClass);
+
+    public string LookId
+    {
+        get
+        {
+            var look = CurrentLook();
+            return look != null ? look.Id : string.Empty;
+        }
+    }
+
+    public void Present(int tabIndex)
+    {
+        tab = tabIndex;
+        if (IsVisible) SelectTab(tab);
+        else Show();
+    }
+
+    public void SetBusy(bool value, string label)
+    {
+        busy = value;
+        quickLabel.text = value && !string.IsNullOrEmpty(label) ? label : "Quick match";
+        RefreshOnline();
+    }
+
+    public void CloseJoin()
+    {
+        codeField.Blur();
+        joinDialog.AddToClassList(DialogHiddenClass);
     }
 
     protected override void OnShow()
     {
         BuildTiles();
-        SelectTab(0);
+        CollectLooks();
+        BuildModes();
+        SelectTab(tab);
+    }
+
+    protected override void OnHide()
+    {
+        CloseJoin();
     }
 
     private void SelectTab(int index)
     {
+        tab = index;
         for (int i = 0; i < tabs.Length; i++) tabs[i]?.EnableInClassList("tab--active", i == index);
 
         local.style.display = index == 0 ? DisplayStyle.Flex : DisplayStyle.None;
-        online.style.display = index == 1 ? DisplayStyle.Flex : DisplayStyle.None;
+        onlinePanel.style.display = index == 1 ? DisplayStyle.Flex : DisplayStyle.None;
         challenges.style.display = index == 2 ? DisplayStyle.Flex : DisplayStyle.None;
         note.style.display = index == 0 ? DisplayStyle.Flex : DisplayStyle.None;
+
+        if (index == 1) Connect();
+    }
+
+    private void Connect()
+    {
+        RefreshOnline();
+        if (online != null) _ = online.ConnectAsync();
+    }
+
+    private void RefreshOnline()
+    {
+        if (online == null) return;
+
+        var state = online.State;
+        bool usable = state == OnlineService.Status.Ready || state == OnlineService.Status.Connecting;
+        onlineReady.style.display = usable ? DisplayStyle.Flex : DisplayStyle.None;
+        onlineStatus.style.display = usable ? DisplayStyle.None : DisplayStyle.Flex;
+
+        if (!usable)
+        {
+            bool offline = state == OnlineService.Status.Offline;
+            statusTitle.text = offline ? "You're offline" : "Can't reach the servers";
+            statusText.text = offline
+                ? "Online play needs the internet. Games on this device still work."
+                : "Online play is taking a break. Try again in a little while.";
+            return;
+        }
+
+        bool ready = state == OnlineService.Status.Ready;
+        meName.text = ready ? online.PlayerName : "Connecting…";
+        UiFactory.SetPicture(meBall, CurrentLook()?.Happy);
+
+        bool canPlay = ready && !busy && selectedMode != null;
+        quickButton.SetEnabled(canPlay);
+        createButton.SetEnabled(canPlay);
+        joinButton.SetEnabled(ready && !busy);
+        lookButton.SetEnabled(!busy && looks.Count > 1);
+    }
+
+    private void CollectLooks()
+    {
+        looks.Clear();
+        if (cosmetics == null) return;
+
+        var equipped = cosmetics.Equipped(CosmeticCategory.Ball);
+        if (equipped != null) looks.Add(equipped);
+
+        foreach (var item in cosmetics.CatalogAsset.InCategory(CosmeticCategory.Ball))
+            if (item != equipped && cosmetics.IsUnlocked(item)) looks.Add(item);
+    }
+
+    private CosmeticItem CurrentLook()
+    {
+        if (looks.Count == 0) return null;
+
+        string saved = GameSettings.OnlineLook;
+        foreach (var look in looks)
+            if (look.Id == saved) return look;
+        return looks[0];
+    }
+
+    private void NextLook()
+    {
+        if (looks.Count < 2) return;
+
+        int index = looks.IndexOf(CurrentLook());
+        var next = looks[(index + 1) % looks.Count];
+        GameSettings.OnlineLook = next.Id;
+        UiFactory.SetPicture(meBall, next.Happy);
+    }
+
+    private void BuildModes()
+    {
+        modeList.Clear();
+        if (lobby == null) return;
+
+        if (selectedMode != null && selectedMode.ComingSoon) selectedMode = null;
+
+        var modes = lobby.ModeList;
+        for (int i = 0; i < modes.Count; i++)
+        {
+            var mode = modes[i];
+            if (mode == null) continue;
+            if (selectedMode == null && !mode.ComingSoon) selectedMode = mode;
+            if (modeList.childCount > 0) modeList.Add(UiFactory.Element("online-mode-divider"));
+            modeList.Add(ModeRow(mode));
+        }
+    }
+
+    private VisualElement ModeRow(GameModeDefinition mode)
+    {
+        var row = new Button { focusable = false, name = $"online-{mode.Id}" };
+        row.RemoveFromClassList(Button.ussClassName);
+        row.AddToClassList("online-mode");
+        row.EnableInClassList("online-mode--soon", mode.ComingSoon);
+        row.EnableInClassList("online-mode--selected", mode == selectedMode);
+        row.clicked += () => PickMode(mode);
+
+        row.Add(UiFactory.Element("online-mode__pick"));
+
+        var text = UiFactory.Element("online-mode__text");
+        text.Add(UiFactory.Text(mode.DisplayName, "online-mode__name"));
+        text.Add(UiFactory.Text(mode.Tagline, "online-mode__sub"));
+        row.Add(text);
+
+        if (mode.ComingSoon)
+        {
+            row.Add(UiFactory.Text("Soon", "soon-chip"));
+            return row;
+        }
+
+        string players = mode.MinPlayers == mode.MaxPlayers ? $"{mode.MinPlayers}" : $"{mode.MinPlayers}–{mode.MaxPlayers}";
+        row.Add(UiFactory.Text(players, mode.Kind == GameModeKind.CoopRally ? "players-chip players-chip--team" : "players-chip"));
+        return row;
+    }
+
+    private void PickMode(GameModeDefinition mode)
+    {
+        if (mode.ComingSoon)
+        {
+            UiFeedback.Back();
+            toast?.Invoke($"{mode.DisplayName} is coming soon.");
+            return;
+        }
+
+        UiFeedback.Tap();
+        selectedMode = mode;
+        BuildModes();
+        RefreshOnline();
+    }
+
+    private void OpenJoin()
+    {
+        codeField.SetValueWithoutNotify(string.Empty);
+        joinConfirm.SetEnabled(false);
+        joinDialog.RemoveFromClassList(DialogHiddenClass);
+        codeField.schedule.Execute(() => codeField.Focus()).StartingIn(50);
+    }
+
+    private void OnCodeChanged(ChangeEvent<string> evt)
+    {
+        string code = SessionCode.Normalize(evt.newValue);
+        if (code.Length > SessionCode.Length) code = code.Substring(0, SessionCode.Length);
+        if (code != evt.newValue) codeField.SetValueWithoutNotify(code);
+        joinConfirm.SetEnabled(SessionCode.IsValid(code));
+    }
+
+    private void ConfirmJoin()
+    {
+        string code = SessionCode.Normalize(codeField.value);
+        if (!SessionCode.IsValid(code)) return;
+
+        CloseJoin();
+        onJoin?.Invoke(code);
     }
 
     private void BuildTiles()

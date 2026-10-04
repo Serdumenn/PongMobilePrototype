@@ -125,6 +125,27 @@ Tüm efektler bize ait. `ArtSource/tools/generate_sfx.py` ile sentezleniyor (mon
 - Oyuncu kimliği renk ve konumla birlikte verilir; yalnız renge dayanılmaz.
 - Üst oyuncunun yazıları 180°, yan oyuncularınkiler ±90° döndürülür, böylece her oyuncu kendi yazısını düz okur.
 
+## Online bileşenleri (M2, 2026-10-04)
+
+Ölçüler 1080 genişlikli panel birimindedir. Stiller `UI/Theme/Online.uss` içindedir.
+
+| Bileşen | Boyut | Zemin / kenar | İçerik |
+|---|---|---|---|
+| `MeCard` ("You play as") | yükseklik 208, köşe 64 | surface / surface-edge 16 | top 144, açıklama 38 medium, ad 60 bold, askı butonu 128×136 |
+| Mod listesi satırı | yükseklik 172, köşe 40 | seçiliyken `#E6F7F5` | seçim halkası 56 (seçili: teal 18 kenar), ad 50 bold, açıklama 36, oyuncu çipi ya da "Soon" çipi |
+| `CodeField` | yükseklik 224, köşe 56 | `#FFF8EF`, kenar 6 divider (odakta teal) | 128 bold, harf aralığı 18, ortalı |
+| `CodeCard` | köşe 72 | surface / surface-edge 20 | kod 150 bold, harf aralığı 22; Kopyala ve Paylaş; "Expires in m:ss" |
+| Lobi yuvası | yükseklik 232, köşe 64 | surface / surface-edge 14; bekleyen yuva yarı saydam, 6 kenar | top 160, ad 58 bold, açıklama 40, hazır işareti 96 |
+| Oyuncu kartı (VS) | yükseklik 500, köşe 64 | üst kenar 18 oyuncu renginde | top 230 (hazırsa mutlu yüz), ad 50 bold, gecikme 38 |
+| Hazır butonu | yükseklik 192 | teal / teal-edge 18; hazırken surface | "Ready" ya da "Not ready", 64 bold |
+| Yeniden bağlanma halkası | 240 daire, 16 teal kenar | — | kalan saniye 104 bold |
+
+- **Yeni ikonlar:** `bolt`, `share`, `copy`, `join`, `wifi`, `wifi_off`. Mevcut setin kuralları geçerli: 24 px ızgara, beyaz çizgi, 2.5 kalınlık, yuvarlak uç; renk USS'ten verilir.
+- **Onaylı tasarımdan iki bilinçli sapma:**
+  - "Join code" butonunda kopyala ikonu yerine "içeri gir" oku var, çünkü kopyala ikonu Kopyala butonuyla karışıyordu.
+  - Kod yazısında IBM Plex Mono yerine Fredoka Bold ve geniş harf aralığı kullanılıyor; yeni font dosyası gerekmiyor. Yüksek sesle okunabilirlik korunuyor.
+- **Hazır olma:** Tasarımdaki tepki çubuğunun (4 tepki) yerinde M2'de "Ready" butonu duruyor. Tepkiler M3'te bu butonun üstüne gelir.
+
 ## Erişilebilirlik
 
 - Metin kontrastı ≥ 4.5:1, büyük metin (≥ 72 px bold) ≥ 3:1

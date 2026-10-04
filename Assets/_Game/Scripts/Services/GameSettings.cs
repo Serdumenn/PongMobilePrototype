@@ -5,6 +5,7 @@ public static class GameSettings
     private const string HapticsKey = "HapticsEnabled";
     private const string SoundKey = "SoundEnabled";
     private const string HintRunsKey = "HintRunsShown";
+    private const string OnlineLookKey = "OnlineLook";
 
     public static bool HapticsEnabled
     {
@@ -30,5 +31,15 @@ public static class GameSettings
     {
         get => PlayerPrefs.GetInt(HintRunsKey, 0);
         set => PlayerPrefs.SetInt(HintRunsKey, value);
+    }
+
+    public static string OnlineLook
+    {
+        get => PlayerPrefs.GetString(OnlineLookKey, string.Empty);
+        set
+        {
+            PlayerPrefs.SetString(OnlineLookKey, value ?? string.Empty);
+            PlayerPrefs.Save();
+        }
     }
 }

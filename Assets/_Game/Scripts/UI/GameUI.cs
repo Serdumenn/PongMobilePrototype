@@ -1,4 +1,5 @@
 using System;
+using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.UIElements;
@@ -11,12 +12,19 @@ public sealed class GameUI : MonoBehaviour
     [SerializeField] private CosmeticsService Cosmetics;
     [SerializeField] private LocalMatchController Match;
     [SerializeField] private FieldLayout Layout;
+    [SerializeField] private OnlineService Online;
+    [SerializeField] private OnlineLobby Lobby;
 
     [Header("Onboarding")]
     [SerializeField] private int HintRuns = 3;
 
     [Header("Rewards")]
     [SerializeField] private long RewardDelayMs = 650;
+
+    [Header("Online")]
+    [SerializeField] private float CodeLifetime = 600f;
+    [SerializeField] private int LobbyCountdownFrom = 3;
+    [SerializeField] private float LobbyCountdownStep = 0.6f;
 
     [Header("Layout")]
     [SerializeField] private float MaxContentWidth = 1080f;
@@ -37,6 +45,7 @@ public sealed class GameUI : MonoBehaviour
     private MatchSetupScreen setup;
     private MatchHudScreen matchHud;
     private MatchResultScreen matchResult;
+    private LobbyScreen lobbyScreen;
     private bool togetherSelected;
 
     private SoloGameManager.GameState lastState;
@@ -51,6 +60,8 @@ public sealed class GameUI : MonoBehaviour
         if (Cosmetics == null) Cosmetics = FindFirstObjectByType<CosmeticsService>();
         if (Match == null) Match = FindFirstObjectByType<LocalMatchController>();
         if (Layout == null) Layout = FindFirstObjectByType<FieldLayout>();
+        if (Online == null) Online = FindFirstObjectByType<OnlineService>();
+        if (Lobby == null) Lobby = FindFirstObjectByType<OnlineLobby>();
 
         root = GetComponent<UIDocument>().rootVisualElement;
         root.Query<Button>().ForEach(b => b.RemoveFromClassList(Button.ussClassName));
@@ -59,12 +70,13 @@ public sealed class GameUI : MonoBehaviour
         hud = new HudScreen(root.Q("hud"), () => Game.SetPaused(true));
         pause = new PauseScreen(root.Q("pause"), Resume, LeaveFromPause);
         gameOver = new GameOverScreen(root.Q("game-over"), () => ContinueAfterAd(Game.RestartRun, gameOver.SetInteractable), () => ContinueAfterAd(Game.ReturnToMenu, gameOver.SetInteractable));
-        settings = new SettingsScreen(root.Q("settings"), CloseSettings, () => Game.ScoreManager.BestFor(SoloScoreManager.BestScoreKey), Game.ResetAllBests);
         toast = new ToastView(root.Q("toast"));
+        settings = new SettingsScreen(root.Q("settings"), CloseSettings, () => Game.ScoreManager.BestFor(SoloScoreManager.BestScoreKey), Game.ResetAllBests, DeleteOnlineData);
         shop = new ShopScreen(root.Q("shop"), Cosmetics, CloseShop, toast.Show);
         reward = new RewardScreen(root.Q("reward"), EquipReward, CloseReward);
         scores = new ScoresScreen(root.Q("scores"), Game, Cosmetics, CloseScores);
-        hub = new HubScreen(root.Q("hub"), Match, Cosmetics, CloseHub, PickMatchMode);
+        hub = new HubScreen(root.Q("hub"), Match, Cosmetics, Online, Lobby, CloseHub, PickMatchMode, QuickMatch, CreateCode, JoinCode, toast.Show);
+        lobbyScreen = new LobbyScreen(root.Q("lobby"), Lobby, Cosmetics, LeaveLobby, OnCodeExpired, toast.Show, CodeLifetime, LobbyCountdownFrom, LobbyCountdownStep);
         setup = new MatchSetupScreen(root.Q("match-setup"), Cosmetics, CancelSetup, entries => Match.Begin(entries));
         matchHud = new MatchHudScreen(root.Q("match-hud"), () => Match.SetPaused(true));
         matchResult = new MatchResultScreen(root.Q("match-result"),
@@ -87,6 +99,7 @@ public sealed class GameUI : MonoBehaviour
             Match.PointLost += OnMatchPoint;
             Match.PlayerEliminated += OnMatchPoint;
         }
+        if (Lobby != null) Lobby.Closed += OnLobbyClosed;
 
         built = true;
         lastState = Game.State;
@@ -111,6 +124,7 @@ public sealed class GameUI : MonoBehaviour
             Match.PointLost -= OnMatchPoint;
             Match.PlayerEliminated -= OnMatchPoint;
         }
+        if (Lobby != null) Lobby.Closed -= OnLobbyClosed;
     }
 
     private void Update()
@@ -182,7 +196,7 @@ public sealed class GameUI : MonoBehaviour
     private void OpenHub()
     {
         menu.Hide();
-        hub.Show();
+        hub.Present(0);
         Game.HideGameObjects();
     }
 
@@ -207,7 +221,102 @@ public sealed class GameUI : MonoBehaviour
     {
         Match.Cancel();
         setup.Hide();
-        hub.Show();
+        hub.Present(0);
+    }
+
+    private void QuickMatch(GameModeDefinition mode)
+    {
+        if (mode == null) return;
+        EnterLobby(() => Lobby.QuickMatchAsync(mode.Id, mode.MaxPlayers, hub.LookId), "Finding a player…");
+    }
+
+    private void CreateCode(GameModeDefinition mode)
+    {
+        if (mode == null) return;
+        EnterLobby(() => Lobby.CreateAsync(mode.Id, mode.MaxPlayers, hub.LookId), "Creating a code…");
+    }
+
+    private void JoinCode(string code)
+    {
+        EnterLobby(() => Lobby.JoinAsync(code, hub.LookId), "Joining…");
+    }
+
+    private async void EnterLobby(Func<Task<OnlineLobby.Failure>> open, string busyLabel)
+    {
+        if (Lobby == null || Lobby.Busy) return;
+
+        hub.SetBusy(true, busyLabel);
+        var result = await open();
+        hub.SetBusy(false, null);
+
+        if (result != OnlineLobby.Failure.None)
+        {
+            toast.Show(FailureText(result));
+            return;
+        }
+
+        if (!hub.IsVisible)
+        {
+            _ = Lobby.LeaveAsync();
+            return;
+        }
+
+        hub.Hide();
+        lobbyScreen.Present();
+    }
+
+    private void LeaveLobby()
+    {
+        lobbyScreen.Hide();
+        hub.Present(1);
+        if (Lobby != null) _ = Lobby.LeaveAsync();
+    }
+
+    private void OnCodeExpired()
+    {
+        LeaveLobby();
+        toast.Show("Your code expired. Make a new one any time.");
+    }
+
+    private void OnLobbyClosed(OnlineLobby.Failure reason)
+    {
+        if (!lobbyScreen.IsVisible) return;
+
+        lobbyScreen.Hide();
+        hub.Present(1);
+        toast.Show(FailureText(reason));
+    }
+
+    private static string FailureText(OnlineLobby.Failure failure)
+    {
+        return failure switch
+        {
+            OnlineLobby.Failure.Offline => "You're offline. Check your connection and try again.",
+            OnlineLobby.Failure.NotFound => "No match with that code. Check the letters and try again.",
+            OnlineLobby.Failure.Full => "That match is already full.",
+            OnlineLobby.Failure.VersionMismatch => "Your friend has a different version of Pingi Pongi. Update both and try again.",
+            OnlineLobby.Failure.ConnectionLost => "Connection lost, so you left the match.",
+            OnlineLobby.Failure.HostLeft => "Your friend left the match.",
+            _ => "Something went wrong. Please try again."
+        };
+    }
+
+    private async void DeleteOnlineData()
+    {
+        if (Online == null) return;
+
+        settings.SetOnlineBusy(true);
+        try
+        {
+            bool deleted = await Online.DeleteDataAsync();
+            toast.Show(deleted ? "Online data deleted. You'll get a new name next time." : "There is no online data on this device.");
+        }
+        catch (Exception e)
+        {
+            Debug.LogWarning($"Deleting online data failed: {e.Message}");
+            toast.Show(OnlineService.HasInternet ? "Couldn't delete right now. Please try again later." : "You're offline. Connect to delete your online data.");
+        }
+        settings.SetOnlineBusy(false);
     }
 
     private void Resume()
@@ -313,7 +422,7 @@ public sealed class GameUI : MonoBehaviour
                 pause.Hide();
                 gameOver.Hide();
                 reward.Hide();
-                if (!settings.IsVisible && !shop.IsVisible && !scores.IsVisible && !hub.IsVisible && (Match == null || !Match.IsActive))
+                if (!settings.IsVisible && !shop.IsVisible && !scores.IsVisible && !hub.IsVisible && !lobbyScreen.IsVisible && (Match == null || !Match.IsActive))
                 {
                     RefreshMenuMode();
                     menu.Show();
@@ -516,9 +625,16 @@ public sealed class GameUI : MonoBehaviour
             return;
         }
 
+        if (lobbyScreen.IsVisible)
+        {
+            LeaveLobby();
+            return;
+        }
+
         if (hub.IsVisible)
         {
-            CloseHub();
+            if (hub.IsJoinOpen) hub.CloseJoin();
+            else CloseHub();
             return;
         }
 

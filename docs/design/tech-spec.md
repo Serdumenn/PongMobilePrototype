@@ -131,7 +131,9 @@ Taşımalar ve yeniden adlandırmalar **Unity içinden** yapılır; böylece GUI
 | `Pingi.Editor` | `Scripts/Editor/` | Yalnız Editor |
 | `Pingi.Tests.EditMode` | `Scripts/Tests/EditMode/` | Kurallar, kayıtlar, envanter, veri bütünlüğü, rastgelelik |
 | `Pingi.Tests.PlayMode` | `Scripts/Tests/PlayMode/` | `Game` sahnesinde uçtan uca akış, gerçek dokunuşla ralli |
-| `Pingi.Multiplayer` | `Scripts/Multiplayer/` | M2'de, online paketlerle birlikte gelecek |
+
+- Online kodu (M2) ayrı assembly'ye taşınmadı; `Pingi.Runtime` içinde `Scripts/Online/` klasöründe durur.
+- `Pingi.Runtime`, UGS paketlerine referans verir: `Unity.Services.Core`, `Unity.Services.Authentication`, `Unity.Services.Multiplayer`, `Unity.Netcode.Runtime`.
 
 **Maç çekirdeği** (M0 refaktörü; tek oyunculu davranış testlerle aynı tutuldu):
 
@@ -150,6 +152,22 @@ Taşımalar ve yeniden adlandırmalar **Unity içinden** yapılır; böylece GUI
 | `LocalMatchController` | Yerel maç akışı (M1). Katılımcılar, raket klonları, toplar, geri sayım, servis, sonuç ve kayıt. Tek oyunculu `SoloGameManager` maç sırasında menü durumunda bekler ve dünyayı paylaşırlar |
 | `TableDuelRules`, `CoopRallyRules`, `PartyRules` | Yerel modların kuralları; skor ve can `Participant` üzerinde |
 | `FieldTopology` (Solo, TopBottom, FourSides) | `FieldLayout.SetTopology` kaleleri açar ya da kapatır ve sahayı yeniden kurar. Parti sahası güvenli alanın kısa kenarına sığan karedir |
+
+**Online katmanı** (M2, 2026-10-04):
+
+| Sınıf | Görev |
+|---|---|
+| `OnlineService` | UGS başlatma ve anonim giriş; durumlar: Offline, Connecting, Ready, Failed. Giriş, Online sekmesi ilk açıldığında yapılır. Editor'de her Multiplayer Play Mode oyuncusu `Application.dataPath`'ten türeyen ayrı bir profille girer. `DeleteDataAsync` UGS hesabını siler |
+| `OnlineLobby` | Multiplayer Services oturumu: kodla kurma ve katılma, hızlı eşleşme (mod ve protokol sürümü `String1`/`String2` indeksleriyle süzülür), hazır durumu, gecikme, 10 sn yeniden bağlanma, host ayrılması. Hataları `Failure` türlerine çevirir. Online mod listesi bu bileşendedir |
+| `PlayerNames` | Oyuncu kimliğinden türetilen "Adjective Animal" adı (32 × 32). Aynı hesap hep aynı adı alır |
+| `SessionCode`, `LobbyPlayer` | Kod biçimi; lobi oyuncusu ve "herkes hazır" kuralı |
+| `NativeShare` | Android paylaşım menüsü (`ACTION_SEND`); Editor'de panoya kopyalar |
+| `HubScreen` (Online sekmesi), `LobbyScreen` | Arayüz. Ayarlar'da "Online data → Delete" |
+
+- **NetworkManager:** Sahnede durmaz. İlk online isteğinde kodla oluşturulur (`UnityTransport`, sahne yönetimi kapalı), böylece tek oyunculu oyun ve testler etkilenmez. Sahne yönetimi kapalı olmalı; açık kalırsa bağlanan istemci host'un sahnesini yeniden yükler.
+- **Online modlar:** `Data/Modes/mode_portal_duel`, `mode_coop_online`, `mode_rush_battle`, `mode_live_duel`. Bunlar `GameModeDefinition` dosyalarıdır ve `Online` alanı işaretlidir; `ComingSoon` işaretli olanlar listede "Soon" görünür.
+- **Oda kodları:** UGS üretir. 6 karakterdir, ama her harf geçerli değildir (ör. `Z`). Bu yüzden istemci yalnız biçimi denetler (6 harf ya da rakam), geçerliliğe sunucu karar verir.
+- **Canlı test:** İkinci oyuncu Editor'de ayrı bir UGS örneğiyle (`UnityServices.CreateServices`) ve ağı başlatmayan bir `INetworkHandler` ile taklit edilir. Relay istemci bağlantısı yalnız iki ayrı süreçte (Multiplayer Play Mode ya da iki cihaz) denenebilir.
 
 Yeniden adlandırılan betiklerin `.meta` GUID'leri korundu; sahne bağlantıları `FormerlySerializedAs` ile taşındı.
 

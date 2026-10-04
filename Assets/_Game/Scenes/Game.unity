@@ -201,6 +201,8 @@ GameObject:
   - component: {fileID: 315089628}
   - component: {fileID: 315089632}
   - component: {fileID: 315089633}
+  - component: {fileID: 315089634}
+  - component: {fileID: 315089635}
   m_Layer: 0
   m_Name: Services
   m_TagString: Untagged
@@ -349,6 +351,38 @@ MonoBehaviour:
   MaxSemitones: 12
   Game: {fileID: 7019952436038793779}
   Match: {fileID: 0}
+--- !u!114 &315089634
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 315089627}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 01abd28d4c40c9f42b4674ea0fcfdf7b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Pingi.Runtime::OnlineService
+--- !u!114 &315089635
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 315089627}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9cc715ab3b1bffe499777ce0e2509280, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Pingi.Runtime::OnlineLobby
+  online: {fileID: 315089634}
+  modes:
+  - {fileID: 11400000, guid: 01380631cb7a8874896956fb96fe2209, type: 2}
+  - {fileID: 11400000, guid: 37018571dccd82442aaec434a19f0a56, type: 2}
+  - {fileID: 11400000, guid: 8a25fb291d2c1664784985e06e15bb04, type: 2}
+  - {fileID: 11400000, guid: 585a7c883791ab340be9c3496b4d16e0, type: 2}
+  reconnectWindow: 10
+  quickMatchTimeout: 6
 --- !u!1 &517429098
 GameObject:
   m_ObjectHideFlags: 0
@@ -580,8 +614,13 @@ MonoBehaviour:
   Cosmetics: {fileID: 315089630}
   Match: {fileID: 0}
   Layout: {fileID: 0}
+  Online: {fileID: 315089634}
+  Lobby: {fileID: 315089635}
   HintRuns: 3
   RewardDelayMs: 650
+  CodeLifetime: 600
+  LobbyCountdownFrom: 3
+  LobbyCountdownStep: 0.6
   MaxContentWidth: 1080
   HintInset: 56
   ToastInset: 32

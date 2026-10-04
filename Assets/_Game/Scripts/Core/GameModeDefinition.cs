@@ -6,7 +6,10 @@ public enum GameModeKind
     Rush,
     TableDuel,
     CoopRally,
-    PartyTable
+    PartyTable,
+    PortalDuel,
+    RushBattle,
+    LiveDuel
 }
 
 public enum FieldTopology
@@ -46,6 +49,10 @@ public sealed class GameModeDefinition : ScriptableObject
     [field: SerializeField] public int MinPlayers { get; private set; } = 1;
     [field: SerializeField] public int MaxPlayers { get; private set; } = 1;
     [field: SerializeField] public bool TabletOnly { get; private set; }
+
+    [field: Header("Online")]
+    [field: SerializeField] public bool Online { get; private set; }
+    [field: SerializeField] public bool ComingSoon { get; private set; }
 
     [field: Header("Match")]
     [field: SerializeField] public int PointsToWin { get; private set; } = 5;

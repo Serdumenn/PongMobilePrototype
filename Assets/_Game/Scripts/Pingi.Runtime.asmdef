@@ -3,7 +3,11 @@
     "rootNamespace": "",
     "references": [
         "Unity.InputSystem",
+        "Unity.Netcode.Runtime",
         "Unity.Purchasing",
+        "Unity.Services.Authentication",
+        "Unity.Services.Core",
+        "Unity.Services.Multiplayer",
         "UnityEngine.UI"
     ],
     "includePlatforms": [],

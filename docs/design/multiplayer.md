@@ -239,6 +239,47 @@ Her fazın sonunda bir onay kapısı var. Kapıdan geçmeyen iş bir sonraki faz
 
 **Kapı M2:** Multiplayer Play Mode'da iki sanal oyuncu kodla eşleşip lobide buluşuyor; iki telefonla Wi-Fi ve mobil veri testi.
 
+**M2 iş dökümü (2026-10-03):**
+
+| Adım | İçerik |
+|---|---|
+| M2.1 Kurulum | Paketler: Authentication 3.8.0, Multiplayer Services 2.3.3, Netcode for GameObjects 2.13.3 (Transport bağımlılık olarak gelir), Multiplayer Play Mode 2.0.2. Cloud Save, Cloud Code ve Leaderboards, kullanılacakları M3/M4'te eklenir. Unity Cloud projesi bağlantısı senden |
+| M2.2 Kimlik | `OnlineService`: UGS başlatma, anonim giriş; durumlar: çevrimdışı, bağlanıyor, hazır, hata. `PlayerNames`: oyuncu kimliğinden türetilen "Adjective Animal" adı, aynı hesapta hep aynı ad. Editor'de her sanal oyuncu ayrı profille girer |
+| M2.3 Oturum | `OnlineLobby`: kodla özel oda, kodla katılma, hızlı eşleşme. Hızlı eşleşme mod ve protokol sürümüne göre süzer; uygun oda yoksa yenisini açar. Oyuncu verisi: ad, kostüm, hazır. Oda verisi: mod, protokol sürümü. Relay ağı ve NetworkManager; lobide gecikme (ms) |
+| M2.4 Dayanıklılık | İnternet yoksa Online sekmesi açıklamayla kapanır. Kopma ya da arka plan: 10 sn yeniden bağlanma, sonra lobiden çıkış. Hata mesajları: kod bulunamadı, oda dolu, sürüm farklı |
+| M2.5 Arayüz | Online sekmesi (oyuncu adı; Quick match, Create code, Join code; mod listesi), kod girme, lobi (kod oluşturuldu, ikisi hazır, 3-2-1), yeniden bağlanma katmanı, Ayarlar'da "Delete my online data". Yeni ikonlar: kopyala, paylaş |
+| M2.6 Test ve QA | EditMode: ad üretici, kod biçimi, lobi durumu. Multiplayer Play Mode'da iki sanal oyuncu. Yeni ekranlarla 13 cihaz denetimi |
+
+- Maçın kendisi M3'te gelir. M2'de geri sayım bittiğinde lobi "Portal Duel is coming" notuyla açık kalır.
+
+**M2 durumu (2026-10-03):**
+
+| Adım | Durum |
+|---|---|
+| M2.1 Kurulum | ✅ Paketler kuruldu, derleme temiz. Unity Cloud projesi "Pingi Pongi" bağlandı (2026-10-04) |
+| M2.2 Kimlik | ✅ `OnlineService` (Services nesnesinde) ve `PlayerNames` (32 sıfat × 32 hayvan = 1024 ad). Giriş, Online sekmesi ilk açıldığında yapılır; yalnız tek kişilik oynayan biri için UGS hesabı açılmaz |
+| M2.3 Oturum | ✅ `OnlineLobby`, `SessionCode`, `LobbyPlayer`. NetworkManager yalnız online'a girilince kodla oluşturulur; sahnede durmaz, tek oyunculu oyunu etkilemez. Canlı denendi (aşağıda) |
+| M2.4 Dayanıklılık | ✅ Yeniden bağlanma (10 sn, geri sayım halkalı pencere), arka planda 10 sn'den uzun kalınca lobiden çıkış, host ayrılması. İnternet yoksa Online sekmesi "You're offline", sunucuya ulaşılamazsa "Can't reach the servers" kartı ve Try again. Hata mesajları: kod bulunamadı, oda dolu, sürüm farklı, bağlantı koptu, arkadaşın ayrıldı |
+| M2.5 Arayüz | ✅ Online sekmesi: oyuncu adı ve topu, görünüm değiştirme (askı), Quick match, Create code, Join code, mod listesi (Portal Duel ve Co-op Rally seçilebilir; Rush Battle ve Live Duel "Soon"). Kod girme penceresi: küçük harf ve boşluk düzelir. Lobi: kod kartı (Kopyala, Paylaş, 10 dk süre), oyuncu yuvaları, VS kartları ve gecikme, Ready, 3-2-1. Ayarlar'da "Online data → Delete". Yeni ikonlar: bolt, share, copy, join, wifi, wifi_off |
+| M2.6 Test ve QA | EditMode 94, PlayMode 18 test yeşil. Editor'de uçtan uca deneme: kod oluştur, ikinci oyuncu katılır, ikisi hazır, geri sayım; silme akışı iki durumda. 13 cihaz denetimi: 7 ekran durumu × 13 cihaz. Tek gerçek bulgu iPad Pro'da lobi durum metninin kırpılma riskiydi; düzeltildi ve yeniden denetlendi. Kod penceresinin altında kalan butonlar ve cihaz geçişi sırasında alınan ölçümler yanlış alarm |
+
+**Canlı deneme (2026-10-04, Editor + ikinci UGS örneği):**
+
+| Durum | Sonuç |
+|---|---|
+| Anonim giriş, üretilmiş ad | ✅ "Mighty Narwhal" |
+| Kodla oda kurma, relay host | ✅ Kod `HLK8F8`; NetworkManager host olarak dinliyor |
+| Kodla katılma | ✅ İkinci oyuncu "Rosy Walrus"; ev sahibi adı ve kostümü görüyor |
+| Hazır olma, ikisi hazır | ✅ İki yönde eşitleniyor; `AllReady` doğru |
+| Dolu oda | ✅ Üçüncü oyuncu "Full" alıyor |
+| Ayrılma | ✅ Ev sahibinde oyuncu sayısı düşüyor |
+| Kapanmış odanın kodu | ✅ "NotFound"; küçük harf ve boşluklu yazım da çalışıyor |
+| Hatalı karakterli kod | ✅ "NotFound". UGS kodları 6 karakter, ama her harf geçerli değil (ör. `Z` reddediliyor); bu yüzden giriş alanı harf kısıtlamaz, sunucunun cevabına bakar |
+| Hızlı eşleşme | ✅ Açık oda yoksa kendisi açıyor; ikinci oyuncu aynı odaya düşüyor |
+| Relay istemci bağlantısı, gecikme, host ayrılması, yeniden bağlanma | ⏳ İki ayrı oyuncu süreci gerekiyor: Multiplayer Play Mode ya da iki telefon (Kapı M2) |
+
+- Test için açılan iki geçici oyuncu hesabı denemeden sonra silindi.
+
 ### M3 — Pas Düellosu ve online Ortak Ralli (3–4 hafta)
 - **Topun el değiştirmesi (bkz. 4.4):** Top tavandaki portaldan çıkınca sahibi `BallHandoff` mesajı gönderir. Alıcı, portal animasyonu sırasında topu kendi sahasında başlatır; animasyon gecikmeyi gizler.
 - **Host otoritesi:** Skor, kazanma ve rövanş host'ta. Her cihaz yalnızca topu kendi sahasındayken fiziği yürütür.

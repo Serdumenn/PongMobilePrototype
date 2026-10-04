@@ -36,6 +36,16 @@
                     </ui:VisualElement>
                 </ui:Button>
             </ui:VisualElement>
+            <ui:VisualElement class="divider" picking-mode="Ignore" />
+            <ui:VisualElement class="row" picking-mode="Ignore">
+                <ui:VisualElement class="icon icon--people row__icon" picking-mode="Ignore" />
+                <ui:Label text="Online data" class="row__label" picking-mode="Ignore" />
+                <ui:Button name="online-button" class="btn btn--pill">
+                    <ui:VisualElement class="btn__face" picking-mode="Ignore">
+                        <ui:Label name="online-label" text="Delete" class="btn__label" picking-mode="Ignore" />
+                    </ui:VisualElement>
+                </ui:Button>
+            </ui:VisualElement>
         </ui:VisualElement>
         <ui:VisualElement class="spacer" picking-mode="Ignore" />
         <ui:Label name="version-label" text="Pingi Pongi" class="caption settings-footer" picking-mode="Ignore" />

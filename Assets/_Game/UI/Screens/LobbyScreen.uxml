@@ -1,0 +1,70 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" editor-extension-mode="False">
+    <ui:VisualElement class="safe" picking-mode="Ignore">
+        <ui:VisualElement class="topbar" picking-mode="Ignore">
+            <ui:Button name="back-button" class="btn btn--icon">
+                <ui:VisualElement class="btn__face" picking-mode="Ignore">
+                    <ui:VisualElement class="icon icon--back" picking-mode="Ignore" />
+                </ui:VisualElement>
+            </ui:Button>
+            <ui:Label name="lobby-title" text="Private match" class="screen-title" picking-mode="Ignore" />
+            <ui:VisualElement class="topbar__side" picking-mode="Ignore" />
+        </ui:VisualElement>
+        <ui:VisualElement class="lobby-body" picking-mode="Ignore">
+            <ui:VisualElement name="code-card" class="code-card" picking-mode="Ignore">
+                <ui:Label text="Share this code" class="caption" picking-mode="Ignore" />
+                <ui:Label name="code-label" text="------" class="code-card__code" picking-mode="Ignore" />
+                <ui:VisualElement class="online-pair" picking-mode="Ignore">
+                    <ui:Button name="copy-button" class="btn">
+                        <ui:VisualElement class="btn__face" picking-mode="Ignore">
+                            <ui:VisualElement class="icon icon--copy" picking-mode="Ignore" />
+                            <ui:Label text="Copy" class="btn__label" picking-mode="Ignore" />
+                        </ui:VisualElement>
+                    </ui:Button>
+                    <ui:VisualElement class="online-pair__gap" picking-mode="Ignore" />
+                    <ui:Button name="share-button" class="btn">
+                        <ui:VisualElement class="btn__face" picking-mode="Ignore">
+                            <ui:VisualElement class="icon icon--share" picking-mode="Ignore" />
+                            <ui:Label text="Share" class="btn__label" picking-mode="Ignore" />
+                        </ui:VisualElement>
+                    </ui:Button>
+                </ui:VisualElement>
+                <ui:VisualElement class="code-card__expiry" picking-mode="Ignore">
+                    <ui:VisualElement class="icon icon--clock" picking-mode="Ignore" />
+                    <ui:Label name="expiry-label" text="Expires in 10:00" class="code-card__expiry-label" picking-mode="Ignore" />
+                </ui:VisualElement>
+            </ui:VisualElement>
+            <ui:VisualElement name="lobby-slots" class="lobby-slots" picking-mode="Ignore" />
+            <ui:VisualElement name="versus" class="versus" picking-mode="Ignore" />
+            <ui:VisualElement class="lobby-center" picking-mode="Ignore">
+                <ui:Label name="lobby-count" text="3" class="lobby-count" picking-mode="Ignore" />
+                <ui:Label name="lobby-status" text="" class="caption lobby-status" picking-mode="Ignore" />
+            </ui:VisualElement>
+        </ui:VisualElement>
+        <ui:VisualElement class="lobby-footer" picking-mode="Ignore">
+            <ui:Label name="mode-chip" text="Portal Duel · First to 5" class="ink-chip" picking-mode="Ignore" />
+            <ui:Button name="ready-button" class="btn lobby-ready">
+                <ui:VisualElement class="btn__face" picking-mode="Ignore">
+                    <ui:VisualElement name="ready-icon" class="icon icon--check icon--light" picking-mode="Ignore" />
+                    <ui:Label name="ready-label" text="Ready" class="btn__label" picking-mode="Ignore" />
+                </ui:VisualElement>
+            </ui:Button>
+        </ui:VisualElement>
+    </ui:VisualElement>
+    <ui:VisualElement name="reconnect" class="dialog dialog--hidden">
+        <ui:VisualElement class="scrim" />
+        <ui:VisualElement class="safe overlay" picking-mode="Ignore">
+            <ui:VisualElement class="card online-card">
+                <ui:VisualElement class="reconnect-ring" picking-mode="Ignore">
+                    <ui:Label name="reconnect-count" text="10" class="reconnect-ring__count" picking-mode="Ignore" />
+                </ui:VisualElement>
+                <ui:Label text="Reconnecting…" class="card__title reconnect-title" picking-mode="Ignore" />
+                <ui:Label name="reconnect-text" text="The connection dropped. We'll keep trying for 10 seconds." class="caption dialog__text" picking-mode="Ignore" />
+                <ui:Button name="reconnect-leave" class="btn btn--buy">
+                    <ui:VisualElement class="btn__face" picking-mode="Ignore">
+                        <ui:Label text="Leave" class="btn__label" picking-mode="Ignore" />
+                    </ui:VisualElement>
+                </ui:Button>
+            </ui:VisualElement>
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>
