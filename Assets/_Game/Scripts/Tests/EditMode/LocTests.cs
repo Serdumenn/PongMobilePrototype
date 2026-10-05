@@ -97,6 +97,11 @@ public sealed class LocTests
         Assert.AreEqual("Türkçe", Loc.NativeName("tr"));
         Assert.AreEqual("tr", Loc.FromSystemLanguage(SystemLanguage.Turkish));
         Assert.AreEqual("en", Loc.FromSystemLanguage(SystemLanguage.Russian), "Unsupported languages fall back to English");
+        Assert.AreEqual("Today's best 23 · Rank #128", Loc.T("Today's best {0} · Rank #{1}", 23, 128), "A # inside the text is not a note");
+        Assert.AreEqual("{0}-day streak", Loc.Source("{0}-day streak#other"));
+
+        var differs = Loc.Keys.Where(k => Loc.Lookup(Loc.English, k) != Loc.Source(k)).ToList();
+        Assert.IsEmpty(differs, "The English column must equal the key:\n" + string.Join("\n", differs));
     }
 
     [Test]

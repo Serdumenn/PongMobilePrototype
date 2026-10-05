@@ -17,6 +17,7 @@ public sealed class TextFit
         public float Size;
         public bool Fresh;
         public bool Applied;
+        public bool Verify;
 
         public float Natural => Width * Size / Base;
         public float Floor => Mathf.Ceil(Base * MinScale);
@@ -108,6 +109,13 @@ public sealed class TextFit
             state.Fresh = false;
         }
 
+        if (state.Verify && inline && Mathf.Abs(style.fontSize - state.Size) < 0.25f)
+        {
+            float measured = element.MeasureTextSize(content, 0f, VisualElement.MeasureMode.Undefined, 0f, VisualElement.MeasureMode.Undefined).x;
+            state.Width = measured * state.Base / state.Size;
+            state.Verify = false;
+        }
+
         return state;
     }
 
@@ -141,7 +149,7 @@ public sealed class TextFit
                 used += state.Natural + margins + style.paddingLeft + style.paddingRight + style.borderLeftWidth + style.borderRightWidth;
                 rowTexts.Add(text);
             }
-            else if (child is TextElement other && states.TryGetValue(other, out var pending) && pending.Fresh) return;
+            else if (child is TextElement other && !string.IsNullOrEmpty(other.text) && states.TryGetValue(other, out var pending) && pending.Fresh) return;
             else used += child.layout.width + margins;
         }
 
@@ -189,6 +197,7 @@ public sealed class TextFit
 
         state.Size = size;
         state.Applied = true;
+        state.Verify = true;
         element.style.fontSize = size;
     }
 

@@ -104,6 +104,23 @@ public sealed class TextFitPlayTests : GameSceneFixture
     }
 
     [UnityTest]
+    public IEnumerator EmptyNeighbour_StillLetsTheRowFit()
+    {
+        yield return LoadGame();
+        float natural = 0f;
+        yield return Measure(LongText, (w, s) => natural = w);
+
+        var row = Stage(natural, FlexDirection.Row);
+        var label = Text(row, LongText);
+        label.style.flexGrow = 1f;
+        var empty = Text(row, string.Empty);
+        empty.style.width = natural * 0.2f;
+        yield return Frames(8);
+
+        Assert.LessOrEqual(Natural(label) + empty.layout.width, row.contentRect.width + 1f, "An empty label next to the text does not stop the fit");
+    }
+
+    [UnityTest]
     public IEnumerator Tabs_ShareOneSize()
     {
         yield return LoadGame();

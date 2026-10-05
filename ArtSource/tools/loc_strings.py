@@ -19,6 +19,13 @@ CS_PLURAL = re.compile(r"\bLoc\.Plural\(\s*" + CS_LITERAL + r"\s*,\s*" + CS_LITE
 ASSET_TEXT = re.compile(r"<(DisplayName|Tagline)>k__BackingField: (.*)$", re.M)
 
 
+SUFFIX = re.compile(r"#[A-Za-z][\w-]*$")
+
+
+def source(key):
+    return SUFFIX.sub("", key)
+
+
 def cs_unescape(value):
     return value.replace('\\"', '"').replace("\\n", "\n").replace("\\\\", "\\")
 
@@ -131,7 +138,7 @@ def main():
         sys.exit(1 if added or unused else 0)
 
     for text in added:
-        rows[text] = {"key": text, "en": text.split("#")[0]}
+        rows[text] = {"key": text, "en": source(text)}
         order.append(text)
     for key in unused:
         order.remove(key)
@@ -139,7 +146,7 @@ def main():
     for key in order:
         rows[key]["note"] = ", ".join(found[key])
         if not rows[key].get("en"):
-            rows[key]["en"] = key.split("#")[0]
+            rows[key]["en"] = source(key)
 
     write_table(rows, order)
     missing = {code: sum(1 for key in order if not rows[key].get(code)) for code in LANGUAGES}

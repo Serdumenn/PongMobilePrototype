@@ -33,7 +33,7 @@ Bu klasör oyunun görsel ve UX kararlarının tek kaynağıdır. Her faz bir **
 | 4 · Asset üretimi | İkon, sprite, font, ses, uygulama ikonu ✅ | Her asset DoD'den geçer | Kısmen |
 | 5 · Uygulama | UI Toolkit ekranları, tema, safe area, animasyon, AudioMixer ✅ | Kapı 4: cihaz testi | Cihaz testi bekliyor |
 | 6 · Polish & QA | Cihaz matrisi, erişilebilirlik, performans ve boyut bütçesi | Kapı 5 | — |
-| 6b · Yerelleştirme | 8 dil: EN, TR, JA, KO, DE, ES, PT-BR, FR ([localization.md](localization.md)) | Kapı L: dil listesi onayı ✅ | Uygulanıyor |
+| 6b · Yerelleştirme | 8 dil: EN, TR, JA, KO, DE, ES, PT-BR, FR ([localization.md](localization.md)) | Kapı L: dil listesi onayı ✅ | Uygulandı; yayından önce ana dil okuması |
 | 7 · Mağaza | İkon, feature graphic, ekran görüntüleri, metinler, gizlilik politikası | Kapı 6: yayın | — |
 
 ## Karar kaydı

@@ -227,8 +227,11 @@ public static class Loc
 
     public static string Source(string key)
     {
-        int mark = key.IndexOf('#');
-        return mark > 0 ? key.Substring(0, mark) : key;
+        int mark = key.LastIndexOf('#');
+        if (mark <= 0 || mark == key.Length - 1 || !char.IsLetter(key[mark + 1])) return key;
+        for (int i = mark + 1; i < key.Length; i++)
+            if (!char.IsLetterOrDigit(key[i]) && key[i] != '_' && key[i] != '-') return key;
+        return key.Substring(0, mark);
     }
 
     private static string Unescape(string cell)

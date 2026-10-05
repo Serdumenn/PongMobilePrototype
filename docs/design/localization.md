@@ -111,5 +111,16 @@ Seçenek A'nın parçaları:
 | 2. Metinleri taşıma | Bitti: 320 metin |
 | 3. Fontlar | Bitti: M PLUS Rounded 1c ve Jua yedek font; satır ölçüleri Fredoka'ya eşitlendi |
 | 4. Çeviriler | Bitti: 7 dil, eksik yok. Yayından önce ana dili konuşan biri okumalı |
-| 5. Denetim | Sürüyor. Sığdırma (`TextFit`) eklendi; 16:9'da 2 satıra çıkan menü açıklaması tek satıra alındı ve 4 çeviri kısaltıldı. 8 dilin 16:9 ve tablet taraması sürüyor |
-| 6. Dokümanlar | tech-spec, design-system ve bu dosya güncellendi |
+| 5. Denetim | Bitti. 8 dil × 25 ekran, 16:9 telefon ve 4:3 tablet (400 durum), sorunlu ekranlarda ikinci tur (128 durum): taşma yok. Sahte dil (`qps`) 13 cihazda denendi |
+| 6. Dokümanlar | Bitti: tech-spec, design-system, README lisans kaydı ve bu dosya |
+
+**Denetimde bulunup düzeltilenler:**
+- Tek satırlık yazılar kutuya sığmıyordu → `TextFit` eklendi (en fazla %40 küçültür, sekmeler birlikte küçülür).
+- 16:9'da menü 24–53 px taşıyordu: Japonca satırlar %23 daha yüksekti ve 4 dilde Rush açıklaması 2 satıra çıkıyordu → yedek fontların satır ölçüleri Fredoka'ya eşitlendi, açıklama tek satır yapıldı, ES/PT/DE/JA açıklamaları kısaltıldı.
+- Uzun buton yazıları kenara dayanıyordu → butonlara 36 px iç boşluk.
+- Skorlar satırları DE/ES/FR'de taşıyordu (boş tarih hücresi sığdırmayı engelliyordu) → düzeltildi.
+- "Today's best {0} · Rank #{1}" metnindeki `#` not işareti sanılıyordu; İngilizcede sıra numarası görünmüyordu → not kuralı yalnız sondaki `#kelime` oldu, test eklendi.
+
+**Testler:** EditMode 138, PlayMode 45; hepsi geçiyor. Yeni: harf kapsamı (her dilin her harfi bir fontta), yedek font satır ölçüleri, `TextFitPlayTests` (5).
+
+**Kalan:** Yayından önce 6 dilin ana dili konuşan biri tarafından okunması; Türkçeyi sen gözden geçirirsin. Sıradaki aday dil Geleneksel Çince.
