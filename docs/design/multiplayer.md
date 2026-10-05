@@ -290,6 +290,30 @@ Her fazın sonunda bir onay kapısı var. Kapıdan geçmeyen iş bir sonraki faz
 - Ağ simülatöründe 200 ms gecikme ve %5 paket kaybıyla oynanabilirlik.
 - İki telefonda 20 maçlık test.
 
+**M3 iş dökümü (2026-10-04, onaylandı):**
+
+| Adım | İçerik |
+|---|---|
+| M3.1 Ağ mesajları | NGO adlı mesajları (`CustomMessagingManager`); prefab ya da NetworkObject yok. Mesajlar: `MatchStart` (tohum, ilk servis), `BallHandoff` (seq, x, yön, hız, ralli, kostüm), `Miss`, `ScoreUpdate`, `MatchEnd`, `Reaction`, `Rematch`. Aynı `seq` iki kez gelirse yok sayılır; onaylanmayan el değiştirme 1 sn sonra yeniden gönderilir |
+| M3.2 Saha ve portal | Tek kişilik saha, tavanda portal. Top portaldan çıkınca el değiştirme mesajı gider. Alıcı tarafta top aynalanmış x'ten (rakibin solu benim sağım), 0,5 sn portal animasyonuyla iner. Saha boyutları iki tarafta 9:16'ya normalize |
+| M3.3 Maç yöneticisi | `OnlineMatchController`: geri sayım → oyun → sonuç → rövanş. Skor, kazanma ve servis sırası host'ta. Portal Duel: 5 sayıya ulaşan kazanır. Online Co-op Rally: 3 ortak can, skor toplam pas. Kopma: 10 sn bekleme, sonra kalan oyuncu kazanır |
+| M3.4 Arayüz | Maç HUD'u: üstte rakip kartı (ad, skor, bağlantı), altta kendi skorun. 4 tepki butonu, gönderilen tepki 1,5 sn yukarı süzülür. Sonuç ekranında rövanş isteği. Lobi geri sayımı bitince maç başlar |
+| M3.5 Asset | Portal halkası (SVG, teal), tepki ikonları (başparmak, şaşkın, gülen, ateş), sesler: portal geçişi, tepki |
+| M3.6 Test ve QA | EditMode: mesaj yazma/okuma, tekilleştirme ve yeniden gönderme, aynalama, kurallar. Editor'de iki oyuncu (Multiplayer Play Mode) ve ağ simülatörü (200 ms, %5 kayıp). Yeni ekranlarla 13 cihaz denetimi. Senden: iki telefonla 20 maç |
+
+**M3 durumu (2026-10-04):**
+
+| Adım | Durum |
+|---|---|
+| M3.1 Ağ mesajları | ✅ `MatchMessage` (sürümlü ikili biçim), `IMatchLink`, `NetcodeLink` (NGO adlı mesaj `pingi.match`, güvenilir ve sıralı). NGO zaten güvenilir teslim ettiği için yeniden gönderme yok; tekrarlanan `Handoff` ve `Miss` sıra numarasıyla yok sayılır |
+| M3.2 Saha ve portal | ✅ `FieldTopology.Portal`: alt kenar kale, üst kenar portal; portal rakip kartının altına iner (2,4 birim). Teal portal çizgisi ve `PortalView` halkası (çıkışta büyüyüp söner, girişte 0,5 sn'de belirir). Top çıktığı x'in aynasından, yönü aynalanarak ve aynı hızla iner |
+| M3.3 Maç yöneticisi | ✅ `OnlineMatchController` ve `OnlineMatchRules`. Skor, kazanma, servis ve ortak can host'ta; misafir `Miss` gönderir, host `Score` yayınlar. Sayıyı kaybeden servis atar. Rakip koparsa 10 sn beklenir, sonra kalan kazanır; lobiden ayrılırsa hemen kazanır. Rövanş: iki taraf da isteyince host yeniden başlatır |
+| M3.4 Arayüz | ✅ Maç HUD'u: rakip kartı (top, ad, skor ya da ortak canlar, bağlantı), ortada büyük soluk skor, geri sayım, "Your serve · tap to start", 4 tepki ve süzülen baloncuk, "Leave the match?" ve "Reconnecting…" pencereleri. Sonuç: "You win!" / "So close!", skor, rövanş durumu ("wants a rematch!", "Waiting for…", "left the match"), Rematch / Accept ve ana sayfa. Lobi artık kendi geri sayımını yapmaz: "Connecting to…", "Waiting for…", "Starting…" |
+| M3.5 Asset | ✅ İkonlar: `thumb`, `wow`, `laugh` (ateş mevcut). Sprite: `Art/Sprites/Online/spr_portal_ring.svg`. Sesler: `sfx_portal`, `sfx_reaction` |
+| M3.6 Test ve QA | ✅ EditMode 100, PlayMode 24. Sahte bağlantıyla oyun içi testler: servis portaldan çıkar, gelen top aynalanır, kaçırma bildirilir, tekrarlanan mesaj yok sayılır, host skoru ve maç sonu, rövanş, ortak ralli, kopma. **Gerçek relay ile uçtan uca:** Editor host, aynı süreçte ikinci bir UGS örneği ve kendi NetworkManager'ı olan bir bot misafir. Bot relay üzerinden bağlandı (gecikme 180–240 ms), tam maç 5–4 oynandı, rövanş başladı, maç ortasında ayrılan botun yerine kalan oyuncu kazandı. **Kötü bağlantı (2026-10-05):** bot her mesajı iki yönde 200 ms (±30) geciktirdi, kayıp paketleri bir tur gecikmeyle yeniden gönderdi (sıra korunarak). %5 kayıpla Portal Duel 4–5 bitti, %10 kayıpla online Co-op 58 paslık ralli oynandı; iki tarafın skoru her an aynıydı. Gecikme yüzünden geri sayımı geç biten tarafa gelen top artık kaybolmuyor, geri sayım bitince iniyor (testi eklendi). Not: Gerçek UDP kaybını Netcode'un güvenilir kanalı karşılıyor; bu test onun uygulamaya yansıyan etkisini (gecikme) taklit ediyor. Multiplayer Tools paketinin ağ simülatörü kullanılmadı. ⏳ İki telefonla 20 maç |
+
+- **Hazır bayrağı yarışı (düzeltildi):** Ready ve hemen ardından gelen "hazır değil" kaydı aynı anda gidince sunucunun cevabı ikincisini eziyordu. Oyuncu kayıtları artık sıraya alınıyor.
+
 ### M4 — Rush Kapışması ve meydan okumalar (4–5 hafta)
 - **Rush Kapışması (2–4 kişi):**
   - Herkes kendi sahasında oynar; ağdan yalnızca skor ve saldırı olayları gider.
@@ -306,6 +330,30 @@ Her fazın sonunda bir onay kapısı var. Kapıdan geçmeyen iş bir sonraki faz
 - **Hile azaltma:** Sunucu tarafında makul skor üst sınırları; hayalet kaydı ile skor tutarlılık kontrolü.
 
 **Kapı M4:** Multiplayer Play Mode'da 4 oyunculu Rush Kapışması; kod ile meydan okuma uçtan uca; günlük sıralama sıfırlanıyor.
+
+**M4 iş dökümü (2026-10-05, onaylandı).** Üç parça halinde; her parça kendi başına çalışır:
+
+| Adım | İçerik |
+|---|---|
+| **M4a Rush Battle** (yeni paket yok) | 2–4 oyuncu, herkes kendi sahasında Rush kuralıyla oynar. Host saati başlatır; oyuncular saniyede 4 kez skorunu gönderir, host herkese dağıtır. Art arda 3 Perfect, o an en yüksek skorlu rakibe saldırı gönderir: mini raket, hızlı top ya da sis (5 sn). Saldırı 1,5 sn önceden haber verilir; o arada Perfect vurursan kalkan olur. Süre bitince host sonuçları karşılaştırır. Arayüz: üstte rakiplerin küçük skor listesi, saldırı uyarı bandı, sonuç sıralaması |
+| **M4b Günün Meydan Okuması ve Dünya sıralaması** (Leaderboards paketi) | Tohum UTC tarihinden; herkes aynı servis dizisiyle tek bir Rush koşusu oynar. Sıralamalar: Classic, Rush, Günlük (her gün sıfırlanır), Ortak Ralli. Meydan okumalar sekmesinde günlük kart (en iyin, sıran, kalan süre). Skorlar ekranındaki "World" sekmesi canlanır (ilk 10 ve senin sıran). Sıralama ayarları projede dosya olarak durur, Editor'deki Deployment penceresinden tek tıkla yüklenir |
+| **M4c Hayalet Meydan Okuma** (Cloud Save + Cloud Code paketleri) | Tohumlu Rush koşusunun olay kaydı (servis, sekme, vuruş anları; sıkıştırılmış ~1–2 KB). Cloud Code karışık karakter içermeyen 6 haneli kod üretir, kaydı 7 gün saklar. Arkadaş kodu girer, senin hayalet topuna karşı aynı servislerle oynar; ekranda "+3 ahead" farkı, sonda karşılaştırma. Sunucuda makul skor sınırı ve kayıtla skor tutarlılık kontrolü |
+| **Asset** | Saldırı ikonları (mini raket, hızlı top, sis), hayalet top görünümü, takvim ve hayalet ikonları, sesler: saldırı gönder/al, kalkan |
+| **Test ve QA** | EditMode: saldırı hedefleme ve kalkan kuralı, skor yayını, günlük tohum, kayıt kodlama/çözme ve boyut, kod alfabesi, skor sınırı. Sahte bağlantıyla 3–4 oyunculu oyun içi testler; relay botlarıyla uçtan uca Rush Battle; 13 cihaz denetimi |
+
+- **Senden gerekenler:** M4b ve M4c'de paket indirme izni (Leaderboards 2.3.4, Cloud Save 3.4.1, Cloud Code 2.10.4) ve sıralama ile Cloud Code dosyalarını Unity'de Deployment penceresinden bir kez "Deploy" etmen.
+
+**M4a durumu (2026-10-05):** ✅ Rush Battle oynanabilir.
+
+| Konu | Durum |
+|---|---|
+| Kurallar | `RushBattleRules`: kadro (oyuncu kimlikleri sıralı, sıra numarası buradan), her 3 Perfect'te saldırı, hedef en yüksek skorlu aktif rakip (eşitlikte küçük sıra), saldırı türü tohumlu rastgele, skor yalnız artar, bitiş, ayrılan, sıralama (eşit skor aynı yeri paylaşır), herkes isterse rövanş |
+| Ağ | Yeni mesajlar: RushStart (tohum + kadro), RushScore (saniyede 4), Attack, Shield, RushFinal; tepki ve rövanş gönderenin sırasını taşır. Host, misafirlerden geleni herkese iletir. Protokol sürümü 2 |
+| Koşu | Tek kişilik Rush aynen kullanılır: `SoloGameManager.StartBattleRun` sıralamaya sayılmayan koşu başlatır (rekor ve tek kişilik kayıt yazılmaz), geri sayımdan sonra top kendiliğinden fırlar. Kaçırınca servis yine dokunmayla; süre akmaya devam eder (tek kişilik Rush gibi). Maç sonunda "oynanan maç" kaydı |
+| Saldırılar | 1,5 sn uyarı (sarı bant); bu arada Perfect = kalkan, saldırana bildirilir. Mini raket (%60, 5 sn), hızlı top (×1,35, 5 sn), sis (sahanın ortası 5 sn kapanır) |
+| Arayüz | Tek kişilik Rush ekranının üstüne: rakip listesi (lider kırmızı, biten soluk, ayrılan silik), saldırı bandı, sis, durum notları ("Fog sent to…", "Blocked!", "… blocked your attack"), geri sayım, "Time's up! Waiting for the others…", tepkiler, çıkış penceresi. Sonuç: sıralama kartı (altın 1. sıra, senin satırın vurgulu, ayrılan "left"), "Play again" ve kim istediği. Lobi 2–4 kişi: en az 2 kişi ve herkes hazırsa başlar |
+| Asset | İkonlar: `mini_paddle`, `fast_ball`, `fog`, `shield`. Sesler: `sfx_attack_send`, `sfx_attack_warn`, `sfx_shield` |
+| Test | EditMode 109 (9 yeni), PlayMode 30 (6 yeni: misafir koşusu ve skor yayını, saldırının gelip geçmesi, Perfect ile kalkan, 3 Perfect'te liderin hedeflenmesi ve host'un iletmesi, bitiş ve rövanş, herkes ayrılınca kazanma). **Gerçek relay:** Editor host + relay botu; botun skoru canlı aktı (119'a kadar), botun sis saldırısı Editor'e ulaşıp uygulandı, iki taraf bitince sıralama çıktı. 13 cihaz denetimi: 39 ekran durumu (uyarı/oyun, bekleme, sıralama), sorun yok. Not: Bitiş skorunu süre + 8 sn içinde göndermeyen oyuncu ayrılmış sayılır, böylece kimse sonsuza kadar beklemez |
 
 ### M5 — Canlı Düello (6–8 hafta)
 - **Deterministik simülasyon:** Kendi küçük, sabit noktalı (fixed-point) Pong simülasyonumuz. Mevcut top kurallarının birebir kopyası: hız artışı, en düşük dikey açı, sekme sapması.

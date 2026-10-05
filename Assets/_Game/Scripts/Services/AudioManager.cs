@@ -15,7 +15,12 @@ public enum Sfx
     CountdownTick,
     CountdownGo,
     Point,
-    MatchWin
+    MatchWin,
+    Portal,
+    Reaction,
+    AttackSend,
+    AttackWarn,
+    Shield
 }
 
 public sealed class AudioManager : MonoBehaviour
@@ -42,6 +47,7 @@ public sealed class AudioManager : MonoBehaviour
     [Header("Refs")]
     [SerializeField] private SoloGameManager Game;
     [SerializeField] private LocalMatchController Match;
+    [SerializeField] private OnlineMatchController Online;
 
     private AudioSource[] sources;
     private int nextSource;
@@ -73,6 +79,13 @@ public sealed class AudioManager : MonoBehaviour
 
     private void Start()
     {
+        if (Online == null) Online = FindFirstObjectByType<OnlineMatchController>();
+        if (Online != null)
+        {
+            Online.CountdownTick += OnCountdown;
+            Online.PaddleHit += OnOnlineHit;
+        }
+
         if (Match == null) Match = FindFirstObjectByType<LocalMatchController>();
         if (Match != null)
         {
@@ -97,6 +110,12 @@ public sealed class AudioManager : MonoBehaviour
     private void OnDestroy()
     {
         if (Instance == this) Instance = null;
+        if (Online != null)
+        {
+            Online.CountdownTick -= OnCountdown;
+            Online.PaddleHit -= OnOnlineHit;
+        }
+
         if (Match != null)
         {
             Match.HitScored -= OnHitScored;
@@ -147,6 +166,12 @@ public sealed class AudioManager : MonoBehaviour
 
         Play(Sfx.PaddleHit, Mathf.Pow(2f, semitones / 12f));
         if (hit.Perfect) Play(Sfx.Perfect);
+    }
+
+    private void OnOnlineHit(int rallyCount)
+    {
+        float semitones = Mathf.Min(Mathf.Max(0, rallyCount - 1) * SemitonesPerHit, MaxSemitones);
+        Play(Sfx.PaddleHit, Mathf.Pow(2f, semitones / 12f));
     }
 
     private void OnPointLost(Participant participant)

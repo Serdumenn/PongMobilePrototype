@@ -45,6 +45,8 @@ public sealed class SoloGameManager : MonoBehaviour
     public MatchRules Rules { get; private set; }
     public Participant Player { get; private set; }
     public int RunSeed { get; private set; }
+    public bool BattleRun { get; private set; }
+    public GameModeDefinition RunMode { get; private set; }
 
     private readonly List<Participant> participants = new List<Participant>();
     private int? nextSeed;
@@ -159,10 +161,21 @@ public sealed class SoloGameManager : MonoBehaviour
         StartNewRun();
     }
 
+    public void StartBattleRun(GameModeDefinition mode, int seed)
+    {
+        if (State != GameState.Menu || mode == null) return;
+
+        BattleRun = true;
+        nextSeed = seed;
+        StartRun(mode);
+    }
+
     public void ReturnToMenu()
     {
         Time.timeScale = 1f;
         StopRespawn();
+        BattleRun = false;
+        if (Score != null) Score.Unranked = false;
 
         if (SoloBall != null) SoloBall.StopRoundKeepVisible();
         if (Paddle != null) Paddle.InputEnabled = false;
@@ -260,7 +273,7 @@ public sealed class SoloGameManager : MonoBehaviour
         if (Paddle != null) Paddle.InputEnabled = false;
 
         if (Score != null) Score.GameOver();
-        if (Records != null) Records.RecordRun(CurrentMode, Score != null && Score.IsNewBest, Player.LongestStreak, runSeconds);
+        if (Records != null && !BattleRun) Records.RecordRun(RunMode, Score != null && Score.IsNewBest, Player.LongestStreak, runSeconds);
 
         SetState(GameState.GameOver);
     }
@@ -279,16 +292,24 @@ public sealed class SoloGameManager : MonoBehaviour
 
     private void StartNewRun()
     {
+        BattleRun = false;
+        StartRun(CurrentMode);
+    }
+
+    private void StartRun(GameModeDefinition mode)
+    {
         Time.timeScale = 1f;
         StopRespawn();
+        RunMode = mode;
 
         if (Score != null)
         {
-            if (CurrentMode != null) Score.SetBestKey(CurrentMode.BestScoreKey);
+            Score.Unranked = BattleRun;
+            if (mode != null) Score.SetBestKey(mode.BestScoreKey);
             Score.ResetScore();
         }
 
-        Rules = MatchRules.Create(CurrentMode);
+        Rules = MatchRules.Create(mode);
         Rules.Begin(participants);
         runSeconds = 0f;
 
@@ -313,7 +334,7 @@ public sealed class SoloGameManager : MonoBehaviour
 
     private IEnumerator RespawnBall()
     {
-        float delay = CurrentMode != null ? CurrentMode.RespawnDelaySeconds : 1f;
+        float delay = RunMode != null ? RunMode.RespawnDelaySeconds : 1f;
         yield return new WaitForSeconds(delay);
 
         respawnRoutine = null;
@@ -357,13 +378,19 @@ public sealed class SoloGameManager : MonoBehaviour
         {
             BallEntrance.PlayEntrance(ballDir, () =>
             {
-                if (forGameplay && SoloBall != null && State == GameState.Playing) SoloBall.EnableServe();
+                if (forGameplay && SoloBall != null && State == GameState.Playing) Serve();
             });
         }
         else if (forGameplay && SoloBall != null)
         {
-            SoloBall.EnableServe();
+            Serve();
         }
+    }
+
+    private void Serve()
+    {
+        SoloBall.EnableServe();
+        if (BattleRun) SoloBall.LaunchNow();
     }
 
     private void SetState(GameState state)

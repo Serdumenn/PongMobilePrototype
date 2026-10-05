@@ -164,6 +164,23 @@ Taşımalar ve yeniden adlandırmalar **Unity içinden** yapılır; böylece GUI
 | `NativeShare` | Android paylaşım menüsü (`ACTION_SEND`); Editor'de panoya kopyalar |
 | `HubScreen` (Online sekmesi), `LobbyScreen` | Arayüz. Ayarlar'da "Online data → Delete" |
 
+**Online maç katmanı** (M3, 2026-10-04):
+
+| Sınıf | Görev |
+|---|---|
+| `MatchMessage` | Maç mesajları: Start, Handoff, Miss, Score, Reaction, Rematch. Sürüm baytıyla başlayan küçük ikili biçim (`ToBytes` / `TryParse`); bozuk ya da bilinmeyen veri reddedilir |
+| `IMatchLink`, `NetcodeLink` | Taşıma katmanı. `NetcodeLink`, NGO adlı mesajlarını (`pingi.match`, ReliableSequenced) kullanır. Prefab ve NetworkObject yok. Testler sahte bir bağlantı kullanır |
+| `OnlineMatchRules` | Host'taki kurallar: Portal Duel (5 sayı, kaybeden servis atar), online Co-op Rally (3 ortak can, skor = pas), terk etme |
+| `OnlineMatchController` | Bir telefonun sahası: geri sayım, servis, portaldan çıkış ve giriş, kaçırma, skor, sonuç, rövanş, tepkiler, rakip kopunca 10 sn bekleme. `GameManager` nesnesinde |
+| `PortalView` | Portal halkası animasyonu (`GameWorld/portal_ring`) |
+| `OnlineHudScreen`, `OnlineResultScreen` | Maç ekranı ve sonuç kartı |
+
+- **Akış:** `GameUI.PumpOnline` her karede bakar. Lobi dolu ve relay bağlıysa maçı `Waiting` durumunda açar. Host, herkes hazır olunca `HostStart` ile `Start` mesajını gönderir; iki taraf aynı geri sayımla başlar.
+- **Topun geçişi:** Top üst kaleye girince `Ball.ExitPoint` ve `LastVelocity` ile `Handoff` gönderilir. Alıcı, x'i ve yönü aynalayarak topu `Ball.Enter` ile portalın 0,6 birim altından aynı hızla bırakır.
+- **Ses:** `AudioManager`, online maçın geri sayımını ve raket vuruşlarını (rallide yükselen perde) dinler; portal ve tepki sesleri doğrudan çalınır.
+- **Rush Battle (M4a):** `OnlineRushController` (GameManager) ve `RushBattleRules`. Koşunun kendisi `SoloGameManager.StartBattleRun` ile tek kişilik Rush'tır (`BattleRun`, `SoloScoreManager.Unranked`). Saldırı etkileri: `Paddle.SetLengthScale`, `Ball.SetSpeedBoost`; sis yalnız arayüzde. Host, misafir mesajlarını (`RushScore`, `RushFinal`, `Attack`, `Shield`, tepki, rövanş) diğer misafirlere iletir. Ekranlar: `RushBattleScreen` (tek kişilik HUD'un üstünde), `RushResultScreen`; tepki çubuğu `ReactionView` ile paylaşılır.
+- **Editor'de relay testi:** `Temp/claude/RelayBot.cs` aynı süreçte ikinci bir UGS örneğiyle katılır. Kendi `INetworkHandler`'ı ikinci bir NetworkManager açıp `NetworkConfiguration.RelayServerData` ile istemci olarak bağlanır; mesajlara bir bot gibi cevap verir.
+
 - **NetworkManager:** Sahnede durmaz. İlk online isteğinde kodla oluşturulur (`UnityTransport`, sahne yönetimi kapalı), böylece tek oyunculu oyun ve testler etkilenmez. Sahne yönetimi kapalı olmalı; açık kalırsa bağlanan istemci host'un sahnesini yeniden yükler.
 - **Online modlar:** `Data/Modes/mode_portal_duel`, `mode_coop_online`, `mode_rush_battle`, `mode_live_duel`. Bunlar `GameModeDefinition` dosyalarıdır ve `Online` alanı işaretlidir; `ComingSoon` işaretli olanlar listede "Soon" görünür.
 - **Oda kodları:** UGS üretir. 6 karakterdir, ama her harf geçerli değildir (ör. `Z`). Bu yüzden istemci yalnız biçimi denetler (6 harf ya da rakam), geçerliliğe sunucu karar verir.

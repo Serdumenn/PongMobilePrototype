@@ -9,6 +9,7 @@ public sealed class Goal : MonoBehaviour
 
     public FieldSide Side => PlaySide;
     public bool IsOpen => Area.isTrigger;
+    public bool Portal { get; set; }
 
     private Collider2D Area => area != null ? area : area = GetComponent<Collider2D>();
 

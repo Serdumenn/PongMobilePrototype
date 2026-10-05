@@ -187,6 +187,117 @@ MonoBehaviour:
   ClosedSideColor: {r: 0.851, g: 0.796, b: 0.733, a: 1}
   ClosedSideWidth: 0.16
   MidlineDashes: 11
+  PortalTopInset: 1.9
+  PortalLineHeight: 0.12
+  PortalColor: {r: 0.18, g: 0.769, b: 0.714, a: 0.55}
+--- !u!1 &271303673
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 271303676}
+  - component: {fileID: 271303675}
+  - component: {fileID: 271303674}
+  m_Layer: 0
+  m_Name: portal_ring
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &271303674
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 271303673}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 416dfd2bc01d8024e8125597b62f428f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Pingi.Runtime::PortalView
+  Ring: {fileID: 271303675}
+  Width: 3.2
+  LeaveSeconds: 0.45
+  ArriveSeconds: 0.5
+--- !u!212 &271303675
+SpriteRenderer:
+  serializedVersion: 2
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 271303673}
+  m_Enabled: 0
+  m_CastShadows: 0
+  m_ReceiveShadows: 0
+  m_DynamicOccludee: 1
+  m_StaticShadowCaster: 0
+  m_MotionVectors: 1
+  m_LightProbeUsage: 1
+  m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 0
+  m_RayTraceProcedural: 0
+  m_RayTracingAccelStructBuildFlagsOverride: 0
+  m_RayTracingAccelStructBuildFlags: 1
+  m_SmallMeshCulling: 1
+  m_ForceMeshLod: -1
+  m_MeshLodSelectionBias: 0
+  m_RenderingLayerMask: 1
+  m_RendererPriority: 0
+  m_Materials:
+  - {fileID: 10754, guid: 0000000000000000f000000000000000, type: 0}
+  m_StaticBatchInfo:
+    firstSubMesh: 0
+    subMeshCount: 0
+  m_StaticBatchRoot: {fileID: 0}
+  m_ProbeAnchor: {fileID: 0}
+  m_LightProbeVolumeOverride: {fileID: 0}
+  m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
+  m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
+  m_ImportantGI: 0
+  m_StitchLightmapSeams: 1
+  m_SelectedEditorRenderState: 0
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
+  m_AutoUVMaxAngle: 89
+  m_LightmapParameters: {fileID: 0}
+  m_GlobalIlluminationMeshLod: 0
+  m_SortingLayerID: 0
+  m_SortingLayer: 0
+  m_SortingOrder: -30
+  m_MaskInteraction: 0
+  m_Sprite: {fileID: 3286163911610860551, guid: e59b56d2a41bad543822fe8265a04c52, type: 3}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_FlipX: 0
+  m_FlipY: 0
+  m_DrawMode: 0
+  m_Size: {x: 0.6666667, y: 0.20052083}
+  m_AdaptiveModeThreshold: 0.5
+  m_SpriteTileMode: 0
+  m_WasSpriteAssigned: 1
+  m_SpriteSortPoint: 0
+--- !u!4 &271303676
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 271303673}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 871148361}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &315089627
 GameObject:
   m_ObjectHideFlags: 0
@@ -346,11 +457,32 @@ MonoBehaviour:
     Clip: {fileID: 8300000, guid: 13dc52a8053492046b7f383b6950ddc9, type: 3}
     Volume: 0.85
     PitchJitter: 0
+  - Id: 12
+    Clip: {fileID: 8300000, guid: 7dc873443a5b8aa43a7df63fb00ba09a, type: 3}
+    Volume: 0.6
+    PitchJitter: 0.03
+  - Id: 13
+    Clip: {fileID: 8300000, guid: b7e81528de8d0d446bafbbb13ec40ed7, type: 3}
+    Volume: 0.55
+    PitchJitter: 0.05
+  - Id: 14
+    Clip: {fileID: 8300000, guid: 9155d021fd3186641a17d440cee98273, type: 3}
+    Volume: 0.6
+    PitchJitter: 0.03
+  - Id: 15
+    Clip: {fileID: 8300000, guid: 52f0e4c4bac86474793a85f850d51b2c, type: 3}
+    Volume: 0.7
+    PitchJitter: 0
+  - Id: 16
+    Clip: {fileID: 8300000, guid: b971c8e7e4624294e9f42e4a4c57f1a3, type: 3}
+    Volume: 0.7
+    PitchJitter: 0.02
   Voices: 6
   SemitonesPerHit: 0.5
   MaxSemitones: 12
   Game: {fileID: 7019952436038793779}
   Match: {fileID: 0}
+  Online: {fileID: 7019952436038793783}
 --- !u!114 &315089634
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -616,11 +748,11 @@ MonoBehaviour:
   Layout: {fileID: 0}
   Online: {fileID: 315089634}
   Lobby: {fileID: 315089635}
+  OnlineMatch: {fileID: 0}
+  OnlineRush: {fileID: 0}
   HintRuns: 3
   RewardDelayMs: 650
   CodeLifetime: 600
-  LobbyCountdownFrom: 3
-  LobbyCountdownStep: 0.6
   MaxContentWidth: 1080
   HintInset: 56
   ToastInset: 32
@@ -973,6 +1105,7 @@ Transform:
   - {fileID: 1378371383}
   - {fileID: 1185500011}
   - {fileID: 248741023}
+  - {fileID: 271303676}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &937802654
@@ -2312,6 +2445,12 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 7019952437250453325, guid: 417ab4ed391aa3f4086fdffdc347cf0c, type: 3}
       insertIndex: -1
       addedObject: {fileID: 7019952436038793782}
+    - targetCorrespondingSourceObject: {fileID: 7019952437250453325, guid: 417ab4ed391aa3f4086fdffdc347cf0c, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 7019952436038793783}
+    - targetCorrespondingSourceObject: {fileID: 7019952437250453325, guid: 417ab4ed391aa3f4086fdffdc347cf0c, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 7019952436038793784}
   m_SourcePrefab: {fileID: 100100000, guid: 417ab4ed391aa3f4086fdffdc347cf0c, type: 3}
 --- !u!1 &7019952436038793778 stripped
 GameObject:
@@ -2385,6 +2524,58 @@ MonoBehaviour:
   CountdownFrom: 3
   CountdownStep: 0.6
   ServeSpread: 35
+--- !u!114 &7019952436038793783
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7019952436038793778}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4c7782e3cc6c6584f8ff5158b48a7ada, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Pingi.Runtime::OnlineMatchController
+  Solo: {fileID: 0}
+  Layout: {fileID: 0}
+  MainBall: {fileID: 0}
+  MainPaddle: {fileID: 0}
+  Records: {fileID: 0}
+  Cosmetics: {fileID: 0}
+  Skins: {fileID: 0}
+  Portal: {fileID: 271303674}
+  CountdownFrom: 3
+  CountdownStep: 0.6
+  PortalDelay: 0.5
+  ServeDelay: 1
+  PeerWait: 10
+  EntryInset: 0.6
+  EdgeMargin: 0.35
+--- !u!114 &7019952436038793784
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7019952436038793778}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d6df0462638c0ad42a99f153dae23909, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Pingi.Runtime::OnlineRushController
+  Solo: {fileID: 0}
+  MainPaddle: {fileID: 0}
+  Records: {fileID: 0}
+  Cosmetics: {fileID: 0}
+  Skins: {fileID: 0}
+  CountdownFrom: 3
+  CountdownStep: 0.6
+  ScoreInterval: 0.25
+  FinalWait: 8
+  WarningSeconds: 1.5
+  AttackSeconds: 5
+  MiniPaddleScale: 0.6
+  FastBallBoost: 1.35
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0

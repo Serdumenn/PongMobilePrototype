@@ -31,11 +31,17 @@ public sealed class FieldLayout : MonoBehaviour
     [SerializeField] private float ClosedSideWidth = 0.16f;
     [SerializeField] private int MidlineDashes = 11;
 
+    [Header("Portal")]
+    [SerializeField] private float PortalTopInset = 2.4f;
+    [SerializeField] private float PortalLineHeight = 0.12f;
+    [SerializeField] private Color PortalColor = new Color(0.18f, 0.769f, 0.714f, 0.55f);
+
     private readonly Dictionary<FieldSide, Goal> goals = new Dictionary<FieldSide, Goal>();
     private readonly Dictionary<FieldSide, bool> closedSides = new Dictionary<FieldSide, bool>();
     private readonly List<Transform> corners = new List<Transform>();
     private readonly Dictionary<FieldSide, Transform> closedBars = new Dictionary<FieldSide, Transform>();
     private readonly List<Transform> dashes = new List<Transform>();
+    private Transform portalLine;
     private SpriteRenderer court;
     private Camera cam;
     private int lastScreenW;
@@ -140,6 +146,7 @@ public sealed class FieldLayout : MonoBehaviour
         return Topology switch
         {
             FieldTopology.TopBottom => side == FieldSide.Bottom || side == FieldSide.Top,
+            FieldTopology.Portal => side == FieldSide.Bottom || side == FieldSide.Top,
             FieldTopology.FourSides => true,
             _ => side == FieldSide.Bottom
         };
@@ -147,7 +154,11 @@ public sealed class FieldLayout : MonoBehaviour
 
     private void ApplyGoals()
     {
-        foreach (var pair in goals) pair.Value.SetOpen(SideOpen(pair.Key));
+        foreach (var pair in goals)
+        {
+            pair.Value.SetOpen(SideOpen(pair.Key));
+            pair.Value.Portal = Topology == FieldTopology.Portal && pair.Key == FieldSide.Top;
+        }
     }
 
     private void Recalculate()
@@ -176,7 +187,7 @@ public sealed class FieldLayout : MonoBehaviour
         }
         else
         {
-            float top = safeMax.y;
+            float top = Topology == FieldTopology.Portal ? safeMax.y - PortalTopInset : safeMax.y;
             float bottom = center.y - halfHeight;
             float maxHalfWidth = MaxFieldAspect > 0f ? halfHeight * MaxFieldAspect : float.MaxValue;
             float left = Mathf.Max(safeMin.x, center.x - maxHalfWidth);
@@ -209,6 +220,21 @@ public sealed class FieldLayout : MonoBehaviour
 
         UpdateCourt();
         UpdateMidline();
+        UpdatePortal();
+    }
+
+    private void UpdatePortal()
+    {
+        bool show = Topology == FieldTopology.Portal;
+        if (!show && portalLine == null) return;
+
+        if (portalLine == null) portalLine = CreateBlock("portal_line", PortalColor, -44, false);
+        portalLine.gameObject.SetActive(show);
+        if (!show) return;
+
+        Rect f = Field;
+        portalLine.position = new Vector3(f.center.x, f.yMax, 0f);
+        portalLine.localScale = new Vector3(f.width, PortalLineHeight, 1f);
     }
 
     private static void Place(Transform wall, Vector2 position, Vector2 size)

@@ -145,6 +145,35 @@ def match_win():
     return s
 
 
+def portal():
+    s = tone(note("C5"), note("C7"), 0.42, 0.16, ((1.0, 1.0), (1.5, 0.35), (2.0, 0.2)), glide=0.32, attack=0.03)
+    for i, n in enumerate(("E6", "G6", "C7")):
+        mix(s, tone(note(n), note(n), 0.25, 0.06), 0.12 + i * 0.07, 0.12)
+    return s
+
+
+def reaction():
+    s = tone(note("A5"), note("E6"), 0.14, 0.05, ((1.0, 1.0), (2.0, 0.2)), glide=0.04)
+    return mix(s, click(0.002, 0.12), 0.0)
+
+
+def attack_send():
+    s = tone(note("G4"), note("G6"), 0.32, 0.12, ((1.0, 1.0), (2.0, 0.25)), glide=0.25, attack=0.01)
+    return mix(s, tone(note("D7"), note("D7"), 0.18, 0.05), 0.2, 0.15)
+
+
+def attack_warn():
+    s = marimba(note("E5"), 0.2, 0.06, 0.3)
+    mix(s, marimba(note("E5"), 0.2, 0.06, 0.3), 0.16)
+    return mix(s, tone(note("C4"), note("A3"), 0.3, 0.1), 0.0, 0.5)
+
+
+def shield():
+    s = tone(note("C6"), note("C6"), 0.5, 0.14, ((1.0, 1.0), (2.0, 0.4), (3.0, 0.2)))
+    mix(s, tone(note("G6"), note("G6"), 0.4, 0.12), 0.05, 0.6)
+    return mix(s, click(0.002, 0.15), 0.0)
+
+
 SOUNDS = {
     "sfx_paddle_hit": paddle_hit,
     "sfx_wall_bounce": wall_bounce,
@@ -158,6 +187,11 @@ SOUNDS = {
     "sfx_countdown_go": countdown_go,
     "sfx_point": point,
     "sfx_match_win": match_win,
+    "sfx_portal": portal,
+    "sfx_reaction": reaction,
+    "sfx_attack_send": attack_send,
+    "sfx_attack_warn": attack_warn,
+    "sfx_shield": shield,
 }
 
 

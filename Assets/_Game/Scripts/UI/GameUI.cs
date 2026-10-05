@@ -14,6 +14,8 @@ public sealed class GameUI : MonoBehaviour
     [SerializeField] private FieldLayout Layout;
     [SerializeField] private OnlineService Online;
     [SerializeField] private OnlineLobby Lobby;
+    [SerializeField] private OnlineMatchController OnlineMatch;
+    [SerializeField] private OnlineRushController OnlineRush;
 
     [Header("Onboarding")]
     [SerializeField] private int HintRuns = 3;
@@ -23,8 +25,6 @@ public sealed class GameUI : MonoBehaviour
 
     [Header("Online")]
     [SerializeField] private float CodeLifetime = 600f;
-    [SerializeField] private int LobbyCountdownFrom = 3;
-    [SerializeField] private float LobbyCountdownStep = 0.6f;
 
     [Header("Layout")]
     [SerializeField] private float MaxContentWidth = 1080f;
@@ -46,6 +46,10 @@ public sealed class GameUI : MonoBehaviour
     private MatchHudScreen matchHud;
     private MatchResultScreen matchResult;
     private LobbyScreen lobbyScreen;
+    private OnlineHudScreen onlineHud;
+    private OnlineResultScreen onlineResult;
+    private RushBattleScreen rushBattle;
+    private RushResultScreen rushResult;
     private bool togetherSelected;
 
     private SoloGameManager.GameState lastState;
@@ -62,12 +66,14 @@ public sealed class GameUI : MonoBehaviour
         if (Layout == null) Layout = FindFirstObjectByType<FieldLayout>();
         if (Online == null) Online = FindFirstObjectByType<OnlineService>();
         if (Lobby == null) Lobby = FindFirstObjectByType<OnlineLobby>();
+        if (OnlineMatch == null) OnlineMatch = FindFirstObjectByType<OnlineMatchController>();
+        if (OnlineRush == null) OnlineRush = FindFirstObjectByType<OnlineRushController>();
 
         root = GetComponent<UIDocument>().rootVisualElement;
         root.Query<Button>().ForEach(b => b.RemoveFromClassList(Button.ussClassName));
 
         menu = new MenuScreen(root.Q("menu"), OnMenuPlay, OpenSettings, OpenShop, OpenScores, StepMode);
-        hud = new HudScreen(root.Q("hud"), () => Game.SetPaused(true));
+        hud = new HudScreen(root.Q("hud"), OnHudPause);
         pause = new PauseScreen(root.Q("pause"), Resume, LeaveFromPause);
         gameOver = new GameOverScreen(root.Q("game-over"), () => ContinueAfterAd(Game.RestartRun, gameOver.SetInteractable), () => ContinueAfterAd(Game.ReturnToMenu, gameOver.SetInteractable));
         toast = new ToastView(root.Q("toast"));
@@ -76,7 +82,11 @@ public sealed class GameUI : MonoBehaviour
         reward = new RewardScreen(root.Q("reward"), EquipReward, CloseReward);
         scores = new ScoresScreen(root.Q("scores"), Game, Cosmetics, CloseScores);
         hub = new HubScreen(root.Q("hub"), Match, Cosmetics, Online, Lobby, CloseHub, PickMatchMode, QuickMatch, CreateCode, JoinCode, toast.Show);
-        lobbyScreen = new LobbyScreen(root.Q("lobby"), Lobby, Cosmetics, LeaveLobby, OnCodeExpired, toast.Show, CodeLifetime, LobbyCountdownFrom, LobbyCountdownStep);
+        lobbyScreen = new LobbyScreen(root.Q("lobby"), Lobby, Cosmetics, LeaveLobby, OnCodeExpired, toast.Show, CodeLifetime);
+        onlineHud = new OnlineHudScreen(root.Q("online-hud"), Cosmetics, LeaveOnline);
+        onlineResult = new OnlineResultScreen(root.Q("online-result"), Cosmetics, () => OnlineMatch?.RequestRematch(), LeaveOnline);
+        rushBattle = new RushBattleScreen(root.Q("rush-battle"), Cosmetics, LeaveOnline);
+        rushResult = new RushResultScreen(root.Q("rush-result"), Cosmetics, () => OnlineRush?.RequestRematch(), LeaveOnline);
         setup = new MatchSetupScreen(root.Q("match-setup"), Cosmetics, CancelSetup, entries => Match.Begin(entries));
         matchHud = new MatchHudScreen(root.Q("match-hud"), () => Match.SetPaused(true));
         matchResult = new MatchResultScreen(root.Q("match-result"),
@@ -100,6 +110,9 @@ public sealed class GameUI : MonoBehaviour
             Match.PlayerEliminated += OnMatchPoint;
         }
         if (Lobby != null) Lobby.Closed += OnLobbyClosed;
+        if (OnlineMatch != null) OnlineMatch.StateChanged += OnOnlineState;
+        if (OnlineRush != null) OnlineRush.StateChanged += OnRushState;
+        if (Lobby != null) Lobby.Changed += OnLobbyChanged;
 
         built = true;
         lastState = Game.State;
@@ -125,6 +138,9 @@ public sealed class GameUI : MonoBehaviour
             Match.PlayerEliminated -= OnMatchPoint;
         }
         if (Lobby != null) Lobby.Closed -= OnLobbyClosed;
+        if (OnlineMatch != null) OnlineMatch.StateChanged -= OnOnlineState;
+        if (OnlineRush != null) OnlineRush.StateChanged -= OnRushState;
+        if (Lobby != null) Lobby.Changed -= OnLobbyChanged;
     }
 
     private void Update()
@@ -140,6 +156,186 @@ public sealed class GameUI : MonoBehaviour
 
         if (Screen.safeArea != lastSafeArea || Screen.width != lastScreenSize.x || Screen.height != lastScreenSize.y)
             ApplySafeArea();
+
+        PumpOnline();
+    }
+
+    private void PumpOnline()
+    {
+        if (OnlineMatch == null || Lobby == null || !Lobby.InLobby) return;
+
+        if (Lobby.Mode != null && Lobby.Mode.Kind == GameModeKind.RushBattle)
+        {
+            PumpRush();
+            return;
+        }
+
+        bool full = Lobby.Players.Count >= Lobby.MaxPlayers;
+        var state = OnlineMatch.State;
+
+        if (state == OnlineMatchController.MatchState.Idle)
+        {
+            if (!lobbyScreen.IsVisible || !full) return;
+
+            var opponent = Lobby.Opponent;
+            var link = opponent.HasValue ? Lobby.CreateLink() : null;
+            if (link == null) return;
+
+            OnlineMatch.Open(link, Lobby.Mode, MyLobbyLook(), opponent.Value.Name, opponent.Value.Look);
+            return;
+        }
+
+        if (state == OnlineMatchController.MatchState.Waiting)
+        {
+            if (!full)
+            {
+                CloseOnlineMatch();
+                return;
+            }
+
+            if (OnlineMatch.IsHost && Lobby.AllReady && Lobby.PeerOnline) OnlineMatch.HostStart();
+            return;
+        }
+
+        if (!full)
+        {
+            if (state == OnlineMatchController.MatchState.Result) onlineResult.SetOpponentGone();
+            else OnlineMatch.OpponentLeft();
+        }
+    }
+
+    private void PumpRush()
+    {
+        if (OnlineRush == null) return;
+
+        switch (OnlineRush.State)
+        {
+            case OnlineRushController.RushState.Idle:
+                if (!lobbyScreen.IsVisible || !Lobby.HasEnoughPlayers || !Lobby.EveryoneOnline) return;
+                var link = Lobby.CreateLink();
+                if (link == null) return;
+                OnlineRush.Open(link, Lobby.Mode, Lobby.MyPlayerId, MyLobbyLook(), Entrants());
+                break;
+
+            case OnlineRushController.RushState.Waiting:
+                if (!Lobby.HasEnoughPlayers)
+                {
+                    CloseRush();
+                    return;
+                }
+                if (OnlineRush.IsHost && Lobby.AllReady && Lobby.EveryoneOnline) OnlineRush.HostStart();
+                break;
+        }
+    }
+
+    private void OnLobbyChanged()
+    {
+        if (OnlineRush != null && OnlineRush.IsActive && Lobby != null && Lobby.InLobby) OnlineRush.UpdateEntrants(Entrants());
+    }
+
+    private System.Collections.Generic.List<OnlineRushController.Entrant> Entrants()
+    {
+        var list = new System.Collections.Generic.List<OnlineRushController.Entrant>();
+        foreach (var player in Lobby.Players) list.Add(new OnlineRushController.Entrant(player.Id, player.Name, player.Look));
+        return list;
+    }
+
+    private void OnRushState(OnlineRushController.RushState state)
+    {
+        switch (state)
+        {
+            case OnlineRushController.RushState.Countdown:
+                lobbyScreen.Hide();
+                hub.Hide();
+                menu.Hide();
+                rushResult.Hide();
+                gameOver.Hide();
+                Game.ShowGameObjects();
+                rushBattle.Present(OnlineRush);
+                if (Lobby != null && Lobby.InLobby) _ = Lobby.SetReadyAsync(false);
+                break;
+
+            case OnlineRushController.RushState.Result:
+                rushBattle.Hide();
+                hud.Hide();
+                rushResult.Present(OnlineRush);
+                break;
+
+            case OnlineRushController.RushState.Idle:
+                rushBattle.Hide();
+                rushResult.Hide();
+                break;
+        }
+    }
+
+    private void CloseRush()
+    {
+        if (OnlineRush == null || !OnlineRush.IsActive) return;
+        OnlineRush.Exit();
+        hud.Hide();
+        Game.HideGameObjects();
+    }
+
+    private void OnHudPause()
+    {
+        if (OnlineRush != null && OnlineRush.IsActive)
+        {
+            rushBattle.OpenLeave();
+            return;
+        }
+
+        Game.SetPaused(true);
+    }
+
+    private string MyLobbyLook()
+    {
+        foreach (var player in Lobby.Players)
+            if (player.IsYou) return player.Look;
+        return hub.LookId;
+    }
+
+    private void OnOnlineState(OnlineMatchController.MatchState state)
+    {
+        switch (state)
+        {
+            case OnlineMatchController.MatchState.Countdown:
+                lobbyScreen.Hide();
+                hub.Hide();
+                onlineResult.Hide();
+                onlineHud.Present(OnlineMatch);
+                if (Lobby != null && Lobby.InLobby) _ = Lobby.SetReadyAsync(false);
+                break;
+
+            case OnlineMatchController.MatchState.Result:
+                onlineHud.Hide();
+                onlineResult.Present(OnlineMatch);
+                break;
+
+            case OnlineMatchController.MatchState.Idle:
+                onlineHud.Hide();
+                onlineResult.Hide();
+                break;
+        }
+    }
+
+    private void CloseOnlineMatch()
+    {
+        if (OnlineMatch == null || !OnlineMatch.IsActive) return;
+        OnlineMatch.Exit();
+        Game.HideGameObjects();
+    }
+
+    private void LeaveOnline()
+    {
+        onlineHud.Hide();
+        onlineResult.Hide();
+        rushBattle.Hide();
+        rushResult.Hide();
+        lobbyScreen.Hide();
+        hub.Present(1);
+        CloseOnlineMatch();
+        CloseRush();
+        if (Lobby != null) _ = Lobby.LeaveAsync();
     }
 
     private void OnModeChanged(GameModeDefinition mode)
@@ -269,6 +465,8 @@ public sealed class GameUI : MonoBehaviour
     {
         lobbyScreen.Hide();
         hub.Present(1);
+        CloseOnlineMatch();
+        CloseRush();
         if (Lobby != null) _ = Lobby.LeaveAsync();
     }
 
@@ -280,6 +478,31 @@ public sealed class GameUI : MonoBehaviour
 
     private void OnLobbyClosed(OnlineLobby.Failure reason)
     {
+        if (OnlineRush != null && OnlineRush.IsActive)
+        {
+            bool inResult = OnlineRush.State == OnlineRushController.RushState.Result;
+            if (inResult && reason == OnlineLobby.Failure.HostLeft) return;
+
+            LeaveOnline();
+            toast.Show(reason == OnlineLobby.Failure.HostLeft ? "The host left, so the battle ended." : FailureText(reason));
+            return;
+        }
+
+        if (OnlineMatch != null && OnlineMatch.IsActive && OnlineMatch.State != OnlineMatchController.MatchState.Waiting)
+        {
+            if (reason == OnlineLobby.Failure.HostLeft)
+            {
+                OnlineMatch.OpponentLeft();
+                onlineResult.SetOpponentGone();
+                return;
+            }
+
+            LeaveOnline();
+            toast.Show(FailureText(reason));
+            return;
+        }
+
+        CloseOnlineMatch();
         if (!lobbyScreen.IsVisible) return;
 
         lobbyScreen.Hide();
@@ -422,7 +645,9 @@ public sealed class GameUI : MonoBehaviour
                 pause.Hide();
                 gameOver.Hide();
                 reward.Hide();
-                if (!settings.IsVisible && !shop.IsVisible && !scores.IsVisible && !hub.IsVisible && !lobbyScreen.IsVisible && (Match == null || !Match.IsActive))
+                if (!settings.IsVisible && !shop.IsVisible && !scores.IsVisible && !hub.IsVisible && !lobbyScreen.IsVisible
+                    && !onlineHud.IsVisible && !onlineResult.IsVisible && !rushBattle.IsVisible && !rushResult.IsVisible
+                    && (Match == null || !Match.IsActive) && (OnlineMatch == null || !OnlineMatch.IsActive) && (OnlineRush == null || !OnlineRush.IsActive))
                 {
                     RefreshMenuMode();
                     menu.Show();
@@ -444,9 +669,10 @@ public sealed class GameUI : MonoBehaviour
                 break;
 
             case SoloGameManager.GameState.GameOver:
-                hud.Hide();
                 pause.Hide();
                 SetHint(false);
+                if (Game.BattleRun) break;
+                hud.Hide();
                 ShowGameOverResult();
                 gameOver.SetInteractable(true);
                 root.schedule.Execute(ShowNextReward).StartingIn(RewardDelayMs);
@@ -622,6 +848,26 @@ public sealed class GameUI : MonoBehaviour
         if (settings.IsVisible)
         {
             CloseSettings();
+            return;
+        }
+
+        if (onlineResult.IsVisible || rushResult.IsVisible)
+        {
+            LeaveOnline();
+            return;
+        }
+
+        if (rushBattle.IsVisible)
+        {
+            if (rushBattle.IsLeaveOpen) rushBattle.CloseLeave();
+            else rushBattle.OpenLeave();
+            return;
+        }
+
+        if (onlineHud.IsVisible)
+        {
+            if (onlineHud.IsLeaveOpen) onlineHud.CloseLeave();
+            else onlineHud.OpenLeave();
             return;
         }
 

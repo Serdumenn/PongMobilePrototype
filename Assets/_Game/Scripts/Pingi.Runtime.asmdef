@@ -2,6 +2,7 @@
     "name": "Pingi.Runtime",
     "rootNamespace": "",
     "references": [
+        "Unity.Collections",
         "Unity.InputSystem",
         "Unity.Netcode.Runtime",
         "Unity.Purchasing",

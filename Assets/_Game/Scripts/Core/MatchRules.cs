@@ -58,6 +58,7 @@ public abstract class MatchRules
         return mode.Kind switch
         {
             GameModeKind.Rush => new RushRules(mode),
+            GameModeKind.RushBattle => new RushRules(mode),
             GameModeKind.TableDuel => new TableDuelRules(mode),
             GameModeKind.CoopRally => new CoopRallyRules(mode),
             GameModeKind.PartyTable => new PartyRules(mode),

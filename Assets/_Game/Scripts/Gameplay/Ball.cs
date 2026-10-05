@@ -38,6 +38,7 @@ public sealed class Ball : MonoBehaviour
     private Vector2? serveOrigin;
     private float serveGap = 1f;
     private float currentSpeed;
+    private float speedBoost = 1f;
     private Vector2 lastVelocity;
 
     private bool roundActive;
@@ -46,7 +47,11 @@ public sealed class Ball : MonoBehaviour
     public MatchRandom Rng { get; set; }
     public Paddle Server => server;
     public float CurrentSpeed => currentSpeed;
+    public float SpeedBoost => speedBoost;
     public bool InPlay => roundActive && !waitingForServe && rb.simulated;
+    public Vector2 LastVelocity => lastVelocity;
+    public bool WaitingForServe => waitingForServe;
+    public Vector2 ExitPoint { get; private set; }
 
     private void Awake()
     {
@@ -93,8 +98,9 @@ public sealed class Ball : MonoBehaviour
             lastVelocity = rb.linearVelocity;
 
         float actualSpeed = rb.linearVelocity.magnitude;
-        if (actualSpeed > 0.01f && actualSpeed < currentSpeed * 0.95f)
-            rb.linearVelocity = rb.linearVelocity.normalized * currentSpeed;
+        float target = currentSpeed * speedBoost;
+        if (actualSpeed > 0.01f && actualSpeed < target * 0.95f)
+            rb.linearVelocity = rb.linearVelocity.normalized * target;
     }
 
     public void SetServer(Paddle paddle)
@@ -130,6 +136,24 @@ public sealed class Ball : MonoBehaviour
         Vector2 dir = SafeDirection(direction.sqrMagnitude > 0.0001f ? direction : Vector2.up);
         ApplyVelocity(dir);
         Launched?.Invoke();
+    }
+
+    public void Enter(Vector2 origin, Vector2 direction, float speed)
+    {
+        ServeToward(origin, direction);
+        currentSpeed = Mathf.Clamp(speed, Mathf.Min(LaunchSpeed, MaxSpeed), MaxSpeed);
+        ApplyVelocity(lastVelocity.normalized);
+    }
+
+    public void SetSpeedBoost(float boost)
+    {
+        speedBoost = Mathf.Max(0.1f, boost);
+        if (rb != null && rb.simulated && lastVelocity.sqrMagnitude > 0.0001f) ApplyVelocity(lastVelocity.normalized);
+    }
+
+    public void LaunchNow()
+    {
+        if (waitingForServe) Launch();
     }
 
     public void ScaleSpeed(float factor)
@@ -197,7 +221,7 @@ public sealed class Ball : MonoBehaviour
         rb.WakeUp();
 
         Vector2 dir = GetLaunchDir();
-        lastVelocity = dir * currentSpeed;
+        lastVelocity = dir * currentSpeed * speedBoost;
         rb.linearVelocity = lastVelocity;
 
         Launched?.Invoke();
@@ -272,15 +296,19 @@ public sealed class Ball : MonoBehaviour
         var goal = other.GetComponent<Goal>();
         if (goal == null || !goal.IsOpen) return;
 
-        Missed?.Invoke();
+        ExitPoint = rb.position;
+        if (!goal.Portal)
+        {
+            Missed?.Invoke();
+            HapticManager.Medium();
+        }
         StopRound();
-        HapticManager.Medium();
         GoalEntered?.Invoke(goal);
     }
 
     private void ApplyVelocity(Vector2 dir)
     {
-        lastVelocity = dir * currentSpeed;
+        lastVelocity = dir * currentSpeed * speedBoost;
         rb.linearVelocity = lastVelocity;
     }
 

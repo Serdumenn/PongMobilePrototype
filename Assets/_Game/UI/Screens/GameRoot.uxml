@@ -12,6 +12,10 @@
     <ui:Template name="MatchHud" src="MatchHudScreen.uxml" />
     <ui:Template name="MatchResult" src="MatchResultScreen.uxml" />
     <ui:Template name="Lobby" src="LobbyScreen.uxml" />
+    <ui:Template name="OnlineHud" src="OnlineHudScreen.uxml" />
+    <ui:Template name="OnlineResult" src="OnlineResultScreen.uxml" />
+    <ui:Template name="RushBattle" src="RushBattleScreen.uxml" />
+    <ui:Template name="RushResult" src="RushResultScreen.uxml" />
     <ui:VisualElement name="root" class="root" picking-mode="Ignore">
         <ui:Instance template="Hud" name="hud" class="screen" picking-mode="Ignore" />
         <ui:Instance template="Menu" name="menu" class="screen" picking-mode="Ignore" />
@@ -23,6 +27,10 @@
         <ui:Instance template="Lobby" name="lobby" class="screen screen--solid" />
         <ui:Instance template="MatchHud" name="match-hud" class="screen" picking-mode="Ignore" />
         <ui:Instance template="MatchResult" name="match-result" class="screen" picking-mode="Ignore" />
+        <ui:Instance template="OnlineHud" name="online-hud" class="screen" picking-mode="Ignore" />
+        <ui:Instance template="OnlineResult" name="online-result" class="screen" picking-mode="Ignore" />
+        <ui:Instance template="RushBattle" name="rush-battle" class="screen" picking-mode="Ignore" />
+        <ui:Instance template="RushResult" name="rush-result" class="screen" picking-mode="Ignore" />
         <ui:Instance template="Pause" name="pause" class="screen" picking-mode="Ignore" />
         <ui:Instance template="GameOver" name="game-over" class="screen" picking-mode="Ignore" />
         <ui:Instance template="Reward" name="reward" class="screen" picking-mode="Ignore" />

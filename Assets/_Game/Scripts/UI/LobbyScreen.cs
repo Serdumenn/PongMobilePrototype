@@ -13,8 +13,6 @@ public sealed class LobbyScreen : UIScreen
     private readonly Action onExpired;
     private readonly Action<string> toast;
     private readonly float codeLifetime;
-    private readonly int countdownFrom;
-    private readonly long countdownStepMs;
 
     private readonly Label title;
     private readonly VisualElement codeCard;
@@ -22,7 +20,6 @@ public sealed class LobbyScreen : UIScreen
     private readonly Label expiryLabel;
     private readonly VisualElement slots;
     private readonly VisualElement versus;
-    private readonly Label count;
     private readonly Label status;
     private readonly Label modeChip;
     private readonly Button readyButton;
@@ -32,16 +29,13 @@ public sealed class LobbyScreen : UIScreen
     private readonly Label reconnectCount;
 
     private IVisualElementScheduledItem ticker;
-    private IVisualElementScheduledItem countdownJob;
     private Label pingLabel;
     private float codeShownAt = -1f;
     private bool expired;
     private bool myReady;
-    private int countdown = -1;
-    private string note;
 
     public LobbyScreen(VisualElement root, OnlineLobby lobby, CosmeticsService cosmetics, Action onLeave, Action onExpired, Action<string> toast,
-        float codeLifetime, int countdownFrom, float countdownStep) : base(root)
+        float codeLifetime) : base(root)
     {
         this.lobby = lobby;
         this.cosmetics = cosmetics;
@@ -49,8 +43,6 @@ public sealed class LobbyScreen : UIScreen
         this.onExpired = onExpired;
         this.toast = toast;
         this.codeLifetime = codeLifetime;
-        this.countdownFrom = countdownFrom;
-        countdownStepMs = (long)(countdownStep * 1000f);
 
         title = root.Q<Label>("lobby-title");
         codeCard = root.Q("code-card");
@@ -58,7 +50,6 @@ public sealed class LobbyScreen : UIScreen
         expiryLabel = root.Q<Label>("expiry-label");
         slots = root.Q("lobby-slots");
         versus = root.Q("versus");
-        count = root.Q<Label>("lobby-count");
         status = root.Q<Label>("lobby-status");
         modeChip = root.Q<Label>("mode-chip");
         readyLabel = root.Q<Label>("ready-label");
@@ -81,8 +72,6 @@ public sealed class LobbyScreen : UIScreen
     {
         codeShownAt = Time.realtimeSinceStartup;
         expired = false;
-        note = null;
-        StopCountdown();
         Show();
     }
 
@@ -97,7 +86,6 @@ public sealed class LobbyScreen : UIScreen
     protected override void OnHide()
     {
         ticker?.Pause();
-        StopCountdown();
         reconnect.AddToClassList(DialogHiddenClass);
     }
 
@@ -132,42 +120,26 @@ public sealed class LobbyScreen : UIScreen
         readyLabel.text = myReady ? "Not ready" : "Ready";
         readyIcon.style.display = myReady ? DisplayStyle.None : DisplayStyle.Flex;
 
-        if (lobby.AllReady)
-        {
-            if (countdown < 0) StartCountdown();
-        }
-        else if (countdown >= 0)
-        {
-            StopCountdown();
-        }
-
-        RefreshStatus(full);
+        RefreshStatus();
     }
 
-    private void RefreshStatus(bool full)
+    private void RefreshStatus()
     {
-        if (countdown >= 0)
-        {
-            status.text = "Get ready";
-            return;
-        }
+        if (lobby == null || !lobby.InLobby) return;
 
-        if (!string.IsNullOrEmpty(note))
-        {
-            status.text = note;
-            return;
-        }
-
-        if (!full)
+        if (!lobby.HasEnoughPlayers)
         {
             status.text = string.Empty;
             return;
         }
 
-        string other = "your friend";
-        foreach (var player in lobby.Players)
-            if (!player.IsYou) other = player.Name;
-        status.text = myReady ? $"Waiting for {other}…" : "Tap Ready when you are set.";
+        bool group = lobby.MaxPlayers > 2;
+        var opponent = lobby.Opponent;
+        string other = group ? "everyone" : opponent.HasValue ? opponent.Value.Name : "your friend";
+
+        if (!lobby.EveryoneOnline) status.text = $"Connecting to {other}…";
+        else if (lobby.AllReady) status.text = "Starting…";
+        else status.text = myReady ? $"Waiting for {other}…" : "Tap Ready when you are set.";
     }
 
     private void BuildSlots(bool full)
@@ -186,6 +158,13 @@ public sealed class LobbyScreen : UIScreen
         if (full) return;
 
         bool isPrivate = lobby.IsPrivate;
+        if (lobby.MaxPlayers > 2)
+        {
+            slots.Add(WaitingSlot(isPrivate ? "Waiting for friends…" : "Looking for players…",
+                $"Up to {lobby.MaxPlayers} can play. Starts when everyone is ready."));
+            return;
+        }
+
         for (int i = lobby.Players.Count; i < lobby.MaxPlayers; i++)
             slots.Add(WaitingSlot(isPrivate ? "Waiting for a friend…" : "Looking for a player…",
                 isPrivate ? "They tap Join code" : "This takes a few seconds"));
@@ -281,6 +260,7 @@ public sealed class LobbyScreen : UIScreen
         if (lobby == null || !lobby.InLobby) return;
 
         if (pingLabel != null) pingLabel.text = PingText();
+        RefreshStatus();
 
         bool waitingForCode = codeCard.resolvedStyle.display == DisplayStyle.Flex;
         if (waitingForCode && !expired)
@@ -304,53 +284,7 @@ public sealed class LobbyScreen : UIScreen
     private void ToggleReady()
     {
         if (lobby == null || !lobby.InLobby) return;
-
-        note = null;
         _ = lobby.SetReadyAsync(!myReady);
-    }
-
-    private void StartCountdown()
-    {
-        countdown = countdownFrom;
-        ShowCount();
-        countdownJob?.Pause();
-        countdownJob = Root.schedule.Execute(StepCountdown).Every(countdownStepMs).StartingIn(countdownStepMs);
-    }
-
-    private void StepCountdown()
-    {
-        countdown--;
-        if (countdown > 0)
-        {
-            ShowCount();
-            return;
-        }
-
-        AudioManager.PlayOne(Sfx.CountdownGo);
-        StopCountdown();
-
-        var mode = lobby.Mode;
-        note = $"{(mode != null ? mode.DisplayName : "Online play")} arrives in the next update. Thanks for testing!";
-        _ = lobby.SetReadyAsync(false);
-        RefreshStatus(true);
-    }
-
-    private void ShowCount()
-    {
-        count.text = countdown.ToString();
-        count.style.display = DisplayStyle.Flex;
-        count.AddToClassList("lobby-count--pop");
-        count.schedule.Execute(() => count.RemoveFromClassList("lobby-count--pop")).StartingIn(60);
-        AudioManager.PlayOne(Sfx.CountdownTick);
-        HapticManager.Soft();
-    }
-
-    private void StopCountdown()
-    {
-        countdownJob?.Pause();
-        countdownJob = null;
-        countdown = -1;
-        count.style.display = DisplayStyle.None;
     }
 
     private void Copy()

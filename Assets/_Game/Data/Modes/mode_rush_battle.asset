@@ -31,7 +31,7 @@ MonoBehaviour:
   <MaxPlayers>k__BackingField: 4
   <TabletOnly>k__BackingField: 0
   <Online>k__BackingField: 1
-  <ComingSoon>k__BackingField: 1
+  <ComingSoon>k__BackingField: 0
   <PointsToWin>k__BackingField: 5
   <Lives>k__BackingField: 3
   <ExtraBallAtHits>k__BackingField: 0

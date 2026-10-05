@@ -16,7 +16,8 @@ public enum FieldTopology
 {
     Solo,
     TopBottom,
-    FourSides
+    FourSides,
+    Portal
 }
 
 [CreateAssetMenu(menuName = "Pingi/Game Mode", fileName = "mode")]

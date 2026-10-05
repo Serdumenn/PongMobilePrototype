@@ -9,7 +9,7 @@ using UnityEngine;
 
 public sealed class OnlineLobby : MonoBehaviour
 {
-    public const string ProtocolVersion = "1";
+    public const string ProtocolVersion = "2";
 
     public enum Failure
     {
@@ -40,6 +40,7 @@ public sealed class OnlineLobby : MonoBehaviour
     private bool busy;
     private float pausedAt = -1f;
     private float reconnectDeadline;
+    private Task pendingSave = Task.CompletedTask;
 
     public bool InLobby => session != null;
     public bool IsHost => session != null && session.IsHost;
@@ -54,7 +55,9 @@ public sealed class OnlineLobby : MonoBehaviour
     public float ReconnectRemaining => Reconnecting ? Mathf.Max(0f, reconnectDeadline - Time.realtimeSinceStartup) : 0f;
     public int MaxPlayers => session != null ? session.MaxPlayers : 0;
     public IReadOnlyList<LobbyPlayer> Players => players;
-    public bool AllReady => LobbyPlayer.AllReady(players, MaxPlayers);
+    public int MinPlayers => Mode != null ? Mathf.Max(2, Mode.MinPlayers) : MaxPlayers;
+    public bool HasEnoughPlayers => session != null && players.Count >= MinPlayers;
+    public bool AllReady => LobbyPlayer.AllReady(players, MinPlayers);
 
     public event Action Changed;
     public event Action<Failure> Closed;
@@ -112,6 +115,43 @@ public sealed class OnlineLobby : MonoBehaviour
     public Task SetLookAsync(string look)
     {
         return SavePlayer(LookKey, look);
+    }
+
+    public bool PeerOnline
+    {
+        get
+        {
+            var network = NetworkManager.Singleton;
+            if (session == null || !NetcodeLink.CanOpen(network)) return false;
+            return network.IsServer ? network.ConnectedClientsIds.Count > 1 : network.IsConnectedClient;
+        }
+    }
+
+    public bool EveryoneOnline
+    {
+        get
+        {
+            var network = NetworkManager.Singleton;
+            if (session == null || !NetcodeLink.CanOpen(network)) return false;
+            return network.IsServer ? network.ConnectedClientsIds.Count >= players.Count : network.IsConnectedClient;
+        }
+    }
+
+    public string MyPlayerId => session?.CurrentPlayer?.Id;
+
+    public LobbyPlayer? Opponent
+    {
+        get
+        {
+            foreach (var player in players)
+                if (!player.IsYou) return player;
+            return null;
+        }
+    }
+
+    public IMatchLink CreateLink()
+    {
+        return PeerOnline ? new NetcodeLink(NetworkManager.Singleton, PingMs) : null;
     }
 
     public GameModeDefinition FindMode(string id)
@@ -206,15 +246,30 @@ public sealed class OnlineLobby : MonoBehaviour
         };
     }
 
-    private async Task SavePlayer(string key, string value)
+    private Task SavePlayer(string key, string value)
     {
-        if (session == null) return;
+        pendingSave = SaveAfter(pendingSave, key, value);
+        return pendingSave;
+    }
 
-        session.CurrentPlayer.SetProperty(key, new PlayerProperty(value, VisibilityPropertyOptions.Member));
+    private async Task SaveAfter(Task previous, string key, string value)
+    {
+        try
+        {
+            await previous;
+        }
+        catch (Exception)
+        {
+        }
+
+        var target = session;
+        if (target == null) return;
+
+        target.CurrentPlayer.SetProperty(key, new PlayerProperty(value, VisibilityPropertyOptions.Member));
         Refresh();
         try
         {
-            await session.SaveCurrentPlayerDataAsync();
+            await target.SaveCurrentPlayerDataAsync();
         }
         catch (Exception e)
         {
@@ -288,18 +343,21 @@ public sealed class OnlineLobby : MonoBehaviour
 
     private void OnRemoved()
     {
+        Debug.Log("Lobby: removed from session");
         Close(Failure.HostLeft);
     }
 
     private void OnHostChanged(string newHost)
     {
         bool hostLeft = !string.IsNullOrEmpty(hostId) && newHost != hostId;
+        Debug.Log($"Lobby: host changed to {newHost}, left={hostLeft}");
         hostId = newHost;
         if (hostLeft) Close(Failure.HostLeft);
     }
 
     private void OnStateChanged(SessionState state)
     {
+        Debug.Log($"Lobby: session state {state}");
         if (state == SessionState.Disconnected) TryReconnect();
         else if (state == SessionState.Deleted) Close(Failure.HostLeft);
     }
@@ -335,6 +393,7 @@ public sealed class OnlineLobby : MonoBehaviour
     private void Close(Failure reason)
     {
         if (session == null) return;
+        Debug.Log($"Lobby closed: {reason}");
         Detach();
         Closed?.Invoke(reason);
     }

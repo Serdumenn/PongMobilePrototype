@@ -1,0 +1,87 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" editor-extension-mode="False">
+    <ui:VisualElement class="safe" picking-mode="Ignore">
+        <ui:VisualElement class="ohud-top" picking-mode="Ignore">
+            <ui:VisualElement name="opp-card" class="opp-card" picking-mode="Ignore">
+                <ui:VisualElement name="opp-ball" class="opp-card__ball" picking-mode="Ignore" />
+                <ui:Label name="opp-name" text="Brave Otter" class="opp-card__name" picking-mode="Ignore" />
+                <ui:VisualElement name="opp-lives" class="opp-card__lives" picking-mode="Ignore" />
+                <ui:Label name="opp-score" text="0" class="opp-card__score" picking-mode="Ignore" />
+                <ui:VisualElement name="opp-wifi" class="icon icon--wifi opp-card__wifi" picking-mode="Ignore" />
+            </ui:VisualElement>
+            <ui:Button name="menu-button" class="btn ohud-menu">
+                <ui:VisualElement class="btn__face" picking-mode="Ignore">
+                    <ui:VisualElement class="icon icon--pause" picking-mode="Ignore" />
+                </ui:VisualElement>
+            </ui:Button>
+        </ui:VisualElement>
+        <ui:Label name="portal-chip" text="Ball leaves through the portal" class="ink-chip portal-chip" picking-mode="Ignore" />
+        <ui:VisualElement class="ohud-center" picking-mode="Ignore">
+            <ui:Label name="my-score" text="0" class="ohud-score" picking-mode="Ignore" />
+            <ui:Label name="ohud-count" text="3" class="ohud-count" picking-mode="Ignore" />
+            <ui:Label name="serve-chip" text="Your serve · tap to start" class="ink-chip ohud-serve" picking-mode="Ignore" />
+        </ui:VisualElement>
+        <ui:VisualElement name="float-layer" class="float-layer" picking-mode="Ignore" />
+        <ui:VisualElement class="spacer" picking-mode="Ignore" />
+        <ui:VisualElement class="ohud-bottom" picking-mode="Ignore">
+            <ui:VisualElement name="reaction-bar" class="reaction-bar reaction-bar--hidden" picking-mode="Ignore">
+                <ui:Button name="react-0" class="btn reaction-btn">
+                    <ui:VisualElement class="btn__face" picking-mode="Ignore">
+                        <ui:VisualElement class="icon icon--thumb" picking-mode="Ignore" />
+                    </ui:VisualElement>
+                </ui:Button>
+                <ui:Button name="react-1" class="btn reaction-btn">
+                    <ui:VisualElement class="btn__face" picking-mode="Ignore">
+                        <ui:VisualElement class="icon icon--wow" picking-mode="Ignore" />
+                    </ui:VisualElement>
+                </ui:Button>
+                <ui:Button name="react-2" class="btn reaction-btn">
+                    <ui:VisualElement class="btn__face" picking-mode="Ignore">
+                        <ui:VisualElement class="icon icon--laugh" picking-mode="Ignore" />
+                    </ui:VisualElement>
+                </ui:Button>
+                <ui:Button name="react-3" class="btn reaction-btn">
+                    <ui:VisualElement class="btn__face" picking-mode="Ignore">
+                        <ui:VisualElement class="icon icon--flame" picking-mode="Ignore" />
+                    </ui:VisualElement>
+                </ui:Button>
+            </ui:VisualElement>
+            <ui:Button name="react-toggle" class="btn reaction-toggle">
+                <ui:VisualElement class="btn__face" picking-mode="Ignore">
+                    <ui:VisualElement class="icon icon--laugh" picking-mode="Ignore" />
+                </ui:VisualElement>
+            </ui:Button>
+        </ui:VisualElement>
+    </ui:VisualElement>
+    <ui:VisualElement name="leave-dialog" class="dialog dialog--hidden">
+        <ui:VisualElement name="leave-scrim" class="scrim" />
+        <ui:VisualElement class="safe overlay" picking-mode="Ignore">
+            <ui:VisualElement class="card online-card">
+                <ui:Label text="Leave match?" class="card__title" picking-mode="Ignore" />
+                <ui:Label name="leave-text" text="Your friend wins if you leave." class="caption dialog__text" picking-mode="Ignore" />
+                <ui:Button name="leave-confirm" class="btn btn--primary btn--wide">
+                    <ui:VisualElement class="btn__face" picking-mode="Ignore">
+                        <ui:Label text="Leave" class="btn__label" picking-mode="Ignore" />
+                    </ui:VisualElement>
+                </ui:Button>
+                <ui:Button name="leave-cancel" text="Keep playing" class="link" />
+            </ui:VisualElement>
+        </ui:VisualElement>
+    </ui:VisualElement>
+    <ui:VisualElement name="peer-dialog" class="dialog dialog--hidden">
+        <ui:VisualElement class="scrim" />
+        <ui:VisualElement class="safe overlay" picking-mode="Ignore">
+            <ui:VisualElement class="card online-card">
+                <ui:VisualElement class="reconnect-ring" picking-mode="Ignore">
+                    <ui:Label name="peer-count" text="10" class="reconnect-ring__count" picking-mode="Ignore" />
+                </ui:VisualElement>
+                <ui:Label text="Reconnecting…" class="card__title reconnect-title" picking-mode="Ignore" />
+                <ui:Label name="peer-text" text="Your friend's connection dropped. We'll wait 10 seconds before ending the match." class="caption dialog__text" picking-mode="Ignore" />
+                <ui:Button name="peer-leave" class="btn btn--buy">
+                    <ui:VisualElement class="btn__face" picking-mode="Ignore">
+                        <ui:Label text="Leave match" class="btn__label" picking-mode="Ignore" />
+                    </ui:VisualElement>
+                </ui:Button>
+            </ui:VisualElement>
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>

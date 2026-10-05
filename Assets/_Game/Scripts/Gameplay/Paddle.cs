@@ -27,6 +27,8 @@ public sealed class Paddle : MonoBehaviour
 
     private Vector2 basePosition;
     private float halfLength;
+    private Vector3 baseScale;
+    private float lengthScale = 1f;
     private float currentTiltAngle;
     private FieldSide defaultSide;
     private Vector2 defaultPosition;
@@ -75,6 +77,7 @@ public sealed class Paddle : MonoBehaviour
             col.sharedMaterial = noBounce;
 
         basePosition = rb.position;
+        baseScale = transform.localScale;
         CacheHalfLength();
         if (Controller == null) Controller = new TouchZoneController(PlaySide, InputZoneRatio);
 
@@ -128,6 +131,15 @@ public sealed class Paddle : MonoBehaviour
         transform.position = new Vector3(basePosition.x, basePosition.y, 0f);
         transform.rotation = Quaternion.Euler(0f, 0f, BaseAngle);
         currentTiltAngle = 0f;
+    }
+
+    public float LengthScale => lengthScale;
+
+    public void SetLengthScale(float scale)
+    {
+        lengthScale = Mathf.Max(0.1f, scale);
+        transform.localScale = new Vector3(baseScale.x * lengthScale, baseScale.y, baseScale.z);
+        CacheHalfLength();
     }
 
     public void SetVisible(bool visible)

@@ -144,7 +144,28 @@ Tüm efektler bize ait. `ArtSource/tools/generate_sfx.py` ile sentezleniyor (mon
 - **Onaylı tasarımdan iki bilinçli sapma:**
   - "Join code" butonunda kopyala ikonu yerine "içeri gir" oku var, çünkü kopyala ikonu Kopyala butonuyla karışıyordu.
   - Kod yazısında IBM Plex Mono yerine Fredoka Bold ve geniş harf aralığı kullanılıyor; yeni font dosyası gerekmiyor. Yüksek sesle okunabilirlik korunuyor.
-- **Hazır olma:** Tasarımdaki tepki çubuğunun (4 tepki) yerinde M2'de "Ready" butonu duruyor. Tepkiler M3'te bu butonun üstüne gelir.
+- **Hazır olma:** Lobide tasarımdaki tepki çubuğunun yerinde "Ready" butonu duruyor; tepkiler maç ekranında.
+
+**Maç ekranı (M3):**
+
+| Bileşen | Boyut | Zemin / kenar | İçerik |
+|---|---|---|---|
+| Rakip kartı | yükseklik 176, köşe 64 | surface / surface-edge 12 | top 120, ad 50 bold, skor 88 bold ya da ortak canlar, bağlantı ikonu 56 (180 ms üstü mercan) |
+| Menü butonu | 160×168, köşe 48 | surface / surface-edge 12 | duraklat ikonu 72; "Leave the match?" penceresini açar |
+| Büyük skor | 360 bold | ink %12 | kendi skorun; ortak rallide pas sayısı |
+| Tepki butonu ve çubuğu | 152×160 yuvarlak; çubukta 4 × 136×144 | surface; çubuk %85 beyaz | başparmak, şaşkın, gülen, ateş. Gönderilen baloncuk sağ alttan yukarı, gelen baloncuk rakip kartının altından aşağı 1,5 sn'de süzülür |
+| Portal | teal çizgi 0,12 birim; halka 3,2 birim | `#2EC4B6` %55 | halka çıkışta 1 → 1,35 büyüyüp söner, girişte 0,35 → 1,05 belirir |
+| Sonuç kartı | Game Over kartıyla aynı | — | "You win!" / "So close!" / "Great teamwork!", skor 200 bold, rövanş notu, ana sayfa + Rematch (rakip istediyse "Accept") |
+
+**Rush Battle (M4a):**
+
+| Bileşen | Boyut | Zemin / kenar | İçerik |
+|---|---|---|---|
+| Rakip listesi | 470 genişlik, sağda, yüksekliğin %36'sı | surface / surface-edge 12, köşe 48 | satır 92: top 60, ad 40 bold, skor 50 bold; lider skoru mercan; biten %55, ayrılan %35 opak |
+| Saldırı bandı | yan boşluk 56, yüksekliğin %56'sı | sun / sun-edge 14, köşe 64 | saldırı ikonu 64, "Fog incoming! Hit a Perfect to block" 44 bold |
+| Sis | ekranın %30–72'si | krem, ortada %94, kenarlarda %60 | 350 ms'de belirip kaybolur |
+| Durum notu | ink çip, %66 | ink | 1,8 sn görünür |
+| Sıralama kartı | Game Over kartı | — | satır 120: yer rozeti 72 (1. altın), top 76, ad 46 bold, skor 58 bold; senin satırın `#E6F7F5` |
 
 ## Erişilebilirlik
 

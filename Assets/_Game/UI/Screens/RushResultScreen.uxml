@@ -1,0 +1,25 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" editor-extension-mode="False">
+    <ui:VisualElement class="scrim" />
+    <ui:VisualElement class="safe overlay" picking-mode="Ignore">
+        <ui:VisualElement class="card rush-result-card">
+            <ui:VisualElement name="mascot" class="card__mascot" picking-mode="Ignore" />
+            <ui:Label name="title" text="1st place!" class="card__title" picking-mode="Ignore" />
+            <ui:Label name="caption" text="Rush Battle · 60 s" class="caption" picking-mode="Ignore" />
+            <ui:VisualElement name="rank-list" class="rank-list" picking-mode="Ignore" />
+            <ui:Label name="note" text="" class="caption rematch-note" picking-mode="Ignore" />
+            <ui:VisualElement class="card__actions" picking-mode="Ignore">
+                <ui:Button name="home-button" class="btn btn--secondary">
+                    <ui:VisualElement class="btn__face" picking-mode="Ignore">
+                        <ui:VisualElement class="icon icon--home" picking-mode="Ignore" />
+                    </ui:VisualElement>
+                </ui:Button>
+                <ui:Button name="rematch-button" class="btn btn--primary">
+                    <ui:VisualElement class="btn__face" picking-mode="Ignore">
+                        <ui:VisualElement class="icon icon--retry icon--light" picking-mode="Ignore" />
+                        <ui:Label name="rematch-label" text="Play again" class="btn__label" picking-mode="Ignore" />
+                    </ui:VisualElement>
+                </ui:Button>
+            </ui:VisualElement>
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>

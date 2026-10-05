@@ -12,6 +12,7 @@ public sealed class SoloScoreManager : MonoBehaviour
     public int PreviousBest { get; private set; }
     public bool IsNewBest { get; private set; }
     public bool IsGameOver { get; private set; }
+    public bool Unranked { get; set; }
 
     private string bestKey = BestScoreKey;
 
@@ -48,7 +49,7 @@ public sealed class SoloScoreManager : MonoBehaviour
 
         Score += points;
 
-        if (Score > BestScore)
+        if (!Unranked && Score > BestScore)
         {
             BestScore = Score;
             PlayerPrefs.SetInt(bestKey, BestScore);
@@ -62,7 +63,7 @@ public sealed class SoloScoreManager : MonoBehaviour
         if (IsGameOver) return;
 
         IsGameOver = true;
-        IsNewBest = Score > 0 && Score > PreviousBest;
+        IsNewBest = !Unranked && Score > 0 && Score > PreviousBest;
         PlayerPrefs.Save();
     }
 

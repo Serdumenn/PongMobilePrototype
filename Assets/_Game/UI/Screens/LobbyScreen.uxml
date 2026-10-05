@@ -36,7 +36,6 @@
             <ui:VisualElement name="lobby-slots" class="lobby-slots" picking-mode="Ignore" />
             <ui:VisualElement name="versus" class="versus" picking-mode="Ignore" />
             <ui:VisualElement class="lobby-center" picking-mode="Ignore">
-                <ui:Label name="lobby-count" text="3" class="lobby-count" picking-mode="Ignore" />
                 <ui:Label name="lobby-status" text="" class="caption lobby-status" picking-mode="Ignore" />
             </ui:VisualElement>
         </ui:VisualElement>
