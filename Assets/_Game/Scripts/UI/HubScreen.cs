@@ -11,10 +11,14 @@ public sealed class HubScreen : UIScreen
     private readonly CosmeticsService cosmetics;
     private readonly OnlineService online;
     private readonly OnlineLobby lobby;
+    private readonly OnlineScores scores;
     private readonly Action<GameModeDefinition> onPick;
     private readonly Action<GameModeDefinition> onQuick;
     private readonly Action<GameModeDefinition> onCreate;
     private readonly Action<string> onJoin;
+    private readonly Func<bool> hasGhost;
+    private readonly Action onShareGhost;
+    private readonly Action<string> onRaceGhost;
     private readonly Action<string> toast;
 
     private readonly ScrollView local;
@@ -36,7 +40,21 @@ public sealed class HubScreen : UIScreen
     private readonly Button joinButton;
     private readonly VisualElement modeList;
 
+    private readonly Label dailyDate;
+    private readonly Label dailyBest;
+    private readonly Label dailyRank;
+    private readonly Label dailyReset;
+
+    private readonly Button ghostEnter;
+    private readonly Label ghostEnterLabel;
+    private readonly Button ghostShare;
+    private readonly Label ghostShareLabel;
+
     private readonly VisualElement joinDialog;
+    private readonly Label joinTitle;
+    private readonly Label joinText;
+    private readonly VisualElement joinIcon;
+    private readonly Label joinLabel;
     private readonly TextField codeField;
     private readonly Button joinConfirm;
 
@@ -44,11 +62,17 @@ public sealed class HubScreen : UIScreen
     private GameModeDefinition selectedMode;
     private int tab;
     private bool busy;
+    private bool ghostBusy;
+    private bool joinForGhost;
 
     public HubScreen(VisualElement root, LocalMatchController match, CosmeticsService cosmetics, OnlineService online, OnlineLobby lobby,
-        Action onBack, Action<GameModeDefinition> onPick, Action<GameModeDefinition> onQuick, Action<GameModeDefinition> onCreate,
-        Action<string> onJoin, Action<string> toast) : base(root)
+        OnlineScores scores, Action onBack, Action<GameModeDefinition> onPick, Action<GameModeDefinition> onQuick, Action<GameModeDefinition> onCreate,
+        Action<string> onJoin, Action onDaily, Func<bool> hasGhost, Action onShareGhost, Action<string> onRaceGhost, Action<string> toast) : base(root)
     {
+        this.hasGhost = hasGhost;
+        this.onShareGhost = onShareGhost;
+        this.onRaceGhost = onRaceGhost;
+        this.scores = scores;
         this.match = match;
         this.cosmetics = cosmetics;
         this.online = online;
@@ -73,7 +97,22 @@ public sealed class HubScreen : UIScreen
         quickLabel = root.Q<Label>("quick-label");
         modeList = root.Q("online-modes");
 
+        dailyDate = root.Q<Label>("daily-date");
+        dailyBest = root.Q<Label>("daily-best");
+        dailyRank = root.Q<Label>("daily-rank");
+        dailyReset = root.Q<Label>("daily-reset");
+        Bind("daily-button", onDaily);
+
+        ghostEnter = Bind("ghost-enter", OpenGhostJoin);
+        ghostEnterLabel = root.Q<Label>("ghost-enter-label");
+        ghostShare = Bind("ghost-share-last", () => onShareGhost?.Invoke());
+        ghostShareLabel = root.Q<Label>("ghost-share-label");
+
         joinDialog = root.Q("join-dialog");
+        joinTitle = root.Q<Label>("join-title");
+        joinText = root.Q<Label>("join-text");
+        joinIcon = root.Q("join-confirm-icon");
+        joinLabel = root.Q<Label>("join-confirm-label");
         codeField = root.Q<TextField>("code-field");
         codeField.keyboardType = TouchScreenKeyboardType.ASCIICapable;
         codeField.RegisterValueChangedCallback(OnCodeChanged);
@@ -118,8 +157,29 @@ public sealed class HubScreen : UIScreen
     public void SetBusy(bool value, string label)
     {
         busy = value;
-        quickLabel.text = value && !string.IsNullOrEmpty(label) ? label : "Quick match";
+        quickLabel.text = value && !string.IsNullOrEmpty(label) ? label : Loc.T("Quick match");
         RefreshOnline();
+    }
+
+    public bool GhostBusy => ghostBusy;
+
+    public void SetGhostBusy(bool value, string enterLabel = null, string shareLabel = null)
+    {
+        ghostBusy = value;
+        RefreshGhost();
+        if (!value) return;
+        if (!string.IsNullOrEmpty(enterLabel)) ghostEnterLabel.text = enterLabel;
+        if (!string.IsNullOrEmpty(shareLabel)) ghostShareLabel.text = shareLabel;
+    }
+
+    public void RefreshGhost()
+    {
+        bool has = hasGhost != null && hasGhost();
+        ghostEnter.SetEnabled(!ghostBusy);
+        ghostShare.SetEnabled(!ghostBusy && has);
+        ghostShare.EnableInClassList("ghost-share--off", !has);
+        ghostEnterLabel.text = Loc.T("Enter code");
+        ghostShareLabel.text = has ? Loc.T("Share my last Rush run") : Loc.T("Play a Rush run to share it");
     }
 
     public void CloseJoin()
@@ -152,6 +212,31 @@ public sealed class HubScreen : UIScreen
         note.style.display = index == 0 ? DisplayStyle.Flex : DisplayStyle.None;
 
         if (index == 1) Connect();
+        if (index == 2)
+        {
+            RefreshDaily();
+            RefreshGhost();
+        }
+    }
+
+    private void RefreshDaily()
+    {
+        var now = DateTime.UtcNow;
+        int best = DailyChallenge.BestToday(now);
+        dailyDate.text = DailyChallenge.Label(now);
+        dailyBest.text = best > 0 ? best.ToString() : "–";
+        dailyReset.text = DailyChallenge.FormatResetsIn(DailyChallenge.ResetsIn(now));
+        dailyRank.text = "–";
+        if (best > 0) _ = LoadDailyRank();
+    }
+
+    private async System.Threading.Tasks.Task LoadDailyRank()
+    {
+        if (online == null || scores == null) return;
+
+        await online.ConnectAsync();
+        int rank = await scores.RankAsync(OnlineScores.DailyBoard);
+        if (rank > 0 && IsVisible && tab == 2) dailyRank.text = $"#{rank}";
     }
 
     private void Connect()
@@ -172,15 +257,15 @@ public sealed class HubScreen : UIScreen
         if (!usable)
         {
             bool offline = state == OnlineService.Status.Offline;
-            statusTitle.text = offline ? "You're offline" : "Can't reach the servers";
+            statusTitle.text = offline ? Loc.T("You're offline") : Loc.T("Can't reach the servers");
             statusText.text = offline
-                ? "Online play needs the internet. Games on this device still work."
-                : "Online play is taking a break. Try again in a little while.";
+                ? Loc.T("Online play needs the internet. Games on this device still work.")
+                : Loc.T("Online play is taking a break. Try again in a little while.");
             return;
         }
 
         bool ready = state == OnlineService.Status.Ready;
-        meName.text = ready ? online.PlayerName : "Connecting…";
+        meName.text = ready ? online.PlayerName : Loc.T("Connecting…");
         UiFactory.SetPicture(meBall, CurrentLook()?.Happy);
 
         bool canPlay = ready && !busy && selectedMode != null;
@@ -252,13 +337,13 @@ public sealed class HubScreen : UIScreen
         row.Add(UiFactory.Element("online-mode__pick"));
 
         var text = UiFactory.Element("online-mode__text");
-        text.Add(UiFactory.Text(mode.DisplayName, "online-mode__name"));
-        text.Add(UiFactory.Text(mode.Tagline, "online-mode__sub"));
+        text.Add(UiFactory.Text(mode.Title, "online-mode__name"));
+        text.Add(UiFactory.Text(mode.Blurb, "online-mode__sub"));
         row.Add(text);
 
         if (mode.ComingSoon)
         {
-            row.Add(UiFactory.Text("Soon", "soon-chip"));
+            row.Add(UiFactory.Text(Loc.T("Soon"), "soon-chip"));
             return row;
         }
 
@@ -272,7 +357,7 @@ public sealed class HubScreen : UIScreen
         if (mode.ComingSoon)
         {
             UiFeedback.Back();
-            toast?.Invoke($"{mode.DisplayName} is coming soon.");
+            toast?.Invoke(Loc.T("{0} is coming soon.", mode.Title));
             return;
         }
 
@@ -283,6 +368,34 @@ public sealed class HubScreen : UIScreen
     }
 
     private void OpenJoin()
+    {
+        SetJoinTarget(false);
+        ShowJoin();
+    }
+
+    private void OpenGhostJoin()
+    {
+        if (ghostBusy) return;
+        SetJoinTarget(true);
+        ShowJoin();
+    }
+
+    private void SetJoinTarget(bool ghost)
+    {
+        joinForGhost = ghost;
+        joinTitle.text = ghost ? Loc.T("Race a ghost") : Loc.T("Join a friend");
+        joinText.text = ghost ? Loc.T("Type the ghost code your friend shared.") : Loc.T("Type the code on your friend's screen.");
+        joinLabel.text = ghost ? Loc.T("Race") : Loc.T("Join");
+        joinIcon.EnableInClassList("icon--join", !ghost);
+        joinIcon.EnableInClassList("icon--play", ghost);
+    }
+
+    private bool CodeValid(string code)
+    {
+        return joinForGhost ? GhostCode.IsValid(code) : SessionCode.IsValid(code);
+    }
+
+    private void ShowJoin()
     {
         codeField.SetValueWithoutNotify(string.Empty);
         joinConfirm.SetEnabled(false);
@@ -295,16 +408,17 @@ public sealed class HubScreen : UIScreen
         string code = SessionCode.Normalize(evt.newValue);
         if (code.Length > SessionCode.Length) code = code.Substring(0, SessionCode.Length);
         if (code != evt.newValue) codeField.SetValueWithoutNotify(code);
-        joinConfirm.SetEnabled(SessionCode.IsValid(code));
+        joinConfirm.SetEnabled(CodeValid(code));
     }
 
     private void ConfirmJoin()
     {
         string code = SessionCode.Normalize(codeField.value);
-        if (!SessionCode.IsValid(code)) return;
+        if (!CodeValid(code)) return;
 
         CloseJoin();
-        onJoin?.Invoke(code);
+        if (joinForGhost) onRaceGhost?.Invoke(code);
+        else onJoin?.Invoke(code);
     }
 
     private void BuildTiles()
@@ -335,13 +449,13 @@ public sealed class HubScreen : UIScreen
         tile.Add(art);
 
         var text = UiFactory.Element("hub-tile__text");
-        text.Add(UiFactory.Text(mode.DisplayName, "hub-tile__name"));
-        text.Add(UiFactory.Text(mode.Tagline, "hub-tile__sub"));
+        text.Add(UiFactory.Text(mode.Title, "hub-tile__name"));
+        text.Add(UiFactory.Text(mode.Blurb, "hub-tile__sub"));
         if (!fits)
         {
             var lockRow = UiFactory.Element("hub-tile__lock");
             lockRow.Add(UiFactory.Element("icon icon--lock"));
-            lockRow.Add(UiFactory.Text("Tablet only", "hub-tile__lock-label"));
+            lockRow.Add(UiFactory.Text(Loc.T("Tablet only"), "hub-tile__lock-label"));
             text.Add(lockRow);
         }
         tile.Add(text);
@@ -359,7 +473,7 @@ public sealed class HubScreen : UIScreen
                 var duel = UiFactory.Element("");
                 duel.style.alignItems = Align.Center;
                 duel.Add(UiFactory.Picture(match.PaddleSpriteFor(FieldSide.Top), "hub-art-paddle hub-art-paddle--flip"));
-                duel.Add(UiFactory.Text("vs", "hub-art-vs"));
+                duel.Add(UiFactory.Text(Loc.T("vs"), "hub-art-vs"));
                 duel.Add(UiFactory.Picture(match.PaddleSpriteFor(FieldSide.Bottom), "hub-art-paddle"));
                 return duel;
 

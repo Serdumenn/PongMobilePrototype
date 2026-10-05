@@ -76,7 +76,7 @@
 
 .mode-card__tagline {
     align-self: stretch;
-    white-space: normal;
+    white-space: nowrap;
     -unity-text-align: middle-center;
 }
 

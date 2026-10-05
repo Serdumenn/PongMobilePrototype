@@ -49,8 +49,8 @@ public sealed class MenuScreen : UIScreen
 
     public void SetTogether(int index, int count, Sprite left, Sprite right)
     {
-        modeName.text = "Together";
-        modeTagline.text = "Play with your friends";
+        modeName.text = Loc.T("Together");
+        modeTagline.text = Loc.T("Play with your friends");
         modeCard.EnableInClassList("mode-card--locked", false);
         playButton?.SetEnabled(true);
 
@@ -72,7 +72,7 @@ public sealed class MenuScreen : UIScreen
         modeBestIcon.EnableInClassList("icon--crown", false);
         modeBestIcon.EnableInClassList("icon--lock", false);
         modeBestIcon.EnableInClassList("icon--people", true);
-        modeBestLabel.text = "2–4 players";
+        modeBestLabel.text = Loc.T("2–4 players");
 
         SetDots(index, count);
     }
@@ -83,7 +83,7 @@ public sealed class MenuScreen : UIScreen
 
         modeBestIcon.EnableInClassList("icon--people", false);
 
-        modeName.text = mode.DisplayName;
+        modeName.text = mode.Title;
         modeCard.EnableInClassList("mode-card--locked", !unlocked);
         playButton?.SetEnabled(unlocked);
 
@@ -101,17 +101,17 @@ public sealed class MenuScreen : UIScreen
 
         if (unlocked)
         {
-            modeTagline.text = mode.Tagline;
+            modeTagline.text = mode.Blurb;
             modeBestIcon.EnableInClassList("icon--crown", true);
             modeBestIcon.EnableInClassList("icon--lock", false);
-            modeBestLabel.text = best > 0 ? $"Best {best}" : "No record yet";
+            modeBestLabel.text = best > 0 ? Loc.T("Best {0}", best) : Loc.T("No record yet");
         }
         else
         {
-            modeTagline.text = mode.Tagline;
+            modeTagline.text = mode.Blurb;
             modeBestIcon.EnableInClassList("icon--crown", false);
             modeBestIcon.EnableInClassList("icon--lock", true);
-            modeBestLabel.text = $"Classic best {mode.RequiredClassicBest} to unlock";
+            modeBestLabel.text = Loc.T("Classic best {0} to unlock", mode.RequiredClassicBest);
         }
 
         SetDots(index, count);

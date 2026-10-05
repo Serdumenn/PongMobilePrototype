@@ -17,7 +17,8 @@ public enum FieldTopology
     Solo,
     TopBottom,
     FourSides,
-    Portal
+    Portal,
+    Live
 }
 
 [CreateAssetMenu(menuName = "Pingi/Game Mode", fileName = "mode")]
@@ -54,6 +55,9 @@ public sealed class GameModeDefinition : ScriptableObject
     [field: Header("Online")]
     [field: SerializeField] public bool Online { get; private set; }
     [field: SerializeField] public bool ComingSoon { get; private set; }
+
+    public string Title => Loc.T(DisplayName);
+    public string Blurb => Loc.T(Tagline);
 
     [field: Header("Match")]
     [field: SerializeField] public int PointsToWin { get; private set; } = 5;

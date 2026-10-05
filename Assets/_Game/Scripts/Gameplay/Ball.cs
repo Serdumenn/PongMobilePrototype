@@ -45,6 +45,7 @@ public sealed class Ball : MonoBehaviour
     private bool waitingForServe;
 
     public MatchRandom Rng { get; set; }
+    public MatchRandom ServeRng { get; set; }
     public Paddle Server => server;
     public float CurrentSpeed => currentSpeed;
     public float SpeedBoost => speedBoost;
@@ -52,6 +53,7 @@ public sealed class Ball : MonoBehaviour
     public Vector2 LastVelocity => lastVelocity;
     public bool WaitingForServe => waitingForServe;
     public Vector2 ExitPoint { get; private set; }
+    public Vector2 Position => rb != null ? rb.position : (Vector2)transform.position;
 
     private void Awake()
     {
@@ -229,8 +231,9 @@ public sealed class Ball : MonoBehaviour
 
     private Vector2 GetLaunchDir()
     {
-        float x = Rng.Sign();
-        float y = Rng.Range(0.60f, 1.00f);
+        var dice = ServeRng ?? Rng;
+        float x = dice.Sign();
+        float y = dice.Range(0.60f, 1.00f);
         Vector2 dir = new Vector2(x, y).normalized;
 
         if (Mathf.Abs(dir.y) < MinVerticalDot)

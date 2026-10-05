@@ -55,10 +55,10 @@ public sealed class RushResultScreen : UIScreen
         int place = rules.PlaceOf(rules.MySlot);
         title.text = place switch
         {
-            1 => "1st place!",
-            2 => "2nd place",
-            3 => "3rd place",
-            _ => $"{place}th place"
+            1 => Loc.T("1st place!"),
+            2 => Loc.T("2nd place"),
+            3 => Loc.T("3rd place"),
+            _ => Loc.T("4th place")
         };
 
         var me = rules.Me;
@@ -66,9 +66,9 @@ public sealed class RushResultScreen : UIScreen
         if (look == null && cosmetics != null) look = cosmetics.Equipped(CosmeticCategory.Ball);
         if (look != null) UiFactory.SetPicture(mascot, place == 1 ? look.Happy : place == 2 ? look.Idle : look.Sad);
 
-        string mode = rush.Mode != null ? rush.Mode.DisplayName : "Rush Battle";
+        string mode = rush.Mode != null ? rush.Mode.Title : Loc.T("Rush Battle");
         int seconds = rush.Mode != null ? Mathf.RoundToInt(rush.Mode.DurationSeconds) : 60;
-        caption.text = $"{mode} · {seconds} s";
+        caption.text = Loc.T("{0} · {1} s", mode, seconds);
 
         list.Clear();
         foreach (var player in rules.Ranking()) list.Add(Row(rules, player));
@@ -83,9 +83,9 @@ public sealed class RushResultScreen : UIScreen
         }
 
         bool alone = rules.AloneLeft;
-        if (alone) note.text = "Everyone else left.";
-        else if (me != null && me.WantsRematch) note.text = waiting.Count > 0 ? $"Waiting for {string.Join(", ", waiting)}…" : "Starting…";
-        else if (asking.Count > 0) note.text = $"{string.Join(", ", asking)} {(asking.Count == 1 ? "wants" : "want")} to play again!";
+        if (alone) note.text = Loc.T("Everyone else left.");
+        else if (me != null && me.WantsRematch) note.text = waiting.Count > 0 ? Loc.T("Waiting for {0}…", string.Join(", ", waiting)) : Loc.T("Starting…");
+        else if (asking.Count > 0) note.text = asking.Count == 1 ? Loc.T("{0} wants to play again!", asking[0]) : Loc.T("{0} want to play again!", string.Join(", ", asking));
         else note.text = string.Empty;
 
         rematchButton.SetEnabled(!alone && me != null && !me.WantsRematch);
@@ -104,8 +104,8 @@ public sealed class RushResultScreen : UIScreen
         if (look == null && cosmetics != null) look = cosmetics.CatalogAsset.DefaultFor(CosmeticCategory.Ball);
         row.Add(UiFactory.Picture(look != null ? look.Idle : null, "rank-row__ball"));
 
-        string name = player.Slot == rules.MySlot ? $"{player.Name} (you)" : player.Name;
-        row.Add(UiFactory.Text(player.Left ? $"{name} · left" : name, "rank-row__name"));
+        string name = player.Slot == rules.MySlot ? Loc.T("{0} (you)", player.Name) : player.Name;
+        row.Add(UiFactory.Text(player.Left ? Loc.T("{0} · left", name) : name, "rank-row__name"));
         row.Add(UiFactory.Text(player.Score.ToString(), "rank-row__score"));
         return row;
     }

@@ -5,6 +5,7 @@ using Unity.Netcode;
 public sealed class NetcodeLink : IMatchLink
 {
     private const string Channel = "pingi.match";
+    private const string LiveChannel = "pingi.live";
 
     private readonly NetworkManager network;
     private readonly Func<int> ping;
@@ -15,6 +16,7 @@ public sealed class NetcodeLink : IMatchLink
         this.network = network;
         this.ping = ping;
         network.CustomMessagingManager.RegisterNamedMessageHandler(Channel, OnMessage);
+        network.CustomMessagingManager.RegisterNamedMessageHandler(LiveChannel, OnLive);
         network.OnClientConnectedCallback += OnPeerEvent;
         network.OnClientDisconnectCallback += OnPeerEvent;
     }
@@ -34,6 +36,7 @@ public sealed class NetcodeLink : IMatchLink
 
     public event Action<MatchMessage> Received;
     public event Action<bool> PeerChanged;
+    public event Action<byte[]> LiveReceived;
 
     public static bool CanOpen(NetworkManager network)
     {
@@ -58,6 +61,23 @@ public sealed class NetcodeLink : IMatchLink
             if (id != NetworkManager.ServerClientId) network.CustomMessagingManager.SendNamedMessage(Channel, id, writer);
     }
 
+    public void SendLive(byte[] data)
+    {
+        if (closed || data == null || !CanOpen(network)) return;
+
+        using var writer = new FastBufferWriter(data.Length + 8, Allocator.Temp);
+        writer.WriteValueSafe(data);
+
+        if (!network.IsServer)
+        {
+            network.CustomMessagingManager.SendNamedMessage(LiveChannel, NetworkManager.ServerClientId, writer, NetworkDelivery.UnreliableSequenced);
+            return;
+        }
+
+        foreach (ulong id in network.ConnectedClientsIds)
+            if (id != NetworkManager.ServerClientId) network.CustomMessagingManager.SendNamedMessage(LiveChannel, id, writer, NetworkDelivery.UnreliableSequenced);
+    }
+
     public void Close()
     {
         if (closed) return;
@@ -65,6 +85,7 @@ public sealed class NetcodeLink : IMatchLink
 
         if (network == null) return;
         network.CustomMessagingManager?.UnregisterNamedMessageHandler(Channel);
+        network.CustomMessagingManager?.UnregisterNamedMessageHandler(LiveChannel);
         network.OnClientConnectedCallback -= OnPeerEvent;
         network.OnClientDisconnectCallback -= OnPeerEvent;
     }
@@ -75,6 +96,14 @@ public sealed class NetcodeLink : IMatchLink
 
         reader.ReadValueSafe(out byte[] data);
         if (MatchMessage.TryParse(data, out var message)) Received?.Invoke(message);
+    }
+
+    private void OnLive(ulong sender, FastBufferReader reader)
+    {
+        if (closed) return;
+
+        reader.ReadValueSafe(out byte[] data);
+        LiveReceived?.Invoke(data);
     }
 
     private void OnPeerEvent(ulong clientId)

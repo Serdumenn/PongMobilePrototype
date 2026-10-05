@@ -17,6 +17,7 @@ public sealed class HudScreen : UIScreen
     private readonly VisualElement rushFill;
     private readonly Label rushTime;
     private readonly Label combo;
+    private readonly Label ghostDelta;
     private readonly Label perfect;
 
     private IVisualElementScheduledItem perfectJob;
@@ -30,6 +31,7 @@ public sealed class HudScreen : UIScreen
         rushFill = root.Q("rush-fill");
         rushTime = root.Q<Label>("rush-time");
         combo = root.Q<Label>("combo");
+        ghostDelta = root.Q<Label>("ghost-delta");
         perfect = root.Q<Label>("perfect");
 
         Bind("pause-button", onPause);
@@ -71,6 +73,17 @@ public sealed class HudScreen : UIScreen
         rushTime.text = $"{seconds / 60}:{seconds % 60:00}";
     }
 
+    public void SetDelta(int? delta)
+    {
+        ghostDelta.EnableInClassList("ghost-delta--hidden", !delta.HasValue);
+        if (!delta.HasValue) return;
+
+        int value = delta.Value;
+        ghostDelta.text = value > 0 ? Loc.T("+{0} ahead", value) : value < 0 ? Loc.T("{0} behind", -value) : Loc.T("Tied");
+        ghostDelta.EnableInClassList("ghost-delta--ahead", value > 0);
+        ghostDelta.EnableInClassList("ghost-delta--behind", value < 0);
+    }
+
     public void ShowHit(HitResult hit)
     {
         if (!hit.Perfect)
@@ -79,12 +92,12 @@ public sealed class HudScreen : UIScreen
             return;
         }
 
-        perfect.text = $"Perfect! +{hit.Points}";
+        perfect.text = Loc.T("Perfect! +{0}", hit.Points);
         perfect.AddToClassList("perfect--show");
         perfectJob?.Pause();
         perfectJob = perfect.schedule.Execute(() => perfect.RemoveFromClassList("perfect--show")).StartingIn(PerfectMs);
 
         combo.EnableInClassList("combo--hidden", hit.PerfectStreak < 2);
-        combo.text = $"×{hit.PerfectStreak} perfect";
+        combo.text = Loc.T("×{0} perfect", hit.PerfectStreak);
     }
 }

@@ -151,6 +151,63 @@
     background-color: var(--color-divider);
 }
 
+.row--button {
+    margin: 0;
+    padding: 0;
+    border-width: 0;
+    border-radius: 0;
+    background-color: rgba(0, 0, 0, 0);
+}
+
+.row__value--link {
+    margin-right: 12px;
+    color: var(--color-teal-edge);
+    -unity-font-definition: url("/Assets/_Game/Fonts/fnt_fredoka_semibold_sdf.asset");
+}
+
+.row__chevron {
+    width: 56px;
+    height: 56px;
+    -unity-background-image-tint-color: var(--color-ink-muted);
+}
+
+.language-card {
+    padding-top: 72px;
+}
+
+.language-list {
+    align-self: stretch;
+    margin-top: 32px;
+}
+
+.language-option {
+    flex-direction: row;
+    align-items: center;
+    height: 136px;
+    margin: 0;
+    padding: 0 32px;
+    border-width: 0;
+    border-radius: 40px;
+    background-color: rgba(0, 0, 0, 0);
+}
+
+.language-option--selected {
+    background-color: #E6F7F5;
+}
+
+.language-option__name {
+    flex-grow: 1;
+    color: var(--color-ink);
+    font-size: 56px;
+    -unity-font-definition: url("/Assets/_Game/Fonts/fnt_fredoka_semibold_sdf.asset");
+}
+
+.language-option .icon {
+    width: 56px;
+    height: 56px;
+    -unity-background-image-tint-color: var(--color-teal-edge);
+}
+
 .settings-footer {
     margin-bottom: 64px;
 }

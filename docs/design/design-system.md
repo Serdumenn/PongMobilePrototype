@@ -167,6 +167,57 @@ Tüm efektler bize ait. `ArtSource/tools/generate_sfx.py` ile sentezleniyor (mon
 | Durum notu | ink çip, %66 | ink | 1,8 sn görünür |
 | Sıralama kartı | Game Over kartı | — | satır 120: yer rozeti 72 (1. altın), top 76, ad 46 bold, skor 58 bold; senin satırın `#E6F7F5` |
 
+**Meydan okumalar ve Dünya sıralaması (M4b):**
+
+| Bileşen | Boyut | Zemin / kenar | İçerik |
+|---|---|---|---|
+| Meydan okuma kartı | iç boşluk 44, köşe 64, alt boşluk 44 | surface / surface-edge 16 | ikon 64, başlık 58 bold, açıklama 40 medium (ink-muted) |
+| Tarih rozeti | köşe 40 | `#FFF0C2` | "Oct 5", 40 bold, sarı oyuncu metin rengi |
+| Günlük istatistik şeridi | köşe 40, üç eşit sütun | `#FFF4E6` | etiket 34 medium ("Your best", "Rank", "Resets in"), değer 60 bold; değer yoksa "–" |
+| "Play today's run" | birincil buton, tam genişlik | mercan | oynat ikonu 80 |
+| Yakında kartı | meydan okuma kartı | aynı | başlık, ikon ve metin %50 opak, "Soon" çipi |
+| Dünya tablosu | yan boşluk 56, köşe 64 | surface / surface-edge 16 | başlık "Top 10" ya da "Today · Oct 5"; satırlar Skorlar ekranındaki sıralama satırı (1. altın, senin satırın vurgulu ve "(you)"); Co-op'ta "Ad & Eş". İlk 10'da değilsen "•••" ve kendi satırın. Boş, çevrimdışı, hata ve yükleniyor notu 40 medium; not boşsa gizlenir |
+| Tablo çipleri | mod çipi | — | Classic, Rush, Daily, Co-op |
+
+**Canlı Düello (M5):**
+
+| Bileşen | Kural |
+|---|---|
+| Saha | 9:16 sabit; telefona sığacak en büyük boy, alt kenar ekranın altında, üstte rakip kartı payı (Portal ile aynı, 1,9 birim). Kenar çizgileri ve kesikli orta çizgi; tablette ortada |
+| Raketler | Ben altta (kendi kostümüm), rakip üstte; renkler ayırt edilir (oyuncu paletinden mercan, benimki mercansa teal). Hareket yönüne en fazla 22° eğim |
+| Top | Ölçek sahaya göre; son vuranın kostümü |
+| HUD ve sonuç | Online maç bileşenleri (M3) aynen |
+
+**Hayalet Meydan Okuma (M4c):**
+
+| Bileşen | Boyut | Zemin / kenar | İçerik |
+|---|---|---|---|
+| Kod alanı (buton) | yükseklik 160, köşe 48, kenar 6 | `#FFF8EF` / divider; basılınca teal | "Enter code" 52 semibold ink-muted, sağda teal "join" ikonu 64 |
+| Paylaş bağlantısı | — | zeminsiz | teal-edge paylaş ikonu 56 + "Share my last Rush run" 46 bold; koşu yoksa gri "Play a Rush run to share it" |
+| Kod penceresi | online-card | surface | hayalet ikonu 104, "Your ghost code", kod 150 bold ink, 7 gün notu, Copy / Share çifti, "Done" |
+| Hayalet kartı (yarış) | 470 genişlik, sağda %36 | surface / surface-edge 12, köşe 48 | hayaletin topu 76 (%55), ad 40 bold, hayalet ikonu + "Ghost" 32, skor 56 bold (hayalet öndeyse mercan) |
+| Fark çipi | köşe 40 | önde teal-edge, geride mercan, eşitken ink | "+2 ahead" / "2 behind" / "Tied", 44 bold beyaz |
+| Dünyadaki hayalet | top ve raket kostümü | top %45, raket %32 opak | gerçek top ve raketin bir katman altında |
+| Sonuç kartı | Game Over kartı | — | başlık, "Ghost Challenge · Ad", skorlar 128 bold (sen mercan, hayalet ink-muted) "vs", skor-zaman çizgisi 200 yükseklik `#FFF4E6` zeminde (sen 9 px düz mercan, hayalet `#B8A99A` kesikli), "Send my run back" birincil, ev + "Try again" |
+
+- **Günlük oyun sonu:** Game Over kartı kullanılır. Başlık "New best today!" ya da tek kişilik başlıklar, alt satır "Daily Challenge · Oct 5", en alt satır "Today's best N", sıra gelince "· Rank #N" eklenir.
+- **Yeni ikonlar:** `calendar`, `ghost`.
+
+## Diller (6b, 2026-10-05)
+
+| Bileşen | Boyut | Zemin / kenar | Etiket |
+|---|---|---|---|
+| Dil satırı (Ayarlar) | diğer satırlarla aynı, buton | zeminsiz | `language` ikonu + "Language"; sağda seçili dilin kendi adı teal-edge 56 semibold ve sağ ok (`chevron-right`) 56 ink-muted |
+| Dil penceresi | kart, üst boşluk 72 | surface | "Language" başlığı; 8 satır, her biri 136 yükseklik, köşe 40, ad 56 semibold ink; seçili satır `#E6F7F5` zemin ve teal-edge onay ikonu; en altta "Cancel" bağlantısı |
+
+- **Dil adları** her zaman kendi dilinde yazılır ve çevrilmez: English, Türkçe, 日本語, 한국어, Deutsch, Español, Português, Français.
+- **Fontlar:** Latin harfleri Fredoka'dan gelir. Japonca harfler M PLUS Rounded 1c'den (ağırlıklar Fredoka'ya karşılık gelir), Korece harfler Jua'dan gelir. Üçü de yuvarlak hatlıdır.
+- **Uzun metinler:**
+  - Açıklamalar ve uyarılar kaydırılır (birden çok satır).
+  - Başlıklar, buton etiketleri, sekmeler ve çipler tek satırdır. Sığmazlarsa font en fazla %40 küçülür (`TextFit`). Sekmeler birlikte küçülür.
+  - Oyuncu adları küçülmez, sonu "…" ile kesilir.
+- **Noktalama:** Japoncada tam genişlik `！？：` kullanılır. Fransızcada `! ? :` öncesinde bölünmez boşluk vardır.
+
 ## Erişilebilirlik
 
 - Metin kontrastı ≥ 4.5:1, büyük metin (≥ 72 px bold) ≥ 3:1

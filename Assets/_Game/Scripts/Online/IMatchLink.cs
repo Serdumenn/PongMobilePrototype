@@ -8,7 +8,9 @@ public interface IMatchLink
 
     event Action<MatchMessage> Received;
     event Action<bool> PeerChanged;
+    event Action<byte[]> LiveReceived;
 
     void Send(MatchMessage message);
+    void SendLive(byte[] data);
     void Close();
 }

@@ -24,6 +24,7 @@ public sealed class OnlineService : MonoBehaviour
     private Task connecting;
 
     public static bool HasInternet => Application.internetReachability != NetworkReachability.NotReachable;
+    public static bool Disabled { get; set; }
 
     public Task ConnectAsync()
     {
@@ -35,6 +36,7 @@ public sealed class OnlineService : MonoBehaviour
 
     public async Task<bool> HasAccountAsync()
     {
+        if (Disabled) return false;
         try
         {
             if (UnityServices.State != ServicesInitializationState.Initialized)
@@ -66,7 +68,7 @@ public sealed class OnlineService : MonoBehaviour
 
     private async Task Connect()
     {
-        if (!HasInternet)
+        if (Disabled || !HasInternet)
         {
             SetState(Status.Offline);
             return;

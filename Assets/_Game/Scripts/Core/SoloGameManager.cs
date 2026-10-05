@@ -13,6 +13,14 @@ public sealed class SoloGameManager : MonoBehaviour
         GameOver
     }
 
+    public enum RunKind
+    {
+        Normal,
+        Battle,
+        Daily,
+        Ghost
+    }
+
     private const string SelectedModeKey = "SelectedMode";
 
     [Header("Refs")]
@@ -45,7 +53,10 @@ public sealed class SoloGameManager : MonoBehaviour
     public MatchRules Rules { get; private set; }
     public Participant Player { get; private set; }
     public int RunSeed { get; private set; }
-    public bool BattleRun { get; private set; }
+    public RunKind Kind { get; private set; }
+    public bool BattleRun => Kind == RunKind.Battle;
+    public bool DailyRun => Kind == RunKind.Daily;
+    public bool GhostRun => Kind == RunKind.Ghost;
     public GameModeDefinition RunMode { get; private set; }
 
     private readonly List<Participant> participants = new List<Participant>();
@@ -165,7 +176,25 @@ public sealed class SoloGameManager : MonoBehaviour
     {
         if (State != GameState.Menu || mode == null) return;
 
-        BattleRun = true;
+        Kind = RunKind.Battle;
+        nextSeed = seed;
+        StartRun(mode);
+    }
+
+    public void StartDailyRun(GameModeDefinition mode, int seed)
+    {
+        if (mode == null || State == GameState.Playing || State == GameState.Paused) return;
+
+        Kind = RunKind.Daily;
+        nextSeed = seed;
+        StartRun(mode);
+    }
+
+    public void StartGhostRun(GameModeDefinition mode, int seed)
+    {
+        if (mode == null || State == GameState.Playing || State == GameState.Paused) return;
+
+        Kind = RunKind.Ghost;
         nextSeed = seed;
         StartRun(mode);
     }
@@ -174,7 +203,7 @@ public sealed class SoloGameManager : MonoBehaviour
     {
         Time.timeScale = 1f;
         StopRespawn();
-        BattleRun = false;
+        Kind = RunKind.Normal;
         if (Score != null) Score.Unranked = false;
 
         if (SoloBall != null) SoloBall.StopRoundKeepVisible();
@@ -273,13 +302,15 @@ public sealed class SoloGameManager : MonoBehaviour
         if (Paddle != null) Paddle.InputEnabled = false;
 
         if (Score != null) Score.GameOver();
-        if (Records != null && !BattleRun) Records.RecordRun(RunMode, Score != null && Score.IsNewBest, Player.LongestStreak, runSeconds);
+        if (Records != null && !BattleRun) Records.RecordRun(RunMode, Kind == RunKind.Normal && Score != null && Score.IsNewBest, Player.LongestStreak, runSeconds);
 
         SetState(GameState.GameOver);
     }
 
     public void HideGameObjects()
     {
+        if (BallEntrance != null) BallEntrance.Cancel();
+        if (RacketEntrance != null) RacketEntrance.Cancel();
         if (SoloBall != null) SoloBall.SetBallVisible(false);
         if (Paddle != null) Paddle.SetVisible(false);
     }
@@ -292,7 +323,7 @@ public sealed class SoloGameManager : MonoBehaviour
 
     private void StartNewRun()
     {
-        BattleRun = false;
+        Kind = RunKind.Normal;
         StartRun(CurrentMode);
     }
 
@@ -304,7 +335,7 @@ public sealed class SoloGameManager : MonoBehaviour
 
         if (Score != null)
         {
-            Score.Unranked = BattleRun;
+            Score.Unranked = Kind != RunKind.Normal;
             if (mode != null) Score.SetBestKey(mode.BestScoreKey);
             Score.ResetScore();
         }
@@ -319,6 +350,7 @@ public sealed class SoloGameManager : MonoBehaviour
         if (SoloBall != null)
         {
             SoloBall.Rng = new MatchRandom(RunSeed);
+            SoloBall.ServeRng = new MatchRandom(unchecked(RunSeed ^ 0x2545F491));
             SoloBall.SetServer(Paddle);
             SoloBall.StartRound();
         }

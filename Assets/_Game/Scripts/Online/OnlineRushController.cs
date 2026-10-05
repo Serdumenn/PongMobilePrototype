@@ -230,7 +230,7 @@ public sealed class OnlineRushController : MonoBehaviour
     public string NameOf(byte slot)
     {
         var player = Rules?.Find(slot);
-        return player != null ? player.Name : "Someone";
+        return player != null ? player.Name : Loc.T("Someone");
     }
 
     private void Begin(int seed, string roster)

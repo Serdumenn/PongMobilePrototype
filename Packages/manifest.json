@@ -11,6 +11,8 @@
     "com.unity.pipeline": "0.8.0-exp.1",
     "com.unity.purchasing": "5.4.3",
     "com.unity.services.authentication": "3.8.0",
+    "com.unity.services.cloudcode": "2.10.4",
+    "com.unity.services.leaderboards": "2.3.4",
     "com.unity.services.multiplayer": "2.3.3",
     "com.unity.test-framework": "1.6.0",
     "com.unity.ugui": "2.0.0",

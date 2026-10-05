@@ -1,0 +1,44 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" editor-extension-mode="False">
+    <ui:VisualElement class="scrim" />
+    <ui:VisualElement class="safe overlay" picking-mode="Ignore">
+        <ui:VisualElement class="card ghost-result-card">
+            <ui:VisualElement name="mascot" class="card__mascot" picking-mode="Ignore" />
+            <ui:Label name="title" text="You beat the ghost!" class="card__title" picking-mode="Ignore" />
+            <ui:Label name="caption" text="Ghost Challenge" class="caption" picking-mode="Ignore" />
+            <ui:VisualElement class="ghost-vs" picking-mode="Ignore">
+                <ui:VisualElement class="ghost-vs__side" picking-mode="Ignore">
+                    <ui:Label name="my-score" text="0" class="ghost-vs__score ghost-vs__score--me" picking-mode="Ignore" />
+                    <ui:Label text="You" class="ghost-vs__name" picking-mode="Ignore" />
+                </ui:VisualElement>
+                <ui:Label text="vs" class="ghost-vs__vs" picking-mode="Ignore" />
+                <ui:VisualElement class="ghost-vs__side" picking-mode="Ignore">
+                    <ui:Label name="ghost-score" text="0" class="ghost-vs__score" picking-mode="Ignore" />
+                    <ui:VisualElement class="ghost-vs__who" picking-mode="Ignore">
+                        <ui:VisualElement class="icon icon--ghost" picking-mode="Ignore" />
+                        <ui:Label name="ghost-name" text="Ghost" class="ghost-vs__name" picking-mode="Ignore" />
+                    </ui:VisualElement>
+                </ui:VisualElement>
+            </ui:VisualElement>
+            <ui:VisualElement name="spark-slot" class="ghost-spark" picking-mode="Ignore" />
+            <ui:Button name="send-button" class="btn btn--primary btn--wide">
+                <ui:VisualElement class="btn__face" picking-mode="Ignore">
+                    <ui:VisualElement class="icon icon--share icon--light" picking-mode="Ignore" />
+                    <ui:Label name="send-label" text="Send my run back" class="btn__label" picking-mode="Ignore" />
+                </ui:VisualElement>
+            </ui:Button>
+            <ui:VisualElement class="card__actions ghost-result-actions" picking-mode="Ignore">
+                <ui:Button name="home-button" class="btn btn--secondary">
+                    <ui:VisualElement class="btn__face" picking-mode="Ignore">
+                        <ui:VisualElement class="icon icon--home" picking-mode="Ignore" />
+                    </ui:VisualElement>
+                </ui:Button>
+                <ui:Button name="retry-button" class="btn ghost-retry">
+                    <ui:VisualElement class="btn__face" picking-mode="Ignore">
+                        <ui:VisualElement class="icon icon--retry" picking-mode="Ignore" />
+                        <ui:Label text="Try again" class="btn__label" picking-mode="Ignore" />
+                    </ui:VisualElement>
+                </ui:Button>
+            </ui:VisualElement>
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>

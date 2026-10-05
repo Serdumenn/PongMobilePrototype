@@ -9,7 +9,7 @@
             <ui:Label text="Collection" class="screen-title" picking-mode="Ignore" />
             <ui:VisualElement class="topbar__side" picking-mode="Ignore" />
         </ui:VisualElement>
-        <ui:VisualElement class="tabs" picking-mode="Ignore">
+        <ui:VisualElement class="tabs fit-group" picking-mode="Ignore">
             <ui:Button name="tab-ball" text="Pingi" class="tab" />
             <ui:Button name="tab-paddle" text="Paddles" class="tab" />
             <ui:Button name="tab-theme" text="Themes" class="tab" />

@@ -1,0 +1,27 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" editor-extension-mode="False">
+    <ui:VisualElement name="ghost-code-scrim" class="scrim" />
+    <ui:VisualElement class="safe overlay" picking-mode="Ignore">
+        <ui:VisualElement class="card online-card ghost-code-card">
+            <ui:VisualElement class="icon icon--ghost ghost-code-card__icon" picking-mode="Ignore" />
+            <ui:Label text="Your ghost code" class="card__title" picking-mode="Ignore" />
+            <ui:Label name="ghost-code" text="------" class="code-card__code ghost-code-card__code" picking-mode="Ignore" />
+            <ui:Label name="ghost-code-info" text="Friends type it in Challenges to race your run. It works for 7 days." class="caption dialog__text ghost-code-card__info" picking-mode="Ignore" />
+            <ui:VisualElement class="online-pair ghost-code-card__pair" picking-mode="Ignore">
+                <ui:Button name="ghost-copy" class="btn">
+                    <ui:VisualElement class="btn__face" picking-mode="Ignore">
+                        <ui:VisualElement class="icon icon--copy" picking-mode="Ignore" />
+                        <ui:Label text="Copy" class="btn__label" picking-mode="Ignore" />
+                    </ui:VisualElement>
+                </ui:Button>
+                <ui:VisualElement class="online-pair__gap" picking-mode="Ignore" />
+                <ui:Button name="ghost-share" class="btn">
+                    <ui:VisualElement class="btn__face" picking-mode="Ignore">
+                        <ui:VisualElement class="icon icon--share" picking-mode="Ignore" />
+                        <ui:Label text="Share" class="btn__label" picking-mode="Ignore" />
+                    </ui:VisualElement>
+                </ui:Button>
+            </ui:VisualElement>
+            <ui:Button name="ghost-done" text="Done" class="link" />
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>

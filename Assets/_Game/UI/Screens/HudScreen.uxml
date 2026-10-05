@@ -21,6 +21,7 @@
             </ui:Button>
         </ui:VisualElement>
         <ui:Label name="score-label" text="0" class="hud-score" picking-mode="Ignore" />
+        <ui:Label name="ghost-delta" text="" class="ghost-delta ghost-delta--hidden" picking-mode="Ignore" />
         <ui:Label name="combo" text="" class="combo combo--hidden" picking-mode="Ignore" />
     </ui:VisualElement>
     <ui:Label name="perfect" text="Perfect! +2" class="perfect" picking-mode="Ignore" />

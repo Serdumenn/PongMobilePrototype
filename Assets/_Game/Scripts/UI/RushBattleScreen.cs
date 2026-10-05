@@ -150,32 +150,32 @@ public sealed class RushBattleScreen : UIScreen
     private void OnIncoming(RushAttack kind, string from)
     {
         SetIcon(bannerIcon, kind);
-        bannerText.text = $"{Label(kind)} incoming! Hit a Perfect to block";
+        bannerText.text = Incoming(kind);
         banner.RemoveFromClassList("attack-banner--hidden");
-        Note($"From {from}");
+        Note(Loc.T("From {0}", from));
     }
 
     private void OnActive(RushAttack kind, bool on)
     {
         banner.AddToClassList("attack-banner--hidden");
         if (kind == RushAttack.Fog) fog.EnableInClassList("fog--hidden", !on);
-        if (on && kind != RushAttack.Fog) Note(kind == RushAttack.MiniPaddle ? "Mini paddle for 5 s" : "Fast ball for 5 s");
+        if (on && kind != RushAttack.Fog) Note(kind == RushAttack.MiniPaddle ? Loc.T("Mini paddle for 5 s") : Loc.T("Fast ball for 5 s"));
     }
 
     private void OnSent(RushAttack kind, string target)
     {
-        Note($"{Label(kind)} sent to {target}!");
+        Note(Sent(kind, target));
     }
 
     private void OnBlocked(string attacker)
     {
         banner.AddToClassList("attack-banner--hidden");
-        Note("Blocked!");
+        Note(Loc.T("Blocked!"));
     }
 
     private void OnMyAttackBlocked(string target)
     {
-        Note($"{target} blocked your attack");
+        Note(Loc.T("{0} blocked your attack", target));
     }
 
     private void OnReaction(string from, byte id)
@@ -192,13 +192,23 @@ public sealed class RushBattleScreen : UIScreen
         noteJob = note.schedule.Execute(() => note.AddToClassList("rush-note--hidden")).StartingIn(NoteMs);
     }
 
-    private static string Label(RushAttack kind)
+    private static string Incoming(RushAttack kind)
     {
         return kind switch
         {
-            RushAttack.MiniPaddle => "Mini paddle",
-            RushAttack.FastBall => "Fast ball",
-            _ => "Fog"
+            RushAttack.MiniPaddle => Loc.T("Mini paddle incoming! Hit a Perfect to block"),
+            RushAttack.FastBall => Loc.T("Fast ball incoming! Hit a Perfect to block"),
+            _ => Loc.T("Fog incoming! Hit a Perfect to block")
+        };
+    }
+
+    private static string Sent(RushAttack kind, string target)
+    {
+        return kind switch
+        {
+            RushAttack.MiniPaddle => Loc.T("Mini paddle sent to {0}!", target),
+            RushAttack.FastBall => Loc.T("Fast ball sent to {0}!", target),
+            _ => Loc.T("Fog sent to {0}!", target)
         };
     }
 

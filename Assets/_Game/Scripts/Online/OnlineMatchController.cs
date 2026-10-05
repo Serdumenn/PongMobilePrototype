@@ -23,6 +23,8 @@ public sealed class OnlineMatchController : MonoBehaviour
     [SerializeField] private CosmeticsService Cosmetics;
     [SerializeField] private SkinApplier Skins;
     [SerializeField] private PortalView Portal;
+    [SerializeField] private OnlineScores Scores;
+    [SerializeField] private LiveDuel Live;
 
     [Header("Timing")]
     [SerializeField] private int CountdownFrom = 3;
@@ -63,7 +65,8 @@ public sealed class OnlineMatchController : MonoBehaviour
     public float PeerWaitRemaining => PeerMissing ? Mathf.Max(0f, peerDeadline - Time.realtimeSinceStartup) : 0f;
     public int PingMs => link != null ? link.PingMs : -1;
     public bool MyServe => Rules != null && Rules.HostServes == IsHost;
-    public bool AwaitingMyServe => MainBall != null && MainBall.WaitingForServe;
+    public bool IsLive => Mode != null && Mode.Kind == GameModeKind.LiveDuel;
+    public bool AwaitingMyServe => IsLive ? Live != null && Live.AwaitingMyServe : MainBall != null && MainBall.WaitingForServe;
     public float MatchSeconds { get; private set; }
 
     private readonly List<Coroutine> running = new List<Coroutine>();
@@ -85,6 +88,13 @@ public sealed class OnlineMatchController : MonoBehaviour
         if (Cosmetics == null) Cosmetics = FindFirstObjectByType<CosmeticsService>();
         if (Skins == null) Skins = FindFirstObjectByType<SkinApplier>();
         if (Portal == null) Portal = FindFirstObjectByType<PortalView>();
+        if (Scores == null) Scores = FindFirstObjectByType<OnlineScores>();
+        if (Live == null) Live = FindFirstObjectByType<LiveDuel>();
+        if (Live != null)
+        {
+            Live.Hit += OnLiveHit;
+            Live.Goal += OnLiveGoal;
+        }
     }
 
     private void Update()
@@ -102,6 +112,9 @@ public sealed class OnlineMatchController : MonoBehaviour
     private void OnDestroy()
     {
         Detach();
+        if (Live == null) return;
+        Live.Hit -= OnLiveHit;
+        Live.Goal -= OnLiveGoal;
     }
 
     public void Open(IMatchLink matchLink, GameModeDefinition mode, string myLook, string opponentName, string opponentLook)
@@ -185,6 +198,7 @@ public sealed class OnlineMatchController : MonoBehaviour
             MainPaddle.ResetToDefault();
         }
 
+        if (Live != null) Live.End();
         if (Layout != null) Layout.SetTopology(FieldTopology.Solo);
         if (Skins != null) Skins.Refresh();
         if (Portal != null) Portal.Hide();
@@ -209,6 +223,13 @@ public sealed class OnlineMatchController : MonoBehaviour
     {
         StopRunning();
         Time.timeScale = 1f;
+
+        if (IsLive && Live != null)
+        {
+            if (Portal != null) Portal.Hide();
+            Live.Prepare();
+            return;
+        }
 
         Layout.SetTopology(FieldTopology.Portal);
         MainPaddle.ResetToDefault();
@@ -237,6 +258,7 @@ public sealed class OnlineMatchController : MonoBehaviour
         MatchSeconds = 0f;
 
         PrepareWorld();
+        if (IsLive && Live != null) Live.Begin(link, seed, hostServes, Mode.PointsToWin, MyLook, OpponentLook);
         ScoreChanged?.Invoke();
         RematchChanged?.Invoke();
         SetState(MatchState.Countdown);
@@ -252,6 +274,13 @@ public sealed class OnlineMatchController : MonoBehaviour
         }
 
         CountdownTick?.Invoke(0);
+        if (IsLive && Live != null)
+        {
+            SetState(MatchState.Playing);
+            Live.Go();
+            yield break;
+        }
+
         MainPaddle.InputEnabled = true;
         SetState(MatchState.Playing);
         if (MyServe) ServeLocal();
@@ -357,7 +386,21 @@ public sealed class OnlineMatchController : MonoBehaviour
             return;
         }
 
-        if (MyServe) Run(ServeLater());
+        if (!IsLive && MyServe) Run(ServeLater());
+    }
+
+    private void OnLiveHit(int rallyCount, bool mine)
+    {
+        if (State != MatchState.Playing) return;
+        rally = (ushort)Mathf.Min(rallyCount, ushort.MaxValue);
+        PaddleHit?.Invoke(rally);
+    }
+
+    private void OnLiveGoal(bool hostMissed)
+    {
+        if (State != MatchState.Playing || Rules == null || !IsLive) return;
+        Rules.Miss(hostMissed);
+        OnScore();
     }
 
     private void EndMatch()
@@ -368,9 +411,11 @@ public sealed class OnlineMatchController : MonoBehaviour
         PeerMissing = false;
         MainPaddle.InputEnabled = false;
         MainBall.StopRound();
+        if (IsLive && Live != null) Live.Freeze();
 
         int passes = Rules != null && Rules.Coop ? Rules.Passes : 0;
         if (Records != null) Records.RecordMatch(passes, MatchSeconds);
+        if (Scores != null && passes > 0) _ = Scores.SubmitAsync(OnlineScores.CoopBoard, passes, OpponentName);
         if (Cosmetics != null) Cosmetics.EvaluateStreakRewards();
         if (Won || (Rules != null && Rules.Coop)) AudioManager.PlayOne(Sfx.MatchWin);
 
@@ -432,7 +477,7 @@ public sealed class OnlineMatchController : MonoBehaviour
         {
             PeerMissing = false;
             PeerMissingChanged?.Invoke(false);
-            if (State != MatchState.Playing) return;
+            if (State != MatchState.Playing || IsLive) return;
 
             MainPaddle.InputEnabled = true;
             if (IsHost) Send(MatchMessage.Score(Rules));

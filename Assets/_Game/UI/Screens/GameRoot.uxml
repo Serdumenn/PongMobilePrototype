@@ -16,6 +16,9 @@
     <ui:Template name="OnlineResult" src="OnlineResultScreen.uxml" />
     <ui:Template name="RushBattle" src="RushBattleScreen.uxml" />
     <ui:Template name="RushResult" src="RushResultScreen.uxml" />
+    <ui:Template name="GhostRace" src="GhostRaceScreen.uxml" />
+    <ui:Template name="GhostResult" src="GhostResultScreen.uxml" />
+    <ui:Template name="GhostCode" src="GhostCodeScreen.uxml" />
     <ui:VisualElement name="root" class="root" picking-mode="Ignore">
         <ui:Instance template="Hud" name="hud" class="screen" picking-mode="Ignore" />
         <ui:Instance template="Menu" name="menu" class="screen" picking-mode="Ignore" />
@@ -31,9 +34,12 @@
         <ui:Instance template="OnlineResult" name="online-result" class="screen" picking-mode="Ignore" />
         <ui:Instance template="RushBattle" name="rush-battle" class="screen" picking-mode="Ignore" />
         <ui:Instance template="RushResult" name="rush-result" class="screen" picking-mode="Ignore" />
+        <ui:Instance template="GhostRace" name="ghost-race" class="screen" picking-mode="Ignore" />
+        <ui:Instance template="GhostResult" name="ghost-result" class="screen" picking-mode="Ignore" />
         <ui:Instance template="Pause" name="pause" class="screen" picking-mode="Ignore" />
         <ui:Instance template="GameOver" name="game-over" class="screen" picking-mode="Ignore" />
         <ui:Instance template="Reward" name="reward" class="screen" picking-mode="Ignore" />
+        <ui:Instance template="GhostCode" name="ghost-code" class="screen" picking-mode="Ignore" />
         <ui:VisualElement name="toast" class="toast toast--hidden" picking-mode="Ignore">
             <ui:VisualElement class="toast__pill" picking-mode="Ignore">
                 <ui:Label name="toast-label" text="" class="toast__label" picking-mode="Ignore" />

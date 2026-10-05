@@ -1,0 +1,17 @@
+# UXML placeholder texts that code replaces, or names that stay as they are.
+Brave Otter
+Kitty
+Pingi
+Pongi
+Pingi Pongi
+Pingi Pass
+Oct 5
+Best 0
+Perfect! +2
+Portal Duel · First to 5
+Portal Duel · vs Brave Otter
+Rush Battle · 60 s
+5 – 3
+Expires in 10:00
+0m
+English

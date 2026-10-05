@@ -140,7 +140,7 @@ public sealed class MatchSetupScreen : UIScreen
         var panel = UiFactory.Element("side-panel");
         panel.name = $"setup-{slot.Side.ToString().ToLowerInvariant()}";
 
-        panel.Add(UiFactory.Text($"Player {index + 1}", $"setup-name player-text-{index}"));
+        panel.Add(UiFactory.Text(Loc.T("Player {0}", index + 1), $"setup-name player-text-{index}"));
 
         slot.Picker = UiFactory.Element("setup-picker");
         slot.Picker.Add(UiFactory.Button("btn btn--round", null, "icon--chevron-left", () => StepLook(slot, -1)));
@@ -149,7 +149,7 @@ public sealed class MatchSetupScreen : UIScreen
         slot.Picker.Add(UiFactory.Button("btn btn--round", null, "icon--chevron-right", () => StepLook(slot, 1)));
         panel.Add(slot.Picker);
 
-        slot.Action = UiFactory.Button("btn setup-ready", "Ready", "icon--check", () => OnAction(slot));
+        slot.Action = UiFactory.Button("btn setup-ready", Loc.T("Ready"), "icon--check", () => OnAction(slot));
         slot.Action.name = $"ready-{slot.Side.ToString().ToLowerInvariant()}";
         panel.Add(slot.Action);
         return panel;
@@ -169,7 +169,7 @@ public sealed class MatchSetupScreen : UIScreen
         var mid = UiFactory.Element("side-panel");
         mid.Add(UiFactory.Text(Rule(), "ink-chip"));
 
-        startButton = UiFactory.Button("btn btn--primary setup-start", "Start", null, StartParty);
+        startButton = UiFactory.Button("btn btn--primary setup-start", Loc.T("Start"), null, StartParty);
         startButton.name = "start-button";
         startButton.style.marginTop = 40f;
         mid.Add(startButton);
@@ -180,9 +180,9 @@ public sealed class MatchSetupScreen : UIScreen
     {
         return mode.Kind switch
         {
-            GameModeKind.TableDuel => $"First to {mode.PointsToWin}",
-            GameModeKind.CoopRally => $"{mode.Lives} shared lives",
-            _ => $"{mode.Lives} lives each"
+            GameModeKind.TableDuel => Loc.T("First to {0}", mode.PointsToWin),
+            GameModeKind.CoopRally => Loc.Plural("{0} shared life", "{0} shared lives", mode.Lives),
+            _ => Loc.Plural("{0} life each", "{0} lives each", mode.Lives)
         };
     }
 
@@ -236,8 +236,8 @@ public sealed class MatchSetupScreen : UIScreen
 
         var label = UiFactory.ButtonLabel(slot.Action);
         var icon = UiFactory.ButtonIcon(slot.Action);
-        if (party) label.text = slot.Joined ? "Playing" : "Tap to join";
-        else label.text = slot.Ready ? "Ready!" : "Ready";
+        if (party) label.text = slot.Joined ? Loc.T("Playing") : Loc.T("Tap to join");
+        else label.text = slot.Ready ? Loc.T("Ready!") : Loc.T("Ready");
         icon.style.display = active ? DisplayStyle.Flex : DisplayStyle.None;
         icon.EnableInClassList("icon--light", index != 2);
     }

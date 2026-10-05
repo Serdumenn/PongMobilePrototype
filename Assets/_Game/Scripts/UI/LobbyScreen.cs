@@ -101,9 +101,9 @@ public sealed class LobbyScreen : UIScreen
         var mode = lobby.Mode;
         var players = lobby.Players;
         bool full = players.Count >= lobby.MaxPlayers;
-        string modeName = mode != null ? mode.DisplayName : "Online match";
+        string modeName = mode != null ? mode.Title : Loc.T("Online match");
 
-        title.text = lobby.IsPrivate && !full ? "Private match" : modeName;
+        title.text = lobby.IsPrivate && !full ? Loc.T("Private match") : modeName;
         modeChip.text = mode != null ? $"{modeName} · {Rule(mode)}" : modeName;
 
         codeLabel.text = lobby.Code ?? string.Empty;
@@ -117,7 +117,7 @@ public sealed class LobbyScreen : UIScreen
         else BuildSlots(full);
 
         readyButton.EnableInClassList("lobby-ready--on", myReady);
-        readyLabel.text = myReady ? "Not ready" : "Ready";
+        readyLabel.text = myReady ? Loc.T("Not ready") : Loc.T("Ready");
         readyIcon.style.display = myReady ? DisplayStyle.None : DisplayStyle.Flex;
 
         RefreshStatus();
@@ -135,11 +135,13 @@ public sealed class LobbyScreen : UIScreen
 
         bool group = lobby.MaxPlayers > 2;
         var opponent = lobby.Opponent;
-        string other = group ? "everyone" : opponent.HasValue ? opponent.Value.Name : "your friend";
+        string other = !group && opponent.HasValue ? opponent.Value.Name : null;
 
-        if (!lobby.EveryoneOnline) status.text = $"Connecting to {other}…";
-        else if (lobby.AllReady) status.text = "Starting…";
-        else status.text = myReady ? $"Waiting for {other}…" : "Tap Ready when you are set.";
+        if (!lobby.EveryoneOnline)
+            status.text = other != null ? Loc.T("Connecting to {0}…", other) : group ? Loc.T("Connecting to everyone…") : Loc.T("Connecting to your friend…");
+        else if (lobby.AllReady) status.text = Loc.T("Starting…");
+        else if (!myReady) status.text = Loc.T("Tap Ready when you are set.");
+        else status.text = other != null ? Loc.T("Waiting for {0}…", other) : group ? Loc.T("Waiting for everyone…") : Loc.T("Waiting for your friend…");
     }
 
     private void BuildSlots(bool full)
@@ -151,7 +153,7 @@ public sealed class LobbyScreen : UIScreen
 
         foreach (var player in lobby.Players)
         {
-            string sub = player.IsYou ? (player.IsHost ? "You · host" : "You") : (player.IsHost ? "Host" : "Joined");
+            string sub = player.IsYou ? (player.IsHost ? Loc.T("You · host") : Loc.T("You")) : (player.IsHost ? Loc.T("Host") : Loc.T("Joined"));
             slots.Add(Slot(player, sub));
         }
 
@@ -160,14 +162,14 @@ public sealed class LobbyScreen : UIScreen
         bool isPrivate = lobby.IsPrivate;
         if (lobby.MaxPlayers > 2)
         {
-            slots.Add(WaitingSlot(isPrivate ? "Waiting for friends…" : "Looking for players…",
-                $"Up to {lobby.MaxPlayers} can play. Starts when everyone is ready."));
+            slots.Add(WaitingSlot(isPrivate ? Loc.T("Waiting for friends…") : Loc.T("Looking for players…"),
+                Loc.T("Up to {0} can play. Starts when everyone is ready.", lobby.MaxPlayers)));
             return;
         }
 
         for (int i = lobby.Players.Count; i < lobby.MaxPlayers; i++)
-            slots.Add(WaitingSlot(isPrivate ? "Waiting for a friend…" : "Looking for a player…",
-                isPrivate ? "They tap Join code" : "This takes a few seconds"));
+            slots.Add(WaitingSlot(isPrivate ? Loc.T("Waiting for a friend…") : Loc.T("Looking for a player…"),
+                isPrivate ? Loc.T("They tap Join code") : Loc.T("This takes a few seconds")));
     }
 
     private VisualElement Slot(LobbyPlayer player, string sub)
@@ -205,7 +207,7 @@ public sealed class LobbyScreen : UIScreen
 
         var players = lobby.Players;
         versus.Add(PlayerCard(players[0], 0));
-        versus.Add(UiFactory.Text("VS", "versus__label"));
+        versus.Add(UiFactory.Text(Loc.T("VS"), "versus__label"));
         versus.Add(PlayerCard(players[1], 1));
     }
 
@@ -218,7 +220,7 @@ public sealed class LobbyScreen : UIScreen
         var sub = UiFactory.Element("pcard__sub");
         if (player.IsYou)
         {
-            sub.Add(UiFactory.Text("You", "pcard__sub-label"));
+            sub.Add(UiFactory.Text(Loc.T("You"), "pcard__sub-label"));
         }
         else
         {
@@ -252,7 +254,7 @@ public sealed class LobbyScreen : UIScreen
     private string PingText()
     {
         int ping = lobby != null ? lobby.PingMs() : -1;
-        return ping >= 0 ? $"{ping} ms" : "Connecting…";
+        return ping >= 0 ? $"{ping} ms" : Loc.T("Connecting…");
     }
 
     private void Tick()
@@ -267,7 +269,7 @@ public sealed class LobbyScreen : UIScreen
         {
             float left = Mathf.Max(0f, codeLifetime - (Time.realtimeSinceStartup - codeShownAt));
             int seconds = Mathf.CeilToInt(left);
-            expiryLabel.text = $"Expires in {seconds / 60}:{seconds % 60:00}";
+            expiryLabel.text = Loc.T("Expires in {0}", $"{seconds / 60}:{seconds % 60:00}");
             if (left <= 0f)
             {
                 expired = true;
@@ -291,23 +293,23 @@ public sealed class LobbyScreen : UIScreen
     {
         if (string.IsNullOrEmpty(lobby?.Code)) return;
         NativeShare.Copy(lobby.Code);
-        toast?.Invoke("Code copied");
+        toast?.Invoke(Loc.T("Code copied"));
     }
 
     private void Share()
     {
         if (string.IsNullOrEmpty(lobby?.Code)) return;
-        if (!NativeShare.Text($"Play Pingi Pongi with me! Tap Play together, Online, Join code and type {lobby.Code}", "Share your code"))
-            toast?.Invoke("Code copied");
+        if (!NativeShare.Text(Loc.T("Play Pingi Pongi with me! Tap Play together, Online, Join code and type {0}", lobby.Code), Loc.T("Share your code")))
+            toast?.Invoke(Loc.T("Code copied"));
     }
 
     private static string Rule(GameModeDefinition mode)
     {
         return mode.Kind switch
         {
-            GameModeKind.CoopRally => $"{mode.Lives} shared lives",
-            GameModeKind.RushBattle => $"{Mathf.RoundToInt(mode.DurationSeconds)} s",
-            _ => $"First to {mode.PointsToWin}"
+            GameModeKind.CoopRally => Loc.Plural("{0} shared life", "{0} shared lives", mode.Lives),
+            GameModeKind.RushBattle => Loc.T("{0} s", Mathf.RoundToInt(mode.DurationSeconds)),
+            _ => Loc.T("First to {0}", mode.PointsToWin)
         };
     }
 }

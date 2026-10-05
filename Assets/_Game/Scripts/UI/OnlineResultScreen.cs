@@ -58,7 +58,7 @@ public sealed class OnlineResultScreen : UIScreen
         if (match == null || match.Rules == null) return;
 
         var rules = match.Rules;
-        string mode = match.Mode != null ? match.Mode.DisplayName : "Online";
+        string mode = match.Mode != null ? match.Mode.Title : Loc.T("Online");
         bool happy = rules.Coop ? rules.Passes > 0 : match.Won;
 
         var look = cosmetics != null ? cosmetics.CatalogAsset.Find(match.MyLook) : null;
@@ -67,25 +67,25 @@ public sealed class OnlineResultScreen : UIScreen
 
         if (rules.Coop)
         {
-            title.text = rules.Passes >= 10 ? "Great teamwork!" : "Nice try!";
-            caption.text = $"Passes with {match.OpponentName}";
+            title.text = rules.Passes >= 10 ? Loc.T("Great teamwork!") : Loc.T("Nice try!");
+            caption.text = Loc.T("Passes with {0}", match.OpponentName);
             score.text = rules.Passes.ToString();
         }
         else
         {
-            title.text = match.Won ? "You win!" : "So close!";
-            caption.text = $"{mode} · vs {match.OpponentName}";
+            title.text = match.Won ? Loc.T("You win!") : Loc.T("So close!");
+            caption.text = Loc.T("{0} · vs {1}", mode, match.OpponentName);
             score.text = $"{match.MyScore} – {match.OpponentScore}";
         }
 
         bool forfeit = !rules.Coop && Mathf.Max(rules.HostScore, rules.GuestScore) < rules.PointsToWin;
-        if (opponentGone || (forfeit && match.Won)) note.text = $"{match.OpponentName} left the match.";
-        else if (match.WantsRematch) note.text = $"Waiting for {match.OpponentName}…";
-        else if (match.OpponentWantsRematch) note.text = $"{match.OpponentName} wants a rematch!";
+        if (opponentGone || (forfeit && match.Won)) note.text = Loc.T("{0} left the match.", match.OpponentName);
+        else if (match.WantsRematch) note.text = Loc.T("Waiting for {0}…", match.OpponentName);
+        else if (match.OpponentWantsRematch) note.text = Loc.T("{0} wants a rematch!", match.OpponentName);
         else note.text = string.Empty;
 
         bool canRematch = !opponentGone && !(forfeit && match.Won) && !match.WantsRematch;
         rematchButton.SetEnabled(canRematch);
-        rematchLabel.text = match.OpponentWantsRematch && !match.WantsRematch ? "Accept" : "Rematch";
+        rematchLabel.text = match.OpponentWantsRematch && !match.WantsRematch ? Loc.T("Accept") : Loc.T("Rematch");
     }
 }

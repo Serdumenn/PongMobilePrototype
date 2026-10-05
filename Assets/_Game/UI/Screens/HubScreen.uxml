@@ -9,7 +9,7 @@
             <ui:Label text="Play together" class="screen-title" picking-mode="Ignore" />
             <ui:VisualElement class="topbar__side" picking-mode="Ignore" />
         </ui:VisualElement>
-        <ui:VisualElement class="tabs" picking-mode="Ignore">
+        <ui:VisualElement class="tabs fit-group" picking-mode="Ignore">
             <ui:Button name="tab-local" text="This device" class="tab hub-tab" />
             <ui:Button name="tab-online" text="Online" class="tab hub-tab" />
             <ui:Button name="tab-challenges" text="Challenges" class="tab hub-tab" />
@@ -67,13 +67,51 @@
                 </ui:Button>
             </ui:VisualElement>
         </ui:ScrollView>
-        <ui:VisualElement name="hub-challenges" class="hub-panel" picking-mode="Ignore">
-            <ui:VisualElement class="hub-soon" picking-mode="Ignore">
-                <ui:VisualElement class="icon icon--flame" picking-mode="Ignore" />
-                <ui:Label text="Challenges are coming" class="hub-soon__title" picking-mode="Ignore" />
-                <ui:Label text="A daily run with the same serves for everyone, and ghost races against your friends." class="caption hub-soon__text" picking-mode="Ignore" />
+        <ui:ScrollView name="hub-challenges" mode="Vertical" horizontal-scroller-visibility="Hidden" vertical-scroller-visibility="Hidden" class="hub-panel online-scroll">
+            <ui:VisualElement class="challenge-card" picking-mode="Ignore">
+                <ui:VisualElement class="challenge-card__head" picking-mode="Ignore">
+                    <ui:VisualElement class="icon icon--calendar" picking-mode="Ignore" />
+                    <ui:Label text="Daily Challenge" class="challenge-card__title" picking-mode="Ignore" />
+                    <ui:Label name="daily-date" text="Oct 5" class="date-chip" picking-mode="Ignore" />
+                </ui:VisualElement>
+                <ui:Label text="Everyone gets the same serves today. One rush, one leaderboard." class="challenge-card__text" picking-mode="Ignore" />
+                <ui:VisualElement class="daily-stats" picking-mode="Ignore">
+                    <ui:VisualElement class="daily-stat" picking-mode="Ignore">
+                        <ui:Label text="Your best" class="daily-stat__label" picking-mode="Ignore" />
+                        <ui:Label name="daily-best" text="–" class="daily-stat__value" picking-mode="Ignore" />
+                    </ui:VisualElement>
+                    <ui:VisualElement class="daily-stat" picking-mode="Ignore">
+                        <ui:Label text="Rank" class="daily-stat__label" picking-mode="Ignore" />
+                        <ui:Label name="daily-rank" text="–" class="daily-stat__value" picking-mode="Ignore" />
+                    </ui:VisualElement>
+                    <ui:VisualElement class="daily-stat" picking-mode="Ignore">
+                        <ui:Label text="Resets in" class="daily-stat__label" picking-mode="Ignore" />
+                        <ui:Label name="daily-reset" text="–" class="daily-stat__value" picking-mode="Ignore" />
+                    </ui:VisualElement>
+                </ui:VisualElement>
+                <ui:Button name="daily-button" class="btn btn--primary daily-play">
+                    <ui:VisualElement class="btn__face" picking-mode="Ignore">
+                        <ui:VisualElement class="icon icon--play icon--light" picking-mode="Ignore" />
+                        <ui:Label text="Play today's run" class="btn__label" picking-mode="Ignore" />
+                    </ui:VisualElement>
+                </ui:Button>
             </ui:VisualElement>
-        </ui:VisualElement>
+            <ui:VisualElement class="challenge-card" picking-mode="Ignore">
+                <ui:VisualElement class="challenge-card__head" picking-mode="Ignore">
+                    <ui:VisualElement class="icon icon--ghost" picking-mode="Ignore" />
+                    <ui:Label text="Ghost Challenge" class="challenge-card__title" picking-mode="Ignore" />
+                </ui:VisualElement>
+                <ui:Label text="Race a friend's recorded run, or share yours as a code." class="challenge-card__text" picking-mode="Ignore" />
+                <ui:Button name="ghost-enter" class="ghost-enter">
+                    <ui:Label name="ghost-enter-label" text="Enter code" class="ghost-enter__label" picking-mode="Ignore" />
+                    <ui:VisualElement class="icon icon--join ghost-enter__icon" picking-mode="Ignore" />
+                </ui:Button>
+                <ui:Button name="ghost-share-last" class="ghost-share">
+                    <ui:VisualElement class="icon icon--share ghost-share__icon" picking-mode="Ignore" />
+                    <ui:Label name="ghost-share-label" text="Share my last Rush run" class="ghost-share__label" picking-mode="Ignore" />
+                </ui:Button>
+            </ui:VisualElement>
+        </ui:ScrollView>
         <ui:VisualElement name="hub-note" class="hub-note" picking-mode="Ignore">
             <ui:VisualElement class="icon icon--people" picking-mode="Ignore" />
             <ui:Label text="Everyone plays on this device. No internet needed." class="hub-note__label" picking-mode="Ignore" />
@@ -83,12 +121,12 @@
         <ui:VisualElement name="join-scrim" class="scrim" />
         <ui:VisualElement class="safe overlay" picking-mode="Ignore">
             <ui:VisualElement class="card online-card">
-                <ui:Label text="Join a friend" class="card__title" picking-mode="Ignore" />
-                <ui:Label text="Type the code on your friend's screen." class="caption dialog__text" picking-mode="Ignore" />
+                <ui:Label name="join-title" text="Join a friend" class="card__title" picking-mode="Ignore" />
+                <ui:Label name="join-text" text="Type the code on your friend's screen." class="caption dialog__text" picking-mode="Ignore" />
                 <ui:TextField name="code-field" max-length="6" class="code-field" />
                 <ui:Button name="join-confirm" class="btn btn--primary btn--wide">
                     <ui:VisualElement class="btn__face" picking-mode="Ignore">
-                        <ui:VisualElement class="icon icon--join icon--light" picking-mode="Ignore" />
+                        <ui:VisualElement name="join-confirm-icon" class="icon icon--join icon--light" picking-mode="Ignore" />
                         <ui:Label name="join-confirm-label" text="Join" class="btn__label" picking-mode="Ignore" />
                     </ui:VisualElement>
                 </ui:Button>

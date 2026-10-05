@@ -23,15 +23,21 @@ public sealed class ScoresScreen : UIScreen
     private readonly Label streakTitle;
     private readonly VisualElement streakDays;
     private readonly Label streakNote;
+    private static readonly string[] Boards = { OnlineScores.ClassicBoard, OnlineScores.RushBoard, OnlineScores.DailyBoard, OnlineScores.CoopBoard };
+
+    private readonly OnlineScores onlineScores;
     private readonly VisualElement worldModes;
-    private readonly Label worldText;
-    private readonly Label worldBest;
+    private readonly Label worldTitle;
+    private readonly VisualElement worldRows;
+    private readonly Label worldNote;
     private readonly ScrollView scroll;
 
-    private GameModeDefinition worldMode;
+    private string worldBoard = OnlineScores.ClassicBoard;
+    private int worldRequest;
 
-    public ScoresScreen(VisualElement root, SoloGameManager game, CosmeticsService cosmetics, Action onBack) : base(root)
+    public ScoresScreen(VisualElement root, SoloGameManager game, CosmeticsService cosmetics, OnlineScores onlineScores, Action onBack) : base(root)
     {
+        this.onlineScores = onlineScores;
         this.game = game;
         this.cosmetics = cosmetics;
 
@@ -47,8 +53,9 @@ public sealed class ScoresScreen : UIScreen
         streakDays = root.Q("streak-days");
         streakNote = root.Q<Label>("streak-note");
         worldModes = root.Q("world-modes");
-        worldText = root.Q<Label>("world-text");
-        worldBest = root.Q<Label>("world-best");
+        worldTitle = root.Q<Label>("world-title");
+        worldRows = root.Q("world-rows");
+        worldNote = root.Q<Label>("world-note");
         scroll = root.Q<ScrollView>("scores-scroll");
 
         Bind("back-button", onBack);
@@ -59,7 +66,7 @@ public sealed class ScoresScreen : UIScreen
     protected override void OnShow()
     {
         scroll.scrollOffset = Vector2.zero;
-        worldMode = game.CurrentMode;
+        worldBoard = OnlineScores.BoardFor(game.CurrentMode) ?? OnlineScores.ClassicBoard;
         SelectTab(false);
     }
 
@@ -80,8 +87,8 @@ public sealed class ScoresScreen : UIScreen
         if (source == null || source.Records == null) return;
 
         var data = source.Records;
-        statGames.text = data.GamesPlayed.ToString("N0", CultureInfo.InvariantCulture);
-        statHits.text = data.TotalHits.ToString("N0", CultureInfo.InvariantCulture);
+        statGames.text = data.GamesPlayed.ToString("N0", Loc.Culture);
+        statHits.text = data.TotalHits.ToString("N0", Loc.Culture);
         statStreak.text = data.LongestStreak.ToString();
         statTime.text = FormatDuration(data.PlayTimeSeconds);
 
@@ -90,15 +97,15 @@ public sealed class ScoresScreen : UIScreen
         {
             if (mode == null) continue;
             int best = game.BestFor(mode);
-            records.Add(RecordRow(mode.DisplayName, best > 0 ? best.ToString() : "-", FormatDate(data.BestDate(mode.Id), best > 0)));
+            records.Add(RecordRow(mode.Title, best > 0 ? best.ToString() : "-", FormatDate(data.BestDate(mode.Id), best > 0)));
         }
 
         matchRecords.Clear();
-        matchRecords.Add(RecordRow("Matches", data.MatchesPlayed.ToString("N0", CultureInfo.InvariantCulture), ""));
-        matchRecords.Add(RecordRow("Best co-op rally", data.BestCoopRally > 0 ? data.BestCoopRally.ToString() : "-", ""));
+        matchRecords.Add(RecordRow(Loc.T("Matches"), data.MatchesPlayed.ToString("N0", Loc.Culture), ""));
+        matchRecords.Add(RecordRow(Loc.T("Best co-op rally"), data.BestCoopRally > 0 ? data.BestCoopRally.ToString() : "-", ""));
 
         int streak = source.DayStreak;
-        streakTitle.text = streak > 0 ? $"{streak}-day streak" : "Daily streak";
+        streakTitle.text = streak > 0 ? Loc.Plural("{0}-day streak", "{0}-day streak#other", streak) : Loc.T("Daily streak");
 
         var reward = FindStreakReward();
         bool rewardOwned = reward != null && cosmetics != null && cosmetics.IsUnlocked(reward);
@@ -128,35 +135,102 @@ public sealed class ScoresScreen : UIScreen
         }
 
         if (reward == null) streakNote.text = "";
-        else if (rewardOwned) streakNote.text = $"{reward.DisplayName} unlocked. Keep the streak going!";
+        else if (rewardOwned) streakNote.text = Loc.T("{0} unlocked. Keep the streak going!", reward.Title);
         else streakNote.text = source.Records.PlayedToday(DateTime.Now)
-            ? $"Day {StreakGoal}: {reward.DisplayName}. Come back tomorrow!"
-            : $"Day {StreakGoal}: {reward.DisplayName}. Play today to keep it!";
+            ? Loc.T("Day {0}: {1}. Come back tomorrow!", StreakGoal, reward.Title)
+            : Loc.T("Day {0}: {1}. Play today to keep it!", StreakGoal, reward.Title);
     }
 
     private void RefreshWorld()
     {
         worldModes.Clear();
-        foreach (var mode in game.ModeList)
+        foreach (var board in Boards)
         {
-            if (mode == null) continue;
-            var chip = new Button { text = mode.DisplayName, focusable = false };
+            var chip = new Button { text = BoardLabel(board), focusable = false };
             chip.RemoveFromClassList(Button.ussClassName);
             chip.AddToClassList("mode-chip");
-            chip.EnableInClassList("mode-chip--active", mode == worldMode);
-            var captured = mode;
+            chip.EnableInClassList("mode-chip--active", board == worldBoard);
             chip.clicked += () =>
             {
                 UiFeedback.Tap();
-                worldMode = captured;
+                worldBoard = board;
                 RefreshWorld();
             };
             worldModes.Add(chip);
         }
 
-        worldText.text = "Coming soon with Google Play Games.\nYour bests will sync automatically.";
-        int best = game.BestFor(worldMode);
-        worldBest.text = best > 0 ? $"Your {worldMode.DisplayName} best: {best}" : $"Play {worldMode.DisplayName} to set a score";
+        worldTitle.text = worldBoard == OnlineScores.DailyBoard ? Loc.T("Today · {0}", DailyChallenge.Label(DateTime.UtcNow)) : Loc.T("Top 10");
+        worldRows.Clear();
+        worldNote.text = Loc.T("Loading…");
+        worldNote.style.display = DisplayStyle.Flex;
+        _ = LoadWorld(++worldRequest, worldBoard);
+    }
+
+    private async System.Threading.Tasks.Task LoadWorld(int request, string board)
+    {
+        if (onlineScores == null)
+        {
+            worldNote.text = Loc.T("World rankings are not available.");
+            return;
+        }
+
+        await onlineScores.SyncBestsAsync(game.BestFor(game.FindMode("classic")), game.BestFor(game.FindMode("rush")));
+        var result = await onlineScores.LoadAsync(board);
+        if (request != worldRequest || !IsVisible) return;
+
+        worldRows.Clear();
+        switch (result.Outcome)
+        {
+            case OnlineScores.Outcome.Offline:
+                worldNote.text = Loc.T("You're offline. Connect to see the world rankings.");
+                return;
+            case OnlineScores.Outcome.Missing:
+                worldNote.text = Loc.T("Rankings open soon.");
+                return;
+            case OnlineScores.Outcome.Failed:
+                worldNote.text = Loc.T("Couldn't load the rankings. Try again in a little while.");
+                return;
+        }
+
+        bool meShown = false;
+        foreach (var row in result.Top)
+        {
+            worldRows.Add(WorldRow(row));
+            meShown |= row.IsMe;
+        }
+
+        if (!meShown && result.Me.HasValue)
+        {
+            worldRows.Add(UiFactory.Text("•••", "world-gap"));
+            worldRows.Add(WorldRow(result.Me.Value));
+        }
+
+        if (result.Top.Count == 0) worldNote.text = Loc.T("No scores yet. Be the first!");
+        else if (!result.Me.HasValue) worldNote.text = board == OnlineScores.CoopBoard ? Loc.T("Play Co-op Rally online to get on the board.") : Loc.T("Play to get on the board.");
+        else worldNote.text = string.Empty;
+        worldNote.style.display = string.IsNullOrEmpty(worldNote.text) ? DisplayStyle.None : DisplayStyle.Flex;
+    }
+
+    private static VisualElement WorldRow(OnlineScores.Row row)
+    {
+        var element = new VisualElement { pickingMode = PickingMode.Ignore };
+        element.AddToClassList("rank-row");
+        element.EnableInClassList("rank-row--me", row.IsMe);
+
+        var place = new Label(row.Rank.ToString()) { pickingMode = PickingMode.Ignore };
+        place.AddToClassList("rank-row__place");
+        place.EnableInClassList("rank-row__place--gold", row.Rank == 1);
+        element.Add(place);
+
+        string name = string.IsNullOrEmpty(row.Partner) ? row.Name : $"{row.Name} & {row.Partner}";
+        var nameLabel = new Label(row.IsMe ? Loc.T("{0} (you)", name) : name) { pickingMode = PickingMode.Ignore };
+        nameLabel.AddToClassList("rank-row__name");
+        element.Add(nameLabel);
+
+        var score = new Label(row.Score.ToString()) { pickingMode = PickingMode.Ignore };
+        score.AddToClassList("rank-row__score");
+        element.Add(score);
+        return element;
     }
 
     private CosmeticItem FindStreakReward()
@@ -187,19 +261,30 @@ public sealed class ScoresScreen : UIScreen
 
     private static string FormatDate(string isoDay, bool hasRecord)
     {
-        if (!hasRecord || string.IsNullOrEmpty(isoDay)) return hasRecord ? "earlier" : "";
+        if (!hasRecord || string.IsNullOrEmpty(isoDay)) return hasRecord ? Loc.T("earlier") : "";
         if (!DateTime.TryParseExact(isoDay, "yyyy-MM-dd", CultureInfo.InvariantCulture, DateTimeStyles.None, out var date)) return "";
 
         var today = DateTime.Now.Date;
-        if (date == today) return "Today";
-        if (date == today.AddDays(-1)) return "Yesterday";
-        return date.ToString("d MMM", CultureInfo.InvariantCulture);
+        if (date == today) return Loc.T("Today");
+        if (date == today.AddDays(-1)) return Loc.T("Yesterday");
+        return Loc.T("{0:d MMM}", date);
     }
 
     private static string FormatDuration(float seconds)
     {
         int minutes = Mathf.FloorToInt(seconds / 60f);
-        if (minutes < 60) return $"{minutes}m";
-        return $"{minutes / 60}h {minutes % 60}m";
+        if (minutes < 60) return Loc.T("{0}m", minutes);
+        return Loc.T("{0}h {1}m", minutes / 60, minutes % 60);
+    }
+
+    private static string BoardLabel(string board)
+    {
+        return board switch
+        {
+            OnlineScores.ClassicBoard => Loc.T("Classic"),
+            OnlineScores.RushBoard => Loc.T("Rush"),
+            OnlineScores.DailyBoard => Loc.T("Daily"),
+            _ => Loc.T("Co-op")
+        };
     }
 }

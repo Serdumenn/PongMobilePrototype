@@ -13,7 +13,7 @@
     flex-grow: 1;
     height: 112px;
     margin: 0;
-    padding: 0;
+    padding: 0 16px;
     border-width: 0;
     border-radius: 56px;
     background-color: rgba(0, 0, 0, 0);

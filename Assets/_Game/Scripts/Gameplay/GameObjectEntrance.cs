@@ -12,6 +12,7 @@ public sealed class GameObjectEntrance : MonoBehaviour
     private Coroutine activeEntrance;
     private bool initialized;
     private bool savedSimulated;
+    private Vector3 entranceTarget;
 
     private void EnsureInit()
     {
@@ -32,6 +33,23 @@ public sealed class GameObjectEntrance : MonoBehaviour
         activeEntrance = StartCoroutine(RunEntrance(from, onComplete));
     }
 
+    public bool Running => activeEntrance != null;
+
+    public void Cancel()
+    {
+        if (activeEntrance == null) return;
+
+        StopCoroutine(activeEntrance);
+        activeEntrance = null;
+        transform.position = entranceTarget;
+        if (rb != null) rb.simulated = savedSimulated;
+        if (sr == null) return;
+
+        Color c = sr.color;
+        c.a = 1f;
+        sr.color = c;
+    }
+
     public void ResetToTarget(Vector3 target)
     {
         EnsureInit();
@@ -44,6 +62,7 @@ public sealed class GameObjectEntrance : MonoBehaviour
         transform.rotation = Quaternion.identity;
 
         Vector3 targetPosition = transform.position;
+        entranceTarget = targetPosition;
 
         if (rb != null)
         {

@@ -1,0 +1,10 @@
+{
+  "$schema": "https://ugs-config-schemas.unity3d.com/v1/leaderboards.schema.json",
+  "SortOrder": "desc",
+  "UpdateType": "keepBest",
+  "ResetConfig": {
+    "Start": "2026-10-06T00:00:00Z",
+    "Schedule": "0 0 * * *"
+  },
+  "Name": "Daily Challenge"
+}

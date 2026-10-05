@@ -5,7 +5,7 @@ public sealed class Participant
         Index = index;
         Side = side;
         Paddle = paddle;
-        Name = $"Player {index + 1}";
+        Name = Loc.T("Player {0}", index + 1);
     }
 
     public int Index { get; }

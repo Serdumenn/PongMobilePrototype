@@ -28,19 +28,37 @@ public sealed class GameOverScreen : UIScreen
 
     public void SetResult(string modeName, int score, int best, int previousBest, bool isNewBest, Sprite happyMascot, Sprite sadMascot)
     {
-        scoreCaption.text = string.IsNullOrEmpty(modeName) ? "Score" : $"{modeName} · Score";
+        scoreCaption.text = string.IsNullOrEmpty(modeName) ? Loc.T("Score") : Loc.T("{0} · Score", modeName);
 
         var face = isNewBest ? happyMascot : sadMascot;
         if (face != null) mascot.style.backgroundImage = new StyleBackground(face);
 
-        title.text = isNewBest ? "Amazing!" : "So close!";
+        title.text = isNewBest ? Loc.T("Amazing!") : Loc.T("So close!");
         finalScore.text = score.ToString();
         newBestBadge.style.display = isNewBest ? DisplayStyle.Flex : DisplayStyle.None;
 
         if (isNewBest)
-            bestLine.text = previousBest > 0 ? $"Previous best {previousBest}" : "Your first record";
+            bestLine.text = previousBest > 0 ? Loc.T("Previous best {0}", previousBest) : Loc.T("Your first record");
         else
-            bestLine.text = $"Best {best}";
+            bestLine.text = Loc.T("Best {0}", best);
+    }
+
+    public void SetDaily(string dateLabel, int score, int bestToday, bool isNewBest, Sprite happyMascot, Sprite sadMascot)
+    {
+        scoreCaption.text = Loc.T("Daily Challenge · {0}", dateLabel);
+
+        var face = isNewBest ? happyMascot : sadMascot;
+        if (face != null) mascot.style.backgroundImage = new StyleBackground(face);
+
+        title.text = isNewBest ? Loc.T("New best today!") : Loc.T("So close!");
+        finalScore.text = score.ToString();
+        newBestBadge.style.display = DisplayStyle.None;
+        bestLine.text = Loc.T("Today's best {0}", bestToday);
+    }
+
+    public void SetBestLine(string text)
+    {
+        bestLine.text = text;
     }
 
     public void SetInteractable(bool interactable)

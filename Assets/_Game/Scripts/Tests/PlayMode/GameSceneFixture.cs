@@ -15,6 +15,7 @@ public abstract class GameSceneFixture
     private const int TouchId = 1;
 
     private PrefsSnapshot prefs;
+    private string language;
     private string saveRoot;
     private Touchscreen touchscreen;
     private InputSettings.BackgroundBehavior backgroundBehavior;
@@ -38,8 +39,11 @@ public abstract class GameSceneFixture
         if (!touchscreen.enabled) InputSystem.EnableDevice(touchscreen);
         Assert.IsTrue(touchscreen.enabled, "Test touchscreen is disabled, touches would be ignored");
 
+        OnlineService.Disabled = true;
         prefs = PrefsSnapshot.Capture();
         PrefsSnapshot.UseCleanProfile();
+        language = Loc.Language;
+        Loc.SetLanguage(Loc.English, false);
 
         saveRoot = Path.Combine(Path.GetTempPath(), "PingiTests", "save_" + Guid.NewGuid().ToString("N"));
         Directory.CreateDirectory(saveRoot);
@@ -52,9 +56,11 @@ public abstract class GameSceneFixture
     public void TearDownScene()
     {
         Time.timeScale = 1f;
+        OnlineService.Disabled = false;
         DestroyPersistentObjects();
         SaveLocation.Override(null);
         prefs?.Restore();
+        if (language != null) Loc.SetLanguage(language, false);
         if (Directory.Exists(saveRoot)) Directory.Delete(saveRoot, true);
         if (touchscreen != null && touchscreen.added) InputSystem.RemoveDevice(touchscreen);
         InputSystem.settings.backgroundBehavior = backgroundBehavior;

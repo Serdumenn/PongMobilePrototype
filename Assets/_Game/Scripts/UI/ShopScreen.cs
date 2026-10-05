@@ -184,14 +184,14 @@ public sealed class ShopScreen : UIScreen
         art.EnableInClassList("item__art--locked", !unlocked);
         face.Add(art);
 
-        var name = new Label(item.DisplayName) { pickingMode = PickingMode.Ignore };
+        var name = new Label(item.Title) { pickingMode = PickingMode.Ignore };
         name.AddToClassList("item__name");
         face.Add(name);
 
-        if (equipped) face.Add(Status("status--equipped", "check", "Equipped"));
-        else if (unlocked) face.Add(Status("status--owned", null, "Use"));
-        else if (item.Unlock == UnlockKind.Score) face.Add(Status("status--score", "lock", $"Best {item.UnlockValue}"));
-        else if (item.Unlock == UnlockKind.Streak) face.Add(Status("status--streak", "flame", $"{item.UnlockValue} days"));
+        if (equipped) face.Add(Status("status--equipped", "check", Loc.T("Equipped")));
+        else if (unlocked) face.Add(Status("status--owned", null, Loc.T("Use")));
+        else if (item.Unlock == UnlockKind.Score) face.Add(Status("status--score", "lock", Loc.T("Best {0}", item.UnlockValue)));
+        else if (item.Unlock == UnlockKind.Streak) face.Add(Status("status--streak", "flame", Loc.Plural("{0} day", "{0} days", item.UnlockValue)));
         else if (item.Unlock == UnlockKind.Ads)
         {
             int views = cosmetics.AdViews(item);
@@ -205,7 +205,7 @@ public sealed class ShopScreen : UIScreen
             bar.Add(fill);
             face.Add(bar);
         }
-        else face.Add(Status("status--pass", null, "Pass"));
+        else face.Add(Status("status--pass", null, Loc.T("Pass")));
 
         return card;
     }
@@ -287,7 +287,7 @@ public sealed class ShopScreen : UIScreen
         if (item == null) return;
 
         SetDialogArt(item);
-        dialogTitle.text = item.DisplayName;
+        dialogTitle.text = item.Title;
         dialogDots.Clear();
 
         bool unlocked = cosmetics.IsUnlocked(item);
@@ -297,8 +297,8 @@ public sealed class ShopScreen : UIScreen
 
         if (unlocked)
         {
-            dialogText.text = $"{item.DisplayName} is yours!";
-            SetPrimary(true, "check", "Equip");
+            dialogText.text = Loc.T("{0} is yours!", item.Title);
+            SetPrimary(true, "check", Loc.T("Equip"));
             return;
         }
 
@@ -306,7 +306,7 @@ public sealed class ShopScreen : UIScreen
         {
             case UnlockKind.Ads:
                 int views = cosmetics.AdViews(item);
-                dialogText.text = $"Watch {item.UnlockValue} ads to unlock {item.DisplayName}.\nYour progress is saved.";
+                dialogText.text = Loc.T("Watch {0} ads to unlock {1}.\nYour progress is saved.", item.UnlockValue, item.Title);
                 for (int i = 0; i < item.UnlockValue; i++)
                 {
                     var dot = new VisualElement { pickingMode = PickingMode.Ignore };
@@ -314,19 +314,19 @@ public sealed class ShopScreen : UIScreen
                     dot.EnableInClassList("dot--filled", i < views);
                     dialogDots.Add(dot);
                 }
-                SetPrimary(true, "play", waitingForAd ? "Loading..." : $"Watch ad ({views}/{item.UnlockValue})");
+                SetPrimary(true, "play", waitingForAd ? Loc.T("Loading…") : Loc.T("Watch ad ({0}/{1})", views, item.UnlockValue));
                 dialogPrimary.SetEnabled(!waitingForAd);
                 break;
 
             case UnlockKind.Score:
                 int best = PlayerPrefs.GetInt(SoloScoreManager.BestScoreKey, 0);
-                dialogText.text = $"Reach a Classic best of {item.UnlockValue} to unlock.\nYour best: {best}";
+                dialogText.text = Loc.T("Reach a Classic best of {0} to unlock.\nYour best: {1}", item.UnlockValue, best);
                 SetPrimary(false, null, null);
                 break;
 
             case UnlockKind.Streak:
                 int streak = cosmetics.CurrentDayStreak;
-                dialogText.text = $"Play {item.UnlockValue} days in a row to unlock.\nCurrent streak: {streak} {(streak == 1 ? "day" : "days")}";
+                dialogText.text = Loc.T("Play {0} days in a row to unlock.", item.UnlockValue) + "\n" + Loc.Plural("Current streak: {0} day", "Current streak: {0} days", streak);
                 for (int i = 0; i < item.UnlockValue; i++)
                 {
                     var dot = new VisualElement { pickingMode = PickingMode.Ignore };
@@ -339,7 +339,7 @@ public sealed class ShopScreen : UIScreen
                 break;
 
             default:
-                dialogText.text = "Exclusive to Pingi Pass.";
+                dialogText.text = Loc.T("Exclusive to Pingi Pass.");
                 SetPrimary(false, null, null);
                 break;
         }
@@ -354,13 +354,13 @@ public sealed class ShopScreen : UIScreen
         dialogArt.style.backgroundImage = passArt != null ? new StyleBackground(passArt) : new StyleBackground(StyleKeyword.None);
 
         dialogTitle.text = "Pingi Pass";
-        dialogText.text = "Unlock every costume, paddle and theme,\nplus the exclusive Golden set.";
+        dialogText.text = Loc.T("Unlock every costume, paddle and theme,\nplus the exclusive Golden set.");
         dialogDots.Clear();
         dialogPass.style.display = DisplayStyle.None;
         dialogBuy.style.display = DisplayStyle.None;
 
         string price = cosmetics.PriceOf(CosmeticCatalog.PassProductId);
-        SetPrimary(true, null, price != null ? $"Get Pass · {price}" : "Store unavailable");
+        SetPrimary(true, null, price != null ? Loc.T("Get Pass · {0}", price) : Loc.T("Store unavailable"));
         dialogPrimary.SetEnabled(price != null && !IsPurchasing);
     }
 
@@ -403,7 +403,7 @@ public sealed class ShopScreen : UIScreen
     {
         string price = string.IsNullOrEmpty(productId) ? null : cosmetics.PriceOf(productId);
         dialogBuy.style.display = price != null ? DisplayStyle.Flex : DisplayStyle.None;
-        if (price != null) dialogBuyLabel.text = $"Buy · {price}";
+        if (price != null) dialogBuyLabel.text = Loc.T("Buy · {0}", price);
         dialogBuy.SetEnabled(!IsPurchasing);
     }
 
@@ -435,7 +435,7 @@ public sealed class ShopScreen : UIScreen
         cosmetics.WatchAdFor(item, earned =>
         {
             waitingForAd = false;
-            if (!earned) notify?.Invoke(adReady ? "The ad was closed early, so it didn't count." : "No ad available right now. Please try again in a moment.");
+            if (!earned) notify?.Invoke(adReady ? Loc.T("The ad was closed early, so it didn't count.") : Loc.T("No ad available right now. Please try again in a moment."));
             if (dialogItem == item) FillItemDialog(item);
         });
     }
@@ -452,19 +452,19 @@ public sealed class ShopScreen : UIScreen
         var store = PurchaseService.Instance;
         if (store == null || !store.IsReady)
         {
-            notify?.Invoke("The store isn't available right now. Please try again later.");
+            notify?.Invoke(Loc.T("The store isn't available right now. Please try again later."));
             return;
         }
 
         if (store.IsPurchasing)
         {
-            notify?.Invoke("A purchase is already in progress.");
+            notify?.Invoke(Loc.T("A purchase is already in progress."));
             return;
         }
 
         if (!cosmetics.Buy(productId))
         {
-            notify?.Invoke("This item can't be purchased right now.");
+            notify?.Invoke(Loc.T("This item can't be purchased right now."));
             return;
         }
 
@@ -483,8 +483,8 @@ public sealed class ShopScreen : UIScreen
     private void OnPurchaseSucceeded(string productId)
     {
         RefreshPurchaseState();
-        if (productId == CosmeticCatalog.RemoveAdsProductId) notify?.Invoke("Ads removed. Thank you!");
-        else if (productId == CosmeticCatalog.PassProductId) notify?.Invoke("Pingi Pass unlocked. Enjoy!");
+        if (productId == CosmeticCatalog.RemoveAdsProductId) notify?.Invoke(Loc.T("Ads removed. Thank you!"));
+        else if (productId == CosmeticCatalog.PassProductId) notify?.Invoke(Loc.T("Pingi Pass unlocked. Enjoy!"));
     }
 
     private void OnPurchaseFailed(string productId, string reason)
@@ -497,14 +497,14 @@ public sealed class ShopScreen : UIScreen
     {
         return reason switch
         {
-            "UserCancelled" or "OrderCancelled" => "Purchase cancelled.",
-            "Deferred" => "Your purchase is waiting for approval.",
-            "ExistingPurchasePending" or "DuplicateTransaction" => "This purchase is already being processed.",
-            "PurchasingUnavailable" or "StoreNotConnected" => "The store isn't available right now. Please try again later.",
-            "ProductUnavailable" => "This item isn't available right now.",
-            "PaymentDeclined" => "Payment was declined.",
-            "UserNotAuthenticated" => "Please sign in to Google Play and try again.",
-            _ => "Purchase couldn't be completed. Please try again."
+            "UserCancelled" or "OrderCancelled" => Loc.T("Purchase cancelled."),
+            "Deferred" => Loc.T("Your purchase is waiting for approval."),
+            "ExistingPurchasePending" or "DuplicateTransaction" => Loc.T("This purchase is already being processed."),
+            "PurchasingUnavailable" or "StoreNotConnected" => Loc.T("The store isn't available right now. Please try again later."),
+            "ProductUnavailable" => Loc.T("This item isn't available right now."),
+            "PaymentDeclined" => Loc.T("Payment was declined."),
+            "UserNotAuthenticated" => Loc.T("Please sign in to Google Play and try again."),
+            _ => Loc.T("Purchase couldn't be completed. Please try again.")
         };
     }
 

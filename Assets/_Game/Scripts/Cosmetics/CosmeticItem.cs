@@ -44,6 +44,7 @@ public sealed class CosmeticItem : ScriptableObject
     [field: SerializeField] public string UiClass { get; private set; }
 
     public bool IsPurchasable => !string.IsNullOrEmpty(ProductId);
+    public string Title => Loc.T(DisplayName);
 
     public Sprite Preview => Category switch
     {

@@ -2,7 +2,8 @@
     "name": "Pingi.Editor",
     "rootNamespace": "",
     "references": [
-        "Pingi.Runtime"
+        "Pingi.Runtime",
+        "Unity.Services.DeploymentApi"
     ],
     "includePlatforms": [
         "Editor"

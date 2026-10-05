@@ -16,6 +16,10 @@ public sealed class GameUI : MonoBehaviour
     [SerializeField] private OnlineLobby Lobby;
     [SerializeField] private OnlineMatchController OnlineMatch;
     [SerializeField] private OnlineRushController OnlineRush;
+    [SerializeField] private OnlineScores Scores;
+    [SerializeField] private OnlineGhosts Ghosts;
+    [SerializeField] private GhostRecorder Recorder;
+    [SerializeField] private GhostRace Race;
 
     [Header("Onboarding")]
     [SerializeField] private int HintRuns = 3;
@@ -50,7 +54,17 @@ public sealed class GameUI : MonoBehaviour
     private OnlineResultScreen onlineResult;
     private RushBattleScreen rushBattle;
     private RushResultScreen rushResult;
+    private GhostRaceScreen ghostRace;
+    private GhostResultScreen ghostResult;
+    private GhostCodeScreen ghostCode;
+    private GhostRun raceRun;
+    private readonly UiLocalizer localizer = new UiLocalizer();
+    private TextFit textFit;
     private bool togetherSelected;
+    private int dailyScore;
+    private int dailyBest;
+    private bool dailyNewBest;
+    private string dailyLabel;
 
     private SoloGameManager.GameState lastState;
     private Rect lastSafeArea;
@@ -68,20 +82,34 @@ public sealed class GameUI : MonoBehaviour
         if (Lobby == null) Lobby = FindFirstObjectByType<OnlineLobby>();
         if (OnlineMatch == null) OnlineMatch = FindFirstObjectByType<OnlineMatchController>();
         if (OnlineRush == null) OnlineRush = FindFirstObjectByType<OnlineRushController>();
+        if (Scores == null) Scores = FindFirstObjectByType<OnlineScores>();
+        if (Ghosts == null) Ghosts = FindFirstObjectByType<OnlineGhosts>();
+        if (Recorder == null) Recorder = FindFirstObjectByType<GhostRecorder>();
+        if (Race == null) Race = FindFirstObjectByType<GhostRace>();
 
         root = GetComponent<UIDocument>().rootVisualElement;
         root.Query<Button>().ForEach(b => b.RemoveFromClassList(Button.ussClassName));
+        localizer.Capture(root);
+        localizer.Apply();
+        textFit = new TextFit(root);
+        Loc.Changed += OnLanguageChanged;
 
         menu = new MenuScreen(root.Q("menu"), OnMenuPlay, OpenSettings, OpenShop, OpenScores, StepMode);
         hud = new HudScreen(root.Q("hud"), OnHudPause);
         pause = new PauseScreen(root.Q("pause"), Resume, LeaveFromPause);
-        gameOver = new GameOverScreen(root.Q("game-over"), () => ContinueAfterAd(Game.RestartRun, gameOver.SetInteractable), () => ContinueAfterAd(Game.ReturnToMenu, gameOver.SetInteractable));
+        gameOver = new GameOverScreen(root.Q("game-over"), () => ContinueAfterAd(RetryRun, gameOver.SetInteractable), () => ContinueAfterAd(HomeFromGameOver, gameOver.SetInteractable));
         toast = new ToastView(root.Q("toast"));
         settings = new SettingsScreen(root.Q("settings"), CloseSettings, () => Game.ScoreManager.BestFor(SoloScoreManager.BestScoreKey), Game.ResetAllBests, DeleteOnlineData);
         shop = new ShopScreen(root.Q("shop"), Cosmetics, CloseShop, toast.Show);
         reward = new RewardScreen(root.Q("reward"), EquipReward, CloseReward);
-        scores = new ScoresScreen(root.Q("scores"), Game, Cosmetics, CloseScores);
-        hub = new HubScreen(root.Q("hub"), Match, Cosmetics, Online, Lobby, CloseHub, PickMatchMode, QuickMatch, CreateCode, JoinCode, toast.Show);
+        scores = new ScoresScreen(root.Q("scores"), Game, Cosmetics, Scores, CloseScores);
+        hub = new HubScreen(root.Q("hub"), Match, Cosmetics, Online, Lobby, Scores, CloseHub, PickMatchMode, QuickMatch, CreateCode, JoinCode, StartDaily,
+            () => Recorder != null && Recorder.LastRun != null, ShareLastRun, RaceGhostCode, toast.Show);
+        ghostRace = new GhostRaceScreen(root.Q("ghost-race"));
+        ghostResult = new GhostResultScreen(root.Q("ghost-result"), SendRunBack,
+            () => ContinueAfterAd(RetryGhost, ghostResult.SetInteractable),
+            () => ContinueAfterAd(HomeFromGhost, ghostResult.SetInteractable));
+        ghostCode = new GhostCodeScreen(root.Q("ghost-code"), toast.Show, () => ghostCode.Hide());
         lobbyScreen = new LobbyScreen(root.Q("lobby"), Lobby, Cosmetics, LeaveLobby, OnCodeExpired, toast.Show, CodeLifetime);
         onlineHud = new OnlineHudScreen(root.Q("online-hud"), Cosmetics, LeaveOnline);
         onlineResult = new OnlineResultScreen(root.Q("online-result"), Cosmetics, () => OnlineMatch?.RequestRematch(), LeaveOnline);
@@ -100,6 +128,7 @@ public sealed class GameUI : MonoBehaviour
         Game.HitScored += OnHitScored;
         Game.ScoreManager.ScoreChanged += OnScoreChanged;
         Game.Ball.Launched += OnBallLaunched;
+        if (Race != null) Race.GhostScoreChanged += OnGhostScore;
         if (Cosmetics != null) Cosmetics.Changed += RefreshMenuMode;
         if (Match != null)
         {
@@ -121,6 +150,7 @@ public sealed class GameUI : MonoBehaviour
 
     private void OnDestroy()
     {
+        Loc.Changed -= OnLanguageChanged;
         if (!built || Game == null) return;
 
         Game.StateChanged -= OnStateChanged;
@@ -128,6 +158,7 @@ public sealed class GameUI : MonoBehaviour
         Game.HitScored -= OnHitScored;
         if (Game.ScoreManager != null) Game.ScoreManager.ScoreChanged -= OnScoreChanged;
         if (Game.Ball != null) Game.Ball.Launched -= OnBallLaunched;
+        if (Race != null) Race.GhostScoreChanged -= OnGhostScore;
         if (Cosmetics != null) Cosmetics.Changed -= RefreshMenuMode;
         if (Match != null)
         {
@@ -301,6 +332,9 @@ public sealed class GameUI : MonoBehaviour
             case OnlineMatchController.MatchState.Countdown:
                 lobbyScreen.Hide();
                 hub.Hide();
+                menu.Hide();
+                gameOver.Hide();
+                pause.Hide();
                 onlineResult.Hide();
                 onlineHud.Present(OnlineMatch);
                 if (Lobby != null && Lobby.InLobby) _ = Lobby.SetReadyAsync(false);
@@ -336,6 +370,13 @@ public sealed class GameUI : MonoBehaviour
         CloseOnlineMatch();
         CloseRush();
         if (Lobby != null) _ = Lobby.LeaveAsync();
+    }
+
+    private void OnLanguageChanged()
+    {
+        localizer.Apply();
+        textFit.ResetAll();
+        RefreshMenuMode();
     }
 
     private void OnModeChanged(GameModeDefinition mode)
@@ -396,6 +437,187 @@ public sealed class GameUI : MonoBehaviour
         Game.HideGameObjects();
     }
 
+    private void OpenHubAt(int tab)
+    {
+        menu.Hide();
+        hub.Present(tab);
+        Game.HideGameObjects();
+    }
+
+    private void StartDaily()
+    {
+        var rush = Game.FindMode("rush");
+        if (rush == null) return;
+
+        hub.Hide();
+        gameOver.Hide();
+        Game.StartDailyRun(rush, DailyChallenge.SeedFor(DateTime.UtcNow));
+    }
+
+    private async void ShareLastRun()
+    {
+        var run = Recorder != null ? Recorder.LastRun : null;
+        if (run == null || Ghosts == null || hub.GhostBusy) return;
+
+        hub.SetGhostBusy(true, null, Loc.T("Creating a code…"));
+        var shared = await Ghosts.ShareAsync(run);
+        hub.SetGhostBusy(false);
+        ShowShared(shared);
+    }
+
+    private async void SendRunBack()
+    {
+        if (raceRun == null || Ghosts == null) return;
+
+        ghostResult.SetSending(true);
+        var shared = await Ghosts.ShareAsync(raceRun);
+        ghostResult.SetSending(false);
+        if (ghostResult.IsVisible) ShowShared(shared);
+    }
+
+    private void ShowShared(OnlineGhosts.Shared shared)
+    {
+        if (shared.Outcome == OnlineGhosts.Outcome.Ok)
+        {
+            ghostCode.Present(shared.Code, shared.Days);
+            return;
+        }
+        toast.Show(GhostFailureText(shared.Outcome));
+    }
+
+    private async void RaceGhostCode(string code)
+    {
+        if (Ghosts == null || hub.GhostBusy) return;
+
+        hub.SetGhostBusy(true, Loc.T("Finding the ghost…"));
+        var loaded = await Ghosts.LoadAsync(code);
+        hub.SetGhostBusy(false);
+
+        if (loaded.Outcome != OnlineGhosts.Outcome.Ok)
+        {
+            toast.Show(GhostFailureText(loaded.Outcome));
+            return;
+        }
+
+        if (hub.IsVisible) StartGhostRace(loaded.Run, loaded.Name);
+    }
+
+    private void StartGhostRace(GhostRun ghost, string ghostName)
+    {
+        if (Race == null || ghost == null) return;
+
+        hub.Hide();
+        gameOver.Hide();
+        ghostResult.Hide();
+        ghostCode.Hide();
+        Race.Begin(ghost, ghostName);
+    }
+
+    private void RetryGhost()
+    {
+        ghostResult.Hide();
+        if (Race == null || !Race.Retry()) HomeFromGhost();
+    }
+
+    private void HomeFromGhost()
+    {
+        ghostResult.Hide();
+        ghostRace.Hide();
+        if (Race != null) Race.End();
+        Game.ReturnToMenu();
+        OpenHubAt(2);
+    }
+
+    private void FinishGhost()
+    {
+        ghostRace.Hide();
+        raceRun = Recorder != null ? Recorder.FinishNow() : null;
+        ShowGhostResult();
+    }
+
+    private void ShowGhostResult()
+    {
+        if (Race == null || Race.Ghost == null) return;
+        ghostResult.Present(Game.ScoreManager.Score, raceRun, Race.Ghost, Race.GhostName, EquippedBall());
+    }
+
+    private void OnGhostScore(int value)
+    {
+        RefreshDelta();
+    }
+
+    private void RefreshDelta()
+    {
+        if (Race == null || !Race.Racing || Game.State == SoloGameManager.GameState.GameOver)
+        {
+            hud.SetDelta(null);
+            return;
+        }
+
+        int delta = Game.ScoreManager.Score - Race.GhostScore;
+        hud.SetDelta(delta);
+        ghostRace.SetLeading(delta < 0);
+    }
+
+    private static string GhostFailureText(OnlineGhosts.Outcome outcome)
+    {
+        return outcome switch
+        {
+            OnlineGhosts.Outcome.Offline => Loc.T("You're offline. Connect to race or share ghosts."),
+            OnlineGhosts.Outcome.NotFound => Loc.T("No ghost with that code. Check the letters and try again."),
+            OnlineGhosts.Outcome.Expired => Loc.T("That ghost code has expired. Ask your friend for a new one."),
+            OnlineGhosts.Outcome.Rejected => Loc.T("This run can't be shared. Play another Rush run and try again."),
+            _ => Loc.T("Ghosts are taking a break. Try again in a little while.")
+        };
+    }
+
+    private void RetryRun()
+    {
+        if (Game.DailyRun) StartDaily();
+        else Game.RestartRun();
+    }
+
+    private void HomeFromGameOver()
+    {
+        bool daily = Game.DailyRun;
+        Game.ReturnToMenu();
+        if (daily) OpenHubAt(2);
+    }
+
+    private void FinishDaily()
+    {
+        var now = DateTime.UtcNow;
+        dailyScore = Game.ScoreManager.Score;
+        dailyNewBest = DailyChallenge.Record(dailyScore, now);
+        dailyBest = DailyChallenge.BestToday(now);
+        dailyLabel = DailyChallenge.Label(now);
+        ShowDailyResult();
+        _ = SubmitDaily(dailyScore);
+    }
+
+    private void ShowDailyResult()
+    {
+        var ball = EquippedBall();
+        gameOver.SetDaily(dailyLabel, dailyScore, dailyBest, dailyNewBest, ball?.Happy, ball?.Sad);
+        gameOver.Show();
+    }
+
+    private async Task SubmitDaily(int score)
+    {
+        if (Scores == null || score <= 0) return;
+        if (!await Scores.SubmitAsync(OnlineScores.DailyBoard, score, null, true)) return;
+
+        int rank = await Scores.RankAsync(OnlineScores.DailyBoard);
+        if (rank > 0 && gameOver.IsVisible && Game.DailyRun) gameOver.SetBestLine(Loc.T("Today's best {0} · Rank #{1}", dailyBest, rank));
+    }
+
+    private void SubmitSoloBest()
+    {
+        var score = Game.ScoreManager;
+        if (Scores == null || Game.Kind != SoloGameManager.RunKind.Normal || score == null || !score.IsNewBest) return;
+        _ = Scores.SubmitAsync(OnlineScores.BoardFor(Game.RunMode), score.Score);
+    }
+
     private void CloseHub()
     {
         hub.Hide();
@@ -406,7 +628,7 @@ public sealed class GameUI : MonoBehaviour
     {
         if (!LocalMatchController.FitsScreen(mode))
         {
-            toast.Show(mode.DisplayName + " needs a tablet. Gather " + mode.MinPlayers + "–" + mode.MaxPlayers + " players around a bigger screen.");
+            toast.Show(Loc.T("{0} needs a tablet. Gather {1}–{2} players around a bigger screen.", mode.Title, mode.MinPlayers, mode.MaxPlayers));
             return;
         }
 
@@ -423,18 +645,18 @@ public sealed class GameUI : MonoBehaviour
     private void QuickMatch(GameModeDefinition mode)
     {
         if (mode == null) return;
-        EnterLobby(() => Lobby.QuickMatchAsync(mode.Id, mode.MaxPlayers, hub.LookId), "Finding a player…");
+        EnterLobby(() => Lobby.QuickMatchAsync(mode.Id, mode.MaxPlayers, hub.LookId), Loc.T("Finding a player…"));
     }
 
     private void CreateCode(GameModeDefinition mode)
     {
         if (mode == null) return;
-        EnterLobby(() => Lobby.CreateAsync(mode.Id, mode.MaxPlayers, hub.LookId), "Creating a code…");
+        EnterLobby(() => Lobby.CreateAsync(mode.Id, mode.MaxPlayers, hub.LookId), Loc.T("Creating a code…"));
     }
 
     private void JoinCode(string code)
     {
-        EnterLobby(() => Lobby.JoinAsync(code, hub.LookId), "Joining…");
+        EnterLobby(() => Lobby.JoinAsync(code, hub.LookId), Loc.T("Joining…"));
     }
 
     private async void EnterLobby(Func<Task<OnlineLobby.Failure>> open, string busyLabel)
@@ -473,7 +695,7 @@ public sealed class GameUI : MonoBehaviour
     private void OnCodeExpired()
     {
         LeaveLobby();
-        toast.Show("Your code expired. Make a new one any time.");
+        toast.Show(Loc.T("Your code expired. Make a new one any time."));
     }
 
     private void OnLobbyClosed(OnlineLobby.Failure reason)
@@ -484,7 +706,7 @@ public sealed class GameUI : MonoBehaviour
             if (inResult && reason == OnlineLobby.Failure.HostLeft) return;
 
             LeaveOnline();
-            toast.Show(reason == OnlineLobby.Failure.HostLeft ? "The host left, so the battle ended." : FailureText(reason));
+            toast.Show(reason == OnlineLobby.Failure.HostLeft ? Loc.T("The host left, so the battle ended.") : FailureText(reason));
             return;
         }
 
@@ -514,13 +736,13 @@ public sealed class GameUI : MonoBehaviour
     {
         return failure switch
         {
-            OnlineLobby.Failure.Offline => "You're offline. Check your connection and try again.",
-            OnlineLobby.Failure.NotFound => "No match with that code. Check the letters and try again.",
-            OnlineLobby.Failure.Full => "That match is already full.",
-            OnlineLobby.Failure.VersionMismatch => "Your friend has a different version of Pingi Pongi. Update both and try again.",
-            OnlineLobby.Failure.ConnectionLost => "Connection lost, so you left the match.",
-            OnlineLobby.Failure.HostLeft => "Your friend left the match.",
-            _ => "Something went wrong. Please try again."
+            OnlineLobby.Failure.Offline => Loc.T("You're offline. Check your connection and try again."),
+            OnlineLobby.Failure.NotFound => Loc.T("No match with that code. Check the letters and try again."),
+            OnlineLobby.Failure.Full => Loc.T("That match is already full."),
+            OnlineLobby.Failure.VersionMismatch => Loc.T("Your friend has a different version of Pingi Pongi. Update both and try again."),
+            OnlineLobby.Failure.ConnectionLost => Loc.T("Connection lost, so you left the match."),
+            OnlineLobby.Failure.HostLeft => Loc.T("Your friend left the match."),
+            _ => Loc.T("Something went wrong. Please try again.")
         };
     }
 
@@ -532,12 +754,12 @@ public sealed class GameUI : MonoBehaviour
         try
         {
             bool deleted = await Online.DeleteDataAsync();
-            toast.Show(deleted ? "Online data deleted. You'll get a new name next time." : "There is no online data on this device.");
+            toast.Show(deleted ? Loc.T("Online data deleted. You'll get a new name next time.") : Loc.T("There is no online data on this device."));
         }
         catch (Exception e)
         {
             Debug.LogWarning($"Deleting online data failed: {e.Message}");
-            toast.Show(OnlineService.HasInternet ? "Couldn't delete right now. Please try again later." : "You're offline. Connect to delete your online data.");
+            toast.Show(OnlineService.HasInternet ? Loc.T("Couldn't delete right now. Please try again later.") : Loc.T("You're offline. Connect to delete your online data."));
         }
         settings.SetOnlineBusy(false);
     }
@@ -550,8 +772,19 @@ public sealed class GameUI : MonoBehaviour
 
     private void LeaveFromPause()
     {
-        if (Match != null && Match.IsActive) Match.Exit();
-        else Game.ReturnToMenu();
+        if (Match != null && Match.IsActive)
+        {
+            Match.Exit();
+            return;
+        }
+
+        if (Game.GhostRun)
+        {
+            HomeFromGhost();
+            return;
+        }
+
+        Game.ReturnToMenu();
     }
 
     private void OnMatchState(LocalMatchController.MatchState state)
@@ -645,7 +878,9 @@ public sealed class GameUI : MonoBehaviour
                 pause.Hide();
                 gameOver.Hide();
                 reward.Hide();
-                if (!settings.IsVisible && !shop.IsVisible && !scores.IsVisible && !hub.IsVisible && !lobbyScreen.IsVisible
+                ghostRace.Hide();
+                hud.SetDelta(null);
+                if (!settings.IsVisible && !shop.IsVisible && !scores.IsVisible && !hub.IsVisible && !lobbyScreen.IsVisible && !ghostResult.IsVisible
                     && !onlineHud.IsVisible && !onlineResult.IsVisible && !rushBattle.IsVisible && !rushResult.IsVisible
                     && (Match == null || !Match.IsActive) && (OnlineMatch == null || !OnlineMatch.IsActive) && (OnlineRush == null || !OnlineRush.IsActive))
                 {
@@ -661,6 +896,16 @@ public sealed class GameUI : MonoBehaviour
                 reward.Hide();
                 if (previous != SoloGameManager.GameState.Paused) BeginRun();
                 hud.Show();
+                if (Game.GhostRun && Race != null && Race.Active)
+                {
+                    ghostRace.Present(Race, Race.GhostBall()?.Idle);
+                    RefreshDelta();
+                }
+                else
+                {
+                    ghostRace.Hide();
+                    hud.SetDelta(null);
+                }
                 break;
 
             case SoloGameManager.GameState.Paused:
@@ -673,7 +918,14 @@ public sealed class GameUI : MonoBehaviour
                 SetHint(false);
                 if (Game.BattleRun) break;
                 hud.Hide();
-                ShowGameOverResult();
+                hud.SetDelta(null);
+                if (Game.DailyRun) FinishDaily();
+                else if (Game.GhostRun) FinishGhost();
+                else
+                {
+                    ShowGameOverResult();
+                    SubmitSoloBest();
+                }
                 gameOver.SetInteractable(true);
                 root.schedule.Execute(ShowNextReward).StartingIn(RewardDelayMs);
                 break;
@@ -689,7 +941,7 @@ public sealed class GameUI : MonoBehaviour
     {
         var ball = EquippedBall();
         var score = Game.ScoreManager;
-        gameOver.SetResult(Game.CurrentMode?.DisplayName, score.Score, score.BestScore, score.PreviousBest, score.IsNewBest, ball?.Happy, ball?.Sad);
+        gameOver.SetResult(Game.CurrentMode?.Title, score.Score, score.BestScore, score.PreviousBest, score.IsNewBest, ball?.Happy, ball?.Sad);
         gameOver.Show();
     }
 
@@ -706,6 +958,7 @@ public sealed class GameUI : MonoBehaviour
     private void OnScoreChanged(int value)
     {
         hud.SetScore(value, value > 0);
+        if (Game.GhostRun) RefreshDelta();
     }
 
     private void OnBallLaunched()
@@ -734,6 +987,7 @@ public sealed class GameUI : MonoBehaviour
 
         gameOver.Hide();
         matchResult.Hide();
+        ghostResult.Hide();
         reward.Present(item);
     }
 
@@ -761,7 +1015,9 @@ public sealed class GameUI : MonoBehaviour
 
         if (Game.State != SoloGameManager.GameState.GameOver) return;
 
-        ShowGameOverResult();
+        if (Game.DailyRun) ShowDailyResult();
+        else if (Game.GhostRun) ShowGhostResult();
+        else ShowGameOverResult();
     }
 
     private void OpenSettings()
@@ -847,7 +1103,20 @@ public sealed class GameUI : MonoBehaviour
 
         if (settings.IsVisible)
         {
-            CloseSettings();
+            if (settings.IsLanguageOpen) settings.CloseLanguages();
+            else CloseSettings();
+            return;
+        }
+
+        if (ghostCode.IsVisible)
+        {
+            ghostCode.Hide();
+            return;
+        }
+
+        if (ghostResult.IsVisible)
+        {
+            ContinueAfterAd(HomeFromGhost, ghostResult.SetInteractable);
             return;
         }
 
@@ -913,7 +1182,7 @@ public sealed class GameUI : MonoBehaviour
                 Game.SetPaused(false);
                 break;
             case SoloGameManager.GameState.GameOver:
-                ContinueAfterAd(Game.ReturnToMenu, gameOver.SetInteractable);
+                ContinueAfterAd(HomeFromGameOver, gameOver.SetInteractable);
                 break;
         }
     }

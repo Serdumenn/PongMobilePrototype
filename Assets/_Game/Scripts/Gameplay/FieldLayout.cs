@@ -147,6 +147,7 @@ public sealed class FieldLayout : MonoBehaviour
         {
             FieldTopology.TopBottom => side == FieldSide.Bottom || side == FieldSide.Top,
             FieldTopology.Portal => side == FieldSide.Bottom || side == FieldSide.Top,
+            FieldTopology.Live => side == FieldSide.Bottom || side == FieldSide.Top,
             FieldTopology.FourSides => true,
             _ => side == FieldSide.Bottom
         };
@@ -184,6 +185,18 @@ public sealed class FieldLayout : MonoBehaviour
             float side = Mathf.Max(1f, Mathf.Min(safeMax.x - safeMin.x, safeMax.y - safeMin.y) - CourtMargin * 2f);
             Vector2 mid = new Vector2((safeMin.x + safeMax.x) / 2f, (safeMin.y + safeMax.y) / 2f);
             Field = new Rect(mid.x - side / 2f, mid.y - side / 2f, side, side);
+        }
+        else if (Topology == FieldTopology.Live)
+        {
+            float top = safeMax.y - PortalTopInset;
+            float bottom = center.y - halfHeight;
+            float maxHalfWidth = MaxFieldAspect > 0f ? halfHeight * MaxFieldAspect : float.MaxValue;
+            float left = Mathf.Max(safeMin.x, center.x - maxHalfWidth);
+            float right = Mathf.Min(safeMax.x, center.x + maxHalfWidth);
+            float aspect = MaxFieldAspect > 0f ? MaxFieldAspect : 0.5625f;
+            float width = Mathf.Max(1f, Mathf.Min(right - left, (top - bottom) * aspect));
+            float mid = (left + right) / 2f;
+            Field = new Rect(mid - width / 2f, bottom, width, width / aspect);
         }
         else
         {
@@ -307,7 +320,7 @@ public sealed class FieldLayout : MonoBehaviour
 
     private void UpdateMidline()
     {
-        bool show = Topology == FieldTopology.TopBottom;
+        bool show = Topology == FieldTopology.TopBottom || Topology == FieldTopology.Live;
         if (!show && dashes.Count == 0) return;
 
         while (show && dashes.Count < MidlineDashes) dashes.Add(CreateBlock("dash", MidlineColor, -45, false));

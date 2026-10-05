@@ -28,7 +28,7 @@ public sealed class SettingsScreen : UIScreen
         {
             Armed = true;
             button.AddToClassList(ArmedClass);
-            label.text = "Tap again";
+            label.text = Loc.T("Tap again");
             disarmJob?.Pause();
             disarmJob = button.schedule.Execute(Disarm).StartingIn(ConfirmMs);
         }
@@ -38,7 +38,7 @@ public sealed class SettingsScreen : UIScreen
             Armed = false;
             disarmJob?.Pause();
             button?.RemoveFromClassList(ArmedClass);
-            if (label != null) label.text = idleText;
+            if (label != null) label.text = Loc.T(idleText);
         }
 
         public void SetEnabled(bool enabled)
@@ -50,6 +50,9 @@ public sealed class SettingsScreen : UIScreen
     private readonly VisualElement vibrationSwitch;
     private readonly VisualElement soundSwitch;
     private readonly Label bestValue;
+    private readonly Label languageValue;
+    private readonly VisualElement languageDialog;
+    private readonly VisualElement languageList;
     private readonly ConfirmPill reset;
     private readonly ConfirmPill deleteOnline;
     private readonly Func<int> getBest;
@@ -65,6 +68,9 @@ public sealed class SettingsScreen : UIScreen
         vibrationSwitch = root.Q("vibration-switch");
         soundSwitch = root.Q("sound-switch");
         bestValue = root.Q<Label>("best-value");
+        languageValue = root.Q<Label>("language-value");
+        languageDialog = root.Q("language-dialog");
+        languageList = root.Q("language-list");
         root.Q<Label>("version-label").text = $"Pingi Pongi · v{Application.version}";
 
         vibrationSwitch.RegisterCallback<ClickEvent>(_ => ToggleVibration());
@@ -72,6 +78,49 @@ public sealed class SettingsScreen : UIScreen
         Bind("back-button", onBack);
         reset = new ConfirmPill(Bind("reset-button", OnResetPressed), root.Q<Label>("reset-label"), "Reset");
         deleteOnline = new ConfirmPill(Bind("online-button", OnDeleteOnlinePressed), root.Q<Label>("online-label"), "Delete");
+        Bind("language-row", OpenLanguages);
+        Bind("language-cancel", CloseLanguages);
+        root.Q("language-scrim").RegisterCallback<ClickEvent>(_ => CloseLanguages());
+    }
+
+    public bool IsLanguageOpen => !languageDialog.ClassListContains("dialog--hidden");
+
+    public void CloseLanguages()
+    {
+        languageDialog.AddToClassList("dialog--hidden");
+    }
+
+    private void OpenLanguages()
+    {
+        languageList.Clear();
+        foreach (string code in Loc.Codes)
+        {
+            var option = new Button { focusable = false, name = $"language-{code}" };
+            option.RemoveFromClassList(Button.ussClassName);
+            option.AddToClassList("language-option");
+            option.EnableInClassList("language-option--selected", code == Loc.Language);
+            option.Add(UiFactory.Text(Loc.NativeName(code), "language-option__name"));
+            if (code == Loc.Language) option.Add(UiFactory.Element("icon icon--check"));
+            string picked = code;
+            option.clicked += () => PickLanguage(picked);
+            languageList.Add(option);
+        }
+        languageDialog.RemoveFromClassList("dialog--hidden");
+    }
+
+    private void PickLanguage(string code)
+    {
+        UiFeedback.Tap();
+        CloseLanguages();
+        if (code != Loc.Language) Loc.SetLanguage(code);
+        RefreshLanguage();
+    }
+
+    private void RefreshLanguage()
+    {
+        languageValue.text = Loc.NativeName(Loc.Language);
+        reset.Disarm();
+        deleteOnline.Disarm();
     }
 
     public void SetOnlineBusy(bool busy)
@@ -84,13 +133,13 @@ public sealed class SettingsScreen : UIScreen
         vibrationSwitch.EnableInClassList(SwitchOnClass, GameSettings.HapticsEnabled);
         soundSwitch.EnableInClassList(SwitchOnClass, GameSettings.SoundEnabled);
         RefreshBest();
-        reset.Disarm();
-        deleteOnline.Disarm();
+        RefreshLanguage();
         deleteOnline.SetEnabled(true);
     }
 
     protected override void OnHide()
     {
+        CloseLanguages();
         reset.Disarm();
         deleteOnline.Disarm();
     }

@@ -314,6 +314,8 @@ GameObject:
   - component: {fileID: 315089633}
   - component: {fileID: 315089634}
   - component: {fileID: 315089635}
+  - component: {fileID: 315089636}
+  - component: {fileID: 315089637}
   m_Layer: 0
   m_Name: Services
   m_TagString: Untagged
@@ -515,6 +517,33 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 585a7c883791ab340be9c3496b4d16e0, type: 2}
   reconnectWindow: 10
   quickMatchTimeout: 6
+--- !u!114 &315089636
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 315089627}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f65b46b92c205cb4093c6eda130c3634, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Pingi.Runtime::OnlineScores
+  online: {fileID: 315089634}
+  TopCount: 10
+--- !u!114 &315089637
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 315089627}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ad5c9db2fdac0ac449ee2859e4490ee8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Pingi.Runtime::OnlineGhosts
+  online: {fileID: 315089634}
 --- !u!1 &517429098
 GameObject:
   m_ObjectHideFlags: 0
@@ -750,6 +779,10 @@ MonoBehaviour:
   Lobby: {fileID: 315089635}
   OnlineMatch: {fileID: 0}
   OnlineRush: {fileID: 0}
+  Scores: {fileID: 0}
+  Ghosts: {fileID: 315089637}
+  Recorder: {fileID: 7019952436038793786}
+  Race: {fileID: 7019952436038793785}
   HintRuns: 3
   RewardDelayMs: 650
   CodeLifetime: 600
@@ -2451,6 +2484,15 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 7019952437250453325, guid: 417ab4ed391aa3f4086fdffdc347cf0c, type: 3}
       insertIndex: -1
       addedObject: {fileID: 7019952436038793784}
+    - targetCorrespondingSourceObject: {fileID: 7019952437250453325, guid: 417ab4ed391aa3f4086fdffdc347cf0c, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 7019952436038793786}
+    - targetCorrespondingSourceObject: {fileID: 7019952437250453325, guid: 417ab4ed391aa3f4086fdffdc347cf0c, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 7019952436038793785}
+    - targetCorrespondingSourceObject: {fileID: 7019952437250453325, guid: 417ab4ed391aa3f4086fdffdc347cf0c, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 7019952436038793787}
   m_SourcePrefab: {fileID: 100100000, guid: 417ab4ed391aa3f4086fdffdc347cf0c, type: 3}
 --- !u!1 &7019952436038793778 stripped
 GameObject:
@@ -2544,6 +2586,8 @@ MonoBehaviour:
   Cosmetics: {fileID: 0}
   Skins: {fileID: 0}
   Portal: {fileID: 271303674}
+  Scores: {fileID: 0}
+  Live: {fileID: 7019952436038793787}
   CountdownFrom: 3
   CountdownStep: 0.6
   PortalDelay: 0.5
@@ -2576,6 +2620,60 @@ MonoBehaviour:
   AttackSeconds: 5
   MiniPaddleScale: 0.6
   FastBallBoost: 1.35
+--- !u!114 &7019952436038793785
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7019952436038793778}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: febdac27e2cedf54884c8b709ee65209, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Pingi.Runtime::GhostRace
+  Game: {fileID: 7019952436038793779}
+  Cosmetics: {fileID: 315089630}
+  Layout: {fileID: 248741024}
+  BallAlpha: 0.45
+  PaddleAlpha: 0.32
+--- !u!114 &7019952436038793786
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7019952436038793778}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6fbff6a537299fb42a2ab4a9e16e32bf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Pingi.Runtime::GhostRecorder
+  Game: {fileID: 7019952436038793779}
+  Cosmetics: {fileID: 315089630}
+  Layout: {fileID: 248741024}
+--- !u!114 &7019952436038793787
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7019952436038793778}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cafb627fdf0c79c45b62a78af92d6d0d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Pingi.Runtime::LiveDuel
+  Solo: {fileID: 7019952436038793779}
+  Layout: {fileID: 248741024}
+  MainBall: {fileID: 1378371385}
+  MainPaddle: {fileID: 1185500009}
+  Cosmetics: {fileID: 315089630}
+  LocalMatch: {fileID: 7019952436038793782}
+  CorrectionDecay: 18
+  TiltSmooth: 15
+  MaxTiltDeg: 22
+  MaxCorrection: 1.5
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0

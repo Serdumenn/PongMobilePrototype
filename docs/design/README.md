@@ -13,6 +13,7 @@ Bu klasör oyunun görsel ve UX kararlarının tek kaynağıdır. Her faz bir **
 | [modes.md](modes.md) | Oyun modları (Classic, Rush), skor tablosu, günlük seri |
 | [multiplayer.md](multiplayer.md) | Çok oyunculu modlar: mimari, fazlar (M0–M5), test ve riskler |
 | [multiplayer/index.html](multiplayer/index.html) | Çok oyunculu ekran tasarımları (Kapı M0, onaylandı) |
+| [localization.md](localization.md) | Yerelleştirme: pazar verisi, dil seti, teknik yol, fontlar (Kapı L, onaylandı) |
 
 ## Roller
 
@@ -32,6 +33,7 @@ Bu klasör oyunun görsel ve UX kararlarının tek kaynağıdır. Her faz bir **
 | 4 · Asset üretimi | İkon, sprite, font, ses, uygulama ikonu ✅ | Her asset DoD'den geçer | Kısmen |
 | 5 · Uygulama | UI Toolkit ekranları, tema, safe area, animasyon, AudioMixer ✅ | Kapı 4: cihaz testi | Cihaz testi bekliyor |
 | 6 · Polish & QA | Cihaz matrisi, erişilebilirlik, performans ve boyut bütçesi | Kapı 5 | — |
+| 6b · Yerelleştirme | 8 dil: EN, TR, JA, KO, DE, ES, PT-BR, FR ([localization.md](localization.md)) | Kapı L: dil listesi onayı ✅ | Uygulanıyor |
 | 7 · Mağaza | İkon, feature graphic, ekran görüntüleri, metinler, gizlilik politikası | Kapı 6: yayın | — |
 
 ## Karar kaydı
@@ -74,6 +76,10 @@ Bu klasör oyunun görsel ve UX kararlarının tek kaynağıdır. Her faz bir **
 | 2026-10-01 | Yerel maçlarda raketler oyuncu renginde; top en son vuranın kostümünü giyer | Kimlik renk ve konumla verilir; kostümler maçta da görünür |
 | 2026-10-01 | Parti servisi ortadan otomatik; düello ve ortak rallide sayıyı kaybeden servis atar | Dört kişide kimin servis atacağını beklemek akışı keser |
 | 2026-10-01 | **Kapı M0 geçildi.** Ekran tasarımları önerilen seçeneklerle onaylandı ([multiplayer/index.html](multiplayer/index.html)) | Ürün sahibinin onayı |
+| 2026-10-05 | Hayalet kayıtları **Cloud Code + Cloud Save (yalnız sunucu)**; istemcide Cloud Save paketi yok | Kodu sunucu üretir, kaydı sunucu denetler; oyuncular başkalarının kayıtlarını doğrudan okuyamaz. İstemci paketi gerekmedi, uygulama küçük kaldı |
+| 2026-10-05 | Canlı Düello: kendi Q16.16 simülasyonumuz + geri sarma (60 Hz, 2 tik girdi gecikmesi, en fazla 15 tik geri sarma) | Photon Quantum'a gerek kalmadı: ek servis yok, oyun mantığı tek yerde, iki telefon bit bit aynı sonucu hesaplıyor (altın test CI'da da koşar) |
+| 2026-10-05 | Kapı L: diller EN, TR, JA, KO, DE, ES (Latin Amerika), PT-BR, FR; kendi yerelleştirme sistemimiz; JA/KO için M PLUS Rounded 1c ve Jua; oyuncu adları İngilizce | Android oyun geliri ve reklam fiyatına göre en güçlü pazarlar; Rusça (Google reklam ve ödemeleri durdurdu) ve Çin anakarası (Google Play yok) elendi |
+| 2026-10-05 | **Yerelleştirme: 8 dil**, biri Türkçe; diller en çok gelir getirecek pazarlara göre seçilecek | Ürün sahibinin kararı. Çok oyunculu fazlar bittikten sonra yapılacak; dil listesi güncel pazar verisiyle araştırılıp onaya sunulacak. Kusursuz olmalı: tüm metinler, fontlar (Fredoka yalnızca Latin + Türkçe; gerekirse yedek font), uzun metinler ve her dilde cihaz denetimi |
 
 ## Asset takibi
 
@@ -100,4 +106,6 @@ Durumlar: `Brief → WIP → Review → Approved → Integrated`
 | Varlık | Lisans | Kaynak | Not |
 |---|---|---|---|
 | Fredoka (değiştirilmiş) | SIL OFL 1.1 | github.com/google/fonts | Statik ağırlıklar + 5 Türkçe harf eklendi |
+| M PLUS Rounded 1c | SIL OFL 1.1 | fonts.google.com | Japonca yedek font; kullanılan harflere kırpıldı |
+| Jua | SIL OFL 1.1 | fonts.google.com | Korece yedek font; kullanılan harflere kırpıldı |
 | Prinbles paketleri | Ticari kullanım serbest, yeniden dağıtım yasak | Satın alınmış | Repoda değil: `ArtSource/_licensed/` |

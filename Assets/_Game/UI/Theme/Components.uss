@@ -55,6 +55,7 @@
     right: 0;
     top: 0;
     bottom: 16px;
+    padding: 0 36px;
     flex-direction: row;
     align-items: center;
     justify-content: center;
@@ -251,6 +252,7 @@
 .icon--sound { background-image: url("/Assets/_Game/Art/UI/Icons/ui_icon_sound.svg"); }
 .icon--people { background-image: url("/Assets/_Game/Art/UI/Icons/ui_icon_people.svg"); }
 .icon--heart { background-image: url("/Assets/_Game/Art/UI/Icons/ui_icon_heart.svg"); }
+.icon--language { background-image: url("/Assets/_Game/Art/UI/Icons/ui_icon_language.svg"); }
 
 .caption {
     color: var(--color-ink-muted);

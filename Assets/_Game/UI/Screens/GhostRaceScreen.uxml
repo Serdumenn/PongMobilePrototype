@@ -1,0 +1,15 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" editor-extension-mode="False">
+    <ui:VisualElement class="safe" picking-mode="Ignore">
+        <ui:VisualElement name="ghost-card" class="ghost-card" picking-mode="Ignore">
+            <ui:VisualElement name="ghost-ball" class="ghost-card__ball" picking-mode="Ignore" />
+            <ui:VisualElement class="ghost-card__text" picking-mode="Ignore">
+                <ui:Label name="ghost-name" text="Brave Otter" class="ghost-card__name" picking-mode="Ignore" />
+                <ui:VisualElement class="ghost-card__tag" picking-mode="Ignore">
+                    <ui:VisualElement class="icon icon--ghost" picking-mode="Ignore" />
+                    <ui:Label text="Ghost" class="ghost-card__tag-label" picking-mode="Ignore" />
+                </ui:VisualElement>
+            </ui:VisualElement>
+            <ui:Label name="ghost-score" text="0" class="ghost-card__score" picking-mode="Ignore" />
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>

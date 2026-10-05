@@ -35,7 +35,7 @@ public sealed class MatchResultScreen : UIScreen
         var mode = match.Mode;
         split = mode.Topology == FieldTopology.TopBottom;
 
-        rematch = UiFactory.Button("btn btn--primary", "Rematch", "icon--retry icon--light", onRematch);
+        rematch = UiFactory.Button("btn btn--primary", Loc.T("Rematch"), "icon--retry icon--light", onRematch);
         rematch.name = "rematch-button";
         home = UiFactory.Button("btn btn--secondary", null, "icon--home", onHome, true);
         home.name = "home-button";
@@ -82,11 +82,11 @@ public sealed class MatchResultScreen : UIScreen
         {
             var badge = UiFactory.Element("result-badge");
             badge.Add(UiFactory.Element("icon icon--crown"));
-            badge.Add(UiFactory.Text("Winner", "result-badge__label"));
+            badge.Add(UiFactory.Text(Loc.T("Winner"), "result-badge__label"));
             half.Add(badge);
         }
 
-        half.Add(UiFactory.Text(won ? "You win!" : "So close!", "result-title"));
+        half.Add(UiFactory.Text(won ? Loc.T("You win!") : Loc.T("So close!"), "result-title"));
         half.Add(UiFactory.Text(p.Score.ToString(), $"result-number player-text-{p.Index}"));
         half.Add(UiFactory.Picture(won ? p.Look?.Happy : p.Look?.Sad, "result-ball"));
         return half;
@@ -100,13 +100,13 @@ public sealed class MatchResultScreen : UIScreen
         {
             var badge = UiFactory.Element("result-badge");
             badge.Add(UiFactory.Element("icon icon--crown"));
-            badge.Add(UiFactory.Text("New best!", "result-badge__label"));
+            badge.Add(UiFactory.Text(Loc.T("New best!"), "result-badge__label"));
             half.Add(badge);
         }
 
-        half.Add(UiFactory.Text("Great teamwork!", "result-title"));
+        half.Add(UiFactory.Text(Loc.T("Great teamwork!"), "result-title"));
         half.Add(UiFactory.Text(match.Rules.TeamScore.ToString(), "result-number player-text-1"));
-        half.Add(UiFactory.Text("passes together", "caption result-caption"));
+        half.Add(UiFactory.Text(Loc.T("passes together"), "caption result-caption"));
         return half;
     }
 
@@ -117,8 +117,8 @@ public sealed class MatchResultScreen : UIScreen
 
         var mascot = UiFactory.Picture(winner?.Look?.Happy, "card__mascot");
         card.Add(mascot);
-        card.Add(UiFactory.Text(winner != null ? $"{winner.Name} wins!" : "Game over", $"card__title player-text-{(winner != null ? winner.Index : 0)}"));
-        card.Add(UiFactory.Text("Last one standing", "caption card__subtitle"));
+        card.Add(UiFactory.Text(winner != null ? Loc.T("{0} wins!", winner.Name) : Loc.T("Game over"), $"card__title player-text-{(winner != null ? winner.Index : 0)}"));
+        card.Add(UiFactory.Text(Loc.T("Last one standing"), "caption card__subtitle"));
 
         var actions = UiFactory.Element("card__actions");
         actions.Add(home);

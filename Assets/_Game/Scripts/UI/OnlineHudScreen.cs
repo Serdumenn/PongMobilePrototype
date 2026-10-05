@@ -185,7 +185,7 @@ public sealed class OnlineHudScreen : UIScreen
 
     private void OnPeerMissing(bool missing)
     {
-        peerText.text = $"{match.OpponentName}'s connection dropped. We'll wait 10 seconds before ending the match.";
+        peerText.text = Loc.T("{0}'s connection dropped. We'll wait 10 seconds before ending the match.", match.OpponentName);
         peerDialog.EnableInClassList(DialogHiddenClass, !missing);
         Tick();
     }

@@ -10,6 +10,13 @@
             <ui:VisualElement class="topbar__side" picking-mode="Ignore" />
         </ui:VisualElement>
         <ui:VisualElement class="list" picking-mode="Ignore">
+            <ui:Button name="language-row" class="row row--button">
+                <ui:VisualElement class="icon icon--language row__icon" picking-mode="Ignore" />
+                <ui:Label text="Language" class="row__label" picking-mode="Ignore" />
+                <ui:Label name="language-value" text="English" class="row__value row__value--link" picking-mode="Ignore" />
+                <ui:VisualElement class="icon icon--chevron-right row__chevron" picking-mode="Ignore" />
+            </ui:Button>
+            <ui:VisualElement class="divider" picking-mode="Ignore" />
             <ui:VisualElement class="row" picking-mode="Ignore">
                 <ui:VisualElement class="icon icon--sound row__icon" picking-mode="Ignore" />
                 <ui:Label text="Sound" class="row__label" picking-mode="Ignore" />
@@ -49,5 +56,15 @@
         </ui:VisualElement>
         <ui:VisualElement class="spacer" picking-mode="Ignore" />
         <ui:Label name="version-label" text="Pingi Pongi" class="caption settings-footer" picking-mode="Ignore" />
+    </ui:VisualElement>
+    <ui:VisualElement name="language-dialog" class="dialog dialog--hidden">
+        <ui:VisualElement name="language-scrim" class="scrim" />
+        <ui:VisualElement class="safe overlay" picking-mode="Ignore">
+            <ui:VisualElement class="card language-card">
+                <ui:Label text="Language" class="card__title" picking-mode="Ignore" />
+                <ui:VisualElement name="language-list" class="language-list" picking-mode="Ignore" />
+                <ui:Button name="language-cancel" text="Cancel" class="link" />
+            </ui:VisualElement>
+        </ui:VisualElement>
     </ui:VisualElement>
 </ui:UXML>

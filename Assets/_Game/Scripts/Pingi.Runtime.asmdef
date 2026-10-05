@@ -7,7 +7,9 @@
         "Unity.Netcode.Runtime",
         "Unity.Purchasing",
         "Unity.Services.Authentication",
+        "Unity.Services.CloudCode",
         "Unity.Services.Core",
+        "Unity.Services.Leaderboards",
         "Unity.Services.Multiplayer",
         "UnityEngine.UI"
     ],
