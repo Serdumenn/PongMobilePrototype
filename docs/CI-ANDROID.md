@@ -7,7 +7,7 @@ With this setup:
 - If the build fails, you'll see **which step caused the failure** in the logs.
 - If successful, it will produce a **downloadable APK artifact**.
 
-Note: This project is a great example of a workflow. I used this old project, which I pulled from dusty shelves, to write the workflow (with the help of various editors and AI). You are welcome to examine the project as you wish. Integrating the workflow into your project is quite simple. I tried to make it as detailed and understandable as possible. If you have any questions, please don't hesitate to contact me. I am open to any feedback to continue improving the process. Thank you for your interest.
+Note: This project is a great example of a workflow. I used this old project, which I pulled from dusty shelves, to write the workflow (with the help of various editors). You are welcome to examine the project as you wish. Integrating the workflow into your project is quite simple. I tried to make it as detailed and understandable as possible. If you have any questions, please don't hesitate to contact me. I am open to any feedback to continue improving the process. Thank you for your interest.
 
 <img width="2355" height="685" alt="github_actions_unity_android_flow" src="https://github.com/user-attachments/assets/6cf49340-9f7f-45c8-b2d6-14988371ad32" />
 

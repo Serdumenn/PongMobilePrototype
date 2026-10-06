@@ -63,7 +63,7 @@ Görsel öneri (v1 öncesi, 4 modlu taslak): [modes/index.html](modes/index.html
 | UI | `MenuScreen` mod seçici (oklar, kaydırma, noktalar), `HudScreen` Rush göstergeleri, `ScoresScreen` (Benim / Dünya), `GameOverScreen` mod adlı başlık |
 
 ## Aşamalar
-1. **A — Hesap gerektirmeyenler: ✅ tamam.**
+1. **A — Hesap gerektirmeyenler: tamam.**
    - İçerik: Classic + Rush, mod seçici, kişisel rekorlar ve istatistikler, seri ve Astro, Skorlar ekranı.
    - Test (Editor, 3 ekran oranı):
      - Rush puanlaması, doğru sayıda kaçırmadan sonra oyun sonu, yeni rekor
@@ -73,6 +73,6 @@ Görsel öneri (v1 öncesi, 4 modlu taslak): [modes/index.html](modes/index.html
      - Duraklatma akışları
 2. **B — UGS Leaderboards (çok oyunculu plan M4):** anonim giriş, Cloud Code ile skor gönderme, canlı sıralama.
 
-## Senin yapman gerekenler (B aşaması için)
-1. Unity Cloud'da projeyi oluşturup Editor'e bağla (multiplayer.md, M2). Ücretsizdir; kart bilgisi gerekmez.
-2. Leaderboards servisini panelde aç. Tabloları ben tanımlayıp sana kimlikleri veririm.
+## Gerekenler (B aşaması için)
+1. Unity Cloud'da proje oluşturulup Editor'e bağlanır (multiplayer.md, M2). Ücretsizdir; kart bilgisi gerekmez.
+2. Panelde Leaderboards servisi açılır; tablolar proje içinde tanımlanır ve kimlikleri koda girilir.

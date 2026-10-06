@@ -1,8 +1,3 @@
-"""Generates Google Play store art: the 512 px icon and the 1024x500 feature graphic.
-
-Run: python ArtSource/tools/generate_store_art.py
-Output: docs/release/store/
-"""
 import os
 import subprocess
 import sys

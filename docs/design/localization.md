@@ -73,8 +73,8 @@ Seçenek A'nın parçaları:
 
 ## 5. Çeviri ve kalite
 
-- **İlk çeviriler:** Ben yaparım. Her metnin nerede göründüğünü anlatan bağlam notları ve bir terim sözlüğü kullanılır (Rush, Daily Challenge, Ghost, Pingi Pass, kostüm adları vb.).
-- **Türkçe:** Senin gözden geçirmen yeterli.
+- **İlk çeviriler:** Proje içinde yapılır. Her metnin nerede göründüğünü anlatan bağlam notları ve bir terim sözlüğü kullanılır (Rush, Daily Challenge, Ghost, Pingi Pass, kostüm adları vb.).
+- **Türkçe:** Geliştiricinin gözden geçirmesi yeterli.
 - **Diğer diller:** Yayından önce ana dili konuşan birinin okuması önerilir. Toplam yaklaşık 1.500–2.000 kelime; serbest çevirmenle dil başına birkaç saatlik iş. Yayın ertelendiği için bu karar yayın öncesine bırakılabilir.
 - **Mağaza:** Mağaza sayfası metinleri ve ekran görüntüleri yayın fazında, aynı dillerle yapılır.
 
@@ -123,4 +123,4 @@ Seçenek A'nın parçaları:
 
 **Testler:** EditMode 138, PlayMode 45; hepsi geçiyor. Yeni: harf kapsamı (her dilin her harfi bir fontta), yedek font satır ölçüleri, `TextFitPlayTests` (5).
 
-**Kalan:** Yayından önce 6 dilin ana dili konuşan biri tarafından okunması; Türkçeyi sen gözden geçirirsin. Sıradaki aday dil Geleneksel Çince.
+**Kalan:** Yayından önce 6 dilin ana dili konuşan biri tarafından okunması; Türkçe geliştirici tarafından gözden geçirilir. Sıradaki aday dil Geleneksel Çince.

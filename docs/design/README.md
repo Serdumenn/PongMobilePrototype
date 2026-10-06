@@ -19,22 +19,21 @@ Bu klasör oyunun görsel ve UX kararlarının tek kaynağıdır. Her faz bir **
 
 | Rol | Kim | Sorumluluk |
 |---|---|---|
-| Creative Director / Product Owner | Fatih | Vizyon, kapı onayları, cihazda his testi |
-| Art Direction, UX, Technical Art, UI Dev, QA | Claude | Üretim, uygulama, doğrulama |
+| Creative Director, Art Direction, UX, Development, QA | Fatih | Vizyon, kapı onayları, üretim, uygulama, doğrulama, cihaz testi |
 
 ## Fazlar
 
 | Faz | Çıktı | Kapı | Durum |
 |---|---|---|---|
-| 0 · Altyapı | Klasör yapısı, adlandırma, import preset'leri, Git LFS, placeholder temizliği | — | ✅ Tamam |
-| 1 · Art Direction | Creative Brief + 3 style frame | Kapı 1: stil seçimi | ✅ B · Soft Pop seçildi |
-| 2 · Design System | Token'lar, tipografi, bileşenler, animasyon, ses paleti | Kapı 2 | ✅ Kapı 3 ile birleştirildi |
-| 3 · UX | Ekran envanteri, akış, 3 oranda doğrulama | Kapı 3 | ✅ Ekranlar uygulandı |
-| 4 · Asset üretimi | İkon, sprite, font, ses, uygulama ikonu ✅ | Her asset DoD'den geçer | Kısmen |
-| 5 · Uygulama | UI Toolkit ekranları, tema, safe area, animasyon, AudioMixer ✅ | Kapı 4: cihaz testi | Cihaz testi bekliyor |
+| 0 · Altyapı | Klasör yapısı, adlandırma, import preset'leri, Git LFS, placeholder temizliği | — | Tamam |
+| 1 · Art Direction | Creative Brief + 3 style frame | Kapı 1: stil seçimi | B · Soft Pop seçildi |
+| 2 · Design System | Token'lar, tipografi, bileşenler, animasyon, ses paleti | Kapı 2 | Kapı 3 ile birleştirildi |
+| 3 · UX | Ekran envanteri, akış, 3 oranda doğrulama | Kapı 3 | Ekranlar uygulandı |
+| 4 · Asset üretimi | İkon, sprite, font, ses, uygulama ikonu | Her asset DoD'den geçer | Kısmen |
+| 5 · Uygulama | UI Toolkit ekranları, tema, safe area, animasyon, AudioMixer | Kapı 4: cihaz testi | Cihaz testi bekliyor |
 | 6 · Polish & QA | Cihaz matrisi, erişilebilirlik, performans ve boyut bütçesi | Kapı 5 | — |
-| 6b · Yerelleştirme | 8 dil: EN, TR, JA, KO, DE, ES, PT-BR, FR ([localization.md](localization.md)) | Kapı L: dil listesi onayı ✅ | Uygulandı; yayından önce ana dil okuması |
-| 6c · Arkadaşlar | Arkadaş kodu, istekler, liste ve durum, davetler, Friends sıralaması ([multiplayer.md](multiplayer.md) M6) | Ürün sahibi tam yetki verdi (2026-10-05) | ✅ Uygulandı ve gerçek serviste denendi |
+| 6b · Yerelleştirme | 8 dil: EN, TR, JA, KO, DE, ES, PT-BR, FR ([localization.md](localization.md)) | Kapı L: dil listesi onayı | Uygulandı; yayından önce ana dil okuması |
+| 6c · Arkadaşlar | Arkadaş kodu, istekler, liste ve durum, davetler, Friends sıralaması ([multiplayer.md](multiplayer.md) M6) | Ürün sahibi tam yetki verdi (2026-10-05) | Uygulandı ve gerçek serviste denendi |
 | 7 · Mağaza | İkon, feature graphic, ekran görüntüleri, metinler, gizlilik politikası ([../release/README.md](../release/README.md)) | Kapı 6: yayın | Projede hazır; Play Console, AdMob ve Play Games hesap adımları ürün sahibinde |
 
 ## Karar kaydı

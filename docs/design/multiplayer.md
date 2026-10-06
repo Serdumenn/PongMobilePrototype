@@ -2,8 +2,6 @@
 
 *v1 · 2026-10-01 · Durum: **Kapı M0 geçildi — M1 başladı***
 
-Fikir panosu (mod taslakları ve karşılaştırma): [Pingi Pongi Çok Oyunculu](https://claude.ai/artifact/F8swRbu67w4WJ8JchhwABS)
-
 Karar: ürün sahibi yedi modun hepsini istiyor. Bu doküman, mevcut projeyi bozmadan hepsini hangi sırayla, hangi mimariyle ve hangi kontrol noktalarıyla ekleyeceğimizi tanımlar.
 
 | Mod | Nerede | Tür | Faz |
@@ -137,7 +135,7 @@ Oyuncu adları serbest metin değil, üretilmiş adlar olacak ("Neşeli Penguen"
 
 ## 3. Fazlar
 
-Her fazın sonunda bir onay kapısı var. Kapıdan geçmeyen iş bir sonraki faza taşınmaz. Süreler, tek geliştirici ve yapay zekâ yönetimi varsayımıyla kaba tahmindir.
+Her fazın sonunda bir onay kapısı var. Kapıdan geçmeyen iş bir sonraki faza taşınmaz. Süreler, tek geliştirici varsayımıyla kaba tahmindir.
 
 ### M0 — Zemin (2–3 hafta) · çevrimdışı, hesap gerektirmez
 1. **Test altyapısı:** Oyun kodunu assembly definition'lara taşı. EditMode ve PlayMode test projeleri; CI'da build'den önce test adımı (`game-ci/unity-test-runner`).
@@ -151,12 +149,12 @@ Her fazın sonunda bir onay kapısı var. Kapıdan geçmeyen iş bir sonraki faz
 
 | Adım | Durum |
 |---|---|
-| 1 · Test altyapısı | ✅ Kodda 4 assembly var. Testler: EditMode 74, PlayMode 10. CI'da `test` işi build'den önce çalışıyor; CI'daki ilk koşu senin bir sonraki push'unla doğrulanacak |
-| 2 · Koruma testleri | ✅ Kapsam: Classic ve Rush puanlama, süre ve ceza, rekorlar, seri (gece yarısı, yıl dönümü, saat geri), envanter ve Pass kuralları, katalog verisi, kostüm giydirme ve kalıcılık, skor ve seri ödülleri, duraklatma. Ralli testinde raket topu gerçek dokunuşla takip ediyor ve hız artışı ölçülüyor |
-| 3 · Çekirdek refaktör | ✅ `Ball`, `Paddle` + `IPaddleController` + `TouchZoneController`, `Goal`, `FieldLayout`, `MatchRules`, `Participant`. Testler refaktörden sonra da yeşil |
-| 4 · Tohumlu rastgelelik | ✅ `MatchRandom` (mulberry32). Aynı tohum aynı servisi veriyor (PlayMode testi) |
-| 5 · Tasarım kapısı | ✅ [multiplayer/index.html](multiplayer/index.html) **onaylandı (2026-10-01)**, önerilen seçeneklerle |
-| 6 · Açık iş | ✅ Dolap bildirimi üste taşındı. "Reklam hazır değil" ve "mağaza hazır değil" yolları Editor'de görsel olarak doğrulandı |
+| 1 · Test altyapısı | Kodda 4 assembly var. Testler: EditMode 74, PlayMode 10. CI'da `test` işi build'den önce çalışıyor; CI'daki ilk koşu bir sonraki push ile doğrulanacak |
+| 2 · Koruma testleri | Kapsam: Classic ve Rush puanlama, süre ve ceza, rekorlar, seri (gece yarısı, yıl dönümü, saat geri), envanter ve Pass kuralları, katalog verisi, kostüm giydirme ve kalıcılık, skor ve seri ödülleri, duraklatma. Ralli testinde raket topu gerçek dokunuşla takip ediyor ve hız artışı ölçülüyor |
+| 3 · Çekirdek refaktör | `Ball`, `Paddle` + `IPaddleController` + `TouchZoneController`, `Goal`, `FieldLayout`, `MatchRules`, `Participant`. Testler refaktörden sonra da yeşil |
+| 4 · Tohumlu rastgelelik | `MatchRandom` (mulberry32). Aynı tohum aynı servisi veriyor (PlayMode testi) |
+| 5 · Tasarım kapısı | [multiplayer/index.html](multiplayer/index.html) **onaylandı (2026-10-01)**, önerilen seçeneklerle |
+| 6 · Açık iş | Dolap bildirimi üste taşındı. "Reklam hazır değil" ve "mağaza hazır değil" yolları Editor'de görsel olarak doğrulandı |
 
 **M1'e bırakılanlar:** Parmağın başladığı bölgeye kilitlenmesi (4.1), `Participant`'ta skor ve can, `FieldLayout`'ta ÜstAlt ve DörtKenar topolojileri. Bunları ilk kullanan modlar M1'de geliyor; şimdiden yazmak kullanılmayan kod olurdu.
 
@@ -194,12 +192,12 @@ Her fazın sonunda bir onay kapısı var. Kapıdan geçmeyen iş bir sonraki faz
 
 | Adım | Durum |
 |---|---|
-| M1.1 Kurallar ve veri | ✅ `TableDuelRules`, `CoopRallyRules`, `PartyRules`. Üç mod varlığı. Maç kayıtları: maç sayısı, en uzun ortak ralli, günlük seri |
-| M1.2 Dünya | ✅ `FieldLayout` üç topoloji. Kale ↔ duvar geçişi (`Goal.SetOpen`). Parti: kare saha, köşe blokları, kapalı kenar çubuğu. Düello: orta çizgi. Raket taraf/açı/renk kurulumu, parmak kilidi. Her raketten servis, otomatik servis, ikinci top |
-| M1.3 Maç yöneticisi | ✅ `LocalMatchController`: kurulum → 3-2-1 → oyun → sonuç → rövanş, duraklatma, çıkış. Seri ödülü ve reklam kuralı maçlarda da geçerli |
-| M1.4 Arayüz | ✅ Together kartı, merkez (Online ve Challenges "yakında"), görünüm seçimi (düello yarıları, partide dört kenar), maç HUD'u, geri sayım, sonuç |
-| M1.5 Asset | ✅ İkonlar (`people`, `heart`), dört oyuncu raketi, dört ses |
-| M1.6 Test ve QA | ✅ EditMode 83, PlayMode 18 test. Yeni ekranlarla 13 cihaz denetimi: 87 ekran durumu (menü kartı, merkez, düello kurulum/HUD/sonuç, ortak ralli HUD'u, tabletlerde parti kurulum/HUD/sonuç). Bulunan 3 sorun düzeltildi; yeniden denetimde sorun çıkmadı |
+| M1.1 Kurallar ve veri | `TableDuelRules`, `CoopRallyRules`, `PartyRules`. Üç mod varlığı. Maç kayıtları: maç sayısı, en uzun ortak ralli, günlük seri |
+| M1.2 Dünya | `FieldLayout` üç topoloji. Kale ↔ duvar geçişi (`Goal.SetOpen`). Parti: kare saha, köşe blokları, kapalı kenar çubuğu. Düello: orta çizgi. Raket taraf/açı/renk kurulumu, parmak kilidi. Her raketten servis, otomatik servis, ikinci top |
+| M1.3 Maç yöneticisi | `LocalMatchController`: kurulum → 3-2-1 → oyun → sonuç → rövanş, duraklatma, çıkış. Seri ödülü ve reklam kuralı maçlarda da geçerli |
+| M1.4 Arayüz | Together kartı, merkez (Online ve Challenges "yakında"), görünüm seçimi (düello yarıları, partide dört kenar), maç HUD'u, geri sayım, sonuç |
+| M1.5 Asset | İkonlar (`people`, `heart`), dört oyuncu raketi, dört ses |
+| M1.6 Test ve QA | EditMode 83, PlayMode 18 test. Yeni ekranlarla 13 cihaz denetimi: 87 ekran durumu (menü kartı, merkez, düello kurulum/HUD/sonuç, ortak ralli HUD'u, tabletlerde parti kurulum/HUD/sonuç). Bulunan 3 sorun düzeltildi; yeniden denetimde sorun çıkmadı |
 
 **Denetimde düzeltilenler:**
 - **Together kartı:** Açıklama 16:9 ekranlarda iki satıra iniyor ve Play butonunu raketin üstüne itiyordu. Açıklama kısaltıldı: "Play with your friends".
@@ -218,8 +216,8 @@ Her fazın sonunda bir onay kapısı var. Kapıdan geçmeyen iş bir sonraki faz
 
 **Kapı M1:** İki kişiyle tek telefonda, dört kişiyle tablette cihaz testi; küçük telefonda ergonomi kontrolü.
 
-### M2 — Online altyapı (2–3 hafta) · **senin hesap adımın gerekli**
-- **Senden:** Unity Cloud projesi oluştur ve bağla (Unity Dashboard).
+### M2 — Online altyapı (2–3 hafta) · **hesap adımı gerekli**
+- **Hesap:** Unity Cloud projesi oluşturulur ve bağlanır (Unity Dashboard).
 - **Altyapı:** Paketleri kur:
   - Authentication
   - Multiplayer Services
@@ -256,26 +254,26 @@ Her fazın sonunda bir onay kapısı var. Kapıdan geçmeyen iş bir sonraki faz
 
 | Adım | Durum |
 |---|---|
-| M2.1 Kurulum | ✅ Paketler kuruldu, derleme temiz. Unity Cloud projesi "Pingi Pongi" bağlandı (2026-10-04) |
-| M2.2 Kimlik | ✅ `OnlineService` (Services nesnesinde) ve `PlayerNames` (32 sıfat × 32 hayvan = 1024 ad). Giriş, Online sekmesi ilk açıldığında yapılır; yalnız tek kişilik oynayan biri için UGS hesabı açılmaz |
-| M2.3 Oturum | ✅ `OnlineLobby`, `SessionCode`, `LobbyPlayer`. NetworkManager yalnız online'a girilince kodla oluşturulur; sahnede durmaz, tek oyunculu oyunu etkilemez. Canlı denendi (aşağıda) |
-| M2.4 Dayanıklılık | ✅ Yeniden bağlanma (10 sn, geri sayım halkalı pencere), arka planda 10 sn'den uzun kalınca lobiden çıkış, host ayrılması. İnternet yoksa Online sekmesi "You're offline", sunucuya ulaşılamazsa "Can't reach the servers" kartı ve Try again. Hata mesajları: kod bulunamadı, oda dolu, sürüm farklı, bağlantı koptu, arkadaşın ayrıldı |
-| M2.5 Arayüz | ✅ Online sekmesi: oyuncu adı ve topu, görünüm değiştirme (askı), Quick match, Create code, Join code, mod listesi (Portal Duel ve Co-op Rally seçilebilir; Rush Battle ve Live Duel "Soon"). Kod girme penceresi: küçük harf ve boşluk düzelir. Lobi: kod kartı (Kopyala, Paylaş, 10 dk süre), oyuncu yuvaları, VS kartları ve gecikme, Ready, 3-2-1. Ayarlar'da "Online data → Delete". Yeni ikonlar: bolt, share, copy, join, wifi, wifi_off |
+| M2.1 Kurulum | Paketler kuruldu, derleme temiz. Unity Cloud projesi "Pingi Pongi" bağlandı (2026-10-04) |
+| M2.2 Kimlik | `OnlineService` (Services nesnesinde) ve `PlayerNames` (32 sıfat × 32 hayvan = 1024 ad). Giriş, Online sekmesi ilk açıldığında yapılır; yalnız tek kişilik oynayan biri için UGS hesabı açılmaz |
+| M2.3 Oturum | `OnlineLobby`, `SessionCode`, `LobbyPlayer`. NetworkManager yalnız online'a girilince kodla oluşturulur; sahnede durmaz, tek oyunculu oyunu etkilemez. Canlı denendi (aşağıda) |
+| M2.4 Dayanıklılık | Yeniden bağlanma (10 sn, geri sayım halkalı pencere), arka planda 10 sn'den uzun kalınca lobiden çıkış, host ayrılması. İnternet yoksa Online sekmesi "You're offline", sunucuya ulaşılamazsa "Can't reach the servers" kartı ve Try again. Hata mesajları: kod bulunamadı, oda dolu, sürüm farklı, bağlantı koptu, arkadaşın ayrıldı |
+| M2.5 Arayüz | Online sekmesi: oyuncu adı ve topu, görünüm değiştirme (askı), Quick match, Create code, Join code, mod listesi (Portal Duel ve Co-op Rally seçilebilir; Rush Battle ve Live Duel "Soon"). Kod girme penceresi: küçük harf ve boşluk düzelir. Lobi: kod kartı (Kopyala, Paylaş, 10 dk süre), oyuncu yuvaları, VS kartları ve gecikme, Ready, 3-2-1. Ayarlar'da "Online data → Delete". Yeni ikonlar: bolt, share, copy, join, wifi, wifi_off |
 | M2.6 Test ve QA | EditMode 94, PlayMode 18 test yeşil. Editor'de uçtan uca deneme: kod oluştur, ikinci oyuncu katılır, ikisi hazır, geri sayım; silme akışı iki durumda. 13 cihaz denetimi: 7 ekran durumu × 13 cihaz. Tek gerçek bulgu iPad Pro'da lobi durum metninin kırpılma riskiydi; düzeltildi ve yeniden denetlendi. Kod penceresinin altında kalan butonlar ve cihaz geçişi sırasında alınan ölçümler yanlış alarm |
 
 **Canlı deneme (2026-10-04, Editor + ikinci UGS örneği):**
 
 | Durum | Sonuç |
 |---|---|
-| Anonim giriş, üretilmiş ad | ✅ "Mighty Narwhal" |
-| Kodla oda kurma, relay host | ✅ Kod `HLK8F8`; NetworkManager host olarak dinliyor |
-| Kodla katılma | ✅ İkinci oyuncu "Rosy Walrus"; ev sahibi adı ve kostümü görüyor |
-| Hazır olma, ikisi hazır | ✅ İki yönde eşitleniyor; `AllReady` doğru |
-| Dolu oda | ✅ Üçüncü oyuncu "Full" alıyor |
-| Ayrılma | ✅ Ev sahibinde oyuncu sayısı düşüyor |
-| Kapanmış odanın kodu | ✅ "NotFound"; küçük harf ve boşluklu yazım da çalışıyor |
-| Hatalı karakterli kod | ✅ "NotFound". UGS kodları 6 karakter, ama her harf geçerli değil (ör. `Z` reddediliyor); bu yüzden giriş alanı harf kısıtlamaz, sunucunun cevabına bakar |
-| Hızlı eşleşme | ✅ Açık oda yoksa kendisi açıyor; ikinci oyuncu aynı odaya düşüyor |
+| Anonim giriş, üretilmiş ad | "Mighty Narwhal" |
+| Kodla oda kurma, relay host | Kod `HLK8F8`; NetworkManager host olarak dinliyor |
+| Kodla katılma | İkinci oyuncu "Rosy Walrus"; ev sahibi adı ve kostümü görüyor |
+| Hazır olma, ikisi hazır | İki yönde eşitleniyor; `AllReady` doğru |
+| Dolu oda | Üçüncü oyuncu "Full" alıyor |
+| Ayrılma | Ev sahibinde oyuncu sayısı düşüyor |
+| Kapanmış odanın kodu | "NotFound"; küçük harf ve boşluklu yazım da çalışıyor |
+| Hatalı karakterli kod | "NotFound". UGS kodları 6 karakter, ama her harf geçerli değil (ör. `Z` reddediliyor); bu yüzden giriş alanı harf kısıtlamaz, sunucunun cevabına bakar |
+| Hızlı eşleşme | Açık oda yoksa kendisi açıyor; ikinci oyuncu aynı odaya düşüyor |
 | Relay istemci bağlantısı, gecikme, host ayrılması, yeniden bağlanma | ⏳ İki ayrı oyuncu süreci gerekiyor: Multiplayer Play Mode ya da iki telefon (Kapı M2) |
 
 - Test için açılan iki geçici oyuncu hesabı denemeden sonra silindi.
@@ -305,12 +303,12 @@ Her fazın sonunda bir onay kapısı var. Kapıdan geçmeyen iş bir sonraki faz
 
 | Adım | Durum |
 |---|---|
-| M3.1 Ağ mesajları | ✅ `MatchMessage` (sürümlü ikili biçim), `IMatchLink`, `NetcodeLink` (NGO adlı mesaj `pingi.match`, güvenilir ve sıralı). NGO zaten güvenilir teslim ettiği için yeniden gönderme yok; tekrarlanan `Handoff` ve `Miss` sıra numarasıyla yok sayılır |
-| M3.2 Saha ve portal | ✅ `FieldTopology.Portal`: alt kenar kale, üst kenar portal; portal rakip kartının altına iner (2,4 birim). Teal portal çizgisi ve `PortalView` halkası (çıkışta büyüyüp söner, girişte 0,5 sn'de belirir). Top çıktığı x'in aynasından, yönü aynalanarak ve aynı hızla iner |
-| M3.3 Maç yöneticisi | ✅ `OnlineMatchController` ve `OnlineMatchRules`. Skor, kazanma, servis ve ortak can host'ta; misafir `Miss` gönderir, host `Score` yayınlar. Sayıyı kaybeden servis atar. Rakip koparsa 10 sn beklenir, sonra kalan kazanır; lobiden ayrılırsa hemen kazanır. Rövanş: iki taraf da isteyince host yeniden başlatır |
-| M3.4 Arayüz | ✅ Maç HUD'u: rakip kartı (top, ad, skor ya da ortak canlar, bağlantı), ortada büyük soluk skor, geri sayım, "Your serve · tap to start", 4 tepki ve süzülen baloncuk, "Leave the match?" ve "Reconnecting…" pencereleri. Sonuç: "You win!" / "So close!", skor, rövanş durumu ("wants a rematch!", "Waiting for…", "left the match"), Rematch / Accept ve ana sayfa. Lobi artık kendi geri sayımını yapmaz: "Connecting to…", "Waiting for…", "Starting…" |
-| M3.5 Asset | ✅ İkonlar: `thumb`, `wow`, `laugh` (ateş mevcut). Sprite: `Art/Sprites/Online/spr_portal_ring.svg`. Sesler: `sfx_portal`, `sfx_reaction` |
-| M3.6 Test ve QA | ✅ EditMode 100, PlayMode 24. Sahte bağlantıyla oyun içi testler: servis portaldan çıkar, gelen top aynalanır, kaçırma bildirilir, tekrarlanan mesaj yok sayılır, host skoru ve maç sonu, rövanş, ortak ralli, kopma. **Gerçek relay ile uçtan uca:** Editor host, aynı süreçte ikinci bir UGS örneği ve kendi NetworkManager'ı olan bir bot misafir. Bot relay üzerinden bağlandı (gecikme 180–240 ms), tam maç 5–4 oynandı, rövanş başladı, maç ortasında ayrılan botun yerine kalan oyuncu kazandı. **Kötü bağlantı (2026-10-05):** bot her mesajı iki yönde 200 ms (±30) geciktirdi, kayıp paketleri bir tur gecikmeyle yeniden gönderdi (sıra korunarak). %5 kayıpla Portal Duel 4–5 bitti, %10 kayıpla online Co-op 58 paslık ralli oynandı; iki tarafın skoru her an aynıydı. Gecikme yüzünden geri sayımı geç biten tarafa gelen top artık kaybolmuyor, geri sayım bitince iniyor (testi eklendi). Not: Gerçek UDP kaybını Netcode'un güvenilir kanalı karşılıyor; bu test onun uygulamaya yansıyan etkisini (gecikme) taklit ediyor. Multiplayer Tools paketinin ağ simülatörü kullanılmadı. ⏳ İki telefonla 20 maç |
+| M3.1 Ağ mesajları | `MatchMessage` (sürümlü ikili biçim), `IMatchLink`, `NetcodeLink` (NGO adlı mesaj `pingi.match`, güvenilir ve sıralı). NGO zaten güvenilir teslim ettiği için yeniden gönderme yok; tekrarlanan `Handoff` ve `Miss` sıra numarasıyla yok sayılır |
+| M3.2 Saha ve portal | `FieldTopology.Portal`: alt kenar kale, üst kenar portal; portal rakip kartının altına iner (2,4 birim). Teal portal çizgisi ve `PortalView` halkası (çıkışta büyüyüp söner, girişte 0,5 sn'de belirir). Top çıktığı x'in aynasından, yönü aynalanarak ve aynı hızla iner |
+| M3.3 Maç yöneticisi | `OnlineMatchController` ve `OnlineMatchRules`. Skor, kazanma, servis ve ortak can host'ta; misafir `Miss` gönderir, host `Score` yayınlar. Sayıyı kaybeden servis atar. Rakip koparsa 10 sn beklenir, sonra kalan kazanır; lobiden ayrılırsa hemen kazanır. Rövanş: iki taraf da isteyince host yeniden başlatır |
+| M3.4 Arayüz | Maç HUD'u: rakip kartı (top, ad, skor ya da ortak canlar, bağlantı), ortada büyük soluk skor, geri sayım, "Your serve · tap to start", 4 tepki ve süzülen baloncuk, "Leave the match?" ve "Reconnecting…" pencereleri. Sonuç: "You win!" / "So close!", skor, rövanş durumu ("wants a rematch!", "Waiting for…", "left the match"), Rematch / Accept ve ana sayfa. Lobi artık kendi geri sayımını yapmaz: "Connecting to…", "Waiting for…", "Starting…" |
+| M3.5 Asset | İkonlar: `thumb`, `wow`, `laugh` (ateş mevcut). Sprite: `Art/Sprites/Online/spr_portal_ring.svg`. Sesler: `sfx_portal`, `sfx_reaction` |
+| M3.6 Test ve QA | EditMode 100, PlayMode 24. Sahte bağlantıyla oyun içi testler: servis portaldan çıkar, gelen top aynalanır, kaçırma bildirilir, tekrarlanan mesaj yok sayılır, host skoru ve maç sonu, rövanş, ortak ralli, kopma. **Gerçek relay ile uçtan uca:** Editor host, aynı süreçte ikinci bir UGS örneği ve kendi NetworkManager'ı olan bir bot misafir. Bot relay üzerinden bağlandı (gecikme 180–240 ms), tam maç 5–4 oynandı, rövanş başladı, maç ortasında ayrılan botun yerine kalan oyuncu kazandı. **Kötü bağlantı (2026-10-05):** bot her mesajı iki yönde 200 ms (±30) geciktirdi, kayıp paketleri bir tur gecikmeyle yeniden gönderdi (sıra korunarak). %5 kayıpla Portal Duel 4–5 bitti, %10 kayıpla online Co-op 58 paslık ralli oynandı; iki tarafın skoru her an aynıydı. Gecikme yüzünden geri sayımı geç biten tarafa gelen top artık kaybolmuyor, geri sayım bitince iniyor (testi eklendi). Not: Gerçek UDP kaybını Netcode'un güvenilir kanalı karşılıyor; bu test onun uygulamaya yansıyan etkisini (gecikme) taklit ediyor. Multiplayer Tools paketinin ağ simülatörü kullanılmadı. ⏳ İki telefonla 20 maç |
 
 - **Hazır bayrağı yarışı (düzeltildi):** Ready ve hemen ardından gelen "hazır değil" kaydı aynı anda gidince sunucunun cevabı ikincisini eziyordu. Oyuncu kayıtları artık sıraya alınıyor.
 
@@ -341,9 +339,9 @@ Her fazın sonunda bir onay kapısı var. Kapıdan geçmeyen iş bir sonraki faz
 | **Asset** | Saldırı ikonları (mini raket, hızlı top, sis), hayalet top görünümü, takvim ve hayalet ikonları, sesler: saldırı gönder/al, kalkan |
 | **Test ve QA** | EditMode: saldırı hedefleme ve kalkan kuralı, skor yayını, günlük tohum, kayıt kodlama/çözme ve boyut, kod alfabesi, skor sınırı. Sahte bağlantıyla 3–4 oyunculu oyun içi testler; relay botlarıyla uçtan uca Rush Battle; 13 cihaz denetimi |
 
-- **Senden gerekenler:** M4b ve M4c'de paket indirme izni (Leaderboards 2.3.4, Cloud Save 3.4.1, Cloud Code 2.10.4) ve sıralama ile Cloud Code dosyalarını Unity'de Deployment penceresinden bir kez "Deploy" etmen.
+- **Gerekenler:** M4b ve M4c'de paketler (Leaderboards 2.3.4, Cloud Save 3.4.1, Cloud Code 2.10.4) ve sıralama ile Cloud Code dosyalarının Unity'de Deployment penceresinden bir kez "Deploy" edilmesi.
 
-**M4a durumu (2026-10-05):** ✅ Rush Battle oynanabilir.
+**M4a durumu (2026-10-05):** Rush Battle oynanabilir.
 
 | Konu | Durum |
 |---|---|
@@ -355,7 +353,7 @@ Her fazın sonunda bir onay kapısı var. Kapıdan geçmeyen iş bir sonraki faz
 | Asset | İkonlar: `mini_paddle`, `fast_ball`, `fog`, `shield`. Sesler: `sfx_attack_send`, `sfx_attack_warn`, `sfx_shield` |
 | Test | EditMode 109 (9 yeni), PlayMode 30 (6 yeni: misafir koşusu ve skor yayını, saldırının gelip geçmesi, Perfect ile kalkan, 3 Perfect'te liderin hedeflenmesi ve host'un iletmesi, bitiş ve rövanş, herkes ayrılınca kazanma). **Gerçek relay:** Editor host + relay botu; botun skoru canlı aktı (119'a kadar), botun sis saldırısı Editor'e ulaşıp uygulandı, iki taraf bitince sıralama çıktı. 13 cihaz denetimi: 39 ekran durumu (uyarı/oyun, bekleme, sıralama), sorun yok. Not: Bitiş skorunu süre + 8 sn içinde göndermeyen oyuncu ayrılmış sayılır, böylece kimse sonsuza kadar beklemez |
 
-**M4b durumu (2026-10-05):** ✅ Günün Meydan Okuması ve Dünya sıralaması canlı.
+**M4b durumu (2026-10-05):** Günün Meydan Okuması ve Dünya sıralaması canlı.
 
 | Konu | Durum |
 |---|---|
@@ -367,7 +365,7 @@ Her fazın sonunda bir onay kapısı var. Kapıdan geçmeyen iş bir sonraki faz
 | Test | EditMode 114 (5 yeni: tohum ve gün değişimi, kalan süre biçimi, günün en iyisi, metadata'dan ad okuma, mod → tablo eşlemesi), PlayMode 32 (2 yeni: aynı tohumla aynı servis, günlük koşunun tek kişilik rekoru değiştirmemesi ve "Play again"). **Canlı:** Editor'de dört tablo yüklendi, günlük koşu skoru gönderildi ve "Rank #1" göründü, hub kartı sırayı gösterdi. 13 cihaz denetimi: 65 ekran durumu (meydan okumalar, günlük oyun sonu, World Classic / Daily / boş), sorun yok. Not satırı boşken kartın altında boşluk bırakıyordu; düzeltildi |
 | Not | Canlı denemede Editor'ün anonim hesabı Classic 11 ve Rush 15 rekorlarını ("Witty Penguin") ve günlük 3–4 puanı production tablolarına yazdı. Günlük tablo gece sıfırlanır; diğerleri yayından önce panelden sıfırlanabilir |
 
-**M4c durumu (2026-10-05):** ✅ Hayalet Meydan Okuma canlı. Böylece M4'ün üç parçası da bitti.
+**M4c durumu (2026-10-05):** Hayalet Meydan Okuma canlı. Böylece M4'ün üç parçası da bitti.
 
 | Konu | Durum |
 |---|---|
@@ -391,7 +389,7 @@ Her fazın sonunda bir onay kapısı var. Kapıdan geçmeyen iş bir sonraki faz
 
 **Kapı M5:** İki telefonda 150 ms gecikmede akıcı oyun; kopma testi; adalet (iki taraf aynı sonucu görüyor).
 
-**M5 durumu (2026-10-05):** ✅ Canlı Düello oynanabilir. Kapı M5'in kalan maddesi: iki gerçek telefonla deneme.
+**M5 durumu (2026-10-05):** Canlı Düello oynanabilir. Kapı M5'in kalan maddesi: iki gerçek telefonla deneme.
 
 | Konu | Durum |
 |---|---|
@@ -429,7 +427,7 @@ Her fazın sonunda bir onay kapısı var. Kapıdan geçmeyen iş bir sonraki faz
 - **Güvenlik:** Sohbet ve serbest metin yok. Mesajlar yalnızca davettir (oda kodu ve mod). Engellenen oyuncu istek ve davet gönderemez. Ayarlar'daki "Online data → Delete" önce arkadaşlıkları, sonra hesabı siler.
 - **Mimari:** `IFriendsBackend` (gerçek: `UgsFriendsBackend`, testte sahte), `OnlineFriends` (Services nesnesinde: liste, durum, davetler, olaylar), `FriendTag` (kod biçimi), `FriendInvite` (mesaj). Arayüz: `FriendsScreen`, `InviteBanner`, Online sekmesinde arkadaş kartı, lobide "Invite a friend", sonuç ekranlarında "Add friend", Skorlar'da Friends sekmesi.
 
-**M6 durumu (2026-10-05):** ✅ Arkadaş sistemi çalışıyor. Gerçek servisle denendi.
+**M6 durumu (2026-10-05):** Arkadaş sistemi çalışıyor. Gerçek servisle denendi.
 
 | Konu | Durum |
 |---|---|
@@ -552,13 +550,13 @@ sequenceDiagram
 
 ---
 
-## 8. Senden gerekenler
+## 8. Hesap ve onay adımları
 
 | Ne zaman | Adım |
 |---|---|
-| Şimdi | Bu planı ve aşağıdaki kararları onayla |
-| M0 sonu | Ekran tasarımlarını onayla |
-| M2 başı | Unity Dashboard'da proje oluştur, Unity Editor'den projeye bağla. Ücretsiz kota için ödeme bilgisi istenirse sen girersin |
+| Başlangıç | Plan ve aşağıdaki kararların onayı |
+| M0 sonu | Ekran tasarımlarının onayı |
+| M2 başı | Unity Dashboard'da proje oluşturma ve Unity Editor'den bağlama. Ücretsiz kota için ödeme bilgisi istenebilir |
 | Her kapı | İki telefon (ve varsa tablet) ile cihaz testi |
 
 ## 9. Kapı M0 kararları

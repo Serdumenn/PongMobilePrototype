@@ -1,8 +1,3 @@
-"""Generates Pingi ball skins (idle/happy/sad) and paddle skins as SVG.
-
-Ball canvas is 200x200 with the 156 px body centred, so the collider (0.405 units at 384 PPU) is unchanged.
-Add a skin by adding one entry to BALLS, PADDLES or PLAYER_PADDLES and re-running: python ArtSource/tools/generate_skins.py
-"""
 import os
 INK = "#2B2D42"
 C = 100

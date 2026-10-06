@@ -1,82 +1,97 @@
-# Yayın listesi (Google Play, yalnız Android)
+# Yayın kılavuzu (Google Play, yalnız Android)
 
-Durum: 2026-10-05. Projede yapılması gerekenler bitti. Aşağıdaki adımlar senin hesaplarında yapılır; ben şifre giremem ve hesaplara giriş yapamam. 🔁 işaretli adımlardan sonra bana bilgi ver, projede ayarlarını ben yaparım.
+Durum: 2026-10-06. Proje tarafı hazır. Aşağıdaki adımlar Play Console, Google Cloud, AdMob, Unity Cloud ve GitHub hesaplarında yapılır.
 
 ## Projede hazır olanlar
 
 | Konu | Durum |
 |---|---|
-| Paket adı | `com.SERDUMEN.PingiPongi`, sürüm 1.0.0, hedef API 36, en düşük API 25, IL2CPP, ARMv7 + ARM64 |
-| İmzalı AAB | `.github/workflows/release-android.yml`: `v1.0.0` gibi bir etiket push edince (ya da Actions'tan elle) testler koşar, imzalı `.aab` ve sembol dosyası üretilir. Sürüm kodu 1000 + çalıştırma numarası |
-| Google Play Games girişi | Play Games eklentisi 2.3.0. Açılışta otomatik giriş yapılır. Unity hesabına bağlanır; yeni telefonda aynı hesaba dönülür. Ayarlar'da "Google Play Games" satırı ve kopyalanabilir **Oyuncu ID** var |
-| İlerleme yedeği | Rekorlar, istatistikler, açılan kostümler, Pass/Reklamsız durumu Unity Cloud Save'e yedeklenir. Yeni telefonda birleşir; satın alımları ayrıca Google Play geri yükler |
+| Paket adı | `com.oceanforge.pingipongi`, sürüm 1.0.0, hedef API 36, en düşük API 25, IL2CPP, ARMv7 + ARM64 |
+| İmzalı AAB | `.github/workflows/release-android.yml`: `v1.0.0` gibi bir etiket push edilince (ya da Actions'tan elle) testler koşar, imzalı `.aab` ve sembol dosyası üretilir. Sürüm kodu 1000 + çalıştırma numarası |
+| Google Play Games girişi | Play Games eklentisi 2.3.0. Açılışta otomatik giriş; Unity hesabına bağlanır, yeni telefonda aynı hesaba dönülür. Ayarlar'da "Google Play Games" satırı ve kopyalanabilir Oyuncu ID'si var |
+| İlerleme yedeği | Rekorlar, istatistikler, açılan kostümler, Pass ve Reklamsız durumu Unity Cloud Save'e yedeklenir ve yeni telefonda birleşir. Satın alımları ayrıca Google Play geri yükler |
 | Reklam onayı (GDPR) | Google UMP: Avrupa'da ilk açılışta onay penceresi, Ayarlar'da "Privacy choices" |
-| Gizlilik politikası | `docs/privacy/index.html` (İngilizce + Türkçe). Ayarlar'da "Privacy policy" bağlantısı var |
+| Web sitesi | Ayrı repo `oceanforge-games.github.io` (Ocean Forge Games organizasyonu): stüdyo sayfası, oyun sayfası, gizlilik politikası, hesap silme sayfası, `app-ads.txt`. Ayarlar'daki "Privacy policy" bağlantısı buraya gider |
+| Lisans | Tescilli ("All rights reserved"); repo herkese açık ama izinsiz kullanım yok |
 | Mağaza materyalleri | `store-listing.md` (8 dil), `store/store_icon_512.png`, `store/feature_graphic.png`, `store/screenshots/` (EN + TR, 7'şer adet) |
 | Form cevapları | `data-safety.md` (Veri güvenliği, IARC, hedef kitle) |
 
-## Senin adımların (sırayla)
+## Hesap adımları
 
-### 1. İletişim e-postası 🔁
-Play'de herkese görünecek bir destek e-postası seç; kişisel adresin olmak zorunda değil. Bana yaz; gizlilik politikasındaki `[CONTACT_EMAIL]` alanlarını dolduracağım.
+### 1. İletişim e-postası (tamam)
+`fatihtas.contact@gmail.com`. Play Console'da ve gizlilik politikasında bu adres kullanılır.
 
-### 2. Gizlilik politikasını yayınla
-GitHub → repo → Settings → Pages → **Deploy from a branch** → `main` / `/docs` → Save. Birkaç dakika sonra adres çalışır:
-`https://serdumenn.github.io/PongMobilePrototype/privacy/`
+### 2. Web sitesi (Ocean Forge Games)
+1. GitHub → sağ üst **+** → **New organization** → **Free**. Ad: `oceanforge-games`, iletişim e-postası 1. adımdaki adres, "My personal account".
+2. GitHub Desktop → **File → Add local repository** → `Documents\GitHub\oceanforge-games.github.io`. "This directory does not appear to be a Git repository" uyarısında **create a repository** → Create repository.
+3. İlk commit: `Initial site` → **Publish repository** → Organization: `oceanforge-games`, **Keep this code private** kapalı → Publish.
+4. github.com/oceanforge-games/oceanforge-games.github.io → Settings → Pages → **Deploy from a branch** → `main` / `(root)` → Save.
 
-### 3. Yükleme anahtarı (upload key) ve GitHub secret'ları
-Bilgisayarında bir kez çalıştır (JDK'daki `keytool`; Unity'nin OpenJDK'sı da olur). Şifreyi sen belirle ve sakla:
+Birkaç dakika sonra adresler çalışır:
+
+| Sayfa | Adres |
+|---|---|
+| Stüdyo | `https://oceanforge-games.github.io/` |
+| Oyun | `https://oceanforge-games.github.io/pingi-pongi/` |
+| Gizlilik politikası | `https://oceanforge-games.github.io/pingi-pongi/privacy/` |
+| Hesap silme | `https://oceanforge-games.github.io/pingi-pongi/delete-account/` |
+| app-ads.txt | `https://oceanforge-games.github.io/app-ads.txt` |
+
+Oyun reposunun GitHub sayfasında **About** (sağdaki dişli): açıklama "A cheerful paddle game for Android by Ocean Forge.", Website `https://oceanforge-games.github.io/pingi-pongi/`. "Releases" ve "Packages" işaretli kalır, "Deployments" kaldırılabilir.
+
+### 3. Yükleme anahtarı ve GitHub secret'ları (tamam)
+Anahtar `keytool` ile oluşturulur (Unity'nin OpenJDK'sında vardır) ve repo dışında saklanır:
 
 ```
 keytool -genkeypair -v -keystore upload.keystore -alias upload -keyalg RSA -keysize 2048 -validity 10000
 ```
 
-Sonra keystore'u base64'e çevir (PowerShell):
+Base64'e çevirme (PowerShell):
 
 ```
-[Convert]::ToBase64String([IO.File]::ReadAllBytes("upload.keystore")) | Set-Content upload.b64
+[Convert]::ToBase64String([IO.File]::ReadAllBytes("upload.keystore")) | Set-Clipboard
 ```
 
-GitHub → Settings → Secrets and variables → Actions → New repository secret:
+GitHub → Settings → Secrets and variables → Actions:
 
 | Ad | Değer |
 |---|---|
-| `ANDROID_KEYSTORE_BASE64` | `upload.b64` dosyasının içeriği |
+| `ANDROID_KEYSTORE_BASE64` | keystore'un base64 hâli |
 | `ANDROID_KEYSTORE_PASS` | keystore şifresi |
 | `ANDROID_KEYALIAS_NAME` | `upload` |
 | `ANDROID_KEYALIAS_PASS` | anahtar şifresi |
 
-`upload.keystore` dosyasını **repoya koyma**. Kaybetme; yedekle.
+`upload.keystore` repoya konmaz ve yedeklenir.
 
 ### 4. Play Console'da uygulama
 1. Play Console → Create app → ad **Pingi Pongi**, varsayılan dil **English (United States)**, Game, Free.
-2. App signing: Google'ın önerdiği "Play App Signing" açık kalsın.
-3. GitHub'da `v1.0.0` etiketi oluştur ve push et. Actions bitince **PingiPongi-1.0.0-…** artifact'ından `.aab` dosyasını indir.
-4. Testing → **Internal testing** → yeni sürüm → `.aab` dosyasını yükle, kendini test kullanıcısı ekle.
-5. Setup → App integrity → App signing: **SHA-1** değerlerini not al (hem "App signing key" hem "Upload key"). 5. adımda lazım.
+2. App signing: "Play App Signing" açık kalır.
+3. GitHub'da `v1.0.0` etiketi oluşturulup push edilir. Actions bitince **PingiPongi-1.0.0-…** artifact'ından `.aab` indirilir.
+4. Testing → **Internal testing** → yeni sürüm → `.aab` yüklenir, test kullanıcıları eklenir.
+5. Setup → App integrity → App signing: **SHA-1** değerleri not edilir ("App signing key" ve "Upload key"). 5. adımda gerekir.
 
-> Kişisel geliştirici hesabı 13 Kasım 2023'ten sonra açıldıysa Google, üretime çıkmadan önce **en az 12 test kullanıcısıyla 14 gün kapalı test** ister. O durumda internal testten sonra Closed testing aç, 12 kişiyi ekle ve 14 gün beklet.
+Kişisel geliştirici hesaplarında (13 Kasım 2023'ten sonra açılanlar) üretimden önce **en az 12 test kullanıcısıyla 14 günlük kapalı test** zorunludur: internal testten sonra Closed testing açılır, 12 kişi eklenir ve 14 gün beklenir.
 
-### 5. Google Play Games Services 🔁
-1. Play Console → Play Games Services → Setup and management → Configuration → **Create new Play Games Services project** (yeni Google Cloud projesi oluşturabilir).
+### 5. Google Play Games Services
+1. Play Console → Play Games Services → Setup and management → Configuration → **Create new Play Games Services project**.
 2. Credentials:
-   - **Android** kimlik bilgisi: paket adı `com.SERDUMEN.PingiPongi`, SHA-1 = App signing key SHA-1. Upload key SHA-1 için ikinci bir Android kimlik bilgisi ekle.
-   - **Game server** kimlik bilgisi: Google Cloud'da "Web application" türünde OAuth istemcisi oluştur ve bağla. **Client ID** ve **Client secret** değerlerini al.
-3. Testers sekmesine kendini ekle, sonra yapılandırmayı **Publish** et.
-4. Configuration sayfasındaki **Get resources** düğmesinden Android XML'ini kopyala.
-5. **Bana gönder:** Android XML'i ve Web Client ID. Unity'deki Play Games kurulumunu ben yaparım.
+   - **Android** kimlik bilgisi: paket adı `com.oceanforge.pingipongi`, SHA-1 = App signing key SHA-1. Upload key SHA-1 için ikinci bir Android kimlik bilgisi eklenir.
+   - **Game server** kimlik bilgisi: Google Cloud'da "Web application" türünde OAuth istemcisi oluşturulup bağlanır. **Client ID** ve **Client secret** alınır.
+3. Testers sekmesine test hesapları eklenir, yapılandırma **Publish** edilir.
+4. Configuration sayfasındaki **Get resources** düğmesinden Android XML'i alınır.
+5. Unity'de **Window → Google Play Games → Setup → Android setup**: Android XML'i ve Web Client ID girilir, **Setup** çalıştırılır.
 
 ### 6. Unity Cloud panosu
-Unity Cloud → Pingi Pongi projesi → Authentication → Identity providers → **Add → Google Play Games** → 5. adımdaki Web **Client ID** ve **Client secret** değerlerini gir → Save. Bu yapılmadan Play Games girişi Unity hesabına bağlanamaz (oyun yine anonim hesapla çalışır).
+Unity Cloud → Pingi Pongi projesi → Authentication → Identity providers → **Add → Google Play Games** → 5. adımdaki Web **Client ID** ve **Client secret** → Save. Bu yapılmadan Play Games girişi Unity hesabına bağlanamaz (oyun anonim hesapla çalışmaya devam eder).
 
-### 7. AdMob 🔁
-1. AdMob → Apps → Pingi Pongi (uygulama kimliği projede zaten var: `ca-app-pub-6371794166256775~9435282405`).
-2. Ad units: **Rewarded** ve **Interstitial** birimi oluştur. **Bana iki birim kimliğini gönder**; şu an test birimleri kullanılıyor ve bunlar gelir getirmez.
-3. Privacy & messaging → **GDPR** mesajı oluştur ve yayınla (dil: otomatik). İstersen ABD eyaletleri mesajını da aç.
-4. Play mağaza sayfası yayınlanınca AdMob'da uygulamayı mağazaya bağla. app-ads.txt bir web sitesi gerektirir; şimdilik atlanabilir.
+### 7. AdMob
+1. AdMob → Apps → Pingi Pongi (uygulama kimliği projede: `ca-app-pub-6371794166256775~9435282405`).
+2. Ad units: **Rewarded** ve **Interstitial** birimleri oluşturulur, kimlikleri `GameManager` sahnesindeki `AdManager` alanlarına girilir. Şu an test birimleri kullanılıyor.
+3. Privacy & messaging → **GDPR** mesajı oluşturulup yayınlanır (dil: otomatik). İsteğe bağlı: ABD eyaletleri mesajı.
+4. Mağaza sayfası yayınlanınca AdMob'da uygulama mağazaya bağlanır. `app-ads.txt` sitede hazır; Play Console'da **Website** alanı `https://oceanforge-games.github.io` olunca AdMob bir gün içinde doğrular (Apps → View all apps → app-ads.txt sütunu).
 
 ### 8. Uygulama içi ürünler
-Monetize → Products → In-app products. 15 ürün oluştur, hepsi tek seferlik. Fiyatlar `docs/design/cosmetics.md` tablosundan.
+Monetize → Products → In-app products. 15 ürün, hepsi tek seferlik. Fiyatlar `docs/design/cosmetics.md` tablosundan.
 
 | Ürün kimliği | Ad | Önerilen fiyat |
 |---|---|---|
@@ -87,23 +102,26 @@ Monetize → Products → In-app products. 15 ürün oluştur, hepsi tek seferli
 | `skin_froggy`, `paddle_rainbow`, `theme_night` | Froggy, Rainbow paddle, Night theme | $1.99 |
 
 ### 9. Mağaza sayfası ve formlar
-- **Main store listing:** `store-listing.md` metinleri. Her dili Translations → Add translation ile ekle.
+- **Main store listing:** `store-listing.md` metinleri. Her dil Translations → Add translation ile eklenir.
 - **Görseller:** ikon `store/store_icon_512.png`, tanıtım `store/feature_graphic.png`, telefon ekran görüntüleri `store/screenshots/` (Türkçe sayfaya `tr_*`, diğerlerine `en_*`).
-- **Privacy policy URL:** `https://serdumenn.github.io/PongMobilePrototype/privacy/`
-- **App content:** Data safety, Content rating, Target audience, Ads, App access → `data-safety.md` cevapları.
-- **Store settings:** Category Games → Arcade; iletişim e-postası 1. adımdaki adres.
+- **Privacy policy URL:** `https://oceanforge-games.github.io/pingi-pongi/privacy/`
+- **Website:** `https://oceanforge-games.github.io` (app-ads.txt için gerekli).
+- **Data safety → Delete account URL:** `https://oceanforge-games.github.io/pingi-pongi/delete-account/`
+- **App content:** Data safety, Content rating, Target audience, Ads, App access → `data-safety.md`.
+- **Store settings:** Category Games → Arcade; iletişim e-postası 1. adımdaki adres, web sitesi yukarıdaki adres.
 
 ### 10. Yayından hemen önce
-- Unity Cloud → Leaderboards → classic, rush, daily, coop panolarını **Reset** et (geliştirme sırasında Editor hesabıyla gelen skorlar silinsin).
-- Internal testte kontrol et:
-  - Play Games girişi; Ayarlar'da "Connected" görünmeli.
+- Unity Cloud → Leaderboards → classic, rush, daily, coop panoları **Reset** edilir (geliştirme sırasındaki skorlar silinir).
+- Internal testte kontrol:
+  - Play Games girişi; Ayarlar'da "Connected" görünür.
   - Reklam onay penceresi (VPN ile AB'den denenebilir).
-  - Bir satın alma: test kartıyla; lisans test kullanıcısı olarak ekle.
-  - Uygulamayı silip yeniden kurunca ilerlemenin geri gelmesi.
+  - Bir satın alma (lisans test kullanıcısı ve test kartı).
+  - Uygulama silinip yeniden kurulunca ilerlemenin geri gelmesi.
 - Hepsi tamamsa Production → Create release → aynı `.aab` → Rollout.
 
-## Benim yapacaklarım (bilgiler gelince)
-- Play Games XML'i ve Web Client ID ile Unity kurulumunu yapmak: `GooglePlayGamesManifest.androidlib` ve `GameInfo` dosyaları.
-- Gerçek AdMob birim kimliklerini sahneye girmek.
-- Gizlilik politikasına e-postayı yazmak.
-- Yeni etiketle yayın derlemesini başlatmana yardım etmek.
+## Sürüm ve commit düzeni
+- `main` her zaman derlenebilir durumda tutulur; her push'ta testler ve geliştirme APK'sı koşar.
+- Commit mesajı İngilizce, emir kipinde ve kısa: ilk satır en fazla ~60 karakter (`Add friend invite banner`, `Fix rush timer on resume`). Gerekirse boş bir satırdan sonra açıklama.
+- Bir commit tek bir konuyu kapsar; ilgisiz değişiklikler ayrı commit'lere bölünür.
+- Yayın: GitHub Desktop → **History** → yayınlanacak commit'e sağ tık → **Create Tag** → `v1.0.1` → **Push origin**. Etiket imzalı AAB'yi üretir; sürüm adı etiketten alınır, sürüm kodu kendiliğinden artar (Player Settings'e dokunmak gerekmez).
+- GitHub → Releases → **Draft a new release** → aynı etiket → kısa sürüm notu ("What's new"). Play Console'daki "Release notes" ile aynı metin kullanılır.

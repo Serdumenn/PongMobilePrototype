@@ -58,9 +58,6 @@ Assets/Plugins/Android/googlemobileads-unity.aar.meta
 crashlytics-build.properties
 *.tmp
 
-# Agent/AI workflow files
-.agent/
-.claude/
 
 # Licensed packs that must not be redistributed (repo is public)
 Assets/Textures/UI/Prinbles_*

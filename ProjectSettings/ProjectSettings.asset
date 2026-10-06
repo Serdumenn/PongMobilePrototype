@@ -172,7 +172,7 @@ PlayerSettings:
   androidMaxAspectRatio: 3
   androidMinAspectRatio: 1
   applicationIdentifier:
-    Android: com.SERDUMEN.PingiPongi
+    Android: com.oceanforge.pingipongi
     Standalone: com.DefaultCompany.2DProject
   buildNumber:
     Standalone: 0
