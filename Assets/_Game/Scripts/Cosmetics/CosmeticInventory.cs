@@ -34,6 +34,67 @@ public sealed class CosmeticInventory
         this.data = data;
     }
 
+    public static CosmeticInventory FromJson(string path, string json)
+    {
+        SaveData loaded = null;
+        try
+        {
+            if (!string.IsNullOrEmpty(json)) loaded = JsonUtility.FromJson<SaveData>(json);
+        }
+        catch (Exception e)
+        {
+            Debug.LogWarning($"[Cosmetics] Backup could not be read: {e.Message}");
+        }
+
+        return new CosmeticInventory(path, loaded ?? new SaveData());
+    }
+
+    public string ToJson()
+    {
+        data.Version = CurrentVersion;
+        return JsonUtility.ToJson(data);
+    }
+
+    public string ToBackupJson()
+    {
+        var copy = JsonUtility.FromJson<SaveData>(ToJson());
+        copy.ProcessedOrders.Clear();
+        return JsonUtility.ToJson(copy);
+    }
+
+    public void KeepOrdersFrom(CosmeticInventory other)
+    {
+        if (other == null) return;
+        foreach (var order in other.data.ProcessedOrders)
+            if (!string.IsNullOrEmpty(order) && !data.ProcessedOrders.Contains(order)) data.ProcessedOrders.Add(order);
+    }
+
+    public void MergeFrom(CosmeticInventory other)
+    {
+        if (other == null) return;
+        var o = other.data;
+
+        foreach (var id in o.Owned)
+            if (!string.IsNullOrEmpty(id) && !data.Owned.Contains(id)) data.Owned.Add(id);
+
+        for (int i = 0; i < o.AdItems.Count && i < o.AdViews.Count; i++)
+        {
+            int index = data.AdItems.IndexOf(o.AdItems[i]);
+            if (index < 0)
+            {
+                data.AdItems.Add(o.AdItems[i]);
+                data.AdViews.Add(o.AdViews[i]);
+            }
+            else data.AdViews[index] = Math.Max(data.AdViews[index], o.AdViews[i]);
+        }
+
+        data.HasPass |= o.HasPass;
+        data.NoAds |= o.NoAds;
+        if (string.IsNullOrEmpty(data.Ball)) data.Ball = o.Ball;
+        if (string.IsNullOrEmpty(data.Paddle)) data.Paddle = o.Paddle;
+        if (string.IsNullOrEmpty(data.Theme)) data.Theme = o.Theme;
+    }
+
     public static CosmeticInventory Load(string path)
     {
         SaveData loaded = null;

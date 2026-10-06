@@ -53,8 +53,29 @@
                     </ui:VisualElement>
                 </ui:Button>
             </ui:VisualElement>
+            <ui:VisualElement name="games-divider" class="divider" picking-mode="Ignore" />
+            <ui:VisualElement name="games-row" class="row" picking-mode="Ignore">
+                <ui:VisualElement class="icon icon--gamepad row__icon" picking-mode="Ignore" />
+                <ui:VisualElement class="row__label row__stack" picking-mode="Ignore">
+                    <ui:Label text="Google Play Games" class="row__stack-title" picking-mode="Ignore" />
+                    <ui:Label name="games-value" text="Not connected" class="row__stack-sub" picking-mode="Ignore" />
+                </ui:VisualElement>
+                <ui:Button name="games-button" class="btn btn--pill">
+                    <ui:VisualElement class="btn__face" picking-mode="Ignore">
+                        <ui:Label name="games-label" text="Sign in" class="btn__label" picking-mode="Ignore" />
+                    </ui:VisualElement>
+                </ui:Button>
+            </ui:VisualElement>
+            <ui:VisualElement name="privacy-divider" class="divider" picking-mode="Ignore" />
+            <ui:Button name="privacy-row" class="row row--button">
+                <ui:VisualElement class="icon icon--lock row__icon" picking-mode="Ignore" />
+                <ui:Label text="Privacy choices" class="row__label" picking-mode="Ignore" />
+                <ui:VisualElement class="icon icon--chevron-right row__chevron" picking-mode="Ignore" />
+            </ui:Button>
         </ui:VisualElement>
         <ui:VisualElement class="spacer" picking-mode="Ignore" />
+        <ui:Button name="privacy-policy" text="Privacy policy" class="link settings-id settings-policy" />
+        <ui:Button name="player-id" text="" class="link settings-id" />
         <ui:Label name="version-label" text="Pingi Pongi" class="caption settings-footer" picking-mode="Ignore" />
     </ui:VisualElement>
     <ui:VisualElement name="language-dialog" class="dialog dialog--hidden">

@@ -12,6 +12,7 @@
         <ui:VisualElement class="tabs fit-group" picking-mode="Ignore">
             <ui:Button name="tab-me" text="Me" class="tab" />
             <ui:Button name="tab-world" text="World" class="tab" />
+            <ui:Button name="tab-friends" text="Friends" class="tab" />
         </ui:VisualElement>
         <ui:ScrollView name="scores-scroll" mode="Vertical" horizontal-scroller-visibility="Hidden" vertical-scroller-visibility="Hidden" class="shop-scroll">
             <ui:VisualElement name="me-panel" picking-mode="Ignore">
@@ -56,9 +57,13 @@
             <ui:VisualElement name="world-panel" picking-mode="Ignore">
                 <ui:VisualElement name="world-modes" class="mode-chips" picking-mode="Ignore" />
                 <ui:VisualElement class="world-board" picking-mode="Ignore">
-                    <ui:Label name="world-title" text="Top 10" class="panel__title" picking-mode="Ignore" />
+                    <ui:Label name="world-title" text="Top 50" class="panel__title" picking-mode="Ignore" />
                     <ui:VisualElement name="world-rows" picking-mode="Ignore" />
                     <ui:Label name="world-note" text="" class="caption world-board__note" picking-mode="Ignore" />
+                    <ui:Button name="world-find" class="ghost-share world-find">
+                        <ui:VisualElement class="icon icon--person-add ghost-share__icon" picking-mode="Ignore" />
+                        <ui:Label text="Find friends" class="ghost-share__label" picking-mode="Ignore" />
+                    </ui:Button>
                 </ui:VisualElement>
             </ui:VisualElement>
             <ui:VisualElement class="shop-end" picking-mode="Ignore" />

@@ -53,9 +53,11 @@ public sealed class OnlineScores : MonoBehaviour
     }
 
     [SerializeField] private OnlineService online;
-    [SerializeField] private int TopCount = 10;
+    [SerializeField] private int TopCount = 50;
 
     private bool synced;
+
+    public int Top => TopCount;
 
     public static string BoardFor(GameModeDefinition mode)
     {
@@ -167,6 +169,55 @@ public sealed class OnlineScores : MonoBehaviour
         catch (Exception)
         {
             result.Me = null;
+        }
+
+        result.Outcome = Outcome.Ok;
+        return result;
+    }
+
+    public async Task<Board> LoadFriendsAsync(string board, IReadOnlyList<string> friendIds)
+    {
+        var result = new Board();
+        if (online == null || string.IsNullOrEmpty(board))
+        {
+            result.Outcome = Outcome.Failed;
+            return result;
+        }
+
+        await online.ConnectAsync();
+        if (!online.IsReady)
+        {
+            result.Outcome = OnlineService.HasInternet ? Outcome.Failed : Outcome.Offline;
+            return result;
+        }
+
+        var ids = new List<string> { online.PlayerId };
+        foreach (var id in friendIds)
+            if (!string.IsNullOrEmpty(id) && !ids.Contains(id)) ids.Add(id);
+
+        try
+        {
+            var scores = await LeaderboardsService.Instance.GetScoresByPlayerIdsAsync(board, ids, new GetScoresByPlayerIdsOptions { IncludeMetadata = true });
+            var entries = new List<Unity.Services.Leaderboards.Models.LeaderboardEntry>(scores.Results);
+            entries.Sort((a, b) => b.Score.CompareTo(a.Score));
+            for (int i = 0; i < entries.Count; i++)
+            {
+                var entry = entries[i];
+                var row = new Row(i + 1, NameFrom(entry.Metadata, entry.PlayerId), PartnerFrom(entry.Metadata), (int)entry.Score, entry.PlayerId == online.PlayerId);
+                result.Top.Add(row);
+                if (row.IsMe) result.Me = row;
+            }
+        }
+        catch (LeaderboardsException e) when (e.Reason == LeaderboardsExceptionReason.LeaderboardNotFound)
+        {
+            result.Outcome = Outcome.Missing;
+            return result;
+        }
+        catch (Exception e)
+        {
+            Debug.LogWarning($"Loading friends on {board} failed: {e.Message}");
+            result.Outcome = OnlineService.HasInternet ? Outcome.Failed : Outcome.Offline;
+            return result;
         }
 
         result.Outcome = Outcome.Ok;

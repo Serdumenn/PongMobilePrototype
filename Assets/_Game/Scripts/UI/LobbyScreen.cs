@@ -35,7 +35,7 @@ public sealed class LobbyScreen : UIScreen
     private bool myReady;
 
     public LobbyScreen(VisualElement root, OnlineLobby lobby, CosmeticsService cosmetics, Action onLeave, Action onExpired, Action<string> toast,
-        float codeLifetime) : base(root)
+        float codeLifetime, Action onInviteFriend) : base(root)
     {
         this.lobby = lobby;
         this.cosmetics = cosmetics;
@@ -60,6 +60,7 @@ public sealed class LobbyScreen : UIScreen
         Bind("back-button", onLeave);
         Bind("copy-button", Copy);
         Bind("share-button", Share);
+        Bind("invite-friend", onInviteFriend);
         Bind("reconnect-leave", onLeave);
         readyButton = Bind("ready-button", ToggleReady);
 

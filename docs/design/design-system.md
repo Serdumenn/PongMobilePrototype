@@ -218,6 +218,32 @@ Tüm efektler bize ait. `ArtSource/tools/generate_sfx.py` ile sentezleniyor (mon
   - Oyuncu adları küçülmez, sonu "…" ile kesilir.
 - **Noktalama:** Japoncada tam genişlik `！？：` kullanılır. Fransızcada `! ? :` öncesinde bölünmez boşluk vardır.
 
+## Arkadaşlar (M6, 2026-10-05)
+
+| Bileşen | Boyut | Zemin / kenar | Etiket |
+|---|---|---|---|
+| Arkadaş kartı (Online sekmesi) | yükseklik 176, köşe 64 | surface / surface-edge 16 | teal-edge `people` ikonu 80; "Friends" 54 bold; alt satır 38 medium ink-muted ("2 online · 5 in total", "1 friend request"); istek varsa mercan rozet 64; sağ ok 56 |
+| Arkadaşlar ekranı | tam ekran | bg | Üstte kod kartı: "Your friend code", kod 84 bold, Copy / Share çifti. Altında "Add a friend by code" alanı (Ghost Challenge'daki kod alanıyla aynı), sonra kartlar: Friend requests, Your friends, Sent requests |
+| Arkadaş satırı | en az 136 yükseklik, aralarda 4 px çizgi | — | durum noktası 28 (çevrimiçi teal, oyunda sun, çevrimdışı track-off), ad 50 bold (uzunsa "…"), durum 36 medium ink-muted; çevrimiçiyse teal "Invite" hapı 232×112; "…" düğmesi 112 daire |
+| İstek satırı | aynı | — | nokta yok; "Wants to be friends"; teal onay ve gri çarpı daire düğmeleri |
+| Arkadaş menüsü | kart pencere | surface | ad, durum; "Remove friend" ve kırmızı "Block" (176 yükseklik, çerçeveli), "Cancel" |
+| Ekleme penceresi | kart pencere | surface | "Add a friend", örnek kod açıklaması, kod alanı 176 yükseklik 64 px yazı, teal "Paste", "Send request" birincil, "Cancel" |
+| Davet şeridi | %92 genişlik (en çok 968), köşe 64 | surface, teal 6 çerçeve, teal-edge alt kenar 16 | `people` ikonu 72; "Brave Otter invites you" 44 bold; mod adı 36; mercan "Join" 220×128; gri çarpı. Bildirimle aynı yerden kayarak iner, 20 sn sonra kapanır |
+| Sonuç ekranları | — | — | Rakibin altında teal "Add friend" bağlantısı; arkadaşsa gri onaylı "You're friends". Rush sonucunda her rakibin satırında 96'lık ekle düğmesi |
+| Lobi | — | — | Kod kartında "Invite a friend" bağlantısı |
+| Skorlar | — | — | Üçüncü sekme "Friends"; başlık "You and your friends"; arkadaş yoksa "Find friends" bağlantısı. Dünya başlığı "Top 50" |
+
+- **Yeni ikonlar:** `person_add`, `close`, `more`.
+
+## Ayarlar: hesap ve gizlilik (yayın, 2026-10-06)
+
+- **Google Play Games satırı:** gamepad ikonu. İki satırlı etiket: "Google Play Games" (56 semibold) ve durum (38 medium ink-muted): "Connected · Ad", "Not connected", "Available on Android". Bağlı değilse sağda "Sign in" hapı. Play Games kurulmamışsa satır gizlenir.
+- **Privacy choices satırı:** kilit ikonu ve sağ ok. Yalnızca reklam onayının değiştirilebildiği bölgelerde görünür.
+- **Alt bilgi:**
+  - teal "Privacy policy" bağlantısı;
+  - dokununca kopyalanan "Player ID: …" (34 px);
+  - sürüm etiketi.
+
 ## Erişilebilirlik
 
 - Metin kontrastı ≥ 4.5:1, büyük metin (≥ 72 px bold) ≥ 3:1

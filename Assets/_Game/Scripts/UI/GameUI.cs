@@ -20,6 +20,8 @@ public sealed class GameUI : MonoBehaviour
     [SerializeField] private OnlineGhosts Ghosts;
     [SerializeField] private GhostRecorder Recorder;
     [SerializeField] private GhostRace Race;
+    [SerializeField] private OnlineFriends Friends;
+    [SerializeField] private CloudProgress Cloud;
 
     [Header("Onboarding")]
     [SerializeField] private int HintRuns = 3;
@@ -57,6 +59,10 @@ public sealed class GameUI : MonoBehaviour
     private GhostRaceScreen ghostRace;
     private GhostResultScreen ghostResult;
     private GhostCodeScreen ghostCode;
+    private FriendsScreen friendsScreen;
+    private InviteBanner inviteBanner;
+    private string pendingInvite;
+    private string lastOpponentId;
     private GhostRun raceRun;
     private readonly UiLocalizer localizer = new UiLocalizer();
     private TextFit textFit;
@@ -86,6 +92,8 @@ public sealed class GameUI : MonoBehaviour
         if (Ghosts == null) Ghosts = FindFirstObjectByType<OnlineGhosts>();
         if (Recorder == null) Recorder = FindFirstObjectByType<GhostRecorder>();
         if (Race == null) Race = FindFirstObjectByType<GhostRace>();
+        if (Friends == null) Friends = FindFirstObjectByType<OnlineFriends>();
+        if (Cloud == null) Cloud = FindFirstObjectByType<CloudProgress>();
 
         root = GetComponent<UIDocument>().rootVisualElement;
         root.Query<Button>().ForEach(b => b.RemoveFromClassList(Button.ussClassName));
@@ -99,22 +107,25 @@ public sealed class GameUI : MonoBehaviour
         pause = new PauseScreen(root.Q("pause"), Resume, LeaveFromPause);
         gameOver = new GameOverScreen(root.Q("game-over"), () => ContinueAfterAd(RetryRun, gameOver.SetInteractable), () => ContinueAfterAd(HomeFromGameOver, gameOver.SetInteractable));
         toast = new ToastView(root.Q("toast"));
-        settings = new SettingsScreen(root.Q("settings"), CloseSettings, () => Game.ScoreManager.BestFor(SoloScoreManager.BestScoreKey), Game.ResetAllBests, DeleteOnlineData);
+        settings = new SettingsScreen(root.Q("settings"), CloseSettings, () => Game.ScoreManager.BestFor(SoloScoreManager.BestScoreKey), ResetBests, DeleteOnlineData,
+            Online, toast.Show);
         shop = new ShopScreen(root.Q("shop"), Cosmetics, CloseShop, toast.Show);
         reward = new RewardScreen(root.Q("reward"), EquipReward, CloseReward);
-        scores = new ScoresScreen(root.Q("scores"), Game, Cosmetics, Scores, CloseScores);
+        scores = new ScoresScreen(root.Q("scores"), Game, Cosmetics, Scores, CloseScores, Friends, OpenFriends);
         hub = new HubScreen(root.Q("hub"), Match, Cosmetics, Online, Lobby, Scores, CloseHub, PickMatchMode, QuickMatch, CreateCode, JoinCode, StartDaily,
-            () => Recorder != null && Recorder.LastRun != null, ShareLastRun, RaceGhostCode, toast.Show);
+            () => Recorder != null && Recorder.LastRun != null, ShareLastRun, RaceGhostCode, toast.Show, Friends, OpenFriends);
         ghostRace = new GhostRaceScreen(root.Q("ghost-race"));
         ghostResult = new GhostResultScreen(root.Q("ghost-result"), SendRunBack,
             () => ContinueAfterAd(RetryGhost, ghostResult.SetInteractable),
             () => ContinueAfterAd(HomeFromGhost, ghostResult.SetInteractable));
         ghostCode = new GhostCodeScreen(root.Q("ghost-code"), toast.Show, () => ghostCode.Hide());
-        lobbyScreen = new LobbyScreen(root.Q("lobby"), Lobby, Cosmetics, LeaveLobby, OnCodeExpired, toast.Show, CodeLifetime);
+        lobbyScreen = new LobbyScreen(root.Q("lobby"), Lobby, Cosmetics, LeaveLobby, OnCodeExpired, toast.Show, CodeLifetime, OpenFriends);
         onlineHud = new OnlineHudScreen(root.Q("online-hud"), Cosmetics, LeaveOnline);
-        onlineResult = new OnlineResultScreen(root.Q("online-result"), Cosmetics, () => OnlineMatch?.RequestRematch(), LeaveOnline);
+        onlineResult = new OnlineResultScreen(root.Q("online-result"), Cosmetics, () => OnlineMatch?.RequestRematch(), LeaveOnline, Friends, () => lastOpponentId, toast.Show);
         rushBattle = new RushBattleScreen(root.Q("rush-battle"), Cosmetics, LeaveOnline);
-        rushResult = new RushResultScreen(root.Q("rush-result"), Cosmetics, () => OnlineRush?.RequestRematch(), LeaveOnline);
+        rushResult = new RushResultScreen(root.Q("rush-result"), Cosmetics, () => OnlineRush?.RequestRematch(), LeaveOnline, Friends, toast.Show);
+        friendsScreen = new FriendsScreen(root.Q("friends"), Friends, Online, CloseFriends, InviteFriend, toast.Show);
+        inviteBanner = new InviteBanner(root.Q("invite-banner"));
         setup = new MatchSetupScreen(root.Q("match-setup"), Cosmetics, CancelSetup, entries => Match.Begin(entries));
         matchHud = new MatchHudScreen(root.Q("match-hud"), () => Match.SetPaused(true));
         matchResult = new MatchResultScreen(root.Q("match-result"),
@@ -142,6 +153,7 @@ public sealed class GameUI : MonoBehaviour
         if (OnlineMatch != null) OnlineMatch.StateChanged += OnOnlineState;
         if (OnlineRush != null) OnlineRush.StateChanged += OnRushState;
         if (Lobby != null) Lobby.Changed += OnLobbyChanged;
+        if (Friends != null) Friends.RequestReceived += OnFriendRequest;
 
         built = true;
         lastState = Game.State;
@@ -172,6 +184,7 @@ public sealed class GameUI : MonoBehaviour
         if (OnlineMatch != null) OnlineMatch.StateChanged -= OnOnlineState;
         if (OnlineRush != null) OnlineRush.StateChanged -= OnRushState;
         if (Lobby != null) Lobby.Changed -= OnLobbyChanged;
+        if (Friends != null) Friends.RequestReceived -= OnFriendRequest;
     }
 
     private void Update()
@@ -189,6 +202,119 @@ public sealed class GameUI : MonoBehaviour
             ApplySafeArea();
 
         PumpOnline();
+        PumpFriends();
+    }
+
+    private bool IsBusy()
+    {
+        if (Game.State == SoloGameManager.GameState.Playing || Game.State == SoloGameManager.GameState.Paused) return true;
+        if (OnlineMatch != null && OnlineMatch.IsActive) return true;
+        if (OnlineRush != null && OnlineRush.IsActive) return true;
+        if (Match != null && Match.IsActive) return true;
+        return Lobby != null && Lobby.InLobby;
+    }
+
+    private void PumpFriends()
+    {
+        if (Friends == null) return;
+
+        bool busy = IsBusy();
+        Friends.SetPlaying(busy);
+        if (busy || inviteBanner.IsVisible || !Friends.HasInvite || reward.IsVisible) return;
+        if (Friends.TryTakeInvite(out var invite)) ShowInvite(invite);
+    }
+
+    private void ShowInvite(OnlineFriends.Invite invite)
+    {
+        var mode = Lobby != null ? Lobby.FindMode(invite.ModeId) : null;
+        inviteBanner.Present(invite.FromName, mode != null ? mode.Title : Loc.T("Online"), () => AcceptInvite(invite));
+    }
+
+    private void AcceptInvite(OnlineFriends.Invite invite)
+    {
+        if (IsBusy())
+        {
+            toast.Show(Loc.T("Finish your game first, then join {0}.", invite.FromName));
+            return;
+        }
+
+        settings.Hide();
+        shop.Hide();
+        scores.Hide();
+        friendsScreen.Hide();
+        ghostCode.Hide();
+        ghostResult.Hide();
+        gameOver.Hide();
+        if (Game.State != SoloGameManager.GameState.Menu) Game.ReturnToMenu();
+        menu.Hide();
+        Game.HideGameObjects();
+        hub.Present(1);
+        JoinCode(invite.Code);
+    }
+
+    private void OnFriendRequest(string name)
+    {
+        if (!IsBusy()) toast.Show(Loc.T("{0} sent you a friend request", name));
+    }
+
+    private void ResetBests()
+    {
+        Game.ResetAllBests();
+        if (Cloud != null) Cloud.BestsReset();
+    }
+
+    private void OpenFriends()
+    {
+        friendsScreen.Show();
+    }
+
+    private void CloseFriends()
+    {
+        friendsScreen.Hide();
+    }
+
+    private async void InviteFriend(string playerId)
+    {
+        if (Friends == null || string.IsNullOrEmpty(playerId)) return;
+
+        if (Lobby != null && Lobby.InLobby)
+        {
+            if (string.IsNullOrEmpty(Lobby.Code) || Lobby.Players.Count >= Lobby.MaxPlayers)
+            {
+                toast.Show(Loc.T("That match is already full."));
+                return;
+            }
+            await SendInvite(playerId);
+            return;
+        }
+
+        var mode = hub.SelectedMode ?? FirstOnlineMode();
+        if (mode == null) return;
+
+        pendingInvite = playerId;
+        friendsScreen.Hide();
+        if (!hub.IsVisible)
+        {
+            scores.Hide();
+            menu.Hide();
+            Game.HideGameObjects();
+            hub.Present(1);
+        }
+        CreateCode(mode);
+    }
+
+    private async System.Threading.Tasks.Task SendInvite(string playerId)
+    {
+        var result = await Friends.InviteAsync(playerId, Lobby.Code, Lobby.ModeId);
+        toast.Show(result == FriendsResult.Ok ? Loc.T("Invite sent to {0}", PlayerNames.ForId(playerId)) : FriendsScreen.ResultText(result, null));
+    }
+
+    private GameModeDefinition FirstOnlineMode()
+    {
+        if (Lobby == null) return null;
+        foreach (var mode in Lobby.ModeList)
+            if (mode != null && !mode.ComingSoon) return mode;
+        return null;
     }
 
     private void PumpOnline()
@@ -212,6 +338,7 @@ public sealed class GameUI : MonoBehaviour
             var link = opponent.HasValue ? Lobby.CreateLink() : null;
             if (link == null) return;
 
+            lastOpponentId = opponent.Value.Id;
             OnlineMatch.Open(link, Lobby.Mode, MyLobbyLook(), opponent.Value.Name, opponent.Value.Look);
             return;
         }
@@ -276,6 +403,8 @@ public sealed class GameUI : MonoBehaviour
         switch (state)
         {
             case OnlineRushController.RushState.Countdown:
+                friendsScreen.Hide();
+                inviteBanner.Hide();
                 lobbyScreen.Hide();
                 hub.Hide();
                 menu.Hide();
@@ -330,6 +459,8 @@ public sealed class GameUI : MonoBehaviour
         switch (state)
         {
             case OnlineMatchController.MatchState.Countdown:
+                friendsScreen.Hide();
+                inviteBanner.Hide();
                 lobbyScreen.Hide();
                 hub.Hide();
                 menu.Hide();
@@ -667,6 +798,9 @@ public sealed class GameUI : MonoBehaviour
         var result = await open();
         hub.SetBusy(false, null);
 
+        string invitee = pendingInvite;
+        pendingInvite = null;
+
         if (result != OnlineLobby.Failure.None)
         {
             toast.Show(FailureText(result));
@@ -681,6 +815,7 @@ public sealed class GameUI : MonoBehaviour
 
         hub.Hide();
         lobbyScreen.Present();
+        if (!string.IsNullOrEmpty(invitee)) await SendInvite(invitee);
     }
 
     private void LeaveLobby()
@@ -753,6 +888,8 @@ public sealed class GameUI : MonoBehaviour
         settings.SetOnlineBusy(true);
         try
         {
+            if (Friends != null) await Friends.ClearAsync();
+            if (Cloud != null) await Cloud.DeleteBackupAsync();
             bool deleted = await Online.DeleteDataAsync();
             toast.Show(deleted ? Loc.T("Online data deleted. You'll get a new name next time.") : Loc.T("There is no online data on this device."));
         }
@@ -1088,6 +1225,13 @@ public sealed class GameUI : MonoBehaviour
             return;
         }
 
+        if (friendsScreen.IsVisible)
+        {
+            if (friendsScreen.IsDialogOpen) friendsScreen.CloseDialogs();
+            else CloseFriends();
+            return;
+        }
+
         if (shop.IsVisible)
         {
             if (shop.IsDialogOpen) shop.CloseDialog();
@@ -1227,6 +1371,14 @@ public sealed class GameUI : MonoBehaviour
         });
 
         matchHud?.Arrange();
+
+        var bannerRoot = root.Q("invite-banner");
+        if (bannerRoot != null)
+        {
+            bannerRoot.style.top = ToastInset + top;
+            bannerRoot.style.left = left;
+            bannerRoot.style.right = right;
+        }
 
         var toastRoot = root.Q("toast");
         if (toastRoot == null) return;

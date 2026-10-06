@@ -1,0 +1,164 @@
+name: Release Android (signed AAB)
+
+on:
+  push:
+    tags: [ 'v*' ]
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version name, for example 1.0.0'
+        required: true
+        default: '1.0.0'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: release-${{ github.ref }}
+  cancel-in-progress: false
+
+env:
+  UNITY_VERSION: 6000.3.25f1
+  BUILD_NAME: PingiPongi
+  BUILDS_PATH: builds
+  VERSION_CODE_BASE: 1000
+
+jobs:
+  test:
+    name: Tests (EditMode + PlayMode)
+    runs-on: ubuntu-24.04
+    timeout-minutes: 60
+    permissions:
+      contents: read
+      checks: write
+
+    steps:
+      - name: Checkout (with LFS)
+        uses: actions/checkout@v7
+        with:
+          lfs: true
+
+      - name: Cache Unity Library
+        uses: actions/cache@v6
+        with:
+          path: Library
+          key: Library-Test-${{ env.UNITY_VERSION }}-${{ hashFiles('Assets/**', 'Packages/**', 'ProjectSettings/**') }}
+          restore-keys: |
+            Library-Test-${{ env.UNITY_VERSION }}-
+
+      - name: Run EditMode and PlayMode tests
+        uses: game-ci/unity-test-runner@v4.3.2
+        env:
+          UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
+          UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
+          UNITY_SERIAL: ${{ secrets.UNITY_SERIAL }}
+        with:
+          unityVersion: ${{ env.UNITY_VERSION }}
+          testMode: all
+          artifactsPath: test-results
+          githubToken: ${{ secrets.GITHUB_TOKEN }}
+          checkName: Release Test Results
+
+  build-aab:
+    name: Build signed AAB
+    needs: test
+    runs-on: ubuntu-24.04
+    timeout-minutes: 120
+
+    steps:
+      - name: Checkout (with LFS)
+        uses: actions/checkout@v7
+        with:
+          lfs: true
+
+      - name: Version
+        id: version
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [ "${GITHUB_REF_TYPE}" = "tag" ]; then NAME="${GITHUB_REF_NAME#v}"; else NAME="${{ github.event.inputs.version }}"; fi
+          CODE=$(( VERSION_CODE_BASE + GITHUB_RUN_NUMBER ))
+          echo "name=${NAME}" >> "$GITHUB_OUTPUT"
+          echo "code=${CODE}" >> "$GITHUB_OUTPUT"
+          echo "Version ${NAME} (code ${CODE})"
+
+      - name: Check signing secrets are present (no printing)
+        env:
+          UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
+          UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
+          UNITY_SERIAL: ${{ secrets.UNITY_SERIAL }}
+          ANDROID_KEYSTORE_BASE64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
+          ANDROID_KEYSTORE_PASS: ${{ secrets.ANDROID_KEYSTORE_PASS }}
+          ANDROID_KEYALIAS_NAME: ${{ secrets.ANDROID_KEYALIAS_NAME }}
+          ANDROID_KEYALIAS_PASS: ${{ secrets.ANDROID_KEYALIAS_PASS }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          for name in UNITY_EMAIL UNITY_PASSWORD UNITY_SERIAL ANDROID_KEYSTORE_BASE64 ANDROID_KEYSTORE_PASS ANDROID_KEYALIAS_NAME ANDROID_KEYALIAS_PASS; do
+            [ -n "${!name}" ] || (echo "$name missing" && exit 1)
+          done
+          echo "Secrets present."
+
+      - name: Free disk space
+        shell: bash
+        run: |
+          set -euxo pipefail
+          sudo rm -rf /usr/local/lib/android /usr/share/dotnet /opt/ghc /usr/local/share/boost /opt/hostedtoolcache
+          sudo apt-get clean
+          docker system prune -af --volumes
+          df -h
+
+      - name: Cache Unity Library
+        uses: actions/cache@v6
+        with:
+          path: Library
+          key: Library-Release-${{ env.UNITY_VERSION }}-${{ hashFiles('Assets/**', 'Packages/**', 'ProjectSettings/**') }}
+          restore-keys: |
+            Library-Release-${{ env.UNITY_VERSION }}-
+            Library-Android-${{ env.UNITY_VERSION }}-
+
+      - name: Build Android App Bundle
+        uses: game-ci/unity-builder@v5
+        env:
+          UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
+          UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
+          UNITY_SERIAL: ${{ secrets.UNITY_SERIAL }}
+        with:
+          unityVersion: ${{ env.UNITY_VERSION }}
+          targetPlatform: Android
+          androidExportType: androidAppBundle
+          androidSymbolType: public
+          androidKeystoreName: upload.keystore
+          androidKeystoreBase64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
+          androidKeystorePass: ${{ secrets.ANDROID_KEYSTORE_PASS }}
+          androidKeyaliasName: ${{ secrets.ANDROID_KEYALIAS_NAME }}
+          androidKeyaliasPass: ${{ secrets.ANDROID_KEYALIAS_PASS }}
+          buildName: ${{ env.BUILD_NAME }}
+          buildsPath: ${{ env.BUILDS_PATH }}
+          versioning: Custom
+          version: ${{ steps.version.outputs.name }}
+          androidVersionCode: ${{ steps.version.outputs.code }}
+
+      - name: Upload AAB and symbols
+        uses: actions/upload-artifact@v7
+        with:
+          name: PingiPongi-${{ steps.version.outputs.name }}-${{ steps.version.outputs.code }}
+          path: ${{ env.BUILDS_PATH }}/Android/
+          retention-days: 90
+          if-no-files-found: error
+
+      - name: Build summary
+        shell: bash
+        run: |
+          AAB="${{ env.BUILDS_PATH }}/Android/${{ env.BUILD_NAME }}.aab"
+          {
+            echo "### Pingi Pongi ${{ steps.version.outputs.name }} (release)"
+            echo ""
+            echo "| | |"
+            echo "|---|---|"
+            echo "| Version | ${{ steps.version.outputs.name }} (code ${{ steps.version.outputs.code }}) |"
+            echo "| AAB size | $(du -h "$AAB" | cut -f1) |"
+            echo "| Commit | \`${GITHUB_SHA::7}\` |"
+            echo ""
+            echo "Upload the .aab to Play Console. Upload the symbols zip under App bundle explorer → Downloads → Native debug symbols."
+          } >> "$GITHUB_STEP_SUMMARY"

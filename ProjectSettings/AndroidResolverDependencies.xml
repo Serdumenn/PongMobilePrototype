@@ -3,6 +3,7 @@
     <package>androidx.constraintlayout:constraintlayout:2.1.4</package>
     <package>androidx.lifecycle:lifecycle-process:2.6.2</package>
     <package>com.google.android.gms:play-services-ads:24.9.0</package>
+    <package>com.google.android.gms:play-services-games-v2:22.1.0</package>
     <package>com.google.android.ump:user-messaging-platform:3.2.0</package>
   </packages>
   <files />

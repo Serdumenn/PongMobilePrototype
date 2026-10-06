@@ -14,12 +14,18 @@ public sealed class OnlineResultScreen : UIScreen
     private readonly Label rematchLabel;
     private readonly Button homeButton;
 
+    private readonly FriendButton friendButton;
+    private readonly Func<string> opponentId;
+
     private OnlineMatchController match;
     private bool opponentGone;
 
-    public OnlineResultScreen(VisualElement root, CosmeticsService cosmetics, Action onRematch, Action onLeave) : base(root)
+    public OnlineResultScreen(VisualElement root, CosmeticsService cosmetics, Action onRematch, Action onLeave, OnlineFriends friends, Func<string> opponentId,
+        Action<string> toast) : base(root)
     {
         this.cosmetics = cosmetics;
+        this.opponentId = opponentId;
+        friendButton = new FriendButton(root.Q<Button>("friend-button"), friends, toast);
 
         mascot = root.Q("mascot");
         title = root.Q<Label>("title");
@@ -43,6 +49,7 @@ public sealed class OnlineResultScreen : UIScreen
 
         opponentGone = false;
         homeButton.SetEnabled(true);
+        friendButton.SetPlayer(opponentId?.Invoke());
         Refresh();
         Show();
     }

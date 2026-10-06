@@ -5,6 +5,7 @@ using UnityEngine;
 using GoogleMobileAds;
 using GoogleMobileAds.Api;
 using GoogleMobileAds.Common;
+using GoogleMobileAds.Ump.Api;
 #endif
 
 public sealed class AdManager : MonoBehaviour
@@ -43,6 +44,66 @@ public sealed class AdManager : MonoBehaviour
     private bool RewardEarned;
 
     public bool InterstitialsDisabled { get; set; }
+
+    private bool consentRequested;
+    private bool consentReady;
+
+    public event Action PrivacyChanged;
+
+    public bool PrivacyOptionsRequired
+    {
+        get
+        {
+#if (UNITY_ANDROID || UNITY_IOS) && !UNITY_EDITOR
+            return consentReady && ConsentInformation.PrivacyOptionsRequirementStatus == PrivacyOptionsRequirementStatus.Required;
+#else
+            return false;
+#endif
+        }
+    }
+
+    public void ShowPrivacyOptions(Action<bool> onDone)
+    {
+#if (UNITY_ANDROID || UNITY_IOS) && !UNITY_EDITOR
+        ConsentForm.ShowPrivacyOptionsForm(error => MobileAdsEventExecutor.ExecuteInUpdate(() =>
+        {
+            if (error != null) Debug.LogWarning($"[Ads] Privacy options failed: {error.Message}");
+            PrivacyChanged?.Invoke();
+            if (ConsentInformation.CanRequestAds()) InitializeIfNeeded();
+            onDone?.Invoke(error == null);
+        }));
+#else
+        onDone?.Invoke(false);
+#endif
+    }
+
+    private void RequestConsent()
+    {
+#if (UNITY_ANDROID || UNITY_IOS) && !UNITY_EDITOR
+        if (consentRequested) return;
+        consentRequested = true;
+
+        ConsentInformation.Update(new ConsentRequestParameters(), updateError => MobileAdsEventExecutor.ExecuteInUpdate(() =>
+        {
+            if (updateError != null) Debug.LogWarning($"[Ads] Consent info failed: {updateError.Message}");
+            ConsentForm.LoadAndShowConsentFormIfRequired(formError => MobileAdsEventExecutor.ExecuteInUpdate(() =>
+            {
+                if (formError != null) Debug.LogWarning($"[Ads] Consent form failed: {formError.Message}");
+                consentReady = true;
+                PrivacyChanged?.Invoke();
+                if (ConsentInformation.CanRequestAds()) InitializeIfNeeded();
+            }));
+        }));
+
+        if (ConsentInformation.CanRequestAds())
+        {
+            consentReady = true;
+            InitializeIfNeeded();
+        }
+#else
+        consentReady = true;
+#endif
+    }
 
     public bool IsRewardedReady
     {
@@ -166,15 +227,29 @@ public sealed class AdManager : MonoBehaviour
 #endif
     }
 
+    private bool initializing;
+
     private void InitializeIfNeeded()
     {
-        if (IsInitialized) return;
+        if (IsInitialized || initializing) return;
+
+        if (!consentReady)
+        {
+            RequestConsent();
+            if (!consentReady) return;
+        }
+
+#if (UNITY_ANDROID || UNITY_IOS) && !UNITY_EDITOR
+        if (!ConsentInformation.CanRequestAds()) return;
+#endif
 
 #if UNITY_ANDROID || UNITY_IOS
+        initializing = true;
         MobileAds.Initialize(_ =>
         {
             MobileAdsEventExecutor.ExecuteInUpdate(() =>
             {
+                initializing = false;
                 IsInitialized = true;
                 LoadInterstitialIfNeeded();
                 LoadRewardedIfNeeded();

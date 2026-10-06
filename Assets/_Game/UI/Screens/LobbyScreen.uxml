@@ -32,6 +32,10 @@
                     <ui:VisualElement class="icon icon--clock" picking-mode="Ignore" />
                     <ui:Label name="expiry-label" text="Expires in 10:00" class="code-card__expiry-label" picking-mode="Ignore" />
                 </ui:VisualElement>
+                <ui:Button name="invite-friend" class="ghost-share lobby-invite">
+                    <ui:VisualElement class="icon icon--person-add ghost-share__icon" picking-mode="Ignore" />
+                    <ui:Label text="Invite a friend" class="ghost-share__label" picking-mode="Ignore" />
+                </ui:Button>
             </ui:VisualElement>
             <ui:VisualElement name="lobby-slots" class="lobby-slots" picking-mode="Ignore" />
             <ui:VisualElement name="versus" class="versus" picking-mode="Ignore" />

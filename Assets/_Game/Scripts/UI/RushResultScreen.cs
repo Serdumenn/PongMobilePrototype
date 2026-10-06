@@ -13,11 +13,21 @@ public sealed class RushResultScreen : UIScreen
     private readonly Label note;
     private readonly Button rematchButton;
 
-    private OnlineRushController rush;
+    private readonly OnlineFriends friends;
+    private readonly Action<string> toast;
 
-    public RushResultScreen(VisualElement root, CosmeticsService cosmetics, Action onRematch, Action onLeave) : base(root)
+    private OnlineRushController rush;
+    private bool adding;
+
+    public RushResultScreen(VisualElement root, CosmeticsService cosmetics, Action onRematch, Action onLeave, OnlineFriends friends, Action<string> toast) : base(root)
     {
         this.cosmetics = cosmetics;
+        this.friends = friends;
+        this.toast = toast;
+        if (friends != null) friends.Changed += () =>
+        {
+            if (IsVisible) Refresh();
+        };
 
         mascot = root.Q("mascot");
         title = root.Q<Label>("title");
@@ -107,6 +117,38 @@ public sealed class RushResultScreen : UIScreen
         string name = player.Slot == rules.MySlot ? Loc.T("{0} (you)", player.Name) : player.Name;
         row.Add(UiFactory.Text(player.Left ? Loc.T("{0} · left", name) : name, "rank-row__name"));
         row.Add(UiFactory.Text(player.Score.ToString(), "rank-row__score"));
+        if (player.Slot != rules.MySlot) AddFriendAction(row, player.Id);
         return row;
+    }
+
+    private void AddFriendAction(VisualElement row, string playerId)
+    {
+        if (friends == null || !friends.IsReady || string.IsNullOrEmpty(playerId)) return;
+
+        var relation = friends.RelationTo(playerId);
+        if (relation == OnlineFriends.Relation.Self) return;
+        if (relation == OnlineFriends.Relation.Friend || relation == OnlineFriends.Relation.Sent)
+        {
+            row.Add(UiFactory.Element("icon icon--check rank-row__friend-done"));
+            return;
+        }
+
+        var add = UiFactory.Button("btn friend-icon-btn friend-icon-btn--plain rank-row__friend", null, "icon--person-add", () => AddFriend(playerId, relation));
+        add.name = $"add-{playerId}";
+        add.SetEnabled(!adding);
+        row.Add(add);
+    }
+
+    private async void AddFriend(string playerId, OnlineFriends.Relation relation)
+    {
+        if (adding) return;
+        adding = true;
+        Refresh();
+        string name = PlayerNames.ForId(playerId);
+        var result = relation == OnlineFriends.Relation.Received ? await friends.AcceptAsync(playerId) : await friends.AddAsync(playerId);
+        adding = false;
+        Refresh();
+        if (result == FriendsResult.Ok && relation == OnlineFriends.Relation.Received) toast?.Invoke(Loc.T("You and {0} are friends now", name));
+        else toast?.Invoke(FriendsScreen.ResultText(result, name));
     }
 }

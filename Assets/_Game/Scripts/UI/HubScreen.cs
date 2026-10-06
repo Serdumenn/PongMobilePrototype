@@ -20,6 +20,7 @@ public sealed class HubScreen : UIScreen
     private readonly Action onShareGhost;
     private readonly Action<string> onRaceGhost;
     private readonly Action<string> toast;
+    private readonly OnlineFriends friends;
 
     private readonly ScrollView local;
     private readonly ScrollView onlinePanel;
@@ -39,6 +40,9 @@ public sealed class HubScreen : UIScreen
     private readonly Button createButton;
     private readonly Button joinButton;
     private readonly VisualElement modeList;
+    private readonly Button friendsButton;
+    private readonly Label friendsSummary;
+    private readonly Label friendsBadge;
 
     private readonly Label dailyDate;
     private readonly Label dailyBest;
@@ -67,8 +71,10 @@ public sealed class HubScreen : UIScreen
 
     public HubScreen(VisualElement root, LocalMatchController match, CosmeticsService cosmetics, OnlineService online, OnlineLobby lobby,
         OnlineScores scores, Action onBack, Action<GameModeDefinition> onPick, Action<GameModeDefinition> onQuick, Action<GameModeDefinition> onCreate,
-        Action<string> onJoin, Action onDaily, Func<bool> hasGhost, Action onShareGhost, Action<string> onRaceGhost, Action<string> toast) : base(root)
+        Action<string> onJoin, Action onDaily, Func<bool> hasGhost, Action onShareGhost, Action<string> onRaceGhost, Action<string> toast,
+        OnlineFriends friends, Action onFriends) : base(root)
     {
+        this.friends = friends;
         this.hasGhost = hasGhost;
         this.onShareGhost = onShareGhost;
         this.onRaceGhost = onRaceGhost;
@@ -96,6 +102,9 @@ public sealed class HubScreen : UIScreen
         meName = root.Q<Label>("me-name");
         quickLabel = root.Q<Label>("quick-label");
         modeList = root.Q("online-modes");
+        friendsSummary = root.Q<Label>("friends-summary");
+        friendsBadge = root.Q<Label>("friends-badge");
+        friendsButton = Bind("friends-button", onFriends);
 
         dailyDate = root.Q<Label>("daily-date");
         dailyBest = root.Q<Label>("daily-best");
@@ -134,7 +143,13 @@ public sealed class HubScreen : UIScreen
         Bind("retry-button", Connect);
 
         if (online != null) online.StateChanged += _ => RefreshOnline();
+        if (friends != null) friends.Changed += () =>
+        {
+            if (IsVisible) RefreshFriends();
+        };
     }
+
+    public GameModeDefinition SelectedMode => selectedMode;
 
     public bool IsJoinOpen => !joinDialog.ClassListContains(DialogHiddenClass);
 
@@ -268,11 +283,29 @@ public sealed class HubScreen : UIScreen
         meName.text = ready ? online.PlayerName : Loc.T("Connecting…");
         UiFactory.SetPicture(meBall, CurrentLook()?.Happy);
 
+        RefreshFriends();
+
         bool canPlay = ready && !busy && selectedMode != null;
         quickButton.SetEnabled(canPlay);
         createButton.SetEnabled(canPlay);
         joinButton.SetEnabled(ready && !busy);
         lookButton.SetEnabled(!busy && looks.Count > 1);
+    }
+
+    private void RefreshFriends()
+    {
+        if (friendsButton == null) return;
+
+        bool usable = friends != null && friends.IsReady;
+        friendsButton.SetEnabled(online != null && online.IsReady);
+        int requests = usable ? friends.Incoming.Count : 0;
+        friendsBadge.text = requests.ToString();
+        friendsBadge.style.display = requests > 0 ? DisplayStyle.Flex : DisplayStyle.None;
+
+        if (!usable) friendsSummary.text = Loc.T("Connecting…");
+        else if (requests > 0) friendsSummary.text = Loc.Plural("{0} friend request", "{0} friend requests", requests);
+        else if (friends.Friends.Count == 0) friendsSummary.text = Loc.T("Add friends to invite them");
+        else friendsSummary.text = Loc.T("{0} online · {1} in total", friends.OnlineCount, friends.Friends.Count);
     }
 
     private void CollectLooks()

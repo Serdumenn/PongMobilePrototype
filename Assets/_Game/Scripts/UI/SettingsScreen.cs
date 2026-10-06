@@ -58,9 +58,21 @@ public sealed class SettingsScreen : UIScreen
     private readonly Func<int> getBest;
     private readonly Action onReset;
     private readonly Action onDeleteOnline;
+    private readonly OnlineService online;
+    private readonly Action<string> toast;
+    private readonly Label gamesValue;
+    private readonly Label gamesLabel;
+    private readonly Button gamesButton;
+    private readonly Button playerIdButton;
+    private readonly VisualElement privacyRow;
+    private readonly VisualElement privacyDivider;
+    private bool signingIn;
 
-    public SettingsScreen(VisualElement root, Action onBack, Func<int> getBest, Action onReset, Action onDeleteOnline) : base(root)
+    public SettingsScreen(VisualElement root, Action onBack, Func<int> getBest, Action onReset, Action onDeleteOnline, OnlineService online,
+        Action<string> toast) : base(root)
     {
+        this.online = online;
+        this.toast = toast;
         this.getBest = getBest;
         this.onReset = onReset;
         this.onDeleteOnline = onDeleteOnline;
@@ -81,6 +93,77 @@ public sealed class SettingsScreen : UIScreen
         Bind("language-row", OpenLanguages);
         Bind("language-cancel", CloseLanguages);
         root.Q("language-scrim").RegisterCallback<ClickEvent>(_ => CloseLanguages());
+
+        gamesValue = root.Q<Label>("games-value");
+        gamesLabel = root.Q<Label>("games-label");
+        gamesButton = Bind("games-button", SignInToPlayGames);
+        playerIdButton = Bind("player-id", CopyPlayerId);
+        privacyRow = Bind("privacy-row", ShowPrivacy);
+        Bind("privacy-policy", () => Application.OpenURL(AppLinks.PrivacyPolicy));
+        privacyDivider = root.Q("privacy-divider");
+        if (AdManager.Instance != null) AdManager.Instance.PrivacyChanged += RefreshPrivacy;
+        PlayGamesAccount.Changed += RefreshAccount;
+        if (online != null)
+        {
+            online.StateChanged += _ => RefreshAccount();
+            online.AccountChanged += RefreshAccount;
+        }
+    }
+
+    private void RefreshAccount()
+    {
+        if (gamesValue == null) return;
+
+        bool shown = PlayGamesAccount.Supported || Application.isEditor;
+        Root.Q("games-row").style.display = shown ? DisplayStyle.Flex : DisplayStyle.None;
+        Root.Q("games-divider").style.display = shown ? DisplayStyle.Flex : DisplayStyle.None;
+
+        bool linked = online != null && online.PlayGamesLinked;
+        string name = PlayGamesAccount.DisplayName;
+        if (!PlayGamesAccount.Supported) gamesValue.text = Loc.T("Available on Android");
+        else if (linked) gamesValue.text = string.IsNullOrEmpty(name) ? Loc.T("Connected") : Loc.T("Connected · {0}", name);
+        else if (PlayGamesAccount.SignedIn) gamesValue.text = Loc.T("Connecting…");
+        else gamesValue.text = Loc.T("Not connected");
+
+        gamesButton.style.display = linked ? DisplayStyle.None : DisplayStyle.Flex;
+        gamesButton.SetEnabled(PlayGamesAccount.Supported && !signingIn);
+        gamesLabel.text = signingIn ? "…" : Loc.T("Sign in");
+
+        string id = online != null && online.IsReady ? online.PlayerId : null;
+        playerIdButton.text = string.IsNullOrEmpty(id) ? string.Empty : Loc.T("Player ID: {0}", id);
+        playerIdButton.style.display = string.IsNullOrEmpty(id) ? DisplayStyle.None : DisplayStyle.Flex;
+    }
+
+    private void RefreshPrivacy()
+    {
+        bool required = AdManager.Instance != null && AdManager.Instance.PrivacyOptionsRequired;
+        privacyRow.style.display = required ? DisplayStyle.Flex : DisplayStyle.None;
+        privacyDivider.style.display = required ? DisplayStyle.Flex : DisplayStyle.None;
+    }
+
+    private void ShowPrivacy()
+    {
+        if (AdManager.Instance == null) return;
+        AdManager.Instance.ShowPrivacyOptions(_ => RefreshPrivacy());
+    }
+
+    private async void SignInToPlayGames()
+    {
+        if (online == null || signingIn) return;
+
+        signingIn = true;
+        RefreshAccount();
+        bool linked = await online.SignInWithPlayGamesAsync();
+        signingIn = false;
+        RefreshAccount();
+        toast?.Invoke(linked ? Loc.T("Signed in to Google Play Games") : Loc.T("Couldn't sign in to Google Play Games. Please try again."));
+    }
+
+    private void CopyPlayerId()
+    {
+        if (online == null || string.IsNullOrEmpty(online.PlayerId)) return;
+        NativeShare.Copy(online.PlayerId);
+        toast?.Invoke(Loc.T("Player ID copied"));
     }
 
     public bool IsLanguageOpen => !languageDialog.ClassListContains("dialog--hidden");
@@ -134,6 +217,8 @@ public sealed class SettingsScreen : UIScreen
         soundSwitch.EnableInClassList(SwitchOnClass, GameSettings.SoundEnabled);
         RefreshBest();
         RefreshLanguage();
+        RefreshAccount();
+        RefreshPrivacy();
         deleteOnline.SetEnabled(true);
     }
 

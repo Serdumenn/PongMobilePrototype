@@ -12,6 +12,9 @@ public sealed class ScoresScreen : UIScreen
     private readonly CosmeticsService cosmetics;
     private readonly Button tabMe;
     private readonly Button tabWorld;
+    private readonly Button tabFriends;
+    private readonly Button findButton;
+    private readonly OnlineFriends friends;
     private readonly VisualElement mePanel;
     private readonly VisualElement worldPanel;
     private readonly Label statGames;
@@ -34,10 +37,14 @@ public sealed class ScoresScreen : UIScreen
 
     private string worldBoard = OnlineScores.ClassicBoard;
     private int worldRequest;
+    private int tab;
+    private int friendsSignature = -1;
 
-    public ScoresScreen(VisualElement root, SoloGameManager game, CosmeticsService cosmetics, OnlineScores onlineScores, Action onBack) : base(root)
+    public ScoresScreen(VisualElement root, SoloGameManager game, CosmeticsService cosmetics, OnlineScores onlineScores, Action onBack,
+        OnlineFriends friends, Action onFindFriends) : base(root)
     {
         this.onlineScores = onlineScores;
+        this.friends = friends;
         this.game = game;
         this.cosmetics = cosmetics;
 
@@ -59,21 +66,35 @@ public sealed class ScoresScreen : UIScreen
         scroll = root.Q<ScrollView>("scores-scroll");
 
         Bind("back-button", onBack);
-        tabMe = Bind("tab-me", () => SelectTab(false));
-        tabWorld = Bind("tab-world", () => SelectTab(true));
+        tabMe = Bind("tab-me", () => SelectTab(0));
+        tabWorld = Bind("tab-world", () => SelectTab(1));
+        tabFriends = Bind("tab-friends", () => SelectTab(2));
+        findButton = Bind("world-find", onFindFriends);
+        if (friends != null) friends.Changed += OnFriendsChanged;
+    }
+
+    private void OnFriendsChanged()
+    {
+        int signature = friends.IsReady ? friends.Friends.Count + 1 : 0;
+        if (signature == friendsSignature) return;
+        friendsSignature = signature;
+        if (IsVisible && tab == 2) RefreshWorld();
     }
 
     protected override void OnShow()
     {
         scroll.scrollOffset = Vector2.zero;
         worldBoard = OnlineScores.BoardFor(game.CurrentMode) ?? OnlineScores.ClassicBoard;
-        SelectTab(false);
+        SelectTab(0);
     }
 
-    private void SelectTab(bool world)
+    private void SelectTab(int index)
     {
-        tabMe.EnableInClassList(ActiveTabClass, !world);
-        tabWorld.EnableInClassList(ActiveTabClass, world);
+        tab = index;
+        bool world = index != 0;
+        tabMe.EnableInClassList(ActiveTabClass, index == 0);
+        tabWorld.EnableInClassList(ActiveTabClass, index == 1);
+        tabFriends?.EnableInClassList(ActiveTabClass, index == 2);
         mePanel.style.display = world ? DisplayStyle.None : DisplayStyle.Flex;
         worldPanel.style.display = world ? DisplayStyle.Flex : DisplayStyle.None;
 
@@ -159,11 +180,45 @@ public sealed class ScoresScreen : UIScreen
             worldModes.Add(chip);
         }
 
-        worldTitle.text = worldBoard == OnlineScores.DailyBoard ? Loc.T("Today · {0}", DailyChallenge.Label(DateTime.UtcNow)) : Loc.T("Top 10");
+        bool daily = worldBoard == OnlineScores.DailyBoard;
+        if (tab == 2) worldTitle.text = daily ? Loc.T("Friends today · {0}", DailyChallenge.Label(DateTime.UtcNow)) : Loc.T("You and your friends");
+        else worldTitle.text = daily ? Loc.T("Today · {0}", DailyChallenge.Label(DateTime.UtcNow)) : Loc.T("Top {0}", onlineScores != null ? onlineScores.Top : 50);
         worldRows.Clear();
         worldNote.text = Loc.T("Loading…");
         worldNote.style.display = DisplayStyle.Flex;
-        _ = LoadWorld(++worldRequest, worldBoard);
+        findButton.style.display = DisplayStyle.None;
+        if (tab == 2) _ = LoadFriends(++worldRequest, worldBoard);
+        else _ = LoadWorld(++worldRequest, worldBoard);
+    }
+
+    private async System.Threading.Tasks.Task LoadFriends(int request, string board)
+    {
+        if (onlineScores == null || friends == null)
+        {
+            worldNote.text = Loc.T("World rankings are not available.");
+            return;
+        }
+
+        await onlineScores.SyncBestsAsync(game.BestFor(game.FindMode("classic")), game.BestFor(game.FindMode("rush")));
+        if (request != worldRequest || !IsVisible || tab != 2) return;
+        if (!friends.IsReady)
+        {
+            worldNote.text = OnlineService.HasInternet ? Loc.T("Connecting…") : Loc.T("You're offline. Connect to see your friends' scores.");
+            return;
+        }
+
+        var ids = new System.Collections.Generic.List<string>();
+        foreach (var friend in friends.Friends) ids.Add(friend.Id);
+        if (ids.Count == 0)
+        {
+            worldNote.text = Loc.T("Add friends to compare your scores.");
+            findButton.style.display = DisplayStyle.Flex;
+            return;
+        }
+
+        var result = await onlineScores.LoadFriendsAsync(board, ids);
+        if (request != worldRequest || !IsVisible || tab != 2) return;
+        Fill(result, board, true);
     }
 
     private async System.Threading.Tasks.Task LoadWorld(int request, string board)
@@ -176,8 +231,12 @@ public sealed class ScoresScreen : UIScreen
 
         await onlineScores.SyncBestsAsync(game.BestFor(game.FindMode("classic")), game.BestFor(game.FindMode("rush")));
         var result = await onlineScores.LoadAsync(board);
-        if (request != worldRequest || !IsVisible) return;
+        if (request != worldRequest || !IsVisible || tab != 1) return;
+        Fill(result, board, false);
+    }
 
+    private void Fill(OnlineScores.Board result, string board, bool friendsOnly)
+    {
         worldRows.Clear();
         switch (result.Outcome)
         {
@@ -205,7 +264,10 @@ public sealed class ScoresScreen : UIScreen
             worldRows.Add(WorldRow(result.Me.Value));
         }
 
-        if (result.Top.Count == 0) worldNote.text = Loc.T("No scores yet. Be the first!");
+        if (friendsOnly && result.Top.Count == 0) worldNote.text = Loc.T("No scores from your friends here yet.");
+        else if (friendsOnly && !result.Me.HasValue) worldNote.text = Loc.T("Play to get on the board.");
+        else if (friendsOnly) worldNote.text = string.Empty;
+        else if (result.Top.Count == 0) worldNote.text = Loc.T("No scores yet. Be the first!");
         else if (!result.Me.HasValue) worldNote.text = board == OnlineScores.CoopBoard ? Loc.T("Play Co-op Rally online to get on the board.") : Loc.T("Play to get on the board.");
         else worldNote.text = string.Empty;
         worldNote.style.display = string.IsNullOrEmpty(worldNote.text) ? DisplayStyle.None : DisplayStyle.Flex;

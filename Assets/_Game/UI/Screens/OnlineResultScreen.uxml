@@ -7,6 +7,10 @@
             <ui:Label name="caption" text="Portal Duel · vs Brave Otter" class="caption card__label" picking-mode="Ignore" />
             <ui:Label name="score" text="5 – 3" class="result-score" picking-mode="Ignore" />
             <ui:Label name="note" text="" class="caption rematch-note" picking-mode="Ignore" />
+            <ui:Button name="friend-button" class="ghost-share result-friend">
+                <ui:VisualElement name="friend-icon" class="icon icon--person-add ghost-share__icon" picking-mode="Ignore" />
+                <ui:Label name="friend-label" text="Add friend" class="ghost-share__label" picking-mode="Ignore" />
+            </ui:Button>
             <ui:VisualElement class="card__actions" picking-mode="Ignore">
                 <ui:Button name="home-button" class="btn btn--secondary">
                     <ui:VisualElement class="btn__face" picking-mode="Ignore">

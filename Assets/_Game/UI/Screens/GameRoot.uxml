@@ -19,6 +19,7 @@
     <ui:Template name="GhostRace" src="GhostRaceScreen.uxml" />
     <ui:Template name="GhostResult" src="GhostResultScreen.uxml" />
     <ui:Template name="GhostCode" src="GhostCodeScreen.uxml" />
+    <ui:Template name="Friends" src="FriendsScreen.uxml" />
     <ui:VisualElement name="root" class="root" picking-mode="Ignore">
         <ui:Instance template="Hud" name="hud" class="screen" picking-mode="Ignore" />
         <ui:Instance template="Menu" name="menu" class="screen" picking-mode="Ignore" />
@@ -28,6 +29,7 @@
         <ui:Instance template="Hub" name="hub" class="screen screen--solid" />
         <ui:Instance template="MatchSetup" name="match-setup" class="screen screen--solid" />
         <ui:Instance template="Lobby" name="lobby" class="screen screen--solid" />
+        <ui:Instance template="Friends" name="friends" class="screen screen--solid" />
         <ui:Instance template="MatchHud" name="match-hud" class="screen" picking-mode="Ignore" />
         <ui:Instance template="MatchResult" name="match-result" class="screen" picking-mode="Ignore" />
         <ui:Instance template="OnlineHud" name="online-hud" class="screen" picking-mode="Ignore" />
@@ -40,6 +42,25 @@
         <ui:Instance template="GameOver" name="game-over" class="screen" picking-mode="Ignore" />
         <ui:Instance template="Reward" name="reward" class="screen" picking-mode="Ignore" />
         <ui:Instance template="GhostCode" name="ghost-code" class="screen" picking-mode="Ignore" />
+        <ui:VisualElement name="invite-banner" class="invite-banner invite-banner--hidden" picking-mode="Ignore">
+            <ui:VisualElement class="invite-banner__card">
+                <ui:VisualElement class="icon icon--people invite-banner__icon" picking-mode="Ignore" />
+                <ui:VisualElement class="invite-banner__text" picking-mode="Ignore">
+                    <ui:Label name="invite-title" text="Brave Otter invites you" class="invite-banner__title" picking-mode="Ignore" />
+                    <ui:Label name="invite-mode" text="Portal Duel" class="invite-banner__sub" picking-mode="Ignore" />
+                </ui:VisualElement>
+                <ui:Button name="invite-join" class="btn btn--primary invite-banner__join">
+                    <ui:VisualElement class="btn__face" picking-mode="Ignore">
+                        <ui:Label text="Join" class="btn__label" picking-mode="Ignore" />
+                    </ui:VisualElement>
+                </ui:Button>
+                <ui:Button name="invite-close" class="btn invite-banner__close">
+                    <ui:VisualElement class="btn__face" picking-mode="Ignore">
+                        <ui:VisualElement class="icon icon--close" picking-mode="Ignore" />
+                    </ui:VisualElement>
+                </ui:Button>
+            </ui:VisualElement>
+        </ui:VisualElement>
         <ui:VisualElement name="toast" class="toast toast--hidden" picking-mode="Ignore">
             <ui:VisualElement class="toast__pill" picking-mode="Ignore">
                 <ui:Label name="toast-label" text="" class="toast__label" picking-mode="Ignore" />

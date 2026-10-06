@@ -152,6 +152,11 @@ public sealed class SoloGameManager : MonoBehaviour
         ModeChanged?.Invoke(mode);
     }
 
+    public void RefreshBest()
+    {
+        if (Score != null && CurrentMode != null) Score.SetBestKey(CurrentMode.BestScoreKey);
+    }
+
     public void ResetAllBests()
     {
         if (Score == null) return;

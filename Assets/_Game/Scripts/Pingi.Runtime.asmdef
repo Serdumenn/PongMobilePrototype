@@ -2,13 +2,16 @@
     "name": "Pingi.Runtime",
     "rootNamespace": "",
     "references": [
+        "Google.Play.Games",
         "Unity.Collections",
         "Unity.InputSystem",
         "Unity.Netcode.Runtime",
         "Unity.Purchasing",
         "Unity.Services.Authentication",
         "Unity.Services.CloudCode",
+        "Unity.Services.CloudSave",
         "Unity.Services.Core",
+        "Unity.Services.Friends",
         "Unity.Services.Leaderboards",
         "Unity.Services.Multiplayer",
         "UnityEngine.UI"

@@ -38,6 +38,23 @@ public static class DailyChallenge
         return PlayerPrefs.GetString(DayKeyPref, string.Empty) == DayKey(utcNow) ? PlayerPrefs.GetInt(BestKey, 0) : 0;
     }
 
+    public static void Saved(out string day, out int best)
+    {
+        day = PlayerPrefs.GetString(DayKeyPref, string.Empty);
+        best = string.IsNullOrEmpty(day) ? 0 : PlayerPrefs.GetInt(BestKey, 0);
+    }
+
+    public static void Restore(string day, int best)
+    {
+        if (string.IsNullOrEmpty(day)) return;
+        Saved(out string currentDay, out int currentBest);
+        int order = string.CompareOrdinal(day, currentDay);
+        if (order < 0 || (order == 0 && best <= currentBest)) return;
+
+        PlayerPrefs.SetString(DayKeyPref, day);
+        PlayerPrefs.SetInt(BestKey, best);
+    }
+
     public static bool Record(int score, DateTime utcNow)
     {
         int best = BestToday(utcNow);

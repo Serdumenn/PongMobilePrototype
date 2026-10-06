@@ -43,6 +43,59 @@ public sealed class PlayerRecords
         this.data = data;
     }
 
+    public static PlayerRecords FromJson(string path, string json)
+    {
+        SaveData loaded = null;
+        try
+        {
+            if (!string.IsNullOrEmpty(json)) loaded = JsonUtility.FromJson<SaveData>(json);
+        }
+        catch (Exception e)
+        {
+            Debug.LogWarning($"[Records] Backup could not be read: {e.Message}");
+        }
+
+        return new PlayerRecords(path, loaded ?? new SaveData());
+    }
+
+    public string ToJson()
+    {
+        data.Version = CurrentVersion;
+        return JsonUtility.ToJson(data);
+    }
+
+    public void MergeFrom(PlayerRecords other, bool keepOwnBestDates)
+    {
+        if (other == null) return;
+        var o = other.data;
+
+        data.GamesPlayed = Math.Max(data.GamesPlayed, o.GamesPlayed);
+        data.TotalHits = Math.Max(data.TotalHits, o.TotalHits);
+        data.LongestStreak = Math.Max(data.LongestStreak, o.LongestStreak);
+        data.PlayTimeSeconds = Math.Max(data.PlayTimeSeconds, o.PlayTimeSeconds);
+        data.MatchesPlayed = Math.Max(data.MatchesPlayed, o.MatchesPlayed);
+        data.BestCoopRally = Math.Max(data.BestCoopRally, o.BestCoopRally);
+        data.BestDayStreak = Math.Max(data.BestDayStreak, o.BestDayStreak);
+
+        if (!keepOwnBestDates)
+        {
+            for (int i = 0; i < o.BestModes.Count && i < o.BestDates.Count; i++)
+            {
+                if (data.BestModes.Contains(o.BestModes[i])) continue;
+                data.BestModes.Add(o.BestModes[i]);
+                data.BestDates.Add(o.BestDates[i]);
+            }
+        }
+
+        int order = string.CompareOrdinal(o.LastPlayedDay ?? string.Empty, data.LastPlayedDay ?? string.Empty);
+        if (order > 0)
+        {
+            data.LastPlayedDay = o.LastPlayedDay;
+            data.DayStreak = o.DayStreak;
+        }
+        else if (order == 0) data.DayStreak = Math.Max(data.DayStreak, o.DayStreak);
+    }
+
     public static PlayerRecords Load(string path)
     {
         SaveData loaded = null;

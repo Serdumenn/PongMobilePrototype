@@ -30,6 +30,16 @@
                     </ui:Button>
                 </ui:VisualElement>
                 <ui:VisualElement class="online-gap" picking-mode="Ignore" />
+                <ui:Button name="friends-button" class="friends-entry">
+                    <ui:VisualElement class="icon icon--people friends-entry__icon" picking-mode="Ignore" />
+                    <ui:VisualElement class="friends-entry__text" picking-mode="Ignore">
+                        <ui:Label text="Friends" class="friends-entry__title" picking-mode="Ignore" />
+                        <ui:Label name="friends-summary" text="Add friends to invite them" class="friends-entry__sub" picking-mode="Ignore" />
+                    </ui:VisualElement>
+                    <ui:Label name="friends-badge" text="1" class="friends-badge" picking-mode="Ignore" />
+                    <ui:VisualElement class="icon icon--chevron-right friends-entry__chevron" picking-mode="Ignore" />
+                </ui:Button>
+                <ui:VisualElement class="online-gap" picking-mode="Ignore" />
                 <ui:Button name="quick-button" class="btn btn--primary online-quick">
                     <ui:VisualElement class="btn__face" picking-mode="Ignore">
                         <ui:VisualElement class="icon icon--bolt icon--light" picking-mode="Ignore" />

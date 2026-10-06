@@ -35,6 +35,18 @@ public sealed class CosmeticsService : MonoBehaviour
 
     public int CurrentDayStreak => Records != null && Records.Records != null ? Records.DayStreak : 0;
 
+    public void RestoreInventory(string json)
+    {
+        var restored = CosmeticInventory.FromJson(SaveLocation.PathFor(SaveFileName), json);
+        restored.KeepOrdersFrom(Inventory);
+        Inventory = restored;
+        EnsureEquippedDefaults();
+        GrantScoreUnlocks(PlayerPrefs.GetInt(SoloScoreManager.BestScoreKey, 0), false);
+        Inventory.Save();
+        ApplyAdRules();
+        Changed?.Invoke();
+    }
+
     private void Start()
     {
         if (Game != null) Game.StateChanged += OnGameStateChanged;

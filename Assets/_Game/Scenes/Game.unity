@@ -316,6 +316,8 @@ GameObject:
   - component: {fileID: 315089635}
   - component: {fileID: 315089636}
   - component: {fileID: 315089637}
+  - component: {fileID: 315089638}
+  - component: {fileID: 315089639}
   m_Layer: 0
   m_Name: Services
   m_TagString: Untagged
@@ -530,7 +532,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Pingi.Runtime::OnlineScores
   online: {fileID: 315089634}
-  TopCount: 10
+  TopCount: 50
 --- !u!114 &315089637
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -544,6 +546,38 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Pingi.Runtime::OnlineGhosts
   online: {fileID: 315089634}
+--- !u!114 &315089638
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 315089627}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6a09798459fb4dc48a4accea3d40e585, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Pingi.Runtime::OnlineFriends
+  online: {fileID: 315089634}
+  InviteLifetime: 120
+  InviteCooldown: 20
+--- !u!114 &315089639
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 315089627}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ab72b107e625fdd4c8601c9466f762e0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Pingi.Runtime::CloudProgress
+  online: {fileID: 315089634}
+  records: {fileID: 315089632}
+  cosmetics: {fileID: 315089630}
+  game: {fileID: 7019952436038793779}
+  UploadDelay: 8
 --- !u!1 &517429098
 GameObject:
   m_ObjectHideFlags: 0
@@ -783,6 +817,8 @@ MonoBehaviour:
   Ghosts: {fileID: 315089637}
   Recorder: {fileID: 7019952436038793786}
   Race: {fileID: 7019952436038793785}
+  Friends: {fileID: 315089638}
+  Cloud: {fileID: 315089639}
   HintRuns: 3
   RewardDelayMs: 650
   CodeLifetime: 600

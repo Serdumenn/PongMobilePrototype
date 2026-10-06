@@ -1,0 +1,118 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" editor-extension-mode="False">
+    <ui:VisualElement class="safe" picking-mode="Ignore">
+        <ui:VisualElement class="topbar" picking-mode="Ignore">
+            <ui:Button name="back-button" class="btn btn--icon">
+                <ui:VisualElement class="btn__face" picking-mode="Ignore">
+                    <ui:VisualElement class="icon icon--back" picking-mode="Ignore" />
+                </ui:VisualElement>
+            </ui:Button>
+            <ui:Label text="Friends" class="screen-title" picking-mode="Ignore" />
+            <ui:VisualElement class="topbar__side" picking-mode="Ignore" />
+        </ui:VisualElement>
+        <ui:ScrollView name="friends-scroll" mode="Vertical" horizontal-scroller-visibility="Hidden" vertical-scroller-visibility="Hidden" class="hub-panel online-scroll">
+            <ui:VisualElement name="friends-ready" picking-mode="Ignore">
+                <ui:VisualElement class="code-card" picking-mode="Ignore">
+                    <ui:Label text="Your friend code" class="caption" picking-mode="Ignore" />
+                    <ui:Label name="my-tag" text="WittyPenguin#35049" class="friend-code" picking-mode="Ignore" />
+                    <ui:VisualElement class="online-pair" picking-mode="Ignore">
+                        <ui:Button name="copy-tag" class="btn">
+                            <ui:VisualElement class="btn__face" picking-mode="Ignore">
+                                <ui:VisualElement class="icon icon--copy" picking-mode="Ignore" />
+                                <ui:Label text="Copy" class="btn__label" picking-mode="Ignore" />
+                            </ui:VisualElement>
+                        </ui:Button>
+                        <ui:VisualElement class="online-pair__gap" picking-mode="Ignore" />
+                        <ui:Button name="share-tag" class="btn">
+                            <ui:VisualElement class="btn__face" picking-mode="Ignore">
+                                <ui:VisualElement class="icon icon--share" picking-mode="Ignore" />
+                                <ui:Label text="Share" class="btn__label" picking-mode="Ignore" />
+                            </ui:VisualElement>
+                        </ui:Button>
+                    </ui:VisualElement>
+                </ui:VisualElement>
+                <ui:Button name="add-open" class="ghost-enter friend-add">
+                    <ui:Label text="Add a friend by code" class="ghost-enter__label" picking-mode="Ignore" />
+                    <ui:VisualElement class="icon icon--person-add ghost-enter__icon" picking-mode="Ignore" />
+                </ui:Button>
+                <ui:VisualElement name="requests-card" class="challenge-card friends-section" picking-mode="Ignore">
+                    <ui:VisualElement class="challenge-card__head" picking-mode="Ignore">
+                        <ui:VisualElement class="icon icon--person-add" picking-mode="Ignore" />
+                        <ui:Label text="Friend requests" class="challenge-card__title" picking-mode="Ignore" />
+                        <ui:Label name="requests-count" text="1" class="friends-count" picking-mode="Ignore" />
+                    </ui:VisualElement>
+                    <ui:VisualElement name="requests-list" class="friend-list" picking-mode="Ignore" />
+                </ui:VisualElement>
+                <ui:VisualElement name="list-card" class="challenge-card friends-section" picking-mode="Ignore">
+                    <ui:VisualElement class="challenge-card__head" picking-mode="Ignore">
+                        <ui:VisualElement class="icon icon--people" picking-mode="Ignore" />
+                        <ui:Label text="Your friends" class="challenge-card__title" picking-mode="Ignore" />
+                        <ui:Label name="friends-count" text="0" class="friends-count" picking-mode="Ignore" />
+                    </ui:VisualElement>
+                    <ui:VisualElement name="friend-list" class="friend-list" picking-mode="Ignore" />
+                    <ui:Label name="friends-empty" text="No friends yet. Share your code, or add the player you just played with on the result screen." class="challenge-card__text friends-empty" picking-mode="Ignore" />
+                </ui:VisualElement>
+                <ui:VisualElement name="sent-card" class="challenge-card friends-section" picking-mode="Ignore">
+                    <ui:VisualElement class="challenge-card__head" picking-mode="Ignore">
+                        <ui:VisualElement class="icon icon--clock" picking-mode="Ignore" />
+                        <ui:Label text="Sent requests" class="challenge-card__title" picking-mode="Ignore" />
+                    </ui:VisualElement>
+                    <ui:VisualElement name="sent-list" class="friend-list" picking-mode="Ignore" />
+                </ui:VisualElement>
+                <ui:VisualElement class="online-end" picking-mode="Ignore" />
+            </ui:VisualElement>
+            <ui:VisualElement name="friends-status" class="online-status" picking-mode="Ignore">
+                <ui:VisualElement name="friends-status-icon" class="icon icon--wifi-off" picking-mode="Ignore" />
+                <ui:Label name="friends-status-title" text="You're offline" class="hub-soon__title" picking-mode="Ignore" />
+                <ui:Label name="friends-status-text" text="Friends need the internet. Games on this device still work." class="caption hub-soon__text" picking-mode="Ignore" />
+                <ui:Button name="friends-retry" class="btn btn--primary online-status__retry">
+                    <ui:VisualElement class="btn__face" picking-mode="Ignore">
+                        <ui:Label text="Try again" class="btn__label" picking-mode="Ignore" />
+                    </ui:VisualElement>
+                </ui:Button>
+            </ui:VisualElement>
+        </ui:ScrollView>
+    </ui:VisualElement>
+    <ui:VisualElement name="add-dialog" class="dialog dialog--hidden">
+        <ui:VisualElement name="add-scrim" class="scrim" />
+        <ui:VisualElement class="safe overlay" picking-mode="Ignore">
+            <ui:VisualElement class="card online-card">
+                <ui:Label text="Add a friend" class="card__title" picking-mode="Ignore" />
+                <ui:Label text="Type your friend's code. It looks like BraveOtter#4821." class="caption dialog__text" picking-mode="Ignore" />
+                <ui:TextField name="tag-field" max-length="48" class="code-field friend-field" />
+                <ui:Button name="paste-button" class="ghost-share friend-paste">
+                    <ui:VisualElement class="icon icon--copy ghost-share__icon" picking-mode="Ignore" />
+                    <ui:Label text="Paste" class="ghost-share__label" picking-mode="Ignore" />
+                </ui:Button>
+                <ui:Button name="add-confirm" class="btn btn--primary btn--wide">
+                    <ui:VisualElement class="btn__face" picking-mode="Ignore">
+                        <ui:VisualElement class="icon icon--person-add icon--light" picking-mode="Ignore" />
+                        <ui:Label name="add-confirm-label" text="Send request" class="btn__label" picking-mode="Ignore" />
+                    </ui:VisualElement>
+                </ui:Button>
+                <ui:Button name="add-cancel" text="Cancel" class="link" />
+            </ui:VisualElement>
+        </ui:VisualElement>
+    </ui:VisualElement>
+    <ui:VisualElement name="friend-menu" class="dialog dialog--hidden">
+        <ui:VisualElement name="menu-scrim" class="scrim" />
+        <ui:VisualElement class="safe overlay" picking-mode="Ignore">
+            <ui:VisualElement class="card online-card">
+                <ui:Label name="menu-name" text="Brave Otter" class="card__title" picking-mode="Ignore" />
+                <ui:Label name="menu-text" text="" class="caption dialog__text" picking-mode="Ignore" />
+                <ui:Button name="menu-remove" class="btn btn--wide friend-menu__button">
+                    <ui:VisualElement class="btn__face" picking-mode="Ignore">
+                        <ui:VisualElement class="icon icon--close" picking-mode="Ignore" />
+                        <ui:Label name="menu-remove-label" text="Remove friend" class="btn__label" picking-mode="Ignore" />
+                    </ui:VisualElement>
+                </ui:Button>
+                <ui:Button name="menu-block" class="btn btn--wide friend-menu__button friend-menu__button--danger">
+                    <ui:VisualElement class="btn__face" picking-mode="Ignore">
+                        <ui:VisualElement class="icon icon--lock" picking-mode="Ignore" />
+                        <ui:Label name="menu-block-label" text="Block" class="btn__label" picking-mode="Ignore" />
+                    </ui:VisualElement>
+                </ui:Button>
+                <ui:Button name="menu-cancel" text="Cancel" class="link" />
+            </ui:VisualElement>
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>

@@ -18,13 +18,34 @@ public sealed class OnlineService : MonoBehaviour
     public string PlayerId { get; private set; }
     public string PlayerName { get; private set; }
     public bool IsReady => State == Status.Ready;
+    public bool PlayGamesLinked { get; private set; }
 
     public event Action<Status> StateChanged;
+    public event Action AccountChanged;
 
     private Task connecting;
 
     public static bool HasInternet => Application.internetReachability != NetworkReachability.NotReachable;
     public static bool Disabled { get; set; }
+
+    private async void Start()
+    {
+        if (Disabled) return;
+
+        bool playGames = PlayGamesAccount.Supported && await PlayGamesAccount.SignInAsync(false);
+        if (Disabled) return;
+        if (playGames || await HasAccountAsync()) await ConnectAsync();
+    }
+
+    public async Task<bool> SignInWithPlayGamesAsync()
+    {
+        if (Disabled || !PlayGamesAccount.Supported) return false;
+        if (!await PlayGamesAccount.SignInAsync(true)) return false;
+
+        if (IsReady) await LinkPlayGamesAsync();
+        else await ConnectAsync();
+        return PlayGamesLinked;
+    }
 
     public Task ConnectAsync()
     {
@@ -62,7 +83,9 @@ public sealed class OnlineService : MonoBehaviour
         AuthenticationService.Instance.ClearSessionToken();
         PlayerId = null;
         PlayerName = null;
+        PlayGamesLinked = false;
         SetState(Status.Offline);
+        AccountChanged?.Invoke();
         return true;
     }
 
@@ -83,11 +106,13 @@ public sealed class OnlineService : MonoBehaviour
             var auth = AuthenticationService.Instance;
             auth.Expired -= OnExpired;
             auth.Expired += OnExpired;
+            if (!auth.IsSignedIn && !auth.SessionTokenExists) await TrySignInWithPlayGamesAsync();
             if (!auth.IsSignedIn) await auth.SignInAnonymouslyAsync();
 
             PlayerId = auth.PlayerId;
             PlayerName = PlayerNames.ForId(PlayerId);
             SetState(Status.Ready);
+            _ = LinkPlayGamesAsync();
         }
         catch (Exception e)
         {
@@ -95,6 +120,87 @@ public sealed class OnlineService : MonoBehaviour
             SetState(HasInternet ? Status.Failed : Status.Offline);
         }
     }
+
+    private static async Task TrySignInWithPlayGamesAsync()
+    {
+        string code = await PlayGamesAccount.ServerCodeAsync();
+        if (code == null) return;
+        try
+        {
+            await AuthenticationService.Instance.SignInWithGooglePlayGamesAsync(code);
+        }
+        catch (Exception e)
+        {
+            Debug.LogWarning($"Play Games account sign-in failed: {e.Message}");
+        }
+    }
+
+    private async Task LinkPlayGamesAsync()
+    {
+        var auth = AuthenticationService.Instance;
+        try
+        {
+            var info = await auth.GetPlayerInfoAsync();
+            PlayGamesLinked = HasPlayGames(info);
+            if (PlayGamesLinked || !PlayGamesAccount.SignedIn) return;
+
+            string code = await PlayGamesAccount.ServerCodeAsync();
+            if (code == null) return;
+
+            try
+            {
+                await auth.LinkWithGooglePlayGamesAsync(code);
+                PlayGamesLinked = true;
+            }
+            catch (AuthenticationException e) when (e.ErrorCode == AuthenticationErrorCodes.AccountAlreadyLinked)
+            {
+                await SwitchToPlayGamesAccountAsync();
+            }
+        }
+        catch (Exception e)
+        {
+            Debug.LogWarning($"Linking Play Games failed: {e.Message}");
+        }
+        finally
+        {
+            AccountChanged?.Invoke();
+        }
+    }
+
+    private async Task SwitchToPlayGamesAccountAsync()
+    {
+        string code = await PlayGamesAccount.ServerCodeAsync();
+        if (code == null) return;
+
+        var auth = AuthenticationService.Instance;
+        auth.SignOut(true);
+        SetState(Status.Offline);
+        SetState(Status.Connecting);
+        try
+        {
+            await auth.SignInWithGooglePlayGamesAsync(code);
+        }
+        catch (Exception e)
+        {
+            Debug.LogWarning($"Switching to the Play Games account failed: {e.Message}");
+            await auth.SignInAnonymouslyAsync();
+        }
+
+        PlayerId = auth.PlayerId;
+        PlayerName = PlayerNames.ForId(PlayerId);
+        PlayGamesLinked = HasPlayGames(await auth.GetPlayerInfoAsync());
+        SetState(Status.Ready);
+    }
+
+    public static bool HasPlayGames(PlayerInfo info)
+    {
+        if (info?.Identities == null) return false;
+        foreach (var identity in info.Identities)
+            if (identity != null && identity.TypeId == PlayGamesProvider) return true;
+        return false;
+    }
+
+    private const string PlayGamesProvider = "google-play-games";
 
     private static InitializationOptions Options()
     {

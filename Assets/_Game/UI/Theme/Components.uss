@@ -253,6 +253,7 @@
 .icon--people { background-image: url("/Assets/_Game/Art/UI/Icons/ui_icon_people.svg"); }
 .icon--heart { background-image: url("/Assets/_Game/Art/UI/Icons/ui_icon_heart.svg"); }
 .icon--language { background-image: url("/Assets/_Game/Art/UI/Icons/ui_icon_language.svg"); }
+.icon--gamepad { background-image: url("/Assets/_Game/Art/UI/Icons/ui_icon_gamepad.svg"); }
 
 .caption {
     color: var(--color-ink-muted);

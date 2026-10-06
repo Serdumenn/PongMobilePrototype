@@ -405,6 +405,41 @@ Her fazın sonunda bir onay kapısı var. Kapıdan geçmeyen iş bir sonraki faz
 | Denetim | 13 cihaz, 26 ekran durumu (oyun ve sonuç): sorun yok |
 | Sağlamlaştırma | Testlerde görülen üst üste binme düzeltildi: menüye dönüşteki giriş animasyonu, top ve raketi gizlendikten sonra yeniden görünür yapabiliyordu (hızlı mod değişiminde telefonda da olabilirdi). Gizleme artık animasyonu iptal ediyor; online maç başlarken menü her durumda kapanıyor; canlı düelloda solo top ve raket her karede gizli tutuluyor |
 
+### M6 — Arkadaşlar (2026-10-05)
+
+Ürün sahibi sordu: "Tüm oyuncuların skoru nerede, arkadaş nasıl eklenecek?" Sonra tam yetki verdi. Aşağıdaki kararlar önerilen seçeneklerle alındı.
+
+- **Servis:** UGS Friends (`com.unity.services.friends` 1.3.0). Arkadaşlık isteği, kabul ve ret, silme, engelleme, çevrimiçi durumu ve yapılandırılmış mesaj (davet) sağlar. Yeni sunucu kodu gerekmez.
+- **Arkadaş kodu:** Oyuncunun Unity hesabındaki adı, üretilmiş adın boşluksuz hâli olur ("BraveOtter"). Servis sonuna dört rakam ekler: `BraveOtter#4821`. Bu kod herkese özeldir. Ekranlarda görünen ad değişmez ("Brave Otter").
+- **Arkadaş ekleme:**
+  - Kodu yazarak ya da yapıştırarak. Büyük/küçük harf ve boşluk fark etmez.
+  - Maç sonu ekranındaki "Add friend" ile.
+  - Paylaş menüsüyle kod göndererek.
+  - Karşı taraf kabul eder ya da reddeder. Arkadaşlıktan çıkarma ve engelleme var.
+- **Arkadaş listesi:** Durumlar: Online, Playing (maçta) ve Offline ("2 h ago").
+  - Çevrimiçi arkadaşa **Invite** gönderilir.
+  - Lobideysen davet o odaya gider.
+  - Değilsen Online sekmesinde seçili modda oda kurulur ve davet gider.
+- **Davet alma:** Uygulama açıkken üstte bir şerit çıkar: "Brave Otter invites you · Portal Duel" ile Join ve kapatma düğmeleri.
+  - Oyun sırasında bekletilir, menüye dönünce gösterilir.
+  - 2 dakika sonra düşer.
+  - Bildirim (push) yok.
+- **Skorlar:** Skorlar ekranına üçüncü sekme **Friends** eklenir; aynı dört liste, yalnız arkadaşlar ve sen. Dünya listesi ilk 10'dan ilk 50'ye çıkar.
+- **Bağlantı:** Daha önce online olmuş bir cihaz, açılışta sessizce bağlanır; istekler ve davetler böylece gelir. Hiç online olmamış oyuncu için hiçbir şey değişmez.
+- **Güvenlik:** Sohbet ve serbest metin yok. Mesajlar yalnızca davettir (oda kodu ve mod). Engellenen oyuncu istek ve davet gönderemez. Ayarlar'daki "Online data → Delete" önce arkadaşlıkları, sonra hesabı siler.
+- **Mimari:** `IFriendsBackend` (gerçek: `UgsFriendsBackend`, testte sahte), `OnlineFriends` (Services nesnesinde: liste, durum, davetler, olaylar), `FriendTag` (kod biçimi), `FriendInvite` (mesaj). Arayüz: `FriendsScreen`, `InviteBanner`, Online sekmesinde arkadaş kartı, lobide "Invite a friend", sonuç ekranlarında "Add friend", Skorlar'da Friends sekmesi.
+
+**M6 durumu (2026-10-05):** ✅ Arkadaş sistemi çalışıyor. Gerçek servisle denendi.
+
+| Konu | Durum |
+|---|---|
+| Kod | `FriendTag`, `FriendInvite`, `IFriendsBackend`, `UgsFriendsBackend`, `OnlineFriends` (Services) |
+| Arayüz | `FriendsScreen` (kod kartı, kodla ekleme, istekler, liste, gönderilenler, menü), `InviteBanner`, Online sekmesinde arkadaş kartı (rozetli), lobide "Invite a friend", Portal/Canlı Düello sonucunda "Add friend", Rush sonucunda satır başına ekle düğmesi, Skorlar'da Friends sekmesi, dünya listesi ilk 50 |
+| Canlı deneme | Editor ve ikinci bir test hesabıyla doğrulananlar: kodla istek → bildirim ve rozet → arayüzden kabul. Durum güncellemeleri (Online, Busy, Online). Bottan gelen davet şeridi. Editor'den "Invite" → gerçek oda (C8M99L) → bot aynı kodu aldı. Friends sıralaması. Test hesabı silinince Editor listesi anında boşaldı |
+| Testler | EditMode 143 (5 yeni: kod ayrıştırma, 8 dilde paylaşılan mesajdan kod okuma, davet doğrulama), PlayMode 53 (8 yeni: liste ve sıralama, kabul, kodla ekleme, menüden silme, davet şeridi ve katılma, oyun sırasında bekleyen davet ve durum, yeni istek bildirimi, boş Friends sekmesi) |
+| Yerelleştirme | 60 yeni metin, 7 dile çevrildi; Japonca ve Korece font alt kümeleri güncellendi. Yeni ekranlar 8 dil ve sahte dilde 16:9 telefon ve tablette denetlendi: 108 durum, sorun yok |
+| Not | Davetler yalnızca uygulama açıkken gelir (bildirim yok). Sonuç ekranındaki "Add friend" düğmesi gerçek bir online maçla henüz denenmedi; mantığı Rush satırlarıyla aynı ve testli |
+
 **Toplam:** yaklaşık 20–27 hafta. Her faz kendi başına yayınlanabilir.
 
 ---

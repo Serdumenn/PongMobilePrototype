@@ -6,6 +6,7 @@ public sealed class RecordsService : MonoBehaviour
     private const string SaveFileName = "records.json";
 
     public PlayerRecords Records { get; private set; }
+    public event Action Saved;
 
     public int DayStreak => Records.CurrentDayStreak(DateTime.Now);
 
@@ -18,12 +19,14 @@ public sealed class RecordsService : MonoBehaviour
     {
         Records.RecordRun(mode != null ? mode.Id : "classic", newBest, longestStreak, seconds, DateTime.Now);
         Records.Save();
+        Saved?.Invoke();
     }
 
     public bool RecordMatch(int coopRally, float seconds)
     {
         bool newBest = Records.RecordMatch(coopRally, seconds, DateTime.Now);
         Records.Save();
+        Saved?.Invoke();
         return newBest;
     }
 
@@ -35,6 +38,13 @@ public sealed class RecordsService : MonoBehaviour
     public void ClearBestDates()
     {
         Records.ClearBestDates();
+        Records.Save();
+        Saved?.Invoke();
+    }
+
+    public void Replace(string json)
+    {
+        Records = PlayerRecords.FromJson(SaveLocation.PathFor(SaveFileName), json);
         Records.Save();
     }
 }

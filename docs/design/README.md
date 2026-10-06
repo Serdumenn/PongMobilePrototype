@@ -34,7 +34,8 @@ Bu klasör oyunun görsel ve UX kararlarının tek kaynağıdır. Her faz bir **
 | 5 · Uygulama | UI Toolkit ekranları, tema, safe area, animasyon, AudioMixer ✅ | Kapı 4: cihaz testi | Cihaz testi bekliyor |
 | 6 · Polish & QA | Cihaz matrisi, erişilebilirlik, performans ve boyut bütçesi | Kapı 5 | — |
 | 6b · Yerelleştirme | 8 dil: EN, TR, JA, KO, DE, ES, PT-BR, FR ([localization.md](localization.md)) | Kapı L: dil listesi onayı ✅ | Uygulandı; yayından önce ana dil okuması |
-| 7 · Mağaza | İkon, feature graphic, ekran görüntüleri, metinler, gizlilik politikası | Kapı 6: yayın | — |
+| 6c · Arkadaşlar | Arkadaş kodu, istekler, liste ve durum, davetler, Friends sıralaması ([multiplayer.md](multiplayer.md) M6) | Ürün sahibi tam yetki verdi (2026-10-05) | ✅ Uygulandı ve gerçek serviste denendi |
+| 7 · Mağaza | İkon, feature graphic, ekran görüntüleri, metinler, gizlilik politikası ([../release/README.md](../release/README.md)) | Kapı 6: yayın | Projede hazır; Play Console, AdMob ve Play Games hesap adımları ürün sahibinde |
 
 ## Karar kaydı
 
@@ -78,6 +79,8 @@ Bu klasör oyunun görsel ve UX kararlarının tek kaynağıdır. Her faz bir **
 | 2026-10-01 | **Kapı M0 geçildi.** Ekran tasarımları önerilen seçeneklerle onaylandı ([multiplayer/index.html](multiplayer/index.html)) | Ürün sahibinin onayı |
 | 2026-10-05 | Hayalet kayıtları **Cloud Code + Cloud Save (yalnız sunucu)**; istemcide Cloud Save paketi yok | Kodu sunucu üretir, kaydı sunucu denetler; oyuncular başkalarının kayıtlarını doğrudan okuyamaz. İstemci paketi gerekmedi, uygulama küçük kaldı |
 | 2026-10-05 | Canlı Düello: kendi Q16.16 simülasyonumuz + geri sarma (60 Hz, 2 tik girdi gecikmesi, en fazla 15 tik geri sarma) | Photon Quantum'a gerek kalmadı: ek servis yok, oyun mantığı tek yerde, iki telefon bit bit aynı sonucu hesaplıyor (altın test CI'da da koşar) |
+| 2026-10-06 | **Yayın:** yalnız Android; Google Play Games girişi Unity hesabına bağlanır, Oyuncu ID'si Ayarlar'da; ilerleme Cloud Save'e yedeklenir; UMP reklam onayı; imzalı AAB iş akışı; hedef kitle 13+; gizlilik politikası GitHub Pages'te | Ürün sahibi yayına almak istedi: "Play Games ile bağlanan hesaplar, ID numaraları ve kayıt olmalı". Yayın hazırlığı ertelemesi kaldırıldı |
+| 2026-10-05 | **Arkadaşlar (M6):** UGS Friends; arkadaş kodu `Ad#rakamlar`; istek/kabul, durum, davet, Friends sıralaması; dünya listesi ilk 50 | Ürün sahibinin "herkesin skoru nerede, arkadaş nasıl eklenir" sorusu ve tam yetkisi. Sohbet yok, mesajlar yalnızca davet |
 | 2026-10-05 | Kapı L: diller EN, TR, JA, KO, DE, ES (Latin Amerika), PT-BR, FR; kendi yerelleştirme sistemimiz; JA/KO için M PLUS Rounded 1c ve Jua; oyuncu adları İngilizce | Android oyun geliri ve reklam fiyatına göre en güçlü pazarlar; Rusça (Google reklam ve ödemeleri durdurdu) ve Çin anakarası (Google Play yok) elendi |
 | 2026-10-05 | **Yerelleştirme: 8 dil**, biri Türkçe; diller en çok gelir getirecek pazarlara göre seçilecek | Ürün sahibinin kararı. Çok oyunculu fazlar bittikten sonra yapılacak; dil listesi güncel pazar verisiyle araştırılıp onaya sunulacak. Kusursuz olmalı: tüm metinler, fontlar (Fredoka yalnızca Latin + Türkçe; gerekirse yedek font), uzun metinler ve her dilde cihaz denetimi |
 
