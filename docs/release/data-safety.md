@@ -8,7 +8,7 @@ Bu cevaplar oyunun bugünkü koduna göre hazırlandı (2026-10-05). Kullanılan
 |---|---|
 | Uygulama gerekli kullanıcı veri türlerini topluyor ya da paylaşıyor mu? | **Evet** |
 | Tüm kullanıcı verileri aktarım sırasında şifreleniyor mu? | **Evet** |
-| Kullanıcılar verilerinin silinmesini isteyebiliyor mu? | **Evet**. Uygulama içinde: Ayarlar → Online data → Delete. Web: `https://oceanforge-games.github.io/pingi-pongi/delete-account/` |
+| Kullanıcılar verilerinin silinmesini isteyebiliyor mu? | **Evet**. Uygulama içinde: Ayarlar → Online data → Delete. Web: `https://serdumenn.github.io/pingi-pongi/delete-account/` |
 | Hesap oluşturma | Oyun içinde otomatik online hesap oluşur (anonim ya da Google Play Games). Hesap silme yolu yukarıda |
 
 | Veri türü | Toplanıyor | Paylaşılıyor | İsteğe bağlı mı | Amaç |

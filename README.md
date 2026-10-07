@@ -4,7 +4,7 @@
 
 A cheerful paddle game for Android by **Ocean Forge**.
 
-[Website](https://oceanforge-games.github.io/pingi-pongi/) · [Google Play](https://play.google.com/store/apps/details?id=com.oceanforge.pingipongi) · [Privacy policy](https://oceanforge-games.github.io/pingi-pongi/privacy/)
+[Website](https://serdumenn.github.io/pingi-pongi/) · [Google Play](https://play.google.com/store/apps/details?id=com.oceanforge.pingipongi) · [Privacy policy](https://serdumenn.github.io/pingi-pongi/privacy/)
 
 ![Android Build](https://img.shields.io/github/actions/workflow/status/Serdumenn/PongMobilePrototype/build-android.yml?branch=main&label=Android%20Build&logo=unity&logoColor=white&style=for-the-badge)
 
