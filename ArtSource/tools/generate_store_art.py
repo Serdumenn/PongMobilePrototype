@@ -5,10 +5,10 @@ import sys
 from PIL import Image, ImageDraw, ImageFont
 
 sys.path.insert(0, os.path.dirname(__file__))
-import generate_app_icon as icon
 from generate_skins import body, face
 
-ROOT = icon.ROOT
+ROOT = os.path.normpath(os.path.join(os.path.dirname(__file__), "..", ".."))
+INKSCAPE = r"C:\Program Files\Inkscape\bin\inkscape.exe"
 OUT = os.path.join(ROOT, "docs", "release", "store")
 SRC = os.path.join(ROOT, "ArtSource", "store")
 FONT = os.path.join(ROOT, "Assets", "_Game", "Fonts", "fnt_fredoka_bold.ttf")
@@ -27,19 +27,9 @@ def rasterize(svg_text, name, width, height):
     with open(svg_path, "w", encoding="utf-8") as f:
         f.write(svg_text)
     png_path = os.path.join(OUT, name + ".png")
-    subprocess.run([icon.INKSCAPE, svg_path, "--export-type=png", f"--export-filename={png_path}",
+    subprocess.run([INKSCAPE, svg_path, "--export-type=png", f"--export-filename={png_path}",
                     f"--export-width={width}", f"--export-height={height}"], check=True, capture_output=True)
     return png_path
-
-
-def store_icon():
-    v = icon.VARIANTS["sun"]
-    crop = (icon.SIZE - icon.VISIBLE) / 2
-    view = f"{crop:.2f} {crop:.2f} {icon.VISIBLE:.2f} {icon.VISIBLE:.2f}"
-    svg = icon.svg(icon.background(v) + icon.foreground(), view, 512)
-    path = rasterize(svg, "store_icon_512", 512, 512)
-    Image.open(path).convert("RGB").save(path)
-    return path
 
 
 def ball(cx, cy, radius, color, expr, angle=0):
@@ -101,5 +91,4 @@ def feature_graphic():
 
 
 if __name__ == "__main__":
-    print(store_icon())
     print(feature_graphic())

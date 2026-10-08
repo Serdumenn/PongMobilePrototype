@@ -50,7 +50,7 @@ Otomatik denetim kontrolleri: ekran dışına taşan öğe, taşan ya da kesilen
 | UI ikonları | SVG, 24 birimlik grid, tek çizgi kalınlığı | SVG (UI Toolkit Vector Image) | Preset: `SVG_UI_Icon` |
 | UI bitmap (gerekirse) | SVG/Figma | PNG, ekrandaki boyutun 1×'i | Preset: `Texture_UI` — mipmap kapalı, ASTC 4×4 |
 | Oyun sprite'ları | SVG, @2x çizim (viewBox = piksel boyutu) | SVG → Textured Sprite, **384 PPU** (= 192 × 2) | Preset: `SVG_Sprite`; PNG gerekirse `Texture_Sprite` |
-| Uygulama ikonu | SVG (`ArtSource/app_icon/`, `generate_app_icon.py`) | Adaptive: ön ve arka katman 432×432 (ön katman 66dp güvenli dairede). Round ve legacy 512×512 (72dp görünür alan). Mağaza 512×512 | Sıkıştırma yok, mipmap yok, NPOT ölçekleme yok |
+| Uygulama ikonu | PNG 512×512 (`ArtSource/app_icon/app_icon_source.png`, `export_app_icon.py`) | Adaptive: arka katman 432×432, görsel 72dp görünür alanda, dış halka kenar uzatma + bulanıklık; ön katman boş. Round ve legacy 512×512. Mağaza 512×512 (32 bit, köşeler dolu). Site: 256, 180, 64 | Sıkıştırma yok, mipmap yok, NPOT ölçekleme yok |
 
 Yasak: ekranda 150 px görünen bir öğe için 2000 px kaynak; `scale` ile küçültülmüş UI; placeholder görselin canlı ekranda kalması.
 

@@ -101,7 +101,8 @@ Durumlar: `Brief → WIP → Review → Approved → Integrated`
 | `ui_icon_clock/flame/chevron_left/chevron_right` | SVG ikon | Integrated | Rush, seri ve mod seçici |
 | `ui_icon_sound` | SVG ikon | Integrated | Ayarlar → Sound |
 | Ses paleti (8 efekt) | SFX | Integrated | `generate_sfx.py` ile sentezlendi, lisans gerektirmez. `_Library` adayları kullanılmadı |
-| Uygulama ikonu | Adaptive + round + legacy | Integrated | "Güneş" varyantı. `generate_app_icon.py` ile üretiliyor; kaynak SVG'ler `ArtSource/app_icon/`. Mağaza 512 px sürümü yayın hazırlığında |
+| Uygulama ikonu | Adaptive + round + legacy + mağaza + site | Integrated | 3D "Pingi" ikonu. Kaynak `ArtSource/app_icon/app_icon_source.png`; tüm boyutlar `export_app_icon.py` ile üretilir |
+| Açılış ekranı | Ocean Forge logosu | Integrated | Unity açılış ekranı: lacivert `#1E2140` zemin, Unity logosu kapalı, "Dolly" yakınlaşma, 2 sn. Logo (örs + dalga + kıvılcım, Fredoka yazı) `generate_brand.py` ile üretilir; kaynak `ArtSource/brand/` |
 
 ## Lisans kaydı
 
