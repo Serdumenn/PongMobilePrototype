@@ -17,8 +17,8 @@ public sealed class AdManager : MonoBehaviour
     [SerializeField] private string InterstitialAdUnitId = "ca-app-pub-3940256099942544/4411468910";
     [SerializeField] private string RewardedAdUnitId = "ca-app-pub-3940256099942544/1712485313";
 #else
-    [SerializeField] private string InterstitialAdUnitId = "ca-app-pub-3940256099942544/1033173712";
-    [SerializeField] private string RewardedAdUnitId = "ca-app-pub-3940256099942544/5224354917";
+    [SerializeField] private string InterstitialAdUnitId = "ca-app-pub-3792906065455391/8179413854";
+    [SerializeField] private string RewardedAdUnitId = "ca-app-pub-3792906065455391/7924262989";
 #endif
 
     [Header("Rules")]

@@ -65,27 +65,35 @@ GitHub → Settings → Secrets and variables → Actions:
 ### 4. Play Console'da uygulama
 1. Play Console → Create app → ad **Pingi Pongi**, varsayılan dil **English (United States)**, Game, Free.
 2. App signing: "Play App Signing" açık kalır.
-3. GitHub'da `v1.0.0` etiketi oluşturulup push edilir. Actions bitince **PingiPongi-1.0.0-…** artifact'ından `.aab` indirilir.
+3. Test sürümü: GitHub → Actions → **Release Android (signed AAB)** → **Run workflow** → Version `1.0.0`. Üretim sürümü: `v1.0.0` etiketi push edilir. Actions bitince **PingiPongi-1.0.0-…** artifact'ından `.aab` indirilir.
 4. Testing → **Internal testing** → yeni sürüm → `.aab` yüklenir, test kullanıcıları eklenir.
 5. Setup → App integrity → App signing: **SHA-1** değerleri not edilir ("App signing key" ve "Upload key"). 5. adımda gerekir.
 
 Kişisel geliştirici hesaplarında (13 Kasım 2023'ten sonra açılanlar) üretimden önce **en az 12 test kullanıcısıyla 14 günlük kapalı test** zorunludur: internal testten sonra Closed testing açılır, 12 kişi eklenir ve 14 gün beklenir.
 
-### 5. Google Play Games Services
-1. Play Console → Play Games Services → Setup and management → Configuration → **Create new Play Games Services project**.
-2. Credentials:
-   - **Android** kimlik bilgisi: paket adı `com.oceanforge.pingipongi`, SHA-1 = App signing key SHA-1. Upload key SHA-1 için ikinci bir Android kimlik bilgisi eklenir.
-   - **Game server** kimlik bilgisi: Google Cloud'da "Web application" türünde OAuth istemcisi oluşturulup bağlanır. **Client ID** ve **Client secret** alınır.
-3. Testers sekmesine test hesapları eklenir, yapılandırma **Publish** edilir.
-4. Configuration sayfasındaki **Get resources** düğmesinden Android XML'i alınır.
-5. Unity'de **Window → Google Play Games → Setup → Android setup**: Android XML'i ve Web Client ID girilir, **Setup** çalıştırılır.
+### 5. Google Play Games Services (tamam, yayınlama hariç)
+| Konu | Değer |
+|---|---|
+| Play Games projesi / APP_ID | `987043051187` |
+| Google Cloud projesi | `pingi-pongi-511004` (sahibi Play Console hesabı) |
+| OAuth onay ekranı | External, **In production**; ana sayfa ve gizlilik bağlantıları sitede; logo yok (doğrulama gerekmez) |
+| Android kimlik bilgisi | `987043051187-t0hmh2pmv67foi7ciquaaettf9ps98fh.apps.googleusercontent.com`, App signing SHA-1 `6B:2C:47:54:88:6C:10:EA:23:4F:17:52:5E:92:2B:93:6E:E8:45:C1`, korsanlıkla mücadele açık |
+| Oyun sunucusu kimlik bilgisi (Web) | `987043051187-1m1kb6go03pc8gm5connv0t599ua5bd8.apps.googleusercontent.com`. Client secret yalnızca indirilen JSON'da ve Unity Cloud'da durur, repoya girmez |
 
-### 6. Unity Cloud panosu
-Unity Cloud → Pingi Pongi projesi → Authentication → Identity providers → **Add → Google Play Games** → 5. adımdaki Web **Client ID** ve **Client secret** → Save. Bu yapılmadan Play Games girişi Unity hesabına bağlanamaz (oyun anonim hesapla çalışmaya devam eder).
+Unity tarafı: `Assets/GooglePlayGames/Resources/PlayGamesSettings.asset` (APP_ID + Web Client ID), `Assets/Plugins/Android/GooglePlayGamesManifest.androidlib/AndroidManifest.xml` (APP_ID meta-data), `ProjectSettings/GooglePlayGameSettings.txt`. Bu dosyalar Unity'de **Window → Google Play Games → Setup → Android setup** penceresinin ürettiği içerikle aynıdır.
+
+Kalan: Play Console → Play Oyun Hizmetleri → **İncele ve yayınla**. Yayınlanana kadar yalnızca Play Games test kullanıcıları giriş yapabilir.
+
+Play Games girişi yalnızca Play'den kurulan sürümlerde çalışır (imza SHA-1'i Play'in anahtarı). CI'nın geliştirme APK'sında giriş başarısız olur, oyun anonim hesapla devam eder.
+
+### 6. Unity Cloud panosu (tamam)
+Unity Cloud → Pingi Pongi → Products → Player Authentication → Identity Providers → **Google Play Games**: oyun sunucusu Client ID + secret, durum **Enabled**.
+
+"Put your data to work" (Developer Data) penceresi kabul edilmedi. Kabul edilirse Veri güvenliği formu ve gizlilik politikası güncellenmelidir.
 
 ### 7. AdMob
-1. AdMob → Apps → Pingi Pongi (uygulama kimliği projede: `ca-app-pub-6371794166256775~9435282405`).
-2. Ad units: **Rewarded** ve **Interstitial** birimleri oluşturulur, kimlikleri `GameManager` sahnesindeki `AdManager` alanlarına girilir. Şu an test birimleri kullanılıyor.
+1. AdMob → Apps → Pingi Pongi. Yayıncı `pub-3792906065455391`, uygulama kimliği `ca-app-pub-3792906065455391~1899985859` (projede `GoogleMobileAdsSettings`). (tamam)
+2. Ad units (tamam): **Rewarded - Unlock** `ca-app-pub-3792906065455391/7924262989`, **Interstitial - Between games** `ca-app-pub-3792906065455391/8179413854`. `Game.unity` içindeki `AdManager` alanlarında. Geliştiricinin telefonu AdMob → Ayarlar → **Test cihazları** listesinde olmalı; kendi reklamına tıklamak hesabı riske atar.
 3. Privacy & messaging → **GDPR** mesajı oluşturulup yayınlanır (dil: otomatik). İsteğe bağlı: ABD eyaletleri mesajı.
 4. Mağaza sayfası yayınlanınca AdMob'da uygulama mağazaya bağlanır. `app-ads.txt` sitede hazır; Play Console'da **Website** alanı `https://serdumenn.github.io` olunca AdMob bir gün içinde doğrular (Apps → View all apps → app-ads.txt sütunu).
 

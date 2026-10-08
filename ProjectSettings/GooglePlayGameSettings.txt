@@ -1,2 +1,6 @@
 lastUpgrade=20100
 proj.pluginVersion=2.1.0
+proj.AppId=987043051187
+and.ClientId=987043051187-1m1kb6go03pc8gm5connv0t599ua5bd8.apps.googleusercontent.com
+and.BundleId=com.oceanforge.pingipongi
+android.SetupDone=true

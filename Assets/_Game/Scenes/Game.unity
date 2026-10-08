@@ -923,8 +923,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e7570ad22c1261448a090844902e1c8e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  InterstitialAdUnitId: ca-app-pub-3940256099942544/1033173712
-  RewardedAdUnitId: ca-app-pub-3940256099942544/5224354917
+  InterstitialAdUnitId: ca-app-pub-3792906065455391/8179413854
+  RewardedAdUnitId: ca-app-pub-3792906065455391/7924262989
   CooldownSeconds: 180
   EnableAdsInEditor: 0
   SimulateRewardedInEditor: 1

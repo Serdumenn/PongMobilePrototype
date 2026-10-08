@@ -1,7 +1,7 @@
 # Google Play mağaza metinleri
 
-- **Uygulama adı:** her dilde **Pingi Pongi** (en fazla 30 karakter).
-- **Kategori:** Oyun → Arcade. **Etiketler:** Arcade, Casual, Multiplayer, Offline.
+- **Uygulama adı:** marka + arama terimi: `Pingi Pongi: Ping Pong Game` (en fazla 30 karakter). Oyunun telefondaki adı **Pingi Pongi** olarak kalır. Diğer diller çeviri adımında aynı kalıpla yazılır (ör. `Pingi Pongi: Ping Pong Oyunu`).
+- **Kategori:** Oyun → Arcade. **Etiketler:** Arcade, Gündelik, Çok basit oyunlar, Tenis, Parti oyunları.
 - **Görseller:** `store/store_icon_512.png`, `store/feature_graphic.png`, `store/screenshots/` (İngilizce ve Türkçe, 7'şer adet, 1080×1920). Diğer diller İngilizce görüntüleri kullanabilir.
 
 Kısa açıklama en fazla 80, tam açıklama en fazla 4000 karakter.
@@ -10,22 +10,25 @@ Kısa açıklama en fazla 80, tam açıklama en fazla 4000 karakter.
 
 ## English (en-US) — varsayılan
 
-**Short description**
-Bounce Pingi, beat your best and challenge your friends online!
+**App name** (27/30)
+Pingi Pongi: Ping Pong Game
 
-**Full description**
-Meet Pingi, the happiest ball you'll ever keep in the air. Slide one thumb to move your paddle, keep the rally going and chase a new record.
+**Short description** (79/80)
+Cute ping pong game: play solo, 2 players on one phone, or online with friends!
+
+**Full description** (1543/4000)
+Pingi Pongi is a cute ping pong game you play with one thumb. Keep Pingi, the happiest ball you'll ever meet, bouncing on your paddle, beat your best score and challenge your friends in 2 player duels on one phone or online.
 
 ★ SOLO
 • Classic: one life, how long can you keep Pingi up?
 • Rush: 60 seconds, every hit counts. Hit the Perfect zone for bonus points.
 
-★ PLAY TOGETHER ON ONE PHONE
+★ 2 PLAYER GAMES ON ONE PHONE
 • Table Duel: two players, one phone, first to 5.
 • Co-op Rally: pass Pingi back and forth and keep the team rally alive.
 • Party Table: up to 4 players around a tablet.
 
-★ ONLINE
+★ ONLINE MULTIPLAYER
 • Portal Duel: the ball jumps from your phone to your friend's.
 • Live Duel: real-time table tennis on one shared table.
 • Rush Battle: up to 4 players, 60 seconds, send fog and fast balls to your rivals.
@@ -34,37 +37,42 @@ Meet Pingi, the happiest ball you'll ever keep in the air. Slide one thumb to mo
 ★ CHALLENGES
 • Daily Challenge: everyone gets the same serves today. One run, one leaderboard.
 • Ghost Challenge: race a friend's recorded run with a code.
-• World and friends rankings.
+• World and friends leaderboards.
 
 ★ FRIENDS
 Add friends with a friend code, see who is online and invite them to a match in one tap. There is no chat and everyone gets a fun generated name, so it stays friendly.
 
 ★ COLLECTION
-Unlock 9 Pingi faces, colourful paddles and themes by playing, watching optional ads or with the Pingi Pass.
+Unlock 9 Pingi faces, colorful paddles and themes by playing, watching optional ads or with the Pingi Pass.
 
-Sign in with Google Play Games to keep your progress on every phone.
+★ PLAY OFFLINE
+Solo and one-phone modes work without internet. Sign in with Google Play Games to keep your progress on every phone.
+
 Available in English, Türkçe, 日本語, 한국어, Deutsch, Español, Português and Français.
 
 ---
 
 ## Türkçe (tr-TR)
 
-**Kısa açıklama**
-Pingi'yi zıplat, rekorunu kır, arkadaşlarınla online kapış!
+**Uygulama adı** (28/30)
+Pingi Pongi: Ping Pong Oyunu
 
-**Tam açıklama**
-Havada tutacağın en neşeli topla tanış: Pingi! Tek parmağını kaydırarak raketini yönet, ralliyi sürdür ve yeni bir rekorun peşine düş.
+**Kısa açıklama** (80/80)
+Sevimli ping pong oyunu: tek başına, aynı telefonda 2 kişilik ya da online oyna!
+
+**Tam açıklama** (1633/4000)
+Pingi Pongi, tek parmakla oynanan sevimli bir ping pong oyunu. Havada tutacağın en neşeli topla, Pingi ile tanış: raketini kaydır, rekorunu kır, arkadaşlarınla aynı telefonda 2 kişilik düellolarda ya da online kapış.
 
 ★ TEK KİŞİLİK
 • Klasik: tek can, Pingi'yi ne kadar havada tutabilirsin?
 • Rush: 60 saniye, her vuruş sayılır. Perfect bölgesine vur, bonus puanı kap.
 
-★ AYNI TELEFONDA BİRLİKTE
+★ AYNI TELEFONDA 2 KİŞİLİK OYUNLAR
 • Masa Düellosu: iki oyuncu, tek telefon, 5 sayı alan kazanır.
 • Ortak Ralli: Pingi'yi birbirinize paslayın, takım rallisini sürdürün.
 • Parti Masası: tabletin etrafında 4 oyuncuya kadar.
 
-★ ONLINE
+★ ONLINE ÇOK OYUNCULU
 • Portal Düellosu: top senin telefonundan arkadaşının telefonuna geçer.
 • Canlı Düello: ortak bir masada gerçek zamanlı masa tenisi.
 • Rush Kapışması: 4 oyuncuya kadar, 60 saniye, rakiplerine sis ve hızlı top gönder.
@@ -81,7 +89,9 @@ Arkadaş koduyla arkadaş ekle, kimin çevrimiçi olduğunu gör ve tek dokunuş
 ★ KOLEKSİYON
 Oynayarak, isteğe bağlı reklam izleyerek ya da Pingi Pass ile 9 Pingi yüzü, rengârenk raketler ve temalar aç.
 
-İlerlemeni her telefonda korumak için Google Play Games ile giriş yap.
+★ İNTERNETSİZ OYNA
+Tek kişilik ve aynı telefonda oynanan modlar internet olmadan çalışır. İlerlemeni her telefonda korumak için Google Play Games ile giriş yap.
+
 English, Türkçe, 日本語, 한국어, Deutsch, Español, Português ve Français dillerinde.
 
 ---

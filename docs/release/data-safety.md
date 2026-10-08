@@ -9,15 +9,16 @@ Bu cevaplar oyunun bugünkü koduna göre hazırlandı (2026-10-05). Kullanılan
 | Uygulama gerekli kullanıcı veri türlerini topluyor ya da paylaşıyor mu? | **Evet** |
 | Tüm kullanıcı verileri aktarım sırasında şifreleniyor mu? | **Evet** |
 | Kullanıcılar verilerinin silinmesini isteyebiliyor mu? | **Evet**. Uygulama içinde: Ayarlar → Online data → Delete. Web: `https://serdumenn.github.io/pingi-pongi/delete-account/` |
-| Hesap oluşturma | Oyun içinde otomatik online hesap oluşur (anonim ya da Google Play Games). Hesap silme yolu yukarıda |
+| Hesap oluşturma | Oyun içinde otomatik online hesap oluşur (anonim ya da Google Play Games). Formda yalnızca **OAuth** işaretlenir; hesap silme URL'si yukarıdaki adres |
+| Hesabı silmeden veri silme | **Hayır** (silme hesabı ve bağlı tüm verileri birlikte kaldırır) |
 
 | Veri türü | Toplanıyor | Paylaşılıyor | İsteğe bağlı mı | Amaç |
 |---|---|---|---|---|
-| **Konum → Yaklaşık konum** (AdMob, IP'den) | Evet | Evet (reklam için Google) | Hayır | Reklamcılık, analiz, dolandırıcılık önleme |
+| **Konum → Yaklaşık konum** (AdMob, IP'den) | Evet | Evet (reklam için Google) | Hayır | Reklamcılık, analiz, dolandırıcılık önleme (toplama ve paylaşım) |
 | **Kişisel bilgiler → Kullanıcı kimlikleri** (Unity oyuncu kimliği, Google Play Games kimliği) | Evet | Hayır | Hayır | Uygulama işlevselliği, hesap yönetimi |
 | **Finansal bilgiler → Satın alma geçmişi** (Pingi Pass / Reklamsız durumu yedekte) | Evet | Hayır | Hayır | Uygulama işlevselliği |
-| **Uygulama etkinliği → Uygulama etkileşimleri** (skorlar, ilerleme, arkadaş listesi; AdMob reklam etkileşimleri) | Evet | Evet (reklam etkileşimleri Google'a) | Hayır | Uygulama işlevselliği, reklamcılık, analiz |
-| **Uygulama bilgileri ve performansı → Teşhis** (AdMob SDK) | Evet | Evet | Hayır | Reklamcılık, analiz |
+| **Uygulama etkinliği → Uygulama etkileşimleri** (skorlar, ilerleme, arkadaş listesi; AdMob reklam etkileşimleri) | Evet | Evet (reklam etkileşimleri Google'a) | Hayır | Toplama: uygulama işlevselliği, analiz, reklamcılık. Paylaşım: reklamcılık, analiz |
+| **Uygulama bilgileri ve performansı → Teşhis** (AdMob SDK) | Evet | Evet | Hayır | Analiz, reklamcılık, dolandırıcılık önleme (toplama ve paylaşım) |
 | **Cihaz veya diğer kimlikler → Reklam kimliği** (AdMob) | Evet | Evet | Hayır | Reklamcılık, analiz, dolandırıcılık önleme |
 
 Notlar:
