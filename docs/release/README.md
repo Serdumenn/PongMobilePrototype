@@ -98,7 +98,7 @@ Unity Cloud → Pingi Pongi → Products → Player Authentication → Identity 
 4. Mağaza sayfası yayınlanınca AdMob'da uygulama mağazaya bağlanır. `app-ads.txt` sitede hazır; Play Console'da **Website** alanı `https://serdumenn.github.io` olunca AdMob bir gün içinde doğrular (Apps → View all apps → app-ads.txt sütunu).
 
 ### 8. Uygulama içi ürünler
-Monetize → Products → In-app products. 15 ürün, hepsi tek seferlik. Fiyatlar `docs/design/cosmetics.md` tablosundan.
+Monetize → Products → In-app products. 15 ürün, hepsi tek seferlik. Kimlik, ad, açıklama (EN + TR) ve fiyatların tam listesi: [iap-products.md](iap-products.md). Önce **Ödeme profili** (satıcı hesabı) gerekir.
 
 | Ürün kimliği | Ad | Önerilen fiyat |
 |---|---|---|
