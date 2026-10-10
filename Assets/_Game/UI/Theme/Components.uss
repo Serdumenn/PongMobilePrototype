@@ -100,11 +100,11 @@
     max-width: 88%;
     padding: 24px 44px;
     border-radius: 48px;
-    background-color: #2B2D42;
+    background-color: var(--color-chip);
 }
 
 .toast__label {
-    color: #FFFFFF;
+    color: var(--color-on-chip);
     font-size: 40px;
     -unity-font-definition: url("/Assets/_Game/Fonts/fnt_fredoka_semibold_sdf.asset");
     -unity-text-align: middle-center;
@@ -113,7 +113,7 @@
 
 .btn__label {
     margin-left: 24px;
-    color: #FFFFFF;
+    color: var(--color-on-accent);
     font-size: var(--font-size-button);
     -unity-font-definition: url("/Assets/_Game/Fonts/fnt_fredoka_bold_sdf.asset");
     -unity-text-align: middle-center;
@@ -150,7 +150,7 @@
     width: 176px;
     height: 176px;
     margin-left: 20px;
-    -unity-background-image-tint-color: #2B2D42;
+    -unity-background-image-tint-color: var(--color-on-sun);
 }
 
 .btn--primary {
@@ -203,7 +203,7 @@
 
 .btn--pill .btn__label {
     margin-left: 0;
-    color: var(--color-coral);
+    color: var(--color-coral-text);
     font-size: var(--font-size-caption);
 }
 
@@ -217,7 +217,7 @@
 }
 
 .btn--pill.is-armed .btn__label {
-    color: #FFFFFF;
+    color: var(--color-on-accent);
 }
 
 .icon {
@@ -228,7 +228,7 @@
 }
 
 .icon--light {
-    -unity-background-image-tint-color: #FFFFFF;
+    -unity-background-image-tint-color: var(--color-on-accent);
 }
 
 .icon--back { background-image: url("/Assets/_Game/Art/UI/Icons/ui_icon_back.svg"); }
@@ -344,7 +344,7 @@
 
 .card__number {
     margin-top: -16px;
-    color: var(--color-coral);
+    color: var(--color-coral-text);
     font-size: var(--font-size-number);
     -unity-font-definition: url("/Assets/_Game/Fonts/fnt_fredoka_bold_sdf.asset");
     -unity-text-align: middle-center;
@@ -366,7 +366,7 @@
     border-bottom-width: 10px;
     border-color: var(--color-sun-edge);
     background-color: var(--color-sun);
-    color: var(--color-ink);
+    color: var(--color-on-sun);
     font-size: var(--font-size-caption);
     -unity-font-definition: url("/Assets/_Game/Fonts/fnt_fredoka_bold_sdf.asset");
 }
@@ -388,7 +388,7 @@
     width: 88px;
     height: 88px;
     border-radius: 44px;
-    background-color: #FFFFFF;
+    background-color: var(--color-knob);
     transition-property: translate;
     transition-duration: 160ms;
     transition-timing-function: ease-out-cubic;

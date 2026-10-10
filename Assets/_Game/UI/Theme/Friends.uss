@@ -95,14 +95,14 @@
     flex-shrink: 0;
     margin-right: 12px;
     border-radius: 56px;
-    background-color: var(--color-teal-edge);
+    background-color: var(--color-teal-fill-edge);
 }
 
 .friend-invite > .btn__face {
     bottom: 12px;
     padding: 0 24px;
     border-radius: 56px;
-    background-color: var(--color-teal);
+    background-color: var(--color-teal-fill);
 }
 
 .friend-invite:active > .btn__face {
@@ -147,11 +147,11 @@
 }
 
 .friend-icon-btn--yes {
-    background-color: var(--color-teal-edge);
+    background-color: var(--color-teal-fill-edge);
 }
 
 .friend-icon-btn--yes > .btn__face {
-    background-color: var(--color-teal);
+    background-color: var(--color-teal-fill);
 }
 
 .friend-field > .unity-base-text-field__input,
@@ -193,11 +193,11 @@
 }
 
 .friend-menu__button--danger .icon {
-    -unity-background-image-tint-color: var(--color-coral);
+    -unity-background-image-tint-color: var(--color-coral-text);
 }
 
 .friend-menu__button--danger .btn__label {
-    color: var(--color-coral);
+    color: var(--color-coral-text);
 }
 
 .friends-entry {
@@ -225,7 +225,7 @@
 .friends-entry__icon {
     width: 80px;
     height: 80px;
-    -unity-background-image-tint-color: var(--color-teal-edge);
+    -unity-background-image-tint-color: var(--color-teal-text);
 }
 
 .friends-entry__text {
@@ -252,7 +252,7 @@
     padding: 0 16px;
     border-radius: 32px;
     background-color: var(--color-coral);
-    color: #FFFFFF;
+    color: var(--color-on-accent);
     font-size: 38px;
     -unity-font-definition: url("/Assets/_Game/Fonts/fnt_fredoka_bold_sdf.asset");
     -unity-text-align: middle-center;
@@ -292,7 +292,7 @@
     height: 48px;
     margin-left: 32px;
     margin-right: 24px;
-    -unity-background-image-tint-color: var(--color-teal-edge);
+    -unity-background-image-tint-color: var(--color-teal-text);
 }
 
 .world-find {
@@ -333,7 +333,7 @@
 .invite-banner__icon {
     width: 72px;
     height: 72px;
-    -unity-background-image-tint-color: var(--color-teal-edge);
+    -unity-background-image-tint-color: var(--color-teal-text);
 }
 
 .invite-banner__text {

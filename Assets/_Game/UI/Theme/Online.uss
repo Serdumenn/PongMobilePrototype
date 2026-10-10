@@ -147,7 +147,7 @@
 }
 
 .online-mode--selected {
-    background-color: #E6F7F5;
+    background-color: var(--color-select);
 }
 
 .online-mode-divider {
@@ -250,7 +250,7 @@
     border-width: 6px;
     border-radius: 56px;
     border-color: var(--color-divider);
-    background-color: #FFF8EF;
+    background-color: var(--color-field);
     color: var(--color-ink);
     font-size: 128px;
     letter-spacing: 18px;
@@ -331,7 +331,7 @@
     padding-bottom: 0;
     border-width: 6px;
     border-color: var(--color-card-edge);
-    background-color: rgba(255, 255, 255, 0.45);
+    background-color: var(--color-veil);
 }
 
 .slot__ball {
@@ -380,11 +380,11 @@
 .ready-mark .icon {
     width: 60px;
     height: 60px;
-    -unity-background-image-tint-color: #FFFFFF;
+    -unity-background-image-tint-color: var(--color-on-accent);
 }
 
 .ready-mark--on {
-    background-color: var(--color-teal);
+    background-color: var(--color-teal-fill);
 }
 
 .versus {
@@ -433,7 +433,7 @@
     width: 44px;
     height: 44px;
     margin-right: 8px;
-    -unity-background-image-tint-color: #12695F;
+    -unity-background-image-tint-color: var(--color-teal-ink);
 }
 
 .pcard__sub-label {
@@ -492,12 +492,12 @@
     flex-grow: 1;
     height: 192px;
     margin-left: 32px;
-    background-color: var(--color-teal-edge);
+    background-color: var(--color-teal-fill-edge);
 }
 
 .lobby-ready > .btn__face {
     bottom: 18px;
-    background-color: var(--color-teal);
+    background-color: var(--color-teal-fill);
 }
 
 .lobby-ready:active > .btn__face {
@@ -603,11 +603,11 @@
 .opp-card__wifi {
     width: 56px;
     height: 56px;
-    -unity-background-image-tint-color: #12695F;
+    -unity-background-image-tint-color: var(--color-teal-ink);
 }
 
 .opp-card__wifi--weak {
-    -unity-background-image-tint-color: var(--color-coral);
+    -unity-background-image-tint-color: var(--color-coral-text);
 }
 
 .ohud-menu {
@@ -649,7 +649,7 @@
 }
 
 .ohud-score {
-    color: rgba(43, 45, 66, 0.12);
+    color: var(--color-watermark);
     font-size: 360px;
     -unity-font-definition: url("/Assets/_Game/Fonts/fnt_fredoka_bold_sdf.asset");
     -unity-text-align: middle-center;
@@ -666,7 +666,7 @@
 
 .ohud-count {
     position: absolute;
-    color: var(--color-coral);
+    color: var(--color-coral-text);
     font-size: 400px;
     -unity-font-definition: url("/Assets/_Game/Fonts/fnt_fredoka_bold_sdf.asset");
     -unity-text-align: middle-center;
@@ -690,7 +690,7 @@
     margin-right: 20px;
     padding: 12px;
     border-radius: 80px;
-    background-color: rgba(255, 255, 255, 0.85);
+    background-color: var(--color-float);
     opacity: 1;
     translate: 0 0;
     transition-property: opacity, translate;
@@ -773,7 +773,7 @@
 
 .result-score {
     margin-top: -16px;
-    color: var(--color-coral);
+    color: var(--color-coral-text);
     font-size: 200px;
     -unity-font-definition: url("/Assets/_Game/Fonts/fnt_fredoka_bold_sdf.asset");
     -unity-text-align: middle-center;
@@ -807,12 +807,12 @@
 
 .fog__band {
     flex-grow: 2;
-    background-color: rgba(255, 248, 239, 0.94);
+    background-color: var(--color-fog);
 }
 
 .fog__band--soft {
     flex-grow: 1;
-    background-color: rgba(255, 248, 239, 0.6);
+    background-color: var(--color-fog-soft);
 }
 
 .rivals {
@@ -857,7 +857,7 @@
 }
 
 .rival--leader .rival__score {
-    color: var(--color-coral);
+    color: var(--color-coral-text);
 }
 
 .rival--done .rival__name,
@@ -887,6 +887,7 @@
     transition-property: scale, opacity;
     transition-duration: 260ms, 180ms;
     transition-timing-function: ease-out-back, ease-out;
+    color: var(--color-on-sun);
 }
 
 .attack-banner--hidden {
@@ -940,7 +941,7 @@
 }
 
 .rank-row--me {
-    background-color: #E6F7F5;
+    background-color: var(--color-select);
 }
 
 .rank-row--left {
@@ -960,6 +961,7 @@
 
 .rank-row__place--gold {
     background-color: var(--color-sun);
+    color: var(--color-on-sun);
 }
 
 .rank-row__ball {
@@ -1022,8 +1024,8 @@
 .date-chip {
     padding: 8px 28px;
     border-radius: 40px;
-    background-color: #FFF0C2;
-    color: var(--color-player-2-text);
+    background-color: var(--color-sun-tint);
+    color: var(--color-sun-ink);
     font-size: 40px;
     -unity-font-definition: url("/Assets/_Game/Fonts/fnt_fredoka_bold_sdf.asset");
 }
@@ -1041,7 +1043,7 @@
     margin-top: 32px;
     padding: 20px 12px;
     border-radius: 40px;
-    background-color: #FFF4E6;
+    background-color: var(--color-inset);
 }
 
 .daily-stat {
@@ -1110,7 +1112,7 @@
     border-width: 6px;
     border-radius: 48px;
     border-color: var(--color-divider);
-    background-color: #FFF8EF;
+    background-color: var(--color-field);
 }
 
 .ghost-enter:active {
@@ -1131,7 +1133,7 @@
 .ghost-enter__icon {
     width: 64px;
     height: 64px;
-    -unity-background-image-tint-color: var(--color-teal-edge);
+    -unity-background-image-tint-color: var(--color-teal-text);
 }
 
 .ghost-share {
@@ -1152,11 +1154,11 @@
     width: 56px;
     height: 56px;
     margin-right: 16px;
-    -unity-background-image-tint-color: var(--color-teal-edge);
+    -unity-background-image-tint-color: var(--color-teal-text);
 }
 
 .ghost-share__label {
-    color: var(--color-teal-edge);
+    color: var(--color-teal-text);
     font-size: 46px;
     -unity-font-definition: url("/Assets/_Game/Fonts/fnt_fredoka_bold_sdf.asset");
 }
@@ -1233,7 +1235,7 @@
 }
 
 .ghost-card--ahead .ghost-card__score {
-    color: var(--color-coral);
+    color: var(--color-coral-text);
 }
 
 .ghost-delta {
@@ -1241,18 +1243,20 @@
     margin-top: 8px;
     padding: 10px 36px;
     border-radius: 40px;
-    background-color: var(--color-ink);
-    color: #FFFFFF;
+    background-color: var(--color-chip);
+    color: var(--color-on-chip);
     font-size: 44px;
     -unity-font-definition: url("/Assets/_Game/Fonts/fnt_fredoka_bold_sdf.asset");
 }
 
 .ghost-delta--ahead {
-    background-color: var(--color-teal-edge);
+    background-color: var(--color-teal-fill);
+    color: var(--color-on-accent);
 }
 
 .ghost-delta--behind {
     background-color: var(--color-coral);
+    color: var(--color-on-accent);
 }
 
 .ghost-delta--hidden {
@@ -1285,7 +1289,7 @@
 }
 
 .ghost-vs__score--me {
-    color: var(--color-coral);
+    color: var(--color-coral-text);
 }
 
 .ghost-vs__vs {
@@ -1324,7 +1328,7 @@
     margin-top: 24px;
     padding: 16px 12px;
     border-radius: 40px;
-    background-color: #FFF4E6;
+    background-color: var(--color-inset);
 }
 
 .ghost-result-actions {

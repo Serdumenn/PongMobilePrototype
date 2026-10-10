@@ -102,6 +102,8 @@ Durumlar: `Brief → WIP → Review → Approved → Integrated`
 | `ui_icon_sound` | SVG ikon | Integrated | Ayarlar → Sound |
 | Ses paleti (8 efekt) | SFX | Integrated | `generate_sfx.py` ile sentezlendi, lisans gerektirmez. `_Library` adayları kullanılmadı |
 | Uygulama ikonu | Adaptive + round + legacy + mağaza + site | Integrated | 3D "Pingi" ikonu. Kaynak `ArtSource/app_icon/app_icon_source.png`; tüm boyutlar `export_app_icon.py` ile üretilir |
+| Tema renkleri | Yüzey ve metin tokenları | Integrated | Sabit renkler tokenlara taşındı, Gece teması düzeltildi; `ThemeColorTests` denetler. Bulgular `docs/qa/audit-2026-10-10.md` |
+| Değerlendirme isteği | Google Play In-App Review | Integrated | `ReviewGate`, `ReviewPrompt`, `InAppReview`; Ayarlar'da "Rate the game" bağlantısı |
 | Açılış ekranı | Ocean Forge logosu | Integrated | Unity açılış ekranı: lacivert `#1E2140` zemin, Unity logosu kapalı, "Dolly" yakınlaşma, 2 sn. Logo (örs + dalga + kıvılcım, Fredoka yazı) `generate_brand.py` ile üretilir; kaynak `ArtSource/brand/` |
 
 ## Lisans kaydı

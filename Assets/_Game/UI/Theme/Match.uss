@@ -118,15 +118,15 @@
     flex-shrink: 0;
     padding: 12px 32px;
     border-radius: 48px;
-    background-color: #FFE3DE;
-    color: var(--color-coral-edge);
+    background-color: var(--color-coral-tint);
+    color: var(--color-coral-ink);
     font-size: 44px;
     -unity-font-definition: url("/Assets/_Game/Fonts/fnt_fredoka_bold_sdf.asset");
 }
 
 .players-chip--team {
-    background-color: #DFF5F2;
-    color: #12695F;
+    background-color: var(--color-teal-tint);
+    color: var(--color-teal-ink);
 }
 
 .hub-art-ball {
@@ -206,7 +206,7 @@
     margin: 24px 56px 72px 56px;
     padding: 32px 40px;
     border-radius: 48px;
-    background-color: rgba(255, 255, 255, 0.7);
+    background-color: var(--color-note);
 }
 
 .hub-note .icon {
@@ -286,12 +286,12 @@
 
 .player-btn-0 { background-color: var(--color-player-0-edge); }
 .player-btn-0 > .btn__face { background-color: var(--color-player-0); }
-.player-btn-1 { background-color: var(--color-player-1-edge); }
-.player-btn-1 > .btn__face { background-color: var(--color-player-1); }
+.player-btn-1 { background-color: var(--color-teal-fill-edge); }
+.player-btn-1 > .btn__face { background-color: var(--color-teal-fill); }
 .player-btn-2 { background-color: var(--color-player-2-edge); }
 .player-btn-2 > .btn__face { background-color: var(--color-player-2); }
-.player-btn-2 .btn__label { color: var(--color-ink); }
-.player-btn-2 .icon { -unity-background-image-tint-color: var(--color-ink); }
+.player-btn-2 .btn__label { color: var(--color-on-sun); }
+.player-btn-2 .icon { -unity-background-image-tint-color: var(--color-on-sun); }
 .player-btn-3 { background-color: var(--color-player-3-edge); }
 .player-btn-3 > .btn__face { background-color: var(--color-player-3); }
 
@@ -330,8 +330,8 @@
 .ink-chip {
     padding: 16px 40px;
     border-radius: 48px;
-    background-color: var(--color-ink);
-    color: #FFFFFF;
+    background-color: var(--color-chip);
+    color: var(--color-on-chip);
     font-size: 44px;
     -unity-font-definition: url("/Assets/_Game/Fonts/fnt_fredoka_bold_sdf.asset");
 }
@@ -391,7 +391,7 @@
     left: 0;
     right: 0;
     height: 440px;
-    color: var(--color-coral);
+    color: var(--color-coral-text);
     font-size: 400px;
     -unity-font-definition: url("/Assets/_Game/Fonts/fnt_fredoka_bold_sdf.asset");
     -unity-text-align: middle-center;
@@ -446,7 +446,7 @@
     position: absolute;
     width: 360px;
     height: 200px;
-    color: rgba(43, 45, 66, 0.55);
+    color: var(--color-ink-faint);
     font-size: 180px;
     -unity-font-definition: url("/Assets/_Game/Fonts/fnt_fredoka_bold_sdf.asset");
     -unity-text-align: middle-center;
@@ -500,6 +500,7 @@
     border-bottom-width: 10px;
     border-color: var(--color-sun-edge);
     background-color: var(--color-sun);
+    color: var(--color-on-sun);
 }
 
 .result-badge .icon {

@@ -5,8 +5,8 @@ using UnityEngine;
 
 internal sealed class PrefsSnapshot
 {
-    private static readonly string[] IntKeys = { "bestScore", "bestScore_rush", "HapticsEnabled", "SoundEnabled", "HintRunsShown", "DailyBest", "CloudBestsReset" };
-    private static readonly string[] StringKeys = { "SelectedMode", "LastInterstitialClosedUtc", "DailyBestDay", "OnlineLook", "Language" };
+    private static readonly string[] IntKeys = { "bestScore", "bestScore_rush", "HapticsEnabled", "SoundEnabled", "HintRunsShown", "DailyBest", "CloudBestsReset", "ReviewDaysPlayed" };
+    private static readonly string[] StringKeys = { "SelectedMode", "LastInterstitialClosedUtc", "DailyBestDay", "OnlineLook", "Language", "ReviewLastDay", "ReviewLastAsked" };
 
     [Serializable]
     private sealed class Data

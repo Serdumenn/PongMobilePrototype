@@ -389,3 +389,4 @@ Couldn't sign in to Google Play Games. Please try again.	Couldn't sign in to Goo
 Player ID copied	Player ID copied	SettingsScreen.cs	Oyuncu kimliği kopyalandı	プレイヤーIDをコピーしました	플레이어 ID를 복사했어요	Spieler-ID kopiert	ID de jugador copiado	ID do jogador copiado	ID joueur copié
 Privacy choices	Privacy choices	SettingsScreen.uxml	Gizlilik seçenekleri	プライバシー設定	개인정보 보호 선택	Datenschutzoptionen	Opciones de privacidad	Opções de privacidade	Choix de confidentialité
 Privacy policy	Privacy policy	SettingsScreen.uxml	Gizlilik politikası	プライバシーポリシー	개인정보 처리방침	Datenschutzerklärung	Política de privacidad	Política de privacidade	Politique de confidentialité
+Rate the game	Rate the game	SettingsScreen.uxml	Oyunu değerlendir	ゲームを評価する	게임 평가하기	Spiel bewerten	Valorar el juego	Avaliar o jogo	Noter le jeu

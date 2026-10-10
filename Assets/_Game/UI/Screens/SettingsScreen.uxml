@@ -74,7 +74,10 @@
             </ui:Button>
         </ui:VisualElement>
         <ui:VisualElement class="spacer" picking-mode="Ignore" />
-        <ui:Button name="privacy-policy" text="Privacy policy" class="link settings-id settings-policy" />
+        <ui:VisualElement class="settings-links" picking-mode="Ignore">
+            <ui:Button name="rate-link" text="Rate the game" class="link settings-id settings-policy" />
+            <ui:Button name="privacy-policy" text="Privacy policy" class="link settings-id settings-policy" />
+        </ui:VisualElement>
         <ui:Button name="player-id" text="" class="link settings-id" />
         <ui:Label name="version-label" text="Pingi Pongi" class="caption settings-footer" picking-mode="Ignore" />
     </ui:VisualElement>

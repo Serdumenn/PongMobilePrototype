@@ -19,6 +19,36 @@
     --color-hint: rgba(43, 45, 66, 0.05);
     --color-hint-icon: rgba(43, 45, 66, 0.35);
 
+    --color-coral-text: #E04E3A;
+    --color-coral-ink: #B83A28;
+    --color-coral-tint: #FFE3DE;
+    --color-teal-text: #178378;
+    --color-teal-ink: #12695F;
+    --color-teal-tint: #DFF5F2;
+    --color-teal-fill: #1E9C90;
+    --color-teal-fill-edge: #157F75;
+    --color-sun-bright: #FFD65A;
+    --color-sun-ink: #9A6E00;
+    --color-sun-tint: #FFF0C2;
+    --color-on-accent: #FFFFFF;
+    --color-on-sun: #2B2D42;
+    --color-on-sun-muted: #5A4A1A;
+    --color-knob: #FFFFFF;
+    --color-chip: #2B2D42;
+    --color-chip-edge: #11121D;
+    --color-chip-deep: #2B2D42;
+    --color-on-chip: #FFFFFF;
+    --color-select: #E6F7F5;
+    --color-field: #FFF8EF;
+    --color-inset: #FFF4E6;
+    --color-note: rgba(255, 255, 255, 0.7);
+    --color-veil: rgba(255, 255, 255, 0.45);
+    --color-float: rgba(255, 255, 255, 0.85);
+    --color-fog: rgba(255, 248, 239, 0.94);
+    --color-fog-soft: rgba(255, 248, 239, 0.6);
+    --color-watermark: rgba(43, 45, 66, 0.12);
+    --color-ink-faint: rgba(43, 45, 66, 0.55);
+
     --font-size-display: 176px;
     --font-size-score: 264px;
     --font-size-number: 224px;

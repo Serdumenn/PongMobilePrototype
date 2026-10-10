@@ -100,6 +100,7 @@ public sealed class SettingsScreen : UIScreen
         playerIdButton = Bind("player-id", CopyPlayerId);
         privacyRow = Bind("privacy-row", ShowPrivacy);
         Bind("privacy-policy", () => Application.OpenURL(AppLinks.PrivacyPolicy));
+        Bind("rate-link", () => Application.OpenURL(AppLinks.StorePage));
         privacyDivider = root.Q("privacy-divider");
         if (AdManager.Instance != null) AdManager.Instance.PrivacyChanged += RefreshPrivacy;
         PlayGamesAccount.Changed += RefreshAccount;

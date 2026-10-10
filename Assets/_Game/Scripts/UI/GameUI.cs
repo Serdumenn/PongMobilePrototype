@@ -28,6 +28,7 @@ public sealed class GameUI : MonoBehaviour
 
     [Header("Rewards")]
     [SerializeField] private long RewardDelayMs = 650;
+    [SerializeField] private long ReviewDelayMs = 1800;
 
     [Header("Online")]
     [SerializeField] private float CodeLifetime = 600f;
@@ -65,6 +66,7 @@ public sealed class GameUI : MonoBehaviour
     private string lastOpponentId;
     private GhostRun raceRun;
     private readonly UiLocalizer localizer = new UiLocalizer();
+    private bool leavingResult;
     private TextFit textFit;
     private bool togetherSelected;
     private int dailyScore;
@@ -1053,6 +1055,7 @@ public sealed class GameUI : MonoBehaviour
             case SoloGameManager.GameState.GameOver:
                 pause.Hide();
                 SetHint(false);
+                ReviewPrompt.NoteRun(DateTime.Now);
                 if (Game.BattleRun) break;
                 hud.Hide();
                 hud.SetDelta(null);
@@ -1062,7 +1065,9 @@ public sealed class GameUI : MonoBehaviour
                 {
                     ShowGameOverResult();
                     SubmitSoloBest();
+                    if (Game.ScoreManager.IsNewBest) root.schedule.Execute(AskForReview).StartingIn(ReviewDelayMs);
                 }
+                leavingResult = false;
                 gameOver.SetInteractable(true);
                 root.schedule.Execute(ShowNextReward).StartingIn(RewardDelayMs);
                 break;
@@ -1080,6 +1085,16 @@ public sealed class GameUI : MonoBehaviour
         var score = Game.ScoreManager;
         gameOver.SetResult(Game.CurrentMode?.Title, score.Score, score.BestScore, score.PreviousBest, score.IsNewBest, ball?.Happy, ball?.Sad);
         gameOver.Show();
+    }
+
+    private void AskForReview()
+    {
+        if (leavingResult || Game.State != SoloGameManager.GameState.GameOver || !gameOver.IsVisible || reward.IsVisible) return;
+        if (Game.DailyRun || Game.GhostRun || !Game.ScoreManager.IsNewBest) return;
+        if (Cosmetics != null && Cosmetics.PendingRewards.Count > 0) return;
+
+        var records = Game.RecordsSource != null ? Game.RecordsSource.Records : null;
+        ReviewPrompt.TryAsk(true, records != null ? records.GamesPlayed : 0, DateTime.UtcNow);
     }
 
     private void BeginRun()
@@ -1206,6 +1221,7 @@ public sealed class GameUI : MonoBehaviour
     private void ContinueAfterAd(Action next, Action<bool> setInteractable)
     {
         setInteractable?.Invoke(false);
+        leavingResult = true;
 
         var ads = AdManager.Instance;
         if (ads == null)

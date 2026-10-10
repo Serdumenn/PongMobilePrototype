@@ -6,6 +6,12 @@
     --color-ink-muted: #4F6B66;
     --color-divider: #DDF1EA;
     --color-track-off: #CFE7DE;
+    --color-field: #F3FBF8;
+    --color-inset: #EBF7F2;
+    --color-fog: rgba(243, 251, 248, 0.94);
+    --color-fog-soft: rgba(243, 251, 248, 0.6);
+    --color-watermark: rgba(31, 59, 54, 0.12);
+    --color-ink-faint: rgba(31, 59, 54, 0.55);
 }
 
 .root.theme-sunset {
@@ -16,6 +22,12 @@
     --color-ink-muted: #7A5A63;
     --color-divider: #F6E0D6;
     --color-track-off: #EBD2C6;
+    --color-field: #FFF6F1;
+    --color-inset: #FFEFE7;
+    --color-fog: rgba(255, 246, 241, 0.94);
+    --color-fog-soft: rgba(255, 246, 241, 0.6);
+    --color-watermark: rgba(58, 36, 48, 0.12);
+    --color-ink-faint: rgba(58, 36, 48, 0.55);
 }
 
 .root.theme-night {
@@ -30,4 +42,34 @@
     --color-scrim: rgba(8, 9, 24, 0.55);
     --color-hint: rgba(255, 255, 255, 0.05);
     --color-hint-icon: rgba(255, 255, 255, 0.35);
+    --color-coral-text: #FF8A78;
+    --color-coral-ink: #FF9D8E;
+    --color-coral-tint: #55303F;
+    --color-teal-text: #5FD8CC;
+    --color-teal-ink: #7FE3D8;
+    --color-teal-tint: #1F4A52;
+    --color-sun-ink: #FFD65A;
+    --color-sun-tint: #4A4326;
+    --color-chip: #F4F1FF;
+    --color-chip-edge: #C9C6E0;
+    --color-chip-deep: #12142B;
+    --color-on-chip: #1E2140;
+    --color-select: #2E536D;
+    --color-field: #222648;
+    --color-inset: #252A4C;
+    --color-note: rgba(255, 255, 255, 0.06);
+    --color-veil: rgba(255, 255, 255, 0.05);
+    --color-float: rgba(46, 51, 88, 0.92);
+    --color-fog: rgba(46, 51, 88, 0.96);
+    --color-fog-soft: rgba(46, 51, 88, 0.62);
+    --color-watermark: rgba(244, 241, 255, 0.1);
+    --color-ink-faint: rgba(244, 241, 255, 0.6);
+    --color-player-1-text: #4FD6C9;
+    --color-player-2-text: #FFD65A;
+    --color-player-3-text: #B39DFF;
+}
+
+.root.theme-night .code-field {
+    --unity-cursor-color: #F4F1FF;
+    --unity-selection-color: rgba(46, 196, 182, 0.45);
 }

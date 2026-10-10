@@ -11,6 +11,7 @@ Durum: 2026-10-06. Proje tarafı hazır. Aşağıdaki adımlar Play Console, Goo
 | Google Play Games girişi | Play Games eklentisi 2.3.0. Açılışta otomatik giriş; Unity hesabına bağlanır, yeni telefonda aynı hesaba dönülür. Ayarlar'da "Google Play Games" satırı ve kopyalanabilir Oyuncu ID'si var |
 | İlerleme yedeği | Rekorlar, istatistikler, açılan kostümler, Pass ve Reklamsız durumu Unity Cloud Save'e yedeklenir ve yeni telefonda birleşir. Satın alımları ayrıca Google Play geri yükler |
 | Reklam onayı (GDPR) | Google UMP: Avrupa'da ilk açılışta onay penceresi, Ayarlar'da "Privacy choices" |
+| Değerlendirme isteği | Google Play uygulama içi değerlendirme penceresi (yeni rekordan sonra; 3 gün, 10 oyun, 30 günde bir) ve Ayarlar'da "Rate the game" bağlantısı. Yeni veri toplamaz |
 | Web sitesi | Kişisel hesapta ayrı repo `serdumenn.github.io`, sayfalarda Ocean Forge adıyla: stüdyo sayfası, oyun sayfası, gizlilik politikası, hesap silme sayfası, `app-ads.txt`. Ayarlar'daki "Privacy policy" bağlantısı buraya gider |
 | Lisans | Tescilli ("All rights reserved"); repo herkese açık ama izinsiz kullanım yok |
 | Mağaza materyalleri | `store-listing.md` (8 dil), `store/store_icon_512.png`, `store/feature_graphic.png`, `store/screenshots/` (EN + TR, 7'şer adet) |

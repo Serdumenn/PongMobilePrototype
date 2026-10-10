@@ -24,6 +24,30 @@ Tüm değerler **referans pikseldir** (1080×1920 tuval). Style frame'lerdeki ö
 | `--color-sun-edge` | `#E5A800` | Sarı yüzeylerin alt kenarı |
 | `--color-scrim` | `rgba(43,45,66,.38)` | Pause ve Game Over arka perdesi |
 
+### Yüzey ve metin tokenları (2026-10-10)
+
+Stil dosyalarında sabit renk yazılmaz; `ThemeColorTests` bunu ve aşağıdaki çiftlerin kontrastını her temada denetler. Değerler Soft Pop içindir; Nane, Gün Batımı ve Gece karşılıkları `Themes.uss` dosyasındadır.
+
+| Token | Değer | Kullanım |
+|---|---|---|
+| `--color-select` | `#E6F7F5` | Seçili satır: çevrimiçi mod, dil, sıralamada oyuncunun satırı |
+| `--color-field` | `#FFF8EF` | Yazı alanı: kod girişi, "Kodu gir" ve "Kodla arkadaş ekle" |
+| `--color-inset` | `#FFF4E6` | Kart içi gömme: günlük istatistik şeridi, hayalet grafiği |
+| `--color-chip`, `--color-on-chip`, `--color-chip-edge` | `#2B2D42`, `#FFFFFF`, `#11121D` | Ters hap: bilgi hapları, fiyat, bildirim. Gece temasında açık zemin, koyu yazı |
+| `--color-chip-deep`, `--color-sun-bright` | `#2B2D42`, `#FFD65A` | Sarı yazılı koyu hap: "Pass", kombo |
+| `--color-on-accent` | `#FFFFFF` | Mercan ve turkuaz dolgu üzerindeki yazı ve ikon |
+| `--color-on-sun`, `--color-on-sun-muted` | `#2B2D42`, `#5A4A1A` | Sarı zemin üzerindeki yazı (her temada koyu) |
+| `--color-teal-fill`, `--color-teal-fill-edge` | `#1E9C90`, `#157F75` | Beyaz yazı taşıyan turkuaz: seçili sekme, "Kuşanıldı", turkuaz buton |
+| `--color-coral-text`, `--color-teal-text` | `#E04E3A`, `#178378` | Metin ve ikon olarak mercan ve turkuaz; Gece temasında açık tonlar |
+| `--color-coral-tint`, `--color-coral-ink` | `#FFE3DE`, `#B83A28` | Mercan çip ve üzerindeki yazı |
+| `--color-teal-tint`, `--color-teal-ink` | `#DFF5F2`, `#12695F` | Turkuaz çip ve üzerindeki yazı |
+| `--color-sun-tint`, `--color-sun-ink` | `#FFF0C2`, `#9A6E00` | Sarı çip (tarih) ve üzerindeki yazı |
+| `--color-note`, `--color-veil`, `--color-float` | beyaz %70, %45, %85 | Bilgi notu, bekleyen oyuncu yuvası, tepki çubuğu |
+| `--color-fog`, `--color-fog-soft` | krem %94, %60 | Rush Kapışması sis bantları |
+| `--color-watermark`, `--color-ink-faint` | mürekkep %12, %55 | Sahadaki silik skor, pas sayacı |
+
+Kontrast eşikleri: ana metin 7, ikincil metin ve çip yazısı 4, dolgu üzerindeki büyük yazı ve vurgu metni 3. Turkuaz dolgu `#2EC4B6` üzerinde beyaz yazı 2,17 verdiği için dolgu `#1E9C90` yapıldı (3,38); raket ve anahtar `#2EC4B6` kalır.
+
 ### Style frame'den erişilebilirlik sapmaları
 
 | Öğe | Mockup | Sistem | Kontrast (önce → sonra) |
@@ -243,6 +267,15 @@ Tüm efektler bize ait. `ArtSource/tools/generate_sfx.py` ile sentezleniyor (mon
   - teal "Privacy policy" bağlantısı;
   - dokununca kopyalanan "Player ID: …" (34 px);
   - sürüm etiketi.
+
+## Değerlendirme isteği (2026-10-10)
+
+| Öğe | Kural |
+|---|---|
+| Google Play değerlendirme penceresi | Solo modda yeni rekordan 1,8 sn sonra, oyun sonu ekranı açıkken. Ödül penceresi bekliyorsa ya da oyuncu ekrandan çıkıyorsa gösterilmez |
+| Koşul | En az 3 farklı gün ve 10 oyun; aynı oyuncuya 30 günde en fazla bir kez. Günlük ve hayalet koşularında sorulmaz |
+| Ayarlar | Alt satırda "Rate the game" ve "Privacy policy" bağlantıları yan yana (34 px, turkuaz metin); mağaza sayfasını açar |
+| Politika | Ödül karşılığı değerlendirme istenmez; pencere öncesinde memnuniyet sorusu sorulmaz |
 
 ## Erişilebilirlik
 

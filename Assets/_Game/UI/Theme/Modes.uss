@@ -64,7 +64,7 @@
 .mode-card__art--icon .icon {
     width: 68px;
     height: 68px;
-    -unity-background-image-tint-color: #FFFFFF;
+    -unity-background-image-tint-color: var(--color-on-accent);
 }
 
 .mode-card__name {
@@ -187,8 +187,8 @@
     margin-top: 8px;
     padding: 10px 36px;
     border-radius: 40px;
-    background-color: #2B2D42;
-    color: #FFD65A;
+    background-color: var(--color-chip-deep);
+    color: var(--color-sun-bright);
     font-size: 44px;
     -unity-font-definition: url("/Assets/_Game/Fonts/fnt_fredoka_bold_sdf.asset");
 }
@@ -202,7 +202,7 @@
     left: 0;
     right: 0;
     top: 58%;
-    color: var(--color-coral);
+    color: var(--color-coral-text);
     font-size: 88px;
     -unity-font-definition: url("/Assets/_Game/Fonts/fnt_fredoka_bold_sdf.asset");
     -unity-text-align: middle-center;
@@ -321,7 +321,7 @@
 }
 
 .streak-day--done {
-    background-color: var(--color-pingi);
+    background-color: var(--color-coral);
 }
 
 .streak-day__label {
@@ -331,11 +331,11 @@
 }
 
 .streak-day--done .streak-day__label {
-    color: #FFFFFF;
+    color: var(--color-on-accent);
 }
 
 .streak-day--reward {
-    background-color: #FFF3C4;
+    background-color: var(--color-sun-tint);
 }
 
 .streak-note {
@@ -366,9 +366,9 @@
 }
 
 .mode-chip--active {
-    border-color: var(--color-teal-edge);
-    background-color: var(--color-teal);
-    color: #FFFFFF;
+    border-color: var(--color-teal-fill-edge);
+    background-color: var(--color-teal-fill);
+    color: var(--color-on-accent);
 }
 
 .empty {
@@ -393,13 +393,13 @@
 }
 
 .status--streak {
-    background-color: #FFE7E3;
+    background-color: var(--color-coral-tint);
 }
 
 .status--streak .item__status-label {
-    color: var(--color-coral);
+    color: var(--color-coral-text);
 }
 
 .status--streak .icon {
-    -unity-background-image-tint-color: var(--color-coral);
+    -unity-background-image-tint-color: var(--color-coral-text);
 }

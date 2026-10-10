@@ -108,7 +108,7 @@ Seçenek A'nın parçaları:
 | Adım | Durum |
 |---|---|
 | 1. Altyapı | Bitti: `Loc`, `UiLocalizer`, Ayarlar dil satırı ve penceresi, sahte dil `qps` |
-| 2. Metinleri taşıma | Bitti: 320 metin |
+| 2. Metinleri taşıma | Bitti: 320 metin (2026-10-10 itibarıyla 391) |
 | 3. Fontlar | Bitti: M PLUS Rounded 1c ve Jua yedek font; satır ölçüleri Fredoka'ya eşitlendi |
 | 4. Çeviriler | Bitti: 7 dil, eksik yok. Yayından önce ana dili konuşan biri okumalı |
 | 5. Denetim | Bitti. 8 dil × 25 ekran, 16:9 telefon ve 4:3 tablet (400 durum), sorunlu ekranlarda ikinci tur (128 durum): taşma yok. Sahte dil (`qps`) 13 cihazda denendi |
