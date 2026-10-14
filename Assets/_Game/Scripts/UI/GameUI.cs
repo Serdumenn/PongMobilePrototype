@@ -22,6 +22,7 @@ public sealed class GameUI : MonoBehaviour
     [SerializeField] private GhostRace Race;
     [SerializeField] private OnlineFriends Friends;
     [SerializeField] private CloudProgress Cloud;
+    [SerializeField] private RunMoments Moments;
 
     [Header("Onboarding")]
     [SerializeField] private int HintRuns = 3;
@@ -96,6 +97,7 @@ public sealed class GameUI : MonoBehaviour
         if (Race == null) Race = FindFirstObjectByType<GhostRace>();
         if (Friends == null) Friends = FindFirstObjectByType<OnlineFriends>();
         if (Cloud == null) Cloud = FindFirstObjectByType<CloudProgress>();
+        if (Moments == null) Moments = FindFirstObjectByType<RunMoments>();
 
         root = GetComponent<UIDocument>().rootVisualElement;
         root.Query<Button>().ForEach(b => b.RemoveFromClassList(Button.ussClassName));
@@ -156,6 +158,11 @@ public sealed class GameUI : MonoBehaviour
         if (OnlineRush != null) OnlineRush.StateChanged += OnRushState;
         if (Lobby != null) Lobby.Changed += OnLobbyChanged;
         if (Friends != null) Friends.RequestReceived += OnFriendRequest;
+        if (Moments != null)
+        {
+            Moments.NewBestReached += OnNewBestReached;
+            Moments.MilestoneReached += OnMilestoneReached;
+        }
 
         built = true;
         lastState = Game.State;
@@ -174,6 +181,11 @@ public sealed class GameUI : MonoBehaviour
         if (Game.Ball != null) Game.Ball.Launched -= OnBallLaunched;
         if (Race != null) Race.GhostScoreChanged -= OnGhostScore;
         if (Cosmetics != null) Cosmetics.Changed -= RefreshMenuMode;
+        if (Moments != null)
+        {
+            Moments.NewBestReached -= OnNewBestReached;
+            Moments.MilestoneReached -= OnMilestoneReached;
+        }
         if (Match != null)
         {
             Match.StateChanged -= OnMatchState;
@@ -1003,6 +1015,16 @@ public sealed class GameUI : MonoBehaviour
     private void OnHitScored(HitResult hit)
     {
         hud.ShowHit(hit);
+    }
+
+    private void OnNewBestReached()
+    {
+        hud.ShowBanner(Loc.T("New best!"), true);
+    }
+
+    private void OnMilestoneReached(int streak)
+    {
+        hud.ShowBanner(Loc.T("{0} in a row!", streak), false);
     }
 
     private void OnStateChanged(SoloGameManager.GameState state)

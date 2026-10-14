@@ -51,6 +51,11 @@ public abstract class MatchRules
 
     public abstract bool OnMiss(Participant conceded);
 
+    public virtual bool MissWouldEnd(Participant conceded)
+    {
+        return false;
+    }
+
     public static MatchRules Create(GameModeDefinition mode)
     {
         if (mode == null) return new ClassicRules(null);
@@ -79,6 +84,11 @@ public sealed class ClassicRules : MatchRules
     }
 
     public override bool OnMiss(Participant conceded)
+    {
+        return true;
+    }
+
+    public override bool MissWouldEnd(Participant conceded)
     {
         return true;
     }
@@ -130,6 +140,11 @@ public sealed class RushRules : MatchRules
         conceded.PerfectStreak = 0;
         remaining = Mathf.Max(0f, remaining - Mode.MissPenaltySeconds);
         return remaining <= 0f;
+    }
+
+    public override bool MissWouldEnd(Participant conceded)
+    {
+        return remaining - Mode.MissPenaltySeconds <= 0f;
     }
 }
 
@@ -203,6 +218,11 @@ public sealed class CoopRallyRules : MatchRules
     {
         lives = Mathf.Max(0, lives - 1);
         return lives <= 0;
+    }
+
+    public override bool MissWouldEnd(Participant conceded)
+    {
+        return lives <= 1;
     }
 }
 

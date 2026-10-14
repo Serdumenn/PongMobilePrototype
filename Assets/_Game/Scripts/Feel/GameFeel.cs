@@ -2,15 +2,19 @@ using UnityEngine;
 
 public sealed class GameFeel : MonoBehaviour
 {
-    private const int PoolSize = 48;
+    private const int PoolSize = 96;
     private const float FreezeScale = 0.05f;
     private const float Drag = 4.5f;
+    private const float ConfettiDrag = 1.2f;
+    private const float ConfettiFade = 0.3f;
+    private const float ConfettiScatter = 18f;
 
     private enum Kind
     {
         Dot,
         Ring,
-        Spark
+        Spark,
+        Confetti
     }
 
     private struct Particle
@@ -23,6 +27,7 @@ public sealed class GameFeel : MonoBehaviour
         public float Life;
         public float Size;
         public float Spin;
+        public float Phase;
         public bool Active;
     }
 
@@ -39,6 +44,7 @@ public sealed class GameFeel : MonoBehaviour
     [SerializeField] private Sprite Dot;
     [SerializeField] private Sprite Ring;
     [SerializeField] private Sprite Spark;
+    [SerializeField] private Sprite Confetti;
 
     [Header("Impact")]
     [SerializeField] private int DotsPerHit = 6;
@@ -59,6 +65,26 @@ public sealed class GameFeel : MonoBehaviour
     [SerializeField] private float SparkLife = 0.5f;
     [SerializeField] private float FreezeSeconds = 0.04f;
 
+    [Header("Flash")]
+    [SerializeField] private Color FlashColor = new Color(1f, 1f, 1f, 0.85f);
+    [SerializeField] private float FlashSize = 1.3f;
+
+    [Header("Confetti")]
+    [SerializeField] private Color[] Palette =
+    {
+        new Color(1f, 0.42f, 0.34f, 1f),
+        new Color(0.18f, 0.77f, 0.71f, 1f),
+        new Color(1f, 0.79f, 0.24f, 1f),
+        new Color(0.61f, 0.42f, 1f, 1f),
+        new Color(1f, 0.56f, 0.64f, 1f),
+        new Color(0.31f, 0.66f, 1f, 1f)
+    };
+    [SerializeField] private float ConfettiSize = 0.14f;
+    [SerializeField] private float ConfettiLife = 1.9f;
+    [SerializeField] private float ConfettiGravity = 7f;
+    [SerializeField] private float ConfettiFlutter = 9f;
+    [SerializeField] private int ConfettiOrder = 20;
+
     [Header("Camera")]
     [SerializeField] private float HitPunch = 0.035f;
     [SerializeField] private float PerfectPunch = 0.08f;
@@ -66,15 +92,19 @@ public sealed class GameFeel : MonoBehaviour
     private readonly Particle[] particles = new Particle[PoolSize];
     private int cursor;
     private int burst;
-    private bool frozen;
-    private float freezeUntil;
+    private bool warping;
+    private float warpScale = 1f;
+    private float warpSet = 1f;
+    private float warpHoldUntil;
+    private float warpEaseUntil;
+    private float warpEase;
     private bool perfectPending;
     private bool struckFresh;
     private Vector2 struckPoint;
     private Vector2 struckNormal = Vector2.up;
 
     public int ActiveCount { get; private set; }
-    public bool Frozen => frozen;
+    public bool Slowed => warping;
     public bool OnlineRound => (OnlineRush != null && OnlineRush.IsActive) || (OnlineMatch != null && OnlineMatch.IsActive);
 
     private void Awake()
@@ -106,7 +136,7 @@ public sealed class GameFeel : MonoBehaviour
     {
         if (Game != null) Game.HitScored -= OnHitScored;
         if (Match != null) Match.HitScored -= OnHitScored;
-        Thaw();
+        EndWarp();
     }
 
     private void OnDestroy()
@@ -116,7 +146,7 @@ public sealed class GameFeel : MonoBehaviour
 
     private void Update()
     {
-        if (frozen && Time.unscaledTime >= freezeUntil) Thaw();
+        if (warping) StepWarp();
         if (perfectPending) PlayPendingPerfect();
         struckFresh = false;
         if (ActiveCount == 0) return;
@@ -143,12 +173,27 @@ public sealed class GameFeel : MonoBehaviour
         ActiveCount = active;
     }
 
-    private static void Draw(ref Particle p, float t, float step)
+    private void Draw(ref Particle p, float t, float step)
     {
         var view = p.View.transform;
         float fade = 1f - t;
-        float scale;
+        var color = p.Color;
 
+        if (p.Kind == Kind.Confetti)
+        {
+            p.Velocity += Vector2.down * (ConfettiGravity * step);
+            p.Velocity *= Mathf.Max(0f, 1f - ConfettiDrag * step);
+            view.position += new Vector3(p.Velocity.x, p.Velocity.y, 0f) * step;
+            view.Rotate(0f, 0f, p.Spin * step);
+
+            float flip = 0.25f + 0.75f * Mathf.Abs(Mathf.Cos(p.Age * ConfettiFlutter + p.Phase));
+            view.localScale = new Vector3(p.Size * flip, p.Size, 1f);
+            color.a *= Mathf.Clamp01(fade / ConfettiFade);
+            p.View.color = color;
+            return;
+        }
+
+        float scale;
         if (p.Kind == Kind.Ring)
         {
             scale = p.Size * (0.35f + 0.65f * (1f - fade * fade));
@@ -162,7 +207,6 @@ public sealed class GameFeel : MonoBehaviour
         }
 
         view.localScale = new Vector3(scale, scale, 1f);
-        var color = p.Color;
         color.a *= fade * fade;
         p.View.color = color;
     }
@@ -216,13 +260,59 @@ public sealed class GameFeel : MonoBehaviour
         burst++;
     }
 
+    public void Flash(Vector2 point)
+    {
+        if (Ring != null) Spawn(Kind.Ring, Ring, point, Vector2.zero, FlashColor, RingSize * FlashSize, RingLife * 1.2f, 0f, SortingOrder - 2);
+        burst++;
+    }
+
+    public void Celebrate(Vector2 origin, Vector2 direction, int count, float spread, float speed)
+    {
+        var sprite = Confetti != null ? Confetti : Dot;
+        if (sprite == null || count <= 0) return;
+
+        for (int i = 0; i < count; i++)
+        {
+            float jitter = FeelMath.Jitter(burst * 43 + i);
+            float tilt = (FeelMath.Jitter(burst * 59 + i * 7) - 0.5f) * ConfettiScatter;
+            Vector2 aim = Quaternion.Euler(0f, 0f, tilt) * FeelMath.Fan(direction, i, count, spread);
+            var color = Palette != null && Palette.Length > 0 ? Palette[(i + burst) % Palette.Length] : Color.white;
+
+            int slot = Spawn(Kind.Confetti, sprite, origin, aim * (speed * (0.55f + 0.7f * jitter)), color, ConfettiSize * (0.75f + 0.5f * jitter), ConfettiLife * (0.8f + 0.4f * jitter), 520f * (jitter - 0.5f), ConfettiOrder);
+            particles[slot].Phase = jitter * 6.28f;
+            particles[slot].View.transform.rotation = Quaternion.Euler(0f, 0f, jitter * 360f);
+        }
+
+        burst++;
+    }
+
     public void Freeze(float seconds)
     {
-        if (seconds <= 0f || OnlineRound || !Mathf.Approximately(Time.timeScale, 1f)) return;
+        Warp(FreezeScale, seconds, 0f);
+    }
 
-        Time.timeScale = FreezeScale;
-        freezeUntil = Time.unscaledTime + seconds;
-        frozen = true;
+    public void Warp(float scale, float hold, float ease)
+    {
+        if (hold <= 0f && ease <= 0f) return;
+        if (OnlineRound) return;
+
+        float now = Time.timeScale;
+        if (warping ? !Mathf.Approximately(now, warpSet) : !Mathf.Approximately(now, 1f)) return;
+
+        scale = Mathf.Clamp(scale, 0.01f, 1f);
+        if (warping && scale > warpScale && Time.unscaledTime < warpHoldUntil) return;
+
+        warping = true;
+        warpScale = scale;
+        warpEase = Mathf.Max(0f, ease);
+        warpHoldUntil = Time.unscaledTime + Mathf.Max(0f, hold);
+        warpEaseUntil = warpHoldUntil + warpEase;
+        SetScale(scale);
+    }
+
+    public void Release()
+    {
+        EndWarp();
     }
 
     public void Clear()
@@ -238,12 +328,39 @@ public sealed class GameFeel : MonoBehaviour
         struckFresh = false;
     }
 
-    private void Thaw()
+    private void StepWarp()
     {
-        if (!frozen) return;
+        if (!Mathf.Approximately(Time.timeScale, warpSet))
+        {
+            warping = false;
+            return;
+        }
 
-        frozen = false;
-        if (Mathf.Approximately(Time.timeScale, FreezeScale)) Time.timeScale = 1f;
+        float now = Time.unscaledTime;
+        if (now >= warpEaseUntil)
+        {
+            EndWarp();
+            return;
+        }
+
+        if (now < warpHoldUntil) return;
+
+        float t = Mathf.Clamp01((now - warpHoldUntil) / Mathf.Max(0.0001f, warpEase));
+        SetScale(Mathf.Lerp(warpScale, 1f, t * t * (3f - 2f * t)));
+    }
+
+    private void EndWarp()
+    {
+        if (!warping) return;
+
+        warping = false;
+        if (Mathf.Approximately(Time.timeScale, warpSet)) Time.timeScale = 1f;
+    }
+
+    private void SetScale(float scale)
+    {
+        Time.timeScale = scale;
+        warpSet = Time.timeScale;
     }
 
     private void OnHitScored(HitResult hit)
@@ -263,7 +380,7 @@ public sealed class GameFeel : MonoBehaviour
         Perfect(struckPoint, struckNormal);
     }
 
-    private void Spawn(Kind kind, Sprite sprite, Vector2 point, Vector2 velocity, Color color, float size, float life, float spin, int order)
+    private int Spawn(Kind kind, Sprite sprite, Vector2 point, Vector2 velocity, Color color, float size, float life, float spin, int order)
     {
         int slot = cursor;
         cursor = (cursor + 1) % PoolSize;
@@ -278,6 +395,7 @@ public sealed class GameFeel : MonoBehaviour
         particles[slot].Life = Mathf.Max(0.05f, life);
         particles[slot].Size = size * unit;
         particles[slot].Spin = spin;
+        particles[slot].Phase = 0f;
         particles[slot].Active = true;
 
         var view = particles[slot].View;
@@ -289,5 +407,6 @@ public sealed class GameFeel : MonoBehaviour
         view.enabled = true;
 
         if (!wasActive) ActiveCount++;
+        return slot;
     }
 }

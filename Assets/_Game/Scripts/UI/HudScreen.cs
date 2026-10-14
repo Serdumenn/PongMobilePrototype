@@ -9,6 +9,9 @@ public sealed class HudScreen : UIScreen
     private const string TimedClass = "hud--timed";
     private const long PopMs = 70;
     private const long PerfectMs = 520;
+    private const long BannerMs = 1400;
+    private const string BannerShowClass = "banner--show";
+    private const string BannerRecordClass = "banner--record";
     private const float LowTimeSeconds = 10f;
 
     private readonly Label score;
@@ -19,8 +22,10 @@ public sealed class HudScreen : UIScreen
     private readonly Label combo;
     private readonly Label ghostDelta;
     private readonly Label perfect;
+    private readonly Label banner;
 
     private IVisualElementScheduledItem perfectJob;
+    private IVisualElementScheduledItem bannerJob;
     private int shownSeconds = -1;
 
     public HudScreen(VisualElement root, Action onPause) : base(root)
@@ -33,6 +38,7 @@ public sealed class HudScreen : UIScreen
         combo = root.Q<Label>("combo");
         ghostDelta = root.Q<Label>("ghost-delta");
         perfect = root.Q<Label>("perfect");
+        banner = root.Q<Label>("banner");
 
         Bind("pause-button", onPause);
     }
@@ -57,7 +63,26 @@ public sealed class HudScreen : UIScreen
         rush.EnableInClassList("rush--hidden", !timed);
         combo.AddToClassList("combo--hidden");
         perfect.RemoveFromClassList("perfect--show");
+        HideBanner();
         shownSeconds = -1;
+    }
+
+    public bool BannerShown => banner.ClassListContains(BannerShowClass);
+    public string BannerText => banner.text;
+
+    public void ShowBanner(string text, bool record)
+    {
+        banner.text = text;
+        banner.EnableInClassList(BannerRecordClass, record);
+        banner.AddToClassList(BannerShowClass);
+        bannerJob?.Pause();
+        bannerJob = banner.schedule.Execute(() => banner.RemoveFromClassList(BannerShowClass)).StartingIn(BannerMs);
+    }
+
+    public void HideBanner()
+    {
+        bannerJob?.Pause();
+        banner.RemoveFromClassList(BannerShowClass);
     }
 
     public void SetTime(float remaining, float limit)

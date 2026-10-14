@@ -20,7 +20,8 @@ public enum Sfx
     Reaction,
     AttackSend,
     AttackWarn,
-    Shield
+    Shield,
+    Milestone
 }
 
 public sealed class AudioManager : MonoBehaviour
@@ -48,6 +49,7 @@ public sealed class AudioManager : MonoBehaviour
     [SerializeField] private SoloGameManager Game;
     [SerializeField] private LocalMatchController Match;
     [SerializeField] private OnlineMatchController Online;
+    [SerializeField] private RunMoments Moments;
 
     private AudioSource[] sources;
     private int nextSource;
@@ -95,6 +97,13 @@ public sealed class AudioManager : MonoBehaviour
             Match.StateChanged += OnMatchState;
         }
 
+        if (Moments == null) Moments = FindFirstObjectByType<RunMoments>();
+        if (Moments != null)
+        {
+            Moments.NewBestReached += OnNewBestReached;
+            Moments.MilestoneReached += OnMilestoneReached;
+        }
+
         if (Game == null) Game = FindFirstObjectByType<SoloGameManager>();
         if (Game == null) return;
 
@@ -122,6 +131,12 @@ public sealed class AudioManager : MonoBehaviour
             Match.PointLost -= OnPointLost;
             Match.CountdownTick -= OnCountdown;
             Match.StateChanged -= OnMatchState;
+        }
+
+        if (Moments != null)
+        {
+            Moments.NewBestReached -= OnNewBestReached;
+            Moments.MilestoneReached -= OnMilestoneReached;
         }
 
         if (Game == null) return;
@@ -197,6 +212,16 @@ public sealed class AudioManager : MonoBehaviour
     private void OnWallHit()
     {
         Play(Sfx.WallBounce);
+    }
+
+    private void OnNewBestReached()
+    {
+        Play(Sfx.NewBest);
+    }
+
+    private void OnMilestoneReached(int streak)
+    {
+        Play(Sfx.Milestone);
     }
 
     private void ResetRally()

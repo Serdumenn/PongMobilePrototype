@@ -85,6 +85,7 @@ Bu klasör oyunun görsel ve UX kararlarının tek kaynağıdır. Her faz bir **
 | 2026-10-14 | **Tempo:** topun dikey hızı sabit (10 → 18), açı yalnız yana hızı belirler; çevrimiçi protokol 3 ([modes.md](modes.md)) | Oynanış testi: oyun yavaş başlıyordu, uzun telefonda topun gidip gelmesi bekletiyordu. İlk gidiş-dönüş 3,2 sn'den 1,6 sn'ye indi |
 | 2026-10-14 | **Oyun hissi, 1. katman:** top ezilmesi ve izi, vuruş parçacıkları, raket geri tepmesi, ekran itmesi, Perfect duraksaması ([design-system.md](design-system.md) · Hareket) | Aynı test: oyun güzel görünüyor ama vuruşlar hissedilmiyordu. Efektler fiziğe ve skora dokunmaz |
 | 2026-10-14 | **Oyun hissi, 2. katman:** ralli ısısı. Arka plan süzülür ve vuruşta nabız atar; top hızlandıkça parlar, izi ısınır, Pingi `wow` yüzüne geçer ([design-system.md](design-system.md) · Hareket) | Ralli uzadıkça ekranda bir şeylerin değişmesi ilerleme hissi verir; hepsi topun hızına bağlı tek ölçüden beslenir |
+| 2026-10-14 | **Oyun hissi, 3. katman:** koşu anları. Yeni rekor ve kilometre taşı şeritleri konfetiyle, kıl payı kurtarışta kısa ağır çekim, son kaçışta yavaş düşüş ([design-system.md](design-system.md) · Hareket) | Bir koşunun en heyecanlı anları ekranda karşılık bulsun; hepsi oyun zamanına saygılı ve çevrimiçi turlarda kapalı |
 
 ## Asset takibi
 
@@ -104,12 +105,14 @@ Durumlar: `Brief → WIP → Review → Approved → Integrated`
 | `ui_icon_clock/flame/chevron_left/chevron_right` | SVG ikon | Integrated | Rush, seri ve mod seçici |
 | `ui_icon_sound` | SVG ikon | Integrated | Ayarlar → Sound |
 | Ses paleti (8 efekt) | SFX | Integrated | `generate_sfx.py` ile sentezlendi, lisans gerektirmez. `_Library` adayları kullanılmadı |
+| `sfx_milestone` | SFX | Integrated | Kilometre taşı sesi, `generate_sfx.py` ile sentezlendi |
 | Uygulama ikonu | Adaptive + round + legacy + mağaza + site | Integrated | 3D "Pingi" ikonu. Kaynak `ArtSource/app_icon/app_icon_source.png`; tüm boyutlar `export_app_icon.py` ile üretilir |
 | Tema renkleri | Yüzey ve metin tokenları | Integrated | Sabit renkler tokenlara taşındı, Gece teması düzeltildi; `ThemeColorTests` denetler. Bulgular `docs/qa/audit-2026-10-10.md` |
 | Değerlendirme isteği | Google Play In-App Review | Integrated | `ReviewGate`, `ReviewPrompt`, `InAppReview`; Ayarlar'da "Rate the game" bağlantısı |
 | Açılış ekranı | Ocean Forge logosu | Integrated | Unity açılış ekranı: lacivert `#1E2140` zemin, Unity logosu kapalı, "Dolly" yakınlaşma, 2 sn. Logo (örs + dalga + kıvılcım, Fredoka yazı) `generate_brand.py` ile üretilir; kaynak `ArtSource/brand/` |
 | `spr_fx_dot/ring/spark` | SVG sprite | Integrated | Vuruş parçacıkları, halka ve Perfect yıldızı; beyaz çizilir, kostüm rengine boyanır. `generate_fx.py` üretir |
 | `spr_fx_glow` | SVG sprite | Integrated | Hızlanan topun halesi; beyaz çizilir, kostüm rengine boyanır. `generate_fx.py` üretir |
+| `spr_fx_confetti` | SVG sprite | Integrated | Konfeti şeridi; beyaz çizilir, Soft Pop paletiyle boyanır. `generate_fx.py` üretir |
 
 ## Lisans kaydı
 

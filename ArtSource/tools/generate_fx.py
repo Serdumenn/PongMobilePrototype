@@ -31,9 +31,13 @@ def glow():
     return svg(256, f'<defs><radialGradient id="g" cx="0.5" cy="0.5" r="0.5">{ramp}</radialGradient></defs><circle cx="128" cy="128" r="128" fill="url(#g)"/>')
 
 
+def confetti():
+    return f'<svg xmlns="http://www.w3.org/2000/svg" width="64" height="112" viewBox="0 0 64 112"><rect x="0" y="0" width="64" height="112" rx="14" fill="{WHITE}"/></svg>\n'
+
+
 def main():
     os.makedirs(OUT, exist_ok=True)
-    for name, text in (("spr_fx_dot", dot()), ("spr_fx_ring", ring()), ("spr_fx_spark", spark()), ("spr_fx_glow", glow())):
+    for name, text in (("spr_fx_dot", dot()), ("spr_fx_ring", ring()), ("spr_fx_spark", spark()), ("spr_fx_glow", glow()), ("spr_fx_confetti", confetti())):
         path = os.path.join(OUT, name + ".svg")
         with open(path, "w", encoding="utf-8", newline="\n") as f:
             f.write(text)

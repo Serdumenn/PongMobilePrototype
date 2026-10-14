@@ -222,6 +222,44 @@
     translate: 0 -48px;
 }
 
+.banner-row {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 30%;
+    align-items: center;
+}
+
+.banner {
+    padding: 14px 48px;
+    border-radius: 48px;
+    border-bottom-width: 10px;
+    border-color: var(--color-chip-deep);
+    background-color: var(--color-chip-deep);
+    color: var(--color-sun-bright);
+    font-size: 60px;
+    -unity-font-definition: url("/Assets/_Game/Fonts/fnt_fredoka_bold_sdf.asset");
+    -unity-text-align: middle-center;
+    opacity: 0;
+    scale: 0.6 0.6;
+    translate: 0 24px;
+    transition-property: opacity, scale, translate;
+    transition-duration: 200ms, 320ms, 320ms;
+    transition-timing-function: ease-out, ease-out-back, ease-out-cubic;
+}
+
+.banner--record {
+    border-color: var(--color-sun-edge);
+    background-color: var(--color-sun);
+    color: var(--color-on-sun);
+}
+
+.banner--show {
+    opacity: 1;
+    scale: 1 1;
+    translate: 0 0;
+}
+
 .panel {
     flex-shrink: 0;
     margin: 32px 56px 0 56px;

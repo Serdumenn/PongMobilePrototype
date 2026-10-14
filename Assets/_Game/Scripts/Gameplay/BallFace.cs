@@ -78,6 +78,11 @@ public sealed class BallFace : MonoBehaviour
 
     private void OnMissed()
     {
+        ShowSad();
+    }
+
+    public void ShowSad()
+    {
         SetSprite(Sad);
     }
 

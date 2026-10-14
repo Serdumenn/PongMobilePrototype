@@ -390,3 +390,4 @@ Player ID copied	Player ID copied	SettingsScreen.cs	Oyuncu kimliği kopyalandı	
 Privacy choices	Privacy choices	SettingsScreen.uxml	Gizlilik seçenekleri	プライバシー設定	개인정보 보호 선택	Datenschutzoptionen	Opciones de privacidad	Opções de privacidade	Choix de confidentialité
 Privacy policy	Privacy policy	SettingsScreen.uxml	Gizlilik politikası	プライバシーポリシー	개인정보 처리방침	Datenschutzerklärung	Política de privacidad	Política de privacidade	Politique de confidentialité
 Rate the game	Rate the game	SettingsScreen.uxml	Oyunu değerlendir	ゲームを評価する	게임 평가하기	Spiel bewerten	Valorar el juego	Avaliar o jogo	Noter le jeu
+{0} in a row!	{0} in a row!	GameUI.cs	Üst üste {0}!	{0}連続！	{0}연속!	{0} in Folge!	¡{0} seguidos!	{0} seguidas!	{0} d'affilée !

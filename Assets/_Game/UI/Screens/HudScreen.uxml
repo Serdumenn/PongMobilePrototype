@@ -25,4 +25,7 @@
         <ui:Label name="combo" text="" class="combo combo--hidden" picking-mode="Ignore" />
     </ui:VisualElement>
     <ui:Label name="perfect" text="Perfect! +2" class="perfect" picking-mode="Ignore" />
+    <ui:VisualElement class="banner-row" picking-mode="Ignore">
+        <ui:Label name="banner" text="New best!" class="banner" picking-mode="Ignore" />
+    </ui:VisualElement>
 </ui:UXML>

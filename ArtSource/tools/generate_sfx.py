@@ -118,6 +118,14 @@ def unlock():
     return s
 
 
+def milestone():
+    s = silence(0.0)
+    for i, n in enumerate(("E5", "A5", "C#6", "E6")):
+        mix(s, marimba(note(n), 0.28, 0.07, 0.26), i * 0.055)
+    mix(s, tone(note("A6"), note("A6"), 0.4, 0.1, ((1.0, 1.0), (3.0, 0.1))), 0.22, 0.35)
+    return s
+
+
 def countdown_tick():
     return marimba(note("G5"), 0.18, 0.05, 0.22)
 
@@ -192,6 +200,7 @@ SOUNDS = {
     "sfx_attack_send": attack_send,
     "sfx_attack_warn": attack_warn,
     "sfx_shield": shield,
+    "sfx_milestone": milestone,
 }
 
 

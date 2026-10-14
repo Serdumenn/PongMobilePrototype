@@ -122,7 +122,7 @@ public sealed class FeelPlayTests : GameSceneFixture
         foreach (var view in feel.GetComponentsInChildren<SpriteRenderer>())
             if (view.enabled && view.name.StartsWith("fx_")) Assert.Less(Vector2.Distance(view.transform.position, struck), 1f, view.name + " appeared away from the hit");
 
-        yield return Settle(() => feel.Frozen);
+        yield return Settle(() => feel.Slowed);
         Assert.AreEqual(1f, Time.timeScale, 0.0001f);
         Game.ReturnToMenu();
     }
@@ -149,11 +149,11 @@ public sealed class FeelPlayTests : GameSceneFixture
         Time.timeScale = 1f;
         var feel = GameFeel.Instance;
         feel.Perfect(Vector2.zero, Vector2.up);
-        Assert.IsTrue(feel.Frozen);
+        Assert.IsTrue(feel.Slowed);
         Assert.Less(Time.timeScale, 0.5f);
 
         yield return new WaitForSecondsRealtime(0.3f);
-        Assert.IsFalse(feel.Frozen);
+        Assert.IsFalse(feel.Slowed);
         Assert.AreEqual(1f, Time.timeScale, 0.0001f);
     }
 
@@ -164,7 +164,7 @@ public sealed class FeelPlayTests : GameSceneFixture
 
         Time.timeScale = 0f;
         GameFeel.Instance.Freeze(0.2f);
-        Assert.IsFalse(GameFeel.Instance.Frozen);
+        Assert.IsFalse(GameFeel.Instance.Slowed);
 
         yield return new WaitForSecondsRealtime(0.3f);
         Assert.AreEqual(0f, Time.timeScale, 0.0001f);
