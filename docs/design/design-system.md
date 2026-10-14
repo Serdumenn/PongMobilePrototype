@@ -128,7 +128,24 @@ Amaç: her vuruş hissedilsin. Efektler kısa, yumuşak ve Soft Pop diline uygun
 - **Sprite'lar:** `spr_fx_dot`, `spr_fx_ring`, `spr_fx_spark` beyazdır, çalışırken boyanır; `ArtSource/tools/generate_fx.py` üretir.
 - **Testler:** `FeelMathTests` (EditMode), `FeelPlayTests` (PlayMode).
 
-Sıradaki katmanlar: ralliyle canlanan arka plan ve hıza göre top parlaması; rekor, kıl payı kurtarış ve kaybediş anları.
+#### 2. katman: ralli ısısı (2026-10-14)
+
+Amaç: ralli uzadıkça oyun "ısınsın". Tek ölçü **ısı**: topun hızının başlangıç ile en yüksek hız arasındaki yeri (`Ball.Heat`, 0–1). Gösterimde karekökü alınır (`FeelMath.Warmth`), böylece değişim ilk vuruşlarda başlar.
+
+| Efekt | Ne zaman | Değer | Yer |
+|---|---|---|---|
+| Arka plan süzülmesi | Her zaman (menüde de) | Lekeler 0,16 × 0,22 birim içinde yavaşça gezer, %1,5 nefes alır; ısıyla 2,5 kata kadar hızlanır | `BackdropFeel` |
+| Arka plan nabzı | Raket vuruşu | Lekeler %2,5 büyüyüp oturur; tam ısıda %7 | `BackdropFeel` |
+| Top parlaması | Isı arttıkça | Topun arkasında yumuşak hale: top çapının 2,5–3,1 katı, en çok %80 opaklık | `BallFeel` (`Glow`) |
+| Isınan iz | Isı arttıkça | İz %60 uzar, rengi vurgu renginden sıcak sarıya (`#FFDB73`) %60 kayar | `BallFeel` |
+| Heyecanlı yüz | Isı 0,4'ü geçince (yaklaşık 10. vuruş) | Dinlenme ifadesi `idle` yerine `wow` olur | `BallFace` |
+
+- **Yeni serviste sıfırlanır:** ısı topun hızından okunur; kaçan toptan sonra hız başa döndüğü için parlama, iz ve yüz de sakinleşir.
+- **Tema renkleri korunur:** arka plan yalnız konum ve boyutla oynar, lekelerin rengi temadan gelir. Lekeleri `ViewportAnchor` yerleştirir; `BackdropFeel` ona yalnız kayma ve büyüme verir, ekran boyutu değişince çakışmaz.
+- **Sprite:** `spr_fx_glow` (beyaz, kenara doğru saydamlaşır) `generate_fx.py` ile; `wow` yüzleri `generate_skins.py` ile üretilir.
+- **Testler:** `HeatPlayTests` (PlayMode), `FeelMathTests` ve `GameDataTests` (ifadelerin hepsi aynı boyutta).
+
+Sıradaki katman: rekor, kıl payı kurtarış, kilometre taşları ve kaybediş anları.
 
 ## Pingi'nin ifadeleri
 
@@ -137,6 +154,9 @@ Sıradaki katmanlar: ralliyle canlanan arka plan ve hıza göre top parlaması; 
 | `idle` | Açık gözler, hafif gülümseme | Varsayılan |
 | `happy` | Kısık "^ ^" gözler, geniş gülüş | Raket vuruşunda 150 ms; ezilme ve esneme `BallFeel` ile gelir |
 | `sad` | Düşük kaşlar, ters ağız | Game Over |
+| `wow` | Büyük, parıltılı gözler ve yuvarlak açık ağız | Top hızlanınca dinlenme ifadesi olur (ısı 0,4 ve üstü) |
+
+Dört ifade her kostümde aynı boyutta içe aktarılır; yüz değişince top büyüyüp küçülmez.
 
 ## Ses paleti (Faz 4) — uygulandı
 

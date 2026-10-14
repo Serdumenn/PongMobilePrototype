@@ -60,6 +60,7 @@ public sealed class Ball : MonoBehaviour
     public float CurrentSpeed => currentSpeed;
     public bool Steady => SteadyPace && (layout == null || layout.Topology != FieldTopology.FourSides);
     public float SpeedBoost => speedBoost;
+    public float Heat => TopSpeed > StartSpeed + 0.0001f ? Mathf.InverseLerp(StartSpeed, TopSpeed, currentSpeed) : 0f;
     public bool InPlay => roundActive && !waitingForServe && rb.simulated;
     public Vector2 LastVelocity => lastVelocity;
     public bool WaitingForServe => waitingForServe;

@@ -493,7 +493,7 @@ public sealed class OnlineMatchController : MonoBehaviour
         if (look == null) return;
 
         var face = MainBall.GetComponent<BallFace>();
-        if (face != null) face.SetExpressions(look.Idle, look.Happy, look.Sad);
+        if (face != null) face.SetExpressions(look.Idle, look.Happy, look.Sad, look.Wow);
     }
 
     private void Send(MatchMessage message)

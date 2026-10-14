@@ -84,6 +84,7 @@ Bu klasör oyunun görsel ve UX kararlarının tek kaynağıdır. Her faz bir **
 | 2026-10-05 | **Yerelleştirme: 8 dil**, biri Türkçe; diller en çok gelir getirecek pazarlara göre seçilecek | Ürün sahibinin kararı. Çok oyunculu fazlar bittikten sonra yapılacak; dil listesi güncel pazar verisiyle araştırılıp onaya sunulacak. Kusursuz olmalı: tüm metinler, fontlar (Fredoka yalnızca Latin + Türkçe; gerekirse yedek font), uzun metinler ve her dilde cihaz denetimi |
 | 2026-10-14 | **Tempo:** topun dikey hızı sabit (10 → 18), açı yalnız yana hızı belirler; çevrimiçi protokol 3 ([modes.md](modes.md)) | Oynanış testi: oyun yavaş başlıyordu, uzun telefonda topun gidip gelmesi bekletiyordu. İlk gidiş-dönüş 3,2 sn'den 1,6 sn'ye indi |
 | 2026-10-14 | **Oyun hissi, 1. katman:** top ezilmesi ve izi, vuruş parçacıkları, raket geri tepmesi, ekran itmesi, Perfect duraksaması ([design-system.md](design-system.md) · Hareket) | Aynı test: oyun güzel görünüyor ama vuruşlar hissedilmiyordu. Efektler fiziğe ve skora dokunmaz |
+| 2026-10-14 | **Oyun hissi, 2. katman:** ralli ısısı. Arka plan süzülür ve vuruşta nabız atar; top hızlandıkça parlar, izi ısınır, Pingi `wow` yüzüne geçer ([design-system.md](design-system.md) · Hareket) | Ralli uzadıkça ekranda bir şeylerin değişmesi ilerleme hissi verir; hepsi topun hızına bağlı tek ölçüden beslenir |
 
 ## Asset takibi
 
@@ -96,7 +97,7 @@ Durumlar: `Brief → WIP → Review → Approved → Integrated`
 | `spr_ball_idle/happy/sad` | SVG sprite | Integrated | Pingi ifadeleri |
 | `spr_paddle`, `spr_bg_blob` | SVG sprite | Integrated | — |
 | `fnt_fredoka_medium/semibold/bold` | Font + SDF asset | Integrated | Türkçe harfler eklendi, lisans: `Assets/_Game/Fonts/OFL_Fredoka.txt` |
-| Pingi kostümleri (9 × 3 ifade) | SVG sprite | Integrated | `generate_skins.py` ile üretiliyor; 9. kostüm Astro (seri ödülü) |
+| Pingi kostümleri (9 × 4 ifade) | SVG sprite | Integrated | `generate_skins.py` ile üretiliyor; 9. kostüm Astro (seri ödülü). Dördüncü ifade `wow` (hızlı top) |
 | Raket kostümleri (6) | SVG sprite | Integrated | Şerit ve ahşap desenler clipPath ile |
 | Temalar (4) | USS + veri | Integrated | Soft Pop, Mint, Sunset, Night |
 | `ui_icon_wardrobe/lock/check` | SVG ikon | Integrated | — |
@@ -108,6 +109,7 @@ Durumlar: `Brief → WIP → Review → Approved → Integrated`
 | Değerlendirme isteği | Google Play In-App Review | Integrated | `ReviewGate`, `ReviewPrompt`, `InAppReview`; Ayarlar'da "Rate the game" bağlantısı |
 | Açılış ekranı | Ocean Forge logosu | Integrated | Unity açılış ekranı: lacivert `#1E2140` zemin, Unity logosu kapalı, "Dolly" yakınlaşma, 2 sn. Logo (örs + dalga + kıvılcım, Fredoka yazı) `generate_brand.py` ile üretilir; kaynak `ArtSource/brand/` |
 | `spr_fx_dot/ring/spark` | SVG sprite | Integrated | Vuruş parçacıkları, halka ve Perfect yıldızı; beyaz çizilir, kostüm rengine boyanır. `generate_fx.py` üretir |
+| `spr_fx_glow` | SVG sprite | Integrated | Hızlanan topun halesi; beyaz çizilir, kostüm rengine boyanır. `generate_fx.py` üretir |
 
 ## Lisans kaydı
 

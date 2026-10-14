@@ -126,9 +126,26 @@ public sealed class GameDataTests
             Assert.IsNotNull(ball.Idle, ball.Id);
             Assert.IsNotNull(ball.Happy, ball.Id);
             Assert.IsNotNull(ball.Sad, ball.Id);
+            Assert.IsNotNull(ball.Wow, ball.Id);
         }
 
         foreach (var paddle in catalog.InCategory(CosmeticCategory.Paddle))
             Assert.IsNotNull(paddle.PaddleSprite, paddle.Id);
+    }
+
+    [Test]
+    public void Catalog_BallExpressionsShareOneSize()
+    {
+        var catalog = TestData.LoadCatalog();
+
+        foreach (var ball in catalog.InCategory(CosmeticCategory.Ball))
+        {
+            var size = ball.Idle.bounds.size;
+            foreach (var face in new[] { ball.Happy, ball.Sad, ball.Wow })
+            {
+                Assert.AreEqual(size.x, face.bounds.size.x, 0.0005f, ball.Id + " " + face.name);
+                Assert.AreEqual(size.y, face.bounds.size.y, 0.0005f, ball.Id + " " + face.name);
+            }
+        }
     }
 }

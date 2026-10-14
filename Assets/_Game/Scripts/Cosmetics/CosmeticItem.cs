@@ -33,6 +33,7 @@ public sealed class CosmeticItem : ScriptableObject
     [field: SerializeField] public Sprite Idle { get; private set; }
     [field: SerializeField] public Sprite Happy { get; private set; }
     [field: SerializeField] public Sprite Sad { get; private set; }
+    [field: SerializeField] public Sprite Wow { get; private set; }
     [field: SerializeField] public Color Accent { get; private set; } = new Color(1f, 0.42f, 0.34f, 1f);
 
     [field: Header("Paddle")]

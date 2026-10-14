@@ -3,7 +3,7 @@ INK = "#2B2D42"
 C = 100
 R = 78
 
-def face(expr, eye_fill=INK, cheek="#FF9A8A", eyes=True):
+def face(expr, eye_fill=INK, cheek="#FF9A8A", eyes=True, pupil=None):
     s = []
     if cheek:
         s.append(f'<ellipse cx="{C-40}" cy="{C+18}" rx="10" ry="6" fill="{cheek}"/><ellipse cx="{C+40}" cy="{C+18}" rx="10" ry="6" fill="{cheek}"/>')
@@ -13,6 +13,15 @@ def face(expr, eye_fill=INK, cheek="#FF9A8A", eyes=True):
     elif expr == "happy":
         if eyes: s.append(f'<path d="M{C-33} {C-4}q11.5-15 23 0M{C+10} {C-4}q11.5-15 23 0" fill="none" stroke="{eye_fill}" stroke-width="8.6" stroke-linecap="round"/>')
         s.append(f'<path d="M{C-23} {C+14}H{C+23}Q{C+23} {C+42} {C} {C+42}Q{C-23} {C+42} {C-23} {C+14}Z" fill="{INK}"/><ellipse cx="{C}" cy="{C+34}" rx="11" ry="6" fill="#FF9A8A"/>')
+    elif expr == "wow":
+        if eyes:
+            s.append(f'<ellipse cx="{C-22}" cy="{C-10}" rx="12.5" ry="15.5" fill="{eye_fill}"/><ellipse cx="{C+22}" cy="{C-10}" rx="12.5" ry="15.5" fill="{eye_fill}"/>')
+            if pupil:
+                s.append(f'<circle cx="{C-22}" cy="{C-9}" r="9" fill="{pupil}"/><circle cx="{C+22}" cy="{C-9}" r="9" fill="{pupil}"/>')
+                s.append(f'<circle cx="{C-25}" cy="{C-12.5}" r="3.4" fill="#FFFFFF"/><circle cx="{C+19}" cy="{C-12.5}" r="3.4" fill="#FFFFFF"/>')
+            else:
+                s.append(f'<circle cx="{C-26}" cy="{C-16}" r="4.6" fill="#FFFFFF"/><circle cx="{C+18}" cy="{C-16}" r="4.6" fill="#FFFFFF"/><circle cx="{C-18.5}" cy="{C-4}" r="2.3" fill="#FFFFFF"/><circle cx="{C+25.5}" cy="{C-4}" r="2.3" fill="#FFFFFF"/>')
+        s.append(f'<ellipse cx="{C}" cy="{C+31}" rx="12.5" ry="14" fill="{INK}"/><ellipse cx="{C}" cy="{C+38}" rx="7.5" ry="5" fill="#FF9A8A"/>')
     else:
         if eyes: s.append(f'<path d="M{C-34} {C-8}q12-9 24 0M{C+10} {C-8}q12-9 24 0" fill="none" stroke="{eye_fill}" stroke-width="8.6" stroke-linecap="round"/>')
         s.append(f'<path d="M{C-17.5} {C+34}q17.5-14 35 0" fill="none" stroke="{INK}" stroke-width="8.6" stroke-linecap="round"/><path d="M{C+36} {C+2}c-5 8-7 11.5-7 14.5a7 7 0 0 0 14 0c0-3-2-6.5-7-14.5z" fill="#7FD3F7"/>')
@@ -31,7 +40,7 @@ def panda(e):
     ears = f'<circle cx="{C-56}" cy="{C-56}" r="22" fill="{INK}"/><circle cx="{C+56}" cy="{C-56}" r="22" fill="{INK}"/>'
     ring = f'<circle cx="{C}" cy="{C}" r="{R+3}" fill="#E7D9C7"/>'
     patches = f'<ellipse cx="{C-22}" cy="{C-8}" rx="18" ry="21" fill="{INK}" transform="rotate(-18 {C-22} {C-8})"/><ellipse cx="{C+22}" cy="{C-8}" rx="18" ry="21" fill="{INK}" transform="rotate(18 {C+22} {C-8})"/>'
-    return wrap(ears + ring + body("#FBFAF7", 0.9) + patches + face(e, eye_fill="#FFFFFF", cheek="#FFB3C1"))
+    return wrap(ears + ring + body("#FBFAF7", 0.9) + patches + face(e, eye_fill="#FFFFFF", cheek="#FFB3C1", pupil=INK))
 
 def kitty(e):
     ears = (f'<path d="M{C-66} {C-30}L{C-58} {C-92}L{C-18} {C-68}Z" fill="#FF9F43"/><path d="M{C+66} {C-30}L{C+58} {C-92}L{C+18} {C-68}Z" fill="#FF9F43"/>'
@@ -46,6 +55,9 @@ def froggy(e):
         eyes = f'<circle cx="{C-32}" cy="{C-68}" r="14" fill="#FFFFFF"/><circle cx="{C+32}" cy="{C-68}" r="14" fill="#FFFFFF"/><circle cx="{C-30}" cy="{C-66}" r="7.5" fill="{INK}"/><circle cx="{C+34}" cy="{C-66}" r="7.5" fill="{INK}"/>'
     elif e == "happy":
         eyes = f'<path d="M{C-44} {C-64}q12-14 24 0M{C+20} {C-64}q12-14 24 0" fill="none" stroke="{INK}" stroke-width="8" stroke-linecap="round"/>'
+    elif e == "wow":
+        eyes = (f'<circle cx="{C-32}" cy="{C-68}" r="16.5" fill="#FFFFFF"/><circle cx="{C+32}" cy="{C-68}" r="16.5" fill="#FFFFFF"/><circle cx="{C-32}" cy="{C-67}" r="10" fill="{INK}"/><circle cx="{C+32}" cy="{C-67}" r="10" fill="{INK}"/>'
+                f'<circle cx="{C-35.5}" cy="{C-71}" r="3.6" fill="#FFFFFF"/><circle cx="{C+28.5}" cy="{C-71}" r="3.6" fill="#FFFFFF"/>')
     else:
         eyes = f'<path d="M{C-44} {C-68}q12-8 24 0M{C+20} {C-68}q12-8 24 0" fill="none" stroke="{INK}" stroke-width="8" stroke-linecap="round"/>'
     return wrap(bumps + body(g) + eyes + face(e, cheek="#FF9A8A", eyes=False))
@@ -61,6 +73,8 @@ def astro(e):
              f'<path d="M{C-62} {C-50}q24-34 66-40" fill="none" stroke="#FFFFFF" stroke-width="7" stroke-linecap="round" stroke-opacity="0.8"/>')
     star = f'<path d="M{C+60} {C+56}l3.5 8 8 3.5-8 3.5-3.5 8-3.5-8-8-3.5 8-3.5z" fill="#FFD65A"/>'
     return wrap(body("#6C8CFF", 0.5) + face(e, cheek="#FF9ACB") + glass + star)
+
+EXPRESSIONS = ("idle", "happy", "sad", "wow")
 
 BALLS = {
     "pingi":  simple("#FF6B57", "#FF9A8A"),
@@ -109,7 +123,7 @@ if __name__ == "__main__":
     os.makedirs(BALL_DIR, exist_ok=True)
     os.makedirs(PADDLE_DIR, exist_ok=True)
     for name, fn in BALLS.items():
-        for e in ("idle", "happy", "sad"):
+        for e in EXPRESSIONS:
             with open(os.path.join(BALL_DIR, f"spr_ball_{name}_{e}.svg"), "w", encoding="utf-8") as f:
                 f.write(fn(e))
     for name, svg in PADDLES.items():
@@ -119,4 +133,4 @@ if __name__ == "__main__":
     for name, svg in PLAYER_PADDLES.items():
         with open(os.path.join(PLAYER_DIR, f"spr_paddle_player_{name}.svg"), "w", encoding="utf-8") as f:
             f.write(svg)
-    print(len(BALLS) * 3, "ball sprites,", len(PADDLES), "paddles,", len(PLAYER_PADDLES), "player paddles")
+    print(len(BALLS) * len(EXPRESSIONS), "ball sprites,", len(PADDLES), "paddles,", len(PLAYER_PADDLES), "player paddles")

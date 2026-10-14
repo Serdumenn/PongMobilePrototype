@@ -42,6 +42,23 @@ public static class FeelMath
         return new Vector2(n.x * cos - n.y * sin, n.x * sin + n.y * cos);
     }
 
+    public static float Warmth(float heat)
+    {
+        return Mathf.Sqrt(Mathf.Clamp01(heat));
+    }
+
+    public static Color Warm(Color color, Color hot, float amount)
+    {
+        var mixed = Color.Lerp(color, hot, Mathf.Clamp01(amount));
+        mixed.a = color.a;
+        return mixed;
+    }
+
+    public static Vector2 Drift(float time, float phase, Vector2 reach)
+    {
+        return new Vector2(Mathf.Sin(time * 0.9f + phase) * reach.x, Mathf.Cos(time * 0.7f + phase * 1.7f) * reach.y);
+    }
+
     public static float Jitter(int seed)
     {
         float value = Mathf.Sin(seed * 12.9898f + 78.233f) * 43758.5453f;

@@ -22,10 +22,32 @@ public sealed class BallFeel : MonoBehaviour
     [Header("Color")]
     [SerializeField] private Color Accent = new Color(1f, 0.42f, 0.34f, 1f);
 
+    [Header("Heat")]
+    [SerializeField] private Sprite Glow;
+    [SerializeField] private Color HotColor = new Color(1f, 0.86f, 0.45f, 1f);
+    [SerializeField, Range(0f, 1f)] private float HotShare = 0.6f;
+    [SerializeField, Range(0f, 1f)] private float GlowAlpha = 0.8f;
+    [SerializeField] private float GlowSize = 2.5f;
+    [SerializeField] private float GlowGrowth = 0.6f;
+    [SerializeField] private int GlowOrder = -6;
+    [SerializeField, Range(0f, 2f)] private float TrailHeatBoost = 0.6f;
+    [SerializeField] private float HeatFade = 1.5f;
+
+    private const string GlowName = "Glow";
+    private const float HeatStep = 0.02f;
+
     private static Material trailMaterial;
+
+    private readonly Gradient paint = new Gradient();
+    private readonly GradientColorKey[] colorKeys = new GradientColorKey[2];
+    private readonly GradientAlphaKey[] alphaKeys = new GradientAlphaKey[2];
 
     private Ball ball;
     private TrailRenderer trail;
+    private SpriteRenderer glow;
+    private float glowUnit = 1f;
+    private float heat;
+    private float paintedHeat = -1f;
     [SerializeField, HideInInspector] private Vector3 restScale = Vector3.one;
     [SerializeField, HideInInspector] private bool restKnown;
 
@@ -35,6 +57,10 @@ public sealed class BallFeel : MonoBehaviour
     public Color AccentColor => Accent;
     public bool TrailEmitting => trail != null && trail.emitting;
     public bool Animating => elapsed >= 0f;
+    public float Heat => heat;
+    public bool GlowVisible => glow != null && glow.enabled;
+    public Color HeatColor => FeelMath.Warm(Accent, HotColor, heat * HotShare);
+    public float TrailTime => trail != null ? trail.time : 0f;
     public Vector3 RestScale => restScale;
     public Transform VisualTransform => Visual;
 
@@ -55,6 +81,7 @@ public sealed class BallFeel : MonoBehaviour
         }
 
         BuildTrail();
+        BuildGlow();
     }
 
     private void OnEnable()
@@ -74,6 +101,7 @@ public sealed class BallFeel : MonoBehaviour
         ball.RoundReset -= OnStopped;
         ball.Stopped -= OnStopped;
         Rest();
+        Cool();
     }
 
     private void Update()
@@ -100,11 +128,19 @@ public sealed class BallFeel : MonoBehaviour
         Visual.localScale = new Vector3(restScale.x * scale.x, restScale.y * scale.y, restScale.z);
     }
 
+    private void LateUpdate()
+    {
+        float target = ball.InPlay ? FeelMath.Warmth(ball.Heat) : 0f;
+        heat = Mathf.MoveTowards(heat, target, HeatFade * FeelMath.Step(Time.unscaledDeltaTime));
+        ShowHeat();
+    }
+
     public void SetAccent(Color color)
     {
         color.a = 1f;
         Accent = color;
         PaintTrail();
+        ShowHeat();
     }
 
     public void Bounce(Vector2 normal, bool paddle)
@@ -144,10 +180,37 @@ public sealed class BallFeel : MonoBehaviour
     private void OnStopped()
     {
         Rest();
+        Cool();
         if (trail == null) return;
 
         trail.emitting = false;
         trail.Clear();
+    }
+
+    private void Cool()
+    {
+        heat = 0f;
+        ShowHeat();
+    }
+
+    private void ShowHeat()
+    {
+        if (glow != null)
+        {
+            bool lit = Glow != null && heat > 0.01f;
+            glow.enabled = lit;
+            if (lit)
+            {
+                var color = HeatColor;
+                color.a = GlowAlpha * heat;
+                glow.color = color;
+
+                float size = glowUnit * (GlowSize + GlowGrowth * heat);
+                glow.transform.localScale = new Vector3(size, size, 1f);
+            }
+        }
+
+        if (Mathf.Abs(heat - paintedHeat) >= HeatStep || (heat == 0f && paintedHeat != 0f)) PaintTrail();
     }
 
     private void Rest()
@@ -182,15 +245,40 @@ public sealed class BallFeel : MonoBehaviour
         PaintTrail();
     }
 
+    private void BuildGlow()
+    {
+        var holder = transform.Find(GlowName);
+        if (holder == null)
+        {
+            holder = new GameObject(GlowName).transform;
+            holder.SetParent(transform, false);
+        }
+
+        glow = holder.GetComponent<SpriteRenderer>();
+        if (glow == null) glow = holder.gameObject.AddComponent<SpriteRenderer>();
+
+        glow.sprite = Glow;
+        glow.sortingOrder = GlowOrder;
+        glow.enabled = false;
+
+        float width = Glow != null ? Glow.bounds.size.x : 0f;
+        float parent = Mathf.Abs(transform.lossyScale.x);
+        glowUnit = width > 0.0001f && parent > 0.0001f ? Diameter() / (width * parent) : 1f;
+    }
+
     private void PaintTrail()
     {
         if (trail == null) return;
 
-        var gradient = new Gradient();
-        gradient.SetKeys(
-            new[] { new GradientColorKey(Accent, 0f), new GradientColorKey(Accent, 1f) },
-            new[] { new GradientAlphaKey(TrailAlpha, 0f), new GradientAlphaKey(0f, 1f) });
-        trail.colorGradient = gradient;
+        paintedHeat = heat;
+        Color color = HeatColor;
+        colorKeys[0] = new GradientColorKey(color, 0f);
+        colorKeys[1] = new GradientColorKey(Accent, 1f);
+        alphaKeys[0] = new GradientAlphaKey(Mathf.Clamp01(TrailAlpha * (1f + 0.5f * heat)), 0f);
+        alphaKeys[1] = new GradientAlphaKey(0f, 1f);
+        paint.SetKeys(colorKeys, alphaKeys);
+        trail.colorGradient = paint;
+        trail.time = TrailSeconds * (1f + TrailHeatBoost * heat);
     }
 
     private float Diameter()

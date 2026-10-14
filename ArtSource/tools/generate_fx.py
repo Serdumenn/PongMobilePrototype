@@ -25,9 +25,15 @@ def spark():
     return svg(128, f'<path d="{path}" fill="{WHITE}" stroke="{WHITE}" stroke-width="6" stroke-linejoin="round"/>')
 
 
+def glow():
+    stops = ((0, 0.95), (0.3, 0.55), (0.62, 0.18), (1, 0))
+    ramp = "".join(f'<stop offset="{at}" stop-color="{WHITE}" stop-opacity="{alpha}"/>' for at, alpha in stops)
+    return svg(256, f'<defs><radialGradient id="g" cx="0.5" cy="0.5" r="0.5">{ramp}</radialGradient></defs><circle cx="128" cy="128" r="128" fill="url(#g)"/>')
+
+
 def main():
     os.makedirs(OUT, exist_ok=True)
-    for name, text in (("spr_fx_dot", dot()), ("spr_fx_ring", ring()), ("spr_fx_spark", spark())):
+    for name, text in (("spr_fx_dot", dot()), ("spr_fx_ring", ring()), ("spr_fx_spark", spark()), ("spr_fx_glow", glow())):
         path = os.path.join(OUT, name + ".svg")
         with open(path, "w", encoding="utf-8", newline="\n") as f:
             f.write(text)

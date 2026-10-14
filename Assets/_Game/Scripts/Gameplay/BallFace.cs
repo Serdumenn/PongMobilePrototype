@@ -10,10 +10,15 @@ public sealed class BallFace : MonoBehaviour
     [SerializeField] private Sprite Idle;
     [SerializeField] private Sprite Happy;
     [SerializeField] private Sprite Sad;
+    [SerializeField] private Sprite Wow;
     [SerializeField] private float HappyDuration = 0.15f;
+    [SerializeField, Range(0f, 1f)] private float WowHeat = 0.4f;
 
     private Ball ball;
     private float happyUntil;
+
+    public bool Thrilled => Wow != null && ball != null && ball.InPlay && FeelMath.Warmth(ball.Heat) >= WowHeat;
+    private Sprite Resting => Thrilled ? Wow : Idle;
 
     private void Awake()
     {
@@ -42,11 +47,16 @@ public sealed class BallFace : MonoBehaviour
     {
         if (Visual == null) return;
 
-        if (Visual.sprite == Happy && Time.unscaledTime >= happyUntil)
-            SetSprite(Idle);
+        var shown = Visual.sprite;
+        bool resting = shown == Idle || shown == Wow;
+        bool happyOver = shown == Happy && Time.unscaledTime >= happyUntil;
+        if (!resting && !happyOver) return;
+
+        var next = Resting;
+        if (shown != next) SetSprite(next);
     }
 
-    public void SetExpressions(Sprite idle, Sprite happy, Sprite sad)
+    public void SetExpressions(Sprite idle, Sprite happy, Sprite sad, Sprite wow = null)
     {
         var current = Visual != null ? Visual.sprite : null;
         bool wasHappy = current != null && current == Happy;
@@ -55,8 +65,9 @@ public sealed class BallFace : MonoBehaviour
         Idle = idle;
         Happy = happy;
         Sad = sad;
+        Wow = wow;
 
-        SetSprite(wasHappy ? Happy : wasSad ? Sad : Idle);
+        SetSprite(wasHappy ? Happy : wasSad ? Sad : Resting);
     }
 
     private void OnPaddleHit()

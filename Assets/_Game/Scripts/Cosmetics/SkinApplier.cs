@@ -42,7 +42,7 @@ public sealed class SkinApplier : MonoBehaviour
         var ball = Cosmetics.Equipped(CosmeticCategory.Ball);
         if (ball != null && Ball != null)
         {
-            Ball.SetExpressions(ball.Idle, ball.Happy, ball.Sad);
+            Ball.SetExpressions(ball.Idle, ball.Happy, ball.Sad, ball.Wow);
             var feel = Ball.GetComponent<BallFeel>();
             if (feel != null) feel.SetAccent(ball.Accent);
         }

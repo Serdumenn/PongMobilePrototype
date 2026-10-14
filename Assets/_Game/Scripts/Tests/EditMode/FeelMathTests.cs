@@ -73,6 +73,49 @@ public sealed class FeelMathTests
     }
 
     [Test]
+    public void Warmth_RisesEarlyAndStaysBetweenZeroAndOne()
+    {
+        Assert.AreEqual(0f, FeelMath.Warmth(-1f), 0.0001f);
+        Assert.AreEqual(0f, FeelMath.Warmth(0f), 0.0001f);
+        Assert.AreEqual(1f, FeelMath.Warmth(1f), 0.0001f);
+        Assert.AreEqual(1f, FeelMath.Warmth(3f), 0.0001f);
+        Assert.Greater(FeelMath.Warmth(0.16f), 0.39f);
+
+        float last = 0f;
+        for (int i = 1; i <= 20; i++)
+        {
+            float value = FeelMath.Warmth(i / 20f);
+            Assert.Greater(value, last);
+            last = value;
+        }
+    }
+
+    [Test]
+    public void Warm_MovesTowardHotAndKeepsAlpha()
+    {
+        var accent = new Color(0.2f, 0.4f, 0.9f, 0.5f);
+        var hot = new Color(1f, 0.86f, 0.45f, 1f);
+
+        Assert.AreEqual(accent, FeelMath.Warm(accent, hot, 0f));
+        var full = FeelMath.Warm(accent, hot, 1f);
+        Assert.AreEqual(hot.r, full.r, 0.0001f);
+        Assert.AreEqual(0.5f, full.a, 0.0001f);
+        Assert.Greater(FeelMath.Warm(accent, hot, 0.5f).r, accent.r);
+    }
+
+    [Test]
+    public void Drift_StaysInsideItsReach()
+    {
+        var reach = new Vector2(0.16f, 0.22f);
+        for (int i = 0; i < 400; i++)
+        {
+            var offset = FeelMath.Drift(i * 0.173f, 2.4f, reach);
+            Assert.LessOrEqual(Mathf.Abs(offset.x), reach.x + 0.0001f);
+            Assert.LessOrEqual(Mathf.Abs(offset.y), reach.y + 0.0001f);
+        }
+    }
+
+    [Test]
     public void Jitter_StaysBetweenZeroAndOne()
     {
         for (int seed = 0; seed < 200; seed++)

@@ -464,7 +464,7 @@ public sealed class OnlineRushController : MonoBehaviour
 
         var look = Cosmetics.CatalogAsset.Find(lookId);
         var face = look != null ? Solo.Ball.GetComponent<BallFace>() : null;
-        if (face != null) face.SetExpressions(look.Idle, look.Happy, look.Sad);
+        if (face != null) face.SetExpressions(look.Idle, look.Happy, look.Sad, look.Wow);
     }
 
     private void Send(MatchMessage message)

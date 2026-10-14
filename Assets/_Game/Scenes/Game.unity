@@ -1834,7 +1834,9 @@ MonoBehaviour:
   Idle: {fileID: 3286163911610860551, guid: 70186d911f6715140b1d8cc3f8781e56, type: 3}
   Happy: {fileID: 3286163911610860551, guid: e6aa080a1ba91d14aa7087edea9b1faf, type: 3}
   Sad: {fileID: 3286163911610860551, guid: c5a7ba77cc93f3c489d931cefbac73df, type: 3}
+  Wow: {fileID: 3286163911610860551, guid: f7f81704c6370cd4b92fe651f6da4782, type: 3}
   HappyDuration: 0.15
+  WowHeat: 0.4
 --- !u!114 &1378371388
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1858,6 +1860,15 @@ MonoBehaviour:
   TrailAlpha: 0.45
   TrailOrder: -5
   Accent: {r: 1, g: 0.42, b: 0.34, a: 1}
+  Glow: {fileID: 3286163911610860551, guid: 12bdc6890fbe8d34d90d5696f1e362d7, type: 3}
+  HotColor: {r: 1, g: 0.86, b: 0.45, a: 1}
+  HotShare: 0.6
+  GlowAlpha: 0.8
+  GlowSize: 2.5
+  GlowGrowth: 0.6
+  GlowOrder: -6
+  TrailHeatBoost: 0.6
+  HeatFade: 1.5
   restScale: {x: 1, y: 1, z: 1}
   restKnown: 0
 --- !u!1 &1456813198
@@ -1869,6 +1880,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1456813199}
+  - component: {fileID: 1456813200}
   m_Layer: 0
   m_Name: Background
   m_TagString: Untagged
@@ -1893,6 +1905,31 @@ Transform:
   - {fileID: 532565725}
   m_Father: {fileID: 871148361}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1456813200
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1456813198}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d3ac86bd67fccdc4d97c7cefc30b7384, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Pingi.Runtime::BackdropFeel
+  Ball: {fileID: 1378371385}
+  Blobs:
+  - {fileID: 726041408}
+  - {fileID: 532565726}
+  Reach: {x: 0.16, y: 0.22}
+  DriftSpeed: 0.45
+  Breath: 0.015
+  HeatBoost: 1.5
+  PulseCalm: 0.025
+  PulseHot: 0.07
+  Frequency: 2.2
+  Damping: 7
+  HeatFade: 1.2
 --- !u!1 &1469351842
 GameObject:
   m_ObjectHideFlags: 0
