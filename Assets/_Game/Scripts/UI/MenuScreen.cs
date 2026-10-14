@@ -14,12 +14,13 @@ public sealed class MenuScreen : UIScreen
     private readonly Label modeBestLabel;
     private readonly VisualElement modeDots;
     private readonly Button playButton;
+    private readonly Label missionsCount;
     private readonly Action<int> onStepMode;
 
     private Vector2 swipeStart;
     private bool swiping;
 
-    public MenuScreen(VisualElement root, Action onPlay, Action onSettings, Action onShop, Action onScores, Action<int> onStepMode) : base(root)
+    public MenuScreen(VisualElement root, Action onPlay, Action onSettings, Action onShop, Action onScores, Action<int> onStepMode, Action onMissions = null) : base(root)
     {
         this.onStepMode = onStepMode;
 
@@ -35,6 +36,8 @@ public sealed class MenuScreen : UIScreen
         Bind("settings-button", onSettings);
         Bind("shop-button", onShop);
         Bind("scores-button", onScores);
+        Bind("missions-button", onMissions);
+        missionsCount = root.Q<Label>("missions-count");
         Bind("mode-prev", () => onStepMode?.Invoke(-1));
         Bind("mode-next", () => onStepMode?.Invoke(1));
 
@@ -45,6 +48,15 @@ public sealed class MenuScreen : UIScreen
         });
         modeCard.RegisterCallback<PointerUpEvent>(e => EndSwipe(e.position));
         modeCard.RegisterCallback<PointerLeaveEvent>(e => EndSwipe(e.position));
+    }
+
+    public void SetMissions(int done, int total)
+    {
+        if (missionsCount == null) return;
+
+        missionsCount.style.display = total > 0 ? DisplayStyle.Flex : DisplayStyle.None;
+        missionsCount.text = $"{done}/{total}";
+        missionsCount.EnableInClassList("missions-button__count--done", total > 0 && done >= total);
     }
 
     public void SetTogether(int index, int count, Sprite left, Sprite right)

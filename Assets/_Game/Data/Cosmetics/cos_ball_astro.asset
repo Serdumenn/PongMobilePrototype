@@ -23,6 +23,8 @@ MonoBehaviour:
   <Sad>k__BackingField: {fileID: 3286163911610860551, guid: 64719fbab33603548838a68e59d055eb, type: 3}
   <Wow>k__BackingField: {fileID: 3286163911610860551, guid: 9b77adf73783a8743bb14bddd4607d2f, type: 3}
   <Accent>k__BackingField: {r: 0.42352942, g: 0.54901963, b: 1, a: 1}
+  <Burst>k__BackingField: {fileID: 3286163911610860551, guid: f3a60e455d7a3bb4a94e888d36bd55e2, type: 3}
+  <Sparkle>k__BackingField: 1
   <PaddleSprite>k__BackingField: {fileID: 0}
   <BackgroundColor>k__BackingField: {r: 1, g: 1, b: 1, a: 1}
   <BlobPrimary>k__BackingField: {r: 1, g: 1, b: 1, a: 1}

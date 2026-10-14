@@ -192,6 +192,7 @@ public sealed class ShopScreen : UIScreen
         else if (unlocked) face.Add(Status("status--owned", null, Loc.T("Use")));
         else if (item.Unlock == UnlockKind.Score) face.Add(Status("status--score", "lock", Loc.T("Best {0}", item.UnlockValue)));
         else if (item.Unlock == UnlockKind.Streak) face.Add(Status("status--streak", "flame", Loc.Plural("{0} day", "{0} days", item.UnlockValue)));
+        else if (item.Unlock == UnlockKind.Stars) face.Add(Status("status--stars", "star", $"{Mathf.Min(cosmetics.Stars, item.UnlockValue)}/{item.UnlockValue}"));
         else if (item.Unlock == UnlockKind.Ads)
         {
             int views = cosmetics.AdViews(item);
@@ -291,7 +292,7 @@ public sealed class ShopScreen : UIScreen
         dialogDots.Clear();
 
         bool unlocked = cosmetics.IsUnlocked(item);
-        bool streakOnly = item.Unlock == UnlockKind.Streak;
+        bool streakOnly = item.Unlock == UnlockKind.Streak || item.Unlock == UnlockKind.Stars;
         dialogPass.style.display = unlocked || streakOnly || cosmetics.Inventory.HasPass ? DisplayStyle.None : DisplayStyle.Flex;
         SetBuy(unlocked || streakOnly ? null : item.ProductId);
 
@@ -335,6 +336,11 @@ public sealed class ShopScreen : UIScreen
                     dot.EnableInClassList("dot--filled", i < streak);
                     dialogDots.Add(dot);
                 }
+                SetPrimary(false, null, null);
+                break;
+
+            case UnlockKind.Stars:
+                dialogText.text = Loc.T("Earn {0} mission stars to unlock.\nYour stars: {1}", item.UnlockValue, cosmetics.Stars);
                 SetPrimary(false, null, null);
                 break;
 

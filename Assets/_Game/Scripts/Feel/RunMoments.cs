@@ -76,6 +76,7 @@ public sealed class RunMoments : MonoBehaviour
         {
             ball.PaddleStruck += OnPaddleStruck;
             ball.Launched += OnLaunched;
+            ball.WallHit += OnWallHit;
         }
     }
 
@@ -91,6 +92,7 @@ public sealed class RunMoments : MonoBehaviour
         {
             ball.PaddleStruck -= OnPaddleStruck;
             ball.Launched -= OnLaunched;
+            ball.WallHit -= OnWallHit;
         }
     }
 
@@ -126,6 +128,15 @@ public sealed class RunMoments : MonoBehaviour
     private void OnLaunched()
     {
         falling = false;
+    }
+
+    private void OnWallHit()
+    {
+        var paddle = Game != null && Game.Player != null ? Game.Player.Paddle : null;
+        if (!falling || paddle == null || Vector2.Dot(ball.LastVelocity, paddle.Inward) <= 0f) return;
+
+        falling = false;
+        if (Feel != null) Feel.Release();
     }
 
     private void OnHitScored(HitResult hit)

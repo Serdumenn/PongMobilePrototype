@@ -1,0 +1,32 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9cff33aa0ba42fb44aad9d9ad5277cef, type: 3}
+  m_Name: cos_ball_stella
+  m_EditorClassIdentifier: Pingi.Runtime::CosmeticItem
+  <Id>k__BackingField: ball_stella
+  <Category>k__BackingField: 0
+  <DisplayName>k__BackingField: Stella
+  <Unlock>k__BackingField: 5
+  <UnlockValue>k__BackingField: 40
+  <ProductId>k__BackingField: 
+  <Idle>k__BackingField: {fileID: 3286163911610860551, guid: c21481ba5bd69af4e99e228c9ff6d3e6, type: 3}
+  <Happy>k__BackingField: {fileID: 3286163911610860551, guid: 1cf372f6fad898d4faa802bf96195cdc, type: 3}
+  <Sad>k__BackingField: {fileID: 3286163911610860551, guid: 4160b0100701b2943b84091974886a18, type: 3}
+  <Wow>k__BackingField: {fileID: 3286163911610860551, guid: a04221d3cb5612a4183b33a4a32fbb37, type: 3}
+  <Accent>k__BackingField: {r: 0.486, g: 0.514, b: 0.992, a: 1}
+  <Burst>k__BackingField: {fileID: 3286163911610860551, guid: f3a60e455d7a3bb4a94e888d36bd55e2, type: 3}
+  <Sparkle>k__BackingField: 1
+  <PaddleSprite>k__BackingField: {fileID: 0}
+  <BackgroundColor>k__BackingField: {r: 1, g: 1, b: 1, a: 1}
+  <BlobPrimary>k__BackingField: {r: 1, g: 1, b: 1, a: 1}
+  <BlobSecondary>k__BackingField: {r: 1, g: 1, b: 1, a: 1}
+  <UiClass>k__BackingField: 

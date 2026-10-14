@@ -65,6 +65,13 @@ public sealed class GameFeel : MonoBehaviour
     [SerializeField] private float SparkLife = 0.5f;
     [SerializeField] private float FreezeSeconds = 0.04f;
 
+    [Header("Costume")]
+    [SerializeField] private float ShapeScale = 1.4f;
+    [SerializeField] private float ShapeSpin = 260f;
+    [SerializeField] private float TwinkleSize = 0.1f;
+    [SerializeField] private float TwinkleLife = 0.42f;
+    [SerializeField] private float TwinkleDrift = 0.5f;
+
     [Header("Flash")]
     [SerializeField] private Color FlashColor = new Color(1f, 1f, 1f, 0.85f);
     [SerializeField] private float FlashSize = 1.3f;
@@ -211,7 +218,7 @@ public sealed class GameFeel : MonoBehaviour
         p.View.color = color;
     }
 
-    public void Impact(Vector2 point, Vector2 normal, Color color, bool paddle)
+    public void Impact(Vector2 point, Vector2 normal, Color color, bool paddle, Sprite shape = null)
     {
         if (paddle)
         {
@@ -220,14 +227,17 @@ public sealed class GameFeel : MonoBehaviour
             struckFresh = true;
         }
 
-        if (Dot != null)
+        var piece = shape != null ? shape : Dot;
+        if (piece != null)
         {
             int count = paddle ? DotsPerHit : Mathf.Max(2, DotsPerHit / 2);
+            float size = shape != null ? DotSize * ShapeScale : DotSize;
             for (int i = 0; i < count; i++)
             {
                 float jitter = FeelMath.Jitter(burst * 31 + i);
                 Vector2 direction = FeelMath.Fan(normal, i, count, DotSpread);
-                Spawn(Kind.Dot, Dot, point, direction * (DotSpeed * (0.65f + 0.7f * jitter)), color, DotSize * (0.7f + 0.6f * jitter), DotLife * (0.8f + 0.4f * jitter), 0f, SortingOrder);
+                float spin = shape != null ? ShapeSpin * (jitter - 0.5f) * 2f : 0f;
+                Spawn(Kind.Dot, piece, point, direction * (DotSpeed * (0.65f + 0.7f * jitter)), color, size * (0.7f + 0.6f * jitter), DotLife * (0.8f + 0.4f * jitter), spin, SortingOrder);
             }
         }
 
@@ -257,6 +267,17 @@ public sealed class GameFeel : MonoBehaviour
         if (Ring != null) Spawn(Kind.Ring, Ring, point, Vector2.zero, PerfectColor, RingSize * 1.6f, RingLife * 1.3f, 0f, SortingOrder - 2);
         if (Punch != null) Punch.Kick(-normal, PerfectPunch);
         Freeze(FreezeSeconds);
+        burst++;
+    }
+
+    public void Twinkle(Vector2 point, Color color, Sprite shape = null)
+    {
+        var piece = shape != null ? shape : Spark;
+        if (piece == null) return;
+
+        float jitter = FeelMath.Jitter(burst * 13 + 5);
+        var drift = new Vector2(FeelMath.Jitter(burst * 7 + 3) - 0.5f, jitter - 0.3f) * TwinkleDrift;
+        Spawn(Kind.Spark, piece, point, drift, color, TwinkleSize * (0.7f + 0.6f * jitter), TwinkleLife, ShapeSpin * (jitter - 0.5f), SortingOrder - 1);
         burst++;
     }
 

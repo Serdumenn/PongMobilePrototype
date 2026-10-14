@@ -86,6 +86,9 @@ Bu klasör oyunun görsel ve UX kararlarının tek kaynağıdır. Her faz bir **
 | 2026-10-14 | **Oyun hissi, 1. katman:** top ezilmesi ve izi, vuruş parçacıkları, raket geri tepmesi, ekran itmesi, Perfect duraksaması ([design-system.md](design-system.md) · Hareket) | Aynı test: oyun güzel görünüyor ama vuruşlar hissedilmiyordu. Efektler fiziğe ve skora dokunmaz |
 | 2026-10-14 | **Oyun hissi, 2. katman:** ralli ısısı. Arka plan süzülür ve vuruşta nabız atar; top hızlandıkça parlar, izi ısınır, Pingi `wow` yüzüne geçer ([design-system.md](design-system.md) · Hareket) | Ralli uzadıkça ekranda bir şeylerin değişmesi ilerleme hissi verir; hepsi topun hızına bağlı tek ölçüden beslenir |
 | 2026-10-14 | **Oyun hissi, 3. katman:** koşu anları. Yeni rekor ve kilometre taşı şeritleri konfetiyle, kıl payı kurtarışta kısa ağır çekim, son kaçışta yavaş düşüş ([design-system.md](design-system.md) · Hareket) | Bir koşunun en heyecanlı anları ekranda karşılık bulsun; hepsi oyun zamanına saygılı ve çevrimiçi turlarda kapalı |
+| 2026-10-15 | **Oyun hissi, ekler:** kostüme özel vuruş şekilleri (Golden ve Astro'da yıldız izi), skora göre yükselen ışık parçacıkları, pentatonik ezgi çalan vuruşlar, Pingi'nin baloncukları ([design-system.md](design-system.md) · Hareket) | Kostümlerin değeri oyunda görünsün, uzun koşu dünyayı değiştirsin, ritim duyulsun, Pingi bir karakter gibi tepki versin |
+| 2026-10-15 | **Günlük görevler:** her gün herkese aynı 3 görev; ödül görev yıldızı; 15/40/80 yıldızda görevle açılan Starry, Stella, Aurora ([modes.md](modes.md)) | Ürün sahibinin kararı. Her gün geri dönmek için sebep; reklam ve satın alma gelirine dokunmaz |
+| 2026-10-15 | **Güçlendirmeler yalnız Rush'ta:** dev raket, yavaş top, çift puan, kalkan; tohumlu jetonlar ([modes.md](modes.md)) | Ürün sahibinin kararı. Classic saf beceri olarak kalır; Rush sıralaması yayından önce sıfırlanacak |
 
 ## Asset takibi
 
@@ -113,6 +116,11 @@ Durumlar: `Brief → WIP → Review → Approved → Integrated`
 | `spr_fx_dot/ring/spark` | SVG sprite | Integrated | Vuruş parçacıkları, halka ve Perfect yıldızı; beyaz çizilir, kostüm rengine boyanır. `generate_fx.py` üretir |
 | `spr_fx_glow` | SVG sprite | Integrated | Hızlanan topun halesi; beyaz çizilir, kostüm rengine boyanır. `generate_fx.py` üretir |
 | `spr_fx_confetti` | SVG sprite | Integrated | Konfeti şeridi; beyaz çizilir, Soft Pop paletiyle boyanır. `generate_fx.py` üretir |
+| `spr_fx_star/heart/flame/drop/note/leaf/paw/bubble` | SVG sprite | Integrated | Kostüm vuruş şekilleri, dünya parçacıkları ve Pingi baloncukları; `generate_fx.py` üretir |
+| `spr_fx_token`, `spr_fx_power_*`, `spr_fx_bar` | SVG sprite | Integrated | Güçlendirme jetonu, 4 ikon ve kalkan çubuğu; `generate_fx.py` üretir |
+| Görev ödülleri (Stella × 4 ifade, Starry, Aurora) | SVG sprite | Integrated | `generate_skins.py`; top ifadeleri 200, raketler 430 doku boyutunda içe aktarılır |
+| `ui_icon_star/big_paddle/double` | SVG ikon | Integrated | Görev düğmesi ve güçlendirme çipleri |
+| `sfx_power` | SFX | Integrated | Güçlendirme sesi, `generate_sfx.py` |
 
 ## Lisans kaydı
 

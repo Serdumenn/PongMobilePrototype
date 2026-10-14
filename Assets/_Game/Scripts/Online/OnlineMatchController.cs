@@ -494,6 +494,8 @@ public sealed class OnlineMatchController : MonoBehaviour
 
         var face = MainBall.GetComponent<BallFace>();
         if (face != null) face.SetExpressions(look.Idle, look.Happy, look.Sad, look.Wow);
+        var feel = MainBall.GetComponent<BallFeel>();
+        if (feel != null) feel.Wear(look);
     }
 
     private void Send(MatchMessage message)

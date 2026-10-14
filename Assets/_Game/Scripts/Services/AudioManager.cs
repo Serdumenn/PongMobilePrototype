@@ -21,7 +21,8 @@ public enum Sfx
     AttackSend,
     AttackWarn,
     Shield,
-    Milestone
+    Milestone,
+    Power
 }
 
 public sealed class AudioManager : MonoBehaviour
@@ -44,12 +45,16 @@ public sealed class AudioManager : MonoBehaviour
     [Header("Rally")]
     [SerializeField] private float SemitonesPerHit = 0.5f;
     [SerializeField] private float MaxSemitones = 12f;
+    [SerializeField] private bool MusicalHits = true;
+    [SerializeField] private float PhraseLift = 2f;
+    [SerializeField] private float MaxLift = 6f;
 
     [Header("Refs")]
     [SerializeField] private SoloGameManager Game;
     [SerializeField] private LocalMatchController Match;
     [SerializeField] private OnlineMatchController Online;
     [SerializeField] private RunMoments Moments;
+    [SerializeField] private PowerUps Powers;
 
     private AudioSource[] sources;
     private int nextSource;
@@ -104,6 +109,9 @@ public sealed class AudioManager : MonoBehaviour
             Moments.MilestoneReached += OnMilestoneReached;
         }
 
+        if (Powers == null) Powers = FindFirstObjectByType<PowerUps>();
+        if (Powers != null) Powers.Collected += OnPowerCollected;
+
         if (Game == null) Game = FindFirstObjectByType<SoloGameManager>();
         if (Game == null) return;
 
@@ -138,6 +146,8 @@ public sealed class AudioManager : MonoBehaviour
             Moments.NewBestReached -= OnNewBestReached;
             Moments.MilestoneReached -= OnMilestoneReached;
         }
+
+        if (Powers != null) Powers.Collected -= OnPowerCollected;
 
         if (Game == null) return;
 
@@ -174,19 +184,29 @@ public sealed class AudioManager : MonoBehaviour
         foreach (var source in sources) source.Stop();
     }
 
+    public float RallyNote(int count)
+    {
+        return MusicalHits ? Melody.Semitones(count, PhraseLift, MaxLift) : Mathf.Min(Mathf.Max(0, count) * SemitonesPerHit, MaxSemitones);
+    }
+
+    private float RallyLift(int count)
+    {
+        return MusicalHits ? Melody.Lift(count, PhraseLift, MaxLift) : 0f;
+    }
+
     private void OnHitScored(HitResult hit)
     {
-        float semitones = Mathf.Min(rally * SemitonesPerHit, MaxSemitones);
+        float semitones = RallyNote(rally);
+        float lift = RallyLift(rally);
         rally++;
 
-        Play(Sfx.PaddleHit, Mathf.Pow(2f, semitones / 12f));
-        if (hit.Perfect) Play(Sfx.Perfect);
+        Play(Sfx.PaddleHit, Melody.Pitch(semitones));
+        if (hit.Perfect) Play(Sfx.Perfect, Melody.Pitch(lift));
     }
 
     private void OnOnlineHit(int rallyCount)
     {
-        float semitones = Mathf.Min(Mathf.Max(0, rallyCount - 1) * SemitonesPerHit, MaxSemitones);
-        Play(Sfx.PaddleHit, Mathf.Pow(2f, semitones / 12f));
+        Play(Sfx.PaddleHit, Melody.Pitch(RallyNote(Mathf.Max(0, rallyCount - 1))));
     }
 
     private void OnPointLost(Participant participant)
@@ -222,6 +242,11 @@ public sealed class AudioManager : MonoBehaviour
     private void OnMilestoneReached(int streak)
     {
         Play(Sfx.Milestone);
+    }
+
+    private void OnPowerCollected(PowerKind kind)
+    {
+        Play(kind == PowerKind.Shield ? Sfx.Shield : Sfx.Power);
     }
 
     private void ResetRally()

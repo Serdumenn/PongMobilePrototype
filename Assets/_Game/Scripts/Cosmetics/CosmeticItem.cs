@@ -13,7 +13,8 @@ public enum UnlockKind
     Score,
     Ads,
     PassOnly,
-    Streak
+    Streak,
+    Stars
 }
 
 [CreateAssetMenu(menuName = "Pingi/Cosmetic Item", fileName = "cos_item")]
@@ -35,6 +36,8 @@ public sealed class CosmeticItem : ScriptableObject
     [field: SerializeField] public Sprite Sad { get; private set; }
     [field: SerializeField] public Sprite Wow { get; private set; }
     [field: SerializeField] public Color Accent { get; private set; } = new Color(1f, 0.42f, 0.34f, 1f);
+    [field: SerializeField] public Sprite Burst { get; private set; }
+    [field: SerializeField] public bool Sparkle { get; private set; }
 
     [field: Header("Paddle")]
     [field: SerializeField] public Sprite PaddleSprite { get; private set; }

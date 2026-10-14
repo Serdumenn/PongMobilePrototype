@@ -254,6 +254,9 @@
 .icon--heart { background-image: url("/Assets/_Game/Art/UI/Icons/ui_icon_heart.svg"); }
 .icon--language { background-image: url("/Assets/_Game/Art/UI/Icons/ui_icon_language.svg"); }
 .icon--gamepad { background-image: url("/Assets/_Game/Art/UI/Icons/ui_icon_gamepad.svg"); }
+.icon--star { background-image: url("/Assets/_Game/Art/UI/Icons/ui_icon_star.svg"); }
+.icon--big-paddle { background-image: url("/Assets/_Game/Art/UI/Icons/ui_icon_big_paddle.svg"); }
+.icon--double { background-image: url("/Assets/_Game/Art/UI/Icons/ui_icon_double.svg"); }
 
 .caption {
     color: var(--color-ink-muted);

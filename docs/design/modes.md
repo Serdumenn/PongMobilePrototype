@@ -43,6 +43,35 @@ Oynanış testinden gelen geri bildirim: oyun yavaş başlıyor ve topun gidip g
 - Çevrimiçi protokol sürümü 3 oldu; eski sürümle eşleşme yapılmaz.
 - Mantık `BallPace` içinde, testleri `BallPaceTests` ve `GameFlowTests`.
 
+### Güçlendirmeler (Rush, 2026-10-15)
+
+Ürün sahibinin kararı: güçlendirmeler **yalnız Rush'ta**; Classic saf beceri oyunu olarak kalır. Rush Battle (çevrimiçi) kendi saldırı kurallarıyla kalır, güçlendirme almaz.
+
+| Güçlendirme | Etki | Süre |
+|---|---|---|
+| Dev raket | Raket 1,5 kat uzar | 8 sn |
+| Yavaş top | Top hızı %72'ye iner | 6 sn |
+| Çift puan | Her vuruş iki kat puan (Perfect dahil) | 8 sn |
+| Kalkan | Raketin altında bir duvar; bir kaçışı geri çevirir, süre cezası olmaz | Kullanılana ya da 12 sn dolana kadar |
+
+- **Jeton:** topun ilk servisinden 8 sn sonra ilk jeton çıkar, sonra 10–14 sn'de bir. Sahanın üst yarısında belirir, 7 sn bekler (son 1,5 sn yanıp söner). Top değince alınır; raket alamaz.
+- **Adalet:** sıra, yer ve aralık koşunun tohumundan gelir (`PowerSchedule`, `MatchRandom`). Aynı tohumlu koşularda (Günlük) herkes aynı jetonları görür. Aynı güçlendirme üst üste gelmez.
+- **Görünüm:** renkli jeton + beyaz ikon; alınca beyaz halka, şerit ("Çift puan!") ve `sfx_power` (kalkanda `sfx_shield`). Etkin güçlendirmeler skorun altında, süresi azalan çubuklu çiplerde görünür.
+- **Süre:** etkiler oyun zamanıyla azalır; pause'da durur. Koşu bitince ya da menüye dönünce hepsi kapanır.
+- **Sıralama:** Rush puanları güçlendirmelerle yükselir; dünya sıralaması yayından önce zaten sıfırlanacak.
+- Kod: `Assets/_Game/Scripts/Gameplay/Power/` (`PowerUps`, `PowerSchedule`, `PowerToken`, `ShieldWall`); testler `PowerScheduleTests`, `PowerPlayTests`.
+
+## Günlük görevler (2026-10-15)
+
+Ürün sahibinin kararı: görev ödülü **görev yıldızı**.
+
+- **Her gün 3 görev**, herkese aynı (tarihten üretilir, `MissionBook`): biri kolay, biri orta, biri zor havuzdan. Aynı türden iki görev çıkmaz. Rush henüz açılmamışsa Rush'a özel görevler (Rush puanı, Perfect, güçlendirme) yerine diğerleri gelir.
+- **Görev türleri:** tek Klasik oyununda N vuruş · tek Rush oyununda N puan · N Perfect · toplam N vuruş · üst üste N vuruş · N oyun · N kıl payı kurtarış · N güçlendirme.
+- **Ödül:** her görev 1 yıldız, üçü birden +1 bonus. Yıldızlar birikir: 15'te Starry raket, 40'ta Stella top, 80'de Aurora raket ([cosmetics.md](cosmetics.md)).
+- **Arayüz:** menüde yıldız düğmesi ve "2/3" rozeti; düğme görev kartını açar (görevler, ilerleme çubukları, sıradaki ödül ve toplam yıldız). Görev tamamlanınca bildirim ve ses; yeni ödül oyun sonunda ödül penceresiyle gelir.
+- **Kayıt:** günlük ilerleme `missions.json` (cihazda), yıldızlar `cosmetics.json` (bulutta). Gün, cihazın yerel tarihine göre döner.
+- Kod: `Assets/_Game/Scripts/Missions/` (`MissionBook`, `MissionLog`, `DailyMissions`), `MissionsScreen`; testler `MissionTests`, `MissionsPlayTests`.
+
 ### Rush HUD'u
 - Üstte süre çubuğu. Son 10 saniyede mercan rengine döner. Altında `m:ss` sayacı.
 - Perfect vuruşta ekranın ortasında "Perfect! +N" yazısı çıkar (520 ms).

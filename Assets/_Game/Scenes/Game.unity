@@ -318,6 +318,7 @@ GameObject:
   - component: {fileID: 315089637}
   - component: {fileID: 315089638}
   - component: {fileID: 315089639}
+  - component: {fileID: 315089640}
   m_Layer: 0
   m_Name: Services
   m_TagString: Untagged
@@ -485,13 +486,21 @@ MonoBehaviour:
     Clip: {fileID: 8300000, guid: b575a11758ec77d4f9fe7d51ba79f785, type: 3}
     Volume: 0.8
     PitchJitter: 0
+  - Id: 18
+    Clip: {fileID: 8300000, guid: 7aa484c1f9c7daf4480322d82051b51d, type: 3}
+    Volume: 0.75
+    PitchJitter: 0
   Voices: 6
   SemitonesPerHit: 0.5
   MaxSemitones: 12
+  MusicalHits: 1
+  PhraseLift: 2
+  MaxLift: 6
   Game: {fileID: 7019952436038793779}
   Match: {fileID: 0}
   Online: {fileID: 7019952436038793783}
   Moments: {fileID: 871148363}
+  Powers: {fileID: 871148365}
 --- !u!114 &315089634
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -584,6 +593,22 @@ MonoBehaviour:
   game: {fileID: 7019952436038793779}
   UploadDelay: 8
   SyncInEditor: 0
+--- !u!114 &315089640
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 315089627}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d58c320ef1706d046a1c373d468f0298, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Pingi.Runtime::DailyMissions
+  Game: {fileID: 7019952436038793779}
+  Cosmetics: {fileID: 315089630}
+  Moments: {fileID: 871148363}
+  Powers: {fileID: 871148365}
 --- !u!1 &517429098
 GameObject:
   m_ObjectHideFlags: 0
@@ -826,6 +851,8 @@ MonoBehaviour:
   Friends: {fileID: 315089638}
   Cloud: {fileID: 315089639}
   Moments: {fileID: 871148363}
+  Missions: {fileID: 315089640}
+  Powers: {fileID: 871148365}
   HintRuns: 3
   RewardDelayMs: 650
   ReviewDelayMs: 1800
@@ -1159,6 +1186,8 @@ GameObject:
   - component: {fileID: 871148361}
   - component: {fileID: 871148362}
   - component: {fileID: 871148363}
+  - component: {fileID: 871148364}
+  - component: {fileID: 871148365}
   m_Layer: 0
   m_Name: GameWorld
   m_TagString: Untagged
@@ -1223,6 +1252,11 @@ MonoBehaviour:
   SparkSize: 0.26
   SparkLife: 0.5
   FreezeSeconds: 0.04
+  ShapeScale: 1.4
+  ShapeSpin: 260
+  TwinkleSize: 0.1
+  TwinkleLife: 0.42
+  TwinkleDrift: 0.5
   FlashColor: {r: 1, g: 1, b: 1, a: 0.85}
   FlashSize: 1.3
   Palette:
@@ -1277,6 +1311,88 @@ MonoBehaviour:
   FallEase: 0.2
   FallDepth: 0.12
   FallPunch: 0.05
+--- !u!114 &871148364
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 871148360}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fc94fe989c9004446ad6eb4768115faf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Pingi.Runtime::PingiBubbles
+  Game: {fileID: 7019952436038793779}
+  Moments: {fileID: 871148363}
+  Match: {fileID: 7019952436038793782}
+  WorldCamera: {fileID: 1822548374}
+  Bubble: {fileID: 3286163911610860551, guid: 16ee2032f6f5f384c8616b6454969aa1, type: 3}
+  Note: {fileID: 3286163911610860551, guid: 882a310c39c459d4a905607089b0e829, type: 3}
+  Heart: {fileID: 3286163911610860551, guid: 645b551b5664d8344aa5570efa75cf94, type: 3}
+  Flame: {fileID: 3286163911610860551, guid: 61e4ff3f1f1b5524a9631f2bce152620, type: 3}
+  Drop: {fileID: 3286163911610860551, guid: 1c435ebdc2c828e4bbe098d1fccc716a, type: 3}
+  Star: {fileID: 3286163911610860551, guid: f3a60e455d7a3bb4a94e888d36bd55e2, type: 3}
+  NoteColor: {r: 0.61, g: 0.42, b: 1, a: 1}
+  HeartColor: {r: 1, g: 0.42, b: 0.55, a: 1}
+  FlameColor: {r: 1, g: 0.54, b: 0.24, a: 1}
+  DropColor: {r: 0.31, g: 0.66, b: 1, a: 1}
+  StarColor: {r: 1, g: 0.77, b: 0.2, a: 1}
+  Hold: 0.9
+  PopIn: 0.2
+  PopOut: 0.14
+  Gap: 1.2
+  IdleEvery: 7
+  HeartEvery: 3
+  Width: 0.62
+  Offset: {x: 0.36, y: 0.5}
+  Margin: 0.12
+  IconShare: 0.42
+  Order: 30
+--- !u!114 &871148365
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 871148360}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0fdf184bc3799754b96c97acfa2ebfce, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Pingi.Runtime::PowerUps
+  Game: {fileID: 7019952436038793779}
+  Layout: {fileID: 248741024}
+  Feel: {fileID: 871148362}
+  Token: {fileID: 3286163911610860551, guid: 965b7c65a355b4046a05cb3fe6d25883, type: 3}
+  Icons:
+  - {fileID: 3286163911610860551, guid: 40e66f2c8208d2940ad00ea9bcd10ebc, type: 3}
+  - {fileID: 3286163911610860551, guid: c9f2a3a74db41874ab191725696954a9, type: 3}
+  - {fileID: 3286163911610860551, guid: 1c47d2a707576a54a9b5fc6c68bf8d8b, type: 3}
+  - {fileID: 3286163911610860551, guid: ffe8bf278bb910d4f910fdc73f3ce291, type: 3}
+  Colors:
+  - {r: 0.18, g: 0.77, b: 0.71, a: 1}
+  - {r: 0.31, g: 0.66, b: 1, a: 1}
+  - {r: 1, g: 0.77, b: 0.2, a: 1}
+  - {r: 0.61, g: 0.42, b: 1, a: 1}
+  Bar: {fileID: 3286163911610860551, guid: f17beac3af6f218499d942fb152b8fd8, type: 3}
+  FirstAt: 8
+  GapMin: 10
+  GapMax: 14
+  TokenLife: 7
+  BlinkFrom: 1.5
+  BigSeconds: 8
+  BigScale: 1.5
+  SlowSeconds: 6
+  SlowBoost: 0.72
+  DoubleSeconds: 8
+  ShieldSeconds: 12
+  TokenSize: 0.66
+  EdgeMargin: 0.7
+  TopMargin: 1.6
+  ShieldGap: 0.55
+  ShieldThickness: 0.14
+  Order: 4
 --- !u!1 &937802654
 GameObject:
   m_ObjectHideFlags: 0
@@ -1920,6 +2036,9 @@ MonoBehaviour:
   TrailAlpha: 0.45
   TrailOrder: -5
   Accent: {r: 1, g: 0.42, b: 0.34, a: 1}
+  Burst: {fileID: 0}
+  Sparkle: 0
+  SparkleInterval: 0.05
   Glow: {fileID: 3286163911610860551, guid: 12bdc6890fbe8d34d90d5696f1e362d7, type: 3}
   HotColor: {r: 1, g: 0.86, b: 0.45, a: 1}
   HotShare: 0.6
@@ -1941,6 +2060,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1456813199}
   - component: {fileID: 1456813200}
+  - component: {fileID: 1456813201}
   m_Layer: 0
   m_Name: Background
   m_TagString: Untagged
@@ -1990,6 +2110,37 @@ MonoBehaviour:
   Frequency: 2.2
   Damping: 7
   HeatFade: 1.2
+--- !u!114 &1456813201
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1456813198}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 396c3856ce5bc0c4aad60bf6a6a912e3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Pingi.Runtime::WorldLevels
+  Game: {fileID: 7019952436038793779}
+  Backdrop: {fileID: 1456813200}
+  BallLook: {fileID: 1378371388}
+  WorldCamera: {fileID: 1822548374}
+  Thresholds: 0a000000190000003200000064000000
+  MotesPerLevel: 00000000070000000d000000130000001a000000
+  Shapes:
+  - {fileID: 3286163911610860551, guid: 3ce47c5a031dc374b82d6775789d36fd, type: 3}
+  - {fileID: 3286163911610860551, guid: 3556487a7d1004a459fdb690358d7a6f, type: 3}
+  - {fileID: 3286163911610860551, guid: 1fc92e5a253817a40b22f3bef8911f51, type: 3}
+  - {fileID: 3286163911610860551, guid: f3a60e455d7a3bb4a94e888d36bd55e2, type: 3}
+  LevelPulse: 2.5
+  Size: 0.11
+  Rise: 0.4
+  Sway: 0.22
+  WhiteAlpha: 0.6
+  AccentAlpha: 0.45
+  Fade: 1.2
+  Order: -80
 --- !u!1 &1469351842
 GameObject:
   m_ObjectHideFlags: 0

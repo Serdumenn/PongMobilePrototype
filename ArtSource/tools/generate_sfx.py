@@ -126,6 +126,13 @@ def milestone():
     return s
 
 
+def power():
+    s = tone(note("G5"), note("D6"), 0.22, 0.07, ((1.0, 1.0), (2.0, 0.18)), glide=0.08)
+    mix(s, tone(note("D6"), note("G6"), 0.3, 0.09, ((1.0, 1.0), (3.0, 0.1)), glide=0.06), 0.09, 0.8)
+    mix(s, tone(note("B6"), note("B6"), 0.35, 0.1), 0.18, 0.25)
+    return s
+
+
 def countdown_tick():
     return marimba(note("G5"), 0.18, 0.05, 0.22)
 
@@ -201,6 +208,7 @@ SOUNDS = {
     "sfx_attack_warn": attack_warn,
     "sfx_shield": shield,
     "sfx_milestone": milestone,
+    "sfx_power": power,
 }
 
 

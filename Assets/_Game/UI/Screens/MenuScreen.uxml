@@ -7,6 +7,12 @@
                 </ui:VisualElement>
             </ui:Button>
             <ui:VisualElement class="topbar__group" picking-mode="Ignore">
+                <ui:Button name="missions-button" class="btn btn--icon missions-button">
+                    <ui:VisualElement class="btn__face" picking-mode="Ignore">
+                        <ui:VisualElement class="icon icon--star" picking-mode="Ignore" />
+                    </ui:VisualElement>
+                    <ui:Label name="missions-count" text="" class="missions-button__count fit-skip" picking-mode="Ignore" />
+                </ui:Button>
                 <ui:Button name="scores-button" class="btn btn--icon">
                     <ui:VisualElement class="btn__face" picking-mode="Ignore">
                         <ui:VisualElement class="icon icon--rank" picking-mode="Ignore" />

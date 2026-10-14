@@ -393,6 +393,8 @@ public sealed class LocalMatchController : MonoBehaviour
 
         var face = ball.GetComponent<BallFace>();
         if (face != null) face.SetExpressions(look.Idle, look.Happy, look.Sad, look.Wow);
+        var feel = ball.GetComponent<BallFeel>();
+        if (feel != null) feel.Wear(look);
     }
 
     private void OnPaddleStruck(Ball ball, Paddle paddle, float offset)

@@ -19,6 +19,16 @@ public static class RunMarks
         return ranked && previousBest > 0 && score > previousBest;
     }
 
+    public static int Level(int score, int[] thresholds)
+    {
+        if (thresholds == null) return 0;
+
+        int level = 0;
+        for (int i = 0; i < thresholds.Length; i++)
+            if (score >= thresholds[i]) level++;
+        return level;
+    }
+
     public static bool NearMiss(float offset, float edge, int streak, int minStreak)
     {
         return streak >= minStreak && System.Math.Abs(offset) >= edge;

@@ -35,6 +35,17 @@ public sealed class RunMarksTests
     }
 
     [Test]
+    public void Level_CountsTheThresholdsReached()
+    {
+        Assert.AreEqual(0, RunMarks.Level(0, Marks));
+        Assert.AreEqual(0, RunMarks.Level(9, Marks));
+        Assert.AreEqual(1, RunMarks.Level(10, Marks));
+        Assert.AreEqual(2, RunMarks.Level(49, Marks));
+        Assert.AreEqual(4, RunMarks.Level(500, Marks));
+        Assert.AreEqual(0, RunMarks.Level(50, null));
+    }
+
+    [Test]
     public void NearMiss_NeedsTheEdgeAndAWarmRally()
     {
         Assert.IsTrue(RunMarks.NearMiss(0.9f, 0.88f, 3, 3));

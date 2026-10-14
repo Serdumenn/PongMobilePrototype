@@ -33,7 +33,7 @@ public sealed class GameDataTests
     {
         var items = TestData.LoadCatalog().Items;
 
-        Assert.AreEqual(19, items.Count);
+        Assert.AreEqual(22, items.Count);
         Assert.That(items, Has.None.Null);
         CollectionAssert.AllItemsAreUnique(items.Select(i => i.Id));
         Assert.That(items.Select(i => i.Id), Has.None.Null.And.None.Empty);
@@ -44,8 +44,8 @@ public sealed class GameDataTests
     {
         var catalog = TestData.LoadCatalog();
 
-        Assert.AreEqual(9, catalog.InCategory(CosmeticCategory.Ball).Count);
-        Assert.AreEqual(6, catalog.InCategory(CosmeticCategory.Paddle).Count);
+        Assert.AreEqual(10, catalog.InCategory(CosmeticCategory.Ball).Count);
+        Assert.AreEqual(8, catalog.InCategory(CosmeticCategory.Paddle).Count);
         Assert.AreEqual(4, catalog.InCategory(CosmeticCategory.Theme).Count);
     }
 
@@ -131,6 +131,29 @@ public sealed class GameDataTests
 
         foreach (var paddle in catalog.InCategory(CosmeticCategory.Paddle))
             Assert.IsNotNull(paddle.PaddleSprite, paddle.Id);
+    }
+
+    [Test]
+    public void Catalog_CostumesHaveTheirOwnBurstAndOnlyEarnedOrPassOnesSparkle()
+    {
+        var catalog = TestData.LoadCatalog();
+        var shapes = new HashSet<string>();
+
+        foreach (var ball in catalog.InCategory(CosmeticCategory.Ball))
+        {
+            bool premium = ball.Id == "ball_golden" || ball.Id == "ball_astro" || ball.Id == "ball_stella";
+            Assert.AreEqual(premium, ball.Sparkle, ball.Id);
+            if (ball.Id == "ball_pingi")
+            {
+                Assert.IsNull(ball.Burst, "Pingi keeps the plain dots");
+                continue;
+            }
+
+            Assert.IsNotNull(ball.Burst, ball.Id);
+            shapes.Add(ball.Burst.name);
+        }
+
+        Assert.GreaterOrEqual(shapes.Count, 6);
     }
 
     [Test]

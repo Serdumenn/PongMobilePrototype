@@ -22,6 +22,11 @@ public sealed class BallFeel : MonoBehaviour
     [Header("Color")]
     [SerializeField] private Color Accent = new Color(1f, 0.42f, 0.34f, 1f);
 
+    [Header("Costume")]
+    [SerializeField] private Sprite Burst;
+    [SerializeField] private bool Sparkle;
+    [SerializeField] private float SparkleInterval = 0.05f;
+
     [Header("Heat")]
     [SerializeField] private Sprite Glow;
     [SerializeField] private Color HotColor = new Color(1f, 0.86f, 0.45f, 1f);
@@ -48,6 +53,7 @@ public sealed class BallFeel : MonoBehaviour
     private float glowUnit = 1f;
     private float heat;
     private float paintedHeat = -1f;
+    private float sparkleClock;
     [SerializeField, HideInInspector] private Vector3 restScale = Vector3.one;
     [SerializeField, HideInInspector] private bool restKnown;
 
@@ -55,6 +61,8 @@ public sealed class BallFeel : MonoBehaviour
     private float elapsed = -1f;
 
     public Color AccentColor => Accent;
+    public Sprite BurstSprite => Burst;
+    public bool Sparkles => Sparkle;
     public bool TrailEmitting => trail != null && trail.emitting;
     public bool Animating => elapsed >= 0f;
     public float Heat => heat;
@@ -131,8 +139,10 @@ public sealed class BallFeel : MonoBehaviour
     private void LateUpdate()
     {
         float target = ball.InPlay ? FeelMath.Warmth(ball.Heat) : 0f;
-        heat = Mathf.MoveTowards(heat, target, HeatFade * FeelMath.Step(Time.unscaledDeltaTime));
+        float step = FeelMath.Step(Time.unscaledDeltaTime);
+        heat = Mathf.MoveTowards(heat, target, HeatFade * step);
         ShowHeat();
+        if (Sparkle && ball.InPlay) EmitSparkles(step);
     }
 
     public void SetAccent(Color color)
@@ -141,6 +151,29 @@ public sealed class BallFeel : MonoBehaviour
         Accent = color;
         PaintTrail();
         ShowHeat();
+    }
+
+    public void Wear(CosmeticItem look)
+    {
+        if (look == null) return;
+
+        Burst = look.Burst;
+        Sparkle = look.Sparkle;
+        sparkleClock = 0f;
+        SetAccent(look.Accent);
+    }
+
+    private void EmitSparkles(float step)
+    {
+        if (GameFeel.Instance == null) return;
+
+        sparkleClock += step;
+        if (sparkleClock < SparkleInterval) return;
+
+        sparkleClock = 0f;
+        Vector2 velocity = ball.LastVelocity;
+        Vector2 behind = velocity.sqrMagnitude > 0.0001f ? -velocity.normalized * (Diameter() * 0.45f) : Vector2.zero;
+        GameFeel.Instance.Twinkle(ball.Position + behind, HeatColor, Burst);
     }
 
     public void Bounce(Vector2 normal, bool paddle)
@@ -159,13 +192,13 @@ public sealed class BallFeel : MonoBehaviour
             if (kick != null) kick.Kick();
         }
 
-        if (GameFeel.Instance != null) GameFeel.Instance.Impact(ball.LastContact, ball.LastNormal, Accent, true);
+        if (GameFeel.Instance != null) GameFeel.Instance.Impact(ball.LastContact, ball.LastNormal, Accent, true, Burst);
     }
 
     private void OnWallHit()
     {
         Bounce(ball.LastNormal, false);
-        if (GameFeel.Instance != null) GameFeel.Instance.Impact(ball.LastContact, ball.LastNormal, Accent, false);
+        if (GameFeel.Instance != null) GameFeel.Instance.Impact(ball.LastContact, ball.LastNormal, Accent, false, Burst);
     }
 
     private void OnLaunched()

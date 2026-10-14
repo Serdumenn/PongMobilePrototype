@@ -74,6 +74,14 @@ def astro(e):
     star = f'<path d="M{C+60} {C+56}l3.5 8 8 3.5-8 3.5-3.5 8-3.5-8-8-3.5 8-3.5z" fill="#FFD65A"/>'
     return wrap(body("#6C8CFF", 0.5) + face(e, cheek="#FF9ACB") + glass + star)
 
+def stella(e):
+    glow = f'<circle cx="{C}" cy="{C}" r="{R+4}" fill="#B9BEFF" fill-opacity="0.55"/>'
+    star_mark = f'<path d="M{C} {C-62}l6 12 13 2-9.5 9 2.3 13-11.8-6.2-11.8 6.2 2.3-13-9.5-9 13-2z" fill="#FFE27A"/>'
+    twinkles = (f'<path d="M{C+60} {C-48}l3 7 7 3-7 3-3 7-3-7-7-3 7-3z" fill="#FFFFFF"/>'
+                f'<path d="M{C-64} {C+40}l2.4 5.6 5.6 2.4-5.6 2.4-2.4 5.6-2.4-5.6-5.6-2.4 5.6-2.4z" fill="#FFFFFF" fill-opacity="0.85"/>')
+    return wrap(glow + body("#7C83FD", 0.5) + star_mark + face(e, cheek="#FF9ACB") + twinkles)
+
+
 EXPRESSIONS = ("idle", "happy", "sad", "wow")
 
 BALLS = {
@@ -86,6 +94,7 @@ BALLS = {
     "froggy": froggy,
     "golden": golden,
     "astro":  astro,
+    "stella": stella,
 }
 
 def paddle(face_fill, edge, extra="", defs=""):
@@ -98,6 +107,13 @@ stripes = '<g clip-path="url(#pc)">' + "".join(f'<path d="M{x} 0h28l-50 110h-28z
 grain = '<g clip-path="url(#pc)" fill="none" stroke="#B97A45" stroke-width="5" stroke-linecap="round"><path d="M40 40q80-14 160 0t190 0"/><path d="M20 72q100 16 200 0t190-4"/><path d="M230 26q40 10 80 0"/></g>'
 rainbow_d = '<defs><linearGradient id="rb" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#FF6B57"/><stop offset="0.25" stop-color="#FFC93C"/><stop offset="0.5" stop-color="#7ED957"/><stop offset="0.75" stop-color="#4FA8FF"/><stop offset="1" stop-color="#9B6BFF"/></linearGradient></defs>'
 gold_d = '<defs><linearGradient id="gp" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FFE37A"/><stop offset="1" stop-color="#F2B400"/></linearGradient></defs>'
+sky_clip = '<clipPath id="sc"><rect x="0" y="0" width="430" height="110" rx="55"/></clipPath>'
+night_stars = ('<g clip-path="url(#sc)" fill="#FFE27A">'
+               + "".join(f'<path d="M{x} {y}l4 9 9 4-9 4-4 9-4-9-9-4 9-4z"/>' for x, y in ((92, 30), (168, 66), (240, 26), (300, 70), (372, 38)))
+               + '</g><g fill="#FFFFFF" fill-opacity="0.75">'
+               + "".join(f'<circle cx="{x}" cy="{y}" r="4"/>' for x, y in ((130, 80), (206, 40), (270, 88), (340, 22), (60, 70)))
+               + '</g>')
+aurora_d = '<defs><linearGradient id="au" x1="0" y1="0" x2="1" y2="0.4"><stop offset="0" stop-color="#3DDBB4"/><stop offset="0.5" stop-color="#7C83FD"/><stop offset="1" stop-color="#FF8FC7"/></linearGradient></defs>'
 PADDLES = {
     "teal":    paddle("#2EC4B6", "#1E9C90"),
     "coral":   paddle("#FF6B57", "#D94C39"),
@@ -105,6 +121,8 @@ PADDLES = {
     "wood":    paddle("#D9A066", "#9C6232", grain, "<defs>" + clip + "</defs>"),
     "rainbow": paddle("url(#rb)", "#6B5BD6", "", rainbow_d),
     "gold":    paddle("url(#gp)", "#C98F00", '<path d="M360 30l4 10 10 4-10 4-4 10-4-10-10-4 10-4z" fill="#FFFFFF"/>', gold_d),
+    "starry":  paddle("#2E3270", "#1C1F4D", night_stars, "<defs>" + sky_clip + "</defs>"),
+    "aurora":  paddle("url(#au)", "#5B4BC4", '<path d="M372 28l4 10 10 4-10 4-4 10-4-10-10-4 10-4z" fill="#FFFFFF"/>', aurora_d),
 }
 
 PLAYER_PADDLES = {

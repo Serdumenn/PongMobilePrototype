@@ -23,6 +23,8 @@ public sealed class GameUI : MonoBehaviour
     [SerializeField] private OnlineFriends Friends;
     [SerializeField] private CloudProgress Cloud;
     [SerializeField] private RunMoments Moments;
+    [SerializeField] private DailyMissions Missions;
+    [SerializeField] private PowerUps Powers;
 
     [Header("Onboarding")]
     [SerializeField] private int HintRuns = 3;
@@ -62,6 +64,7 @@ public sealed class GameUI : MonoBehaviour
     private GhostResultScreen ghostResult;
     private GhostCodeScreen ghostCode;
     private FriendsScreen friendsScreen;
+    private MissionsScreen missionsScreen;
     private InviteBanner inviteBanner;
     private string pendingInvite;
     private string lastOpponentId;
@@ -98,6 +101,8 @@ public sealed class GameUI : MonoBehaviour
         if (Friends == null) Friends = FindFirstObjectByType<OnlineFriends>();
         if (Cloud == null) Cloud = FindFirstObjectByType<CloudProgress>();
         if (Moments == null) Moments = FindFirstObjectByType<RunMoments>();
+        if (Missions == null) Missions = FindFirstObjectByType<DailyMissions>();
+        if (Powers == null) Powers = FindFirstObjectByType<PowerUps>();
 
         root = GetComponent<UIDocument>().rootVisualElement;
         root.Query<Button>().ForEach(b => b.RemoveFromClassList(Button.ussClassName));
@@ -106,7 +111,8 @@ public sealed class GameUI : MonoBehaviour
         textFit = new TextFit(root);
         Loc.Changed += OnLanguageChanged;
 
-        menu = new MenuScreen(root.Q("menu"), OnMenuPlay, OpenSettings, OpenShop, OpenScores, StepMode);
+        menu = new MenuScreen(root.Q("menu"), OnMenuPlay, OpenSettings, OpenShop, OpenScores, StepMode, OpenMissions);
+        missionsScreen = new MissionsScreen(root.Q("missions"), CloseMissions);
         hud = new HudScreen(root.Q("hud"), OnHudPause);
         pause = new PauseScreen(root.Q("pause"), Resume, LeaveFromPause);
         gameOver = new GameOverScreen(root.Q("game-over"), () => ContinueAfterAd(RetryRun, gameOver.SetInteractable), () => ContinueAfterAd(HomeFromGameOver, gameOver.SetInteractable));
@@ -163,6 +169,14 @@ public sealed class GameUI : MonoBehaviour
             Moments.NewBestReached += OnNewBestReached;
             Moments.MilestoneReached += OnMilestoneReached;
         }
+        if (Missions != null)
+        {
+            Missions.Changed += OnMissionsChanged;
+            Missions.Completed += OnMissionCompleted;
+            Missions.AllCompleted += OnAllMissionsCompleted;
+        }
+        if (Powers != null) Powers.Collected += OnPowerCollected;
+        RefreshMissionsBadge();
 
         built = true;
         lastState = Game.State;
@@ -186,6 +200,13 @@ public sealed class GameUI : MonoBehaviour
             Moments.NewBestReached -= OnNewBestReached;
             Moments.MilestoneReached -= OnMilestoneReached;
         }
+        if (Missions != null)
+        {
+            Missions.Changed -= OnMissionsChanged;
+            Missions.Completed -= OnMissionCompleted;
+            Missions.AllCompleted -= OnAllMissionsCompleted;
+        }
+        if (Powers != null) Powers.Collected -= OnPowerCollected;
         if (Match != null)
         {
             Match.StateChanged -= OnMatchState;
@@ -211,6 +232,7 @@ public sealed class GameUI : MonoBehaviour
         var rules = Game.Rules;
         if (Game.State == SoloGameManager.GameState.Playing && rules != null && rules.IsTimed)
             hud.SetTime(rules.TimeRemaining, rules.TimeLimit);
+        if (Powers != null && hud.IsVisible) ShowPowers();
 
         if (Screen.safeArea != lastSafeArea || Screen.width != lastScreenSize.x || Screen.height != lastScreenSize.y)
             ApplySafeArea();
@@ -1027,6 +1049,69 @@ public sealed class GameUI : MonoBehaviour
         hud.ShowBanner(Loc.T("{0} in a row!", streak), false);
     }
 
+    private void ShowPowers()
+    {
+        for (int i = 0; i < PowerSchedule.KindCount; i++)
+        {
+            var kind = (PowerKind)i;
+            hud.SetPower(kind, Powers.IsActive(kind), Powers.Fraction(kind));
+        }
+    }
+
+    private void OnPowerCollected(PowerKind kind)
+    {
+        hud.ShowBanner(PowerName(kind), false);
+    }
+
+    public static string PowerName(PowerKind kind)
+    {
+        return kind switch
+        {
+            PowerKind.BigPaddle => Loc.T("Big paddle!"),
+            PowerKind.SlowBall => Loc.T("Slow ball!"),
+            PowerKind.DoublePoints => Loc.T("Double points!"),
+            _ => Loc.T("Shield!")
+        };
+    }
+
+    private void OpenMissions()
+    {
+        if (Missions == null) return;
+
+        Missions.Refresh();
+        missionsScreen.Present(Missions, Cosmetics, EquippedBall()?.Happy);
+        missionsScreen.Show();
+    }
+
+    private void CloseMissions()
+    {
+        missionsScreen.Hide();
+        RefreshMissionsBadge();
+    }
+
+    private void RefreshMissionsBadge()
+    {
+        if (Missions == null) return;
+        menu.SetMissions(Missions.DoneCount, Missions.Count);
+    }
+
+    private void OnMissionsChanged()
+    {
+        RefreshMissionsBadge();
+        if (missionsScreen.IsVisible) missionsScreen.Present(Missions, Cosmetics, EquippedBall()?.Happy);
+    }
+
+    private void OnMissionCompleted(int index)
+    {
+        toast.Show(Loc.T("Mission complete!") + " " + MissionsScreen.Describe(Missions.Mission(index)));
+        AudioManager.PlayOne(Sfx.Unlock);
+    }
+
+    private void OnAllMissionsCompleted()
+    {
+        toast.Show(Loc.T("All missions done! Bonus star"));
+    }
+
     private void OnStateChanged(SoloGameManager.GameState state)
     {
         var previous = lastState;
@@ -1035,6 +1120,7 @@ public sealed class GameUI : MonoBehaviour
         switch (state)
         {
             case SoloGameManager.GameState.Menu:
+                RefreshMissionsBadge();
                 hud.Hide();
                 pause.Hide();
                 gameOver.Hide();
@@ -1260,6 +1346,12 @@ public sealed class GameUI : MonoBehaviour
         if (reward.IsVisible)
         {
             CloseReward();
+            return;
+        }
+
+        if (missionsScreen.IsVisible)
+        {
+            CloseMissions();
             return;
         }
 

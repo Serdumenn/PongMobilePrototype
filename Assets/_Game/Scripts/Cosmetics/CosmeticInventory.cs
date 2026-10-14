@@ -20,12 +20,14 @@ public sealed class CosmeticInventory
         public string Theme;
         public bool HasPass;
         public bool NoAds;
+        public int Stars;
     }
 
     private readonly string path;
     private SaveData data;
 
     public bool HasPass => data.HasPass;
+    public int Stars => data.Stars;
     public bool NoAds => data.NoAds;
 
     private CosmeticInventory(string path, SaveData data)
@@ -90,6 +92,7 @@ public sealed class CosmeticInventory
 
         data.HasPass |= o.HasPass;
         data.NoAds |= o.NoAds;
+        data.Stars = Math.Max(data.Stars, o.Stars);
         if (string.IsNullOrEmpty(data.Ball)) data.Ball = o.Ball;
         if (string.IsNullOrEmpty(data.Paddle)) data.Paddle = o.Paddle;
         if (string.IsNullOrEmpty(data.Theme)) data.Theme = o.Theme;
@@ -114,8 +117,13 @@ public sealed class CosmeticInventory
     {
         if (item == null) return false;
         if (item.Unlock == UnlockKind.Free) return true;
-        if (item.Unlock == UnlockKind.Streak) return data.Owned.Contains(item.Id);
+        if (item.Unlock == UnlockKind.Streak || item.Unlock == UnlockKind.Stars) return data.Owned.Contains(item.Id);
         return data.HasPass || data.Owned.Contains(item.Id);
+    }
+
+    public void AddStars(int count)
+    {
+        if (count > 0) data.Stars += count;
     }
 
     public bool Grant(string itemId)

@@ -59,6 +59,14 @@ public static class FeelMath
         return new Vector2(Mathf.Sin(time * 0.9f + phase) * reach.x, Mathf.Cos(time * 0.7f + phase * 1.7f) * reach.y);
     }
 
+    public static float Overshoot(float t)
+    {
+        t = Mathf.Clamp01(t);
+        const float back = 1.70158f;
+        float u = t - 1f;
+        return 1f + (back + 1f) * u * u * u + back * u * u;
+    }
+
     public static float Jitter(int seed)
     {
         float value = Mathf.Sin(seed * 12.9898f + 78.233f) * 43758.5453f;

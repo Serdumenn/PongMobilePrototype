@@ -27,6 +27,7 @@ public sealed class BackdropFeel : MonoBehaviour
     private float clock;
     private float pulse = -1f;
     private float heat;
+    private float strength = 1f;
 
     public float Heat => heat;
     public bool Pulsing => pulse >= 0f;
@@ -66,7 +67,13 @@ public sealed class BackdropFeel : MonoBehaviour
 
     public void Pulse()
     {
+        Pulse(1f);
+    }
+
+    public void Pulse(float power)
+    {
         pulse = 0f;
+        strength = Mathf.Max(0f, power);
     }
 
     private void OnPaddleStruck(Paddle paddle, float offset)
@@ -78,7 +85,7 @@ public sealed class BackdropFeel : MonoBehaviour
     {
         if (Blobs == null) return;
 
-        float amount = Mathf.Lerp(PulseCalm, PulseHot, heat) * spring;
+        float amount = Mathf.Lerp(PulseCalm, PulseHot, heat) * spring * strength;
         Vector2 reach = Reach * (1f + HeatReach * heat);
         for (int i = 0; i < Blobs.Length; i++)
         {

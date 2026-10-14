@@ -391,3 +391,26 @@ Privacy choices	Privacy choices	SettingsScreen.uxml	Gizlilik seçenekleri	プラ
 Privacy policy	Privacy policy	SettingsScreen.uxml	Gizlilik politikası	プライバシーポリシー	개인정보 처리방침	Datenschutzerklärung	Política de privacidad	Política de privacidade	Politique de confidentialité
 Rate the game	Rate the game	SettingsScreen.uxml	Oyunu değerlendir	ゲームを評価する	게임 평가하기	Spiel bewerten	Valorar el juego	Avaliar o jogo	Noter le jeu
 {0} in a row!	{0} in a row!	GameUI.cs	Üst üste {0}!	{0}連続！	{0}연속!	{0} in Folge!	¡{0} seguidos!	{0} seguidas!	{0} d'affilée !
+Daily missions	Daily missions	MissionsScreen.uxml	Günlük görevler	デイリーミッション	일일 미션	Tagesaufgaben	Misiones diarias	Missões diárias	Missions du jour
+New missions every day	New missions every day	MissionsScreen.uxml, MissionsScreen.cs	Her gün yeni görevler	毎日新しいミッション	매일 새로운 미션	Jeden Tag neue Aufgaben	Misiones nuevas cada día	Missões novas todo dia	De nouvelles missions chaque jour
+All done! New missions tomorrow	All done! New missions tomorrow	MissionsScreen.cs	Hepsi tamam! Yarın yeni görevler	全部クリア！明日また新しいミッション	모두 완료! 내일 새 미션	Alles geschafft! Morgen gibt es neue	¡Todo listo! Mañana hay más	Tudo feito! Amanhã tem mais	Tout est fait ! D'autres demain
+Make {0} hits in one Classic run	Make {0} hits in one Classic run	MissionsScreen.cs	Tek Klasik oyununda {0} vuruş yap	クラシック1回で{0}回打ち返す	클래식 한 판에서 {0}번 치기	Schaffe {0} Treffer in einer Runde Klassisch	Haz {0} golpes en una partida de Clásico	Faça {0} rebatidas em uma partida de Clássico	Fais {0} frappes en une partie de Classique
+Score {0} in one Rush run	Score {0} in one Rush run	MissionsScreen.cs	Tek Rush oyununda {0} puan yap	ラッシュ1回で{0}点取る	러시 한 판에서 {0}점 얻기	Hol {0} Punkte in einer Runde Rush	Consigue {0} puntos en una partida de Rush	Faça {0} pontos em uma partida de Rush	Marque {0} points en une partie de Rush
+Make {0} Perfect hits	Make {0} Perfect hits	MissionsScreen.cs	{0} Mükemmel vuruş yap	パーフェクトを{0}回出す	퍼펙트 {0}번 치기	Schaffe {0} perfekte Treffer	Consigue {0} golpes perfectos	Faça {0} rebatidas perfeitas	Réussis {0} frappes parfaites
+Make {0} hits	Make {0} hits	MissionsScreen.cs	{0} vuruş yap	{0}回打ち返す	{0}번 치기	Schaffe {0} Treffer	Haz {0} golpes	Faça {0} rebatidas	Fais {0} frappes
+Hit {0} in a row	Hit {0} in a row	MissionsScreen.cs	Üst üste {0} vuruş yap	{0}回連続で打ち返す	{0}번 연속 치기	Schaffe {0} Treffer in Folge	Golpea {0} seguidos	Rebata {0} seguidas	Frappe {0} fois d'affilée
+Play {0} runs	Play {0} runs	MissionsScreen.cs	{0} oyun oyna	{0}回プレイする	{0}판 플레이하기	Spiele {0} Runden	Juega {0} partidas	Jogue {0} partidas	Joue {0} parties
+Make {0} close saves	Make {0} close saves	MissionsScreen.cs	{0} kıl payı kurtarış yap	ギリギリセーブを{0}回する	아슬아슬한 세이브 {0}번	Schaffe {0} knappe Rettungen	Haz {0} salvadas al límite	Faça {0} defesas no limite	Fais {0} sauvetages de justesse
+Collect {0} power-ups	Collect {0} power-ups	MissionsScreen.cs	{0} güçlendirme topla	パワーアップを{0}個集める	파워업 {0}개 모으기	Sammle {0} Power-ups	Recoge {0} potenciadores	Pegue {0} power-ups	Ramasse {0} bonus
+All rewards collected!	All rewards collected!	MissionsScreen.cs	Tüm ödüller alındı!	ごほうびをすべて獲得！	보상을 모두 받았어요!	Alle Belohnungen gesammelt!	¡Todas las recompensas conseguidas!	Todas as recompensas coletadas!	Toutes les récompenses obtenues !
+Next reward: {0}	Next reward: {0}	MissionsScreen.cs	Sıradaki ödül: {0}	次のごほうび：{0}	다음 보상: {0}	Nächste Belohnung: {0}	Próxima recompensa: {0}	Próxima recompensa: {0}	Prochaine récompense : {0}
+Mission complete!	Mission complete!	GameUI.cs	Görev tamam!	ミッション達成！	미션 완료!	Aufgabe geschafft!	¡Misión cumplida!	Missão cumprida!	Mission accomplie !
+All missions done! Bonus star	All missions done! Bonus star	GameUI.cs	Tüm görevler tamam! Bonus yıldız	全ミッション達成！ボーナススター	모든 미션 완료! 보너스 별	Alle Aufgaben geschafft! Bonusstern	¡Todas las misiones! Estrella extra	Todas as missões! Estrela bônus	Toutes les missions ! Étoile bonus
+Earn {0} mission stars to unlock.\nYour stars: {1}	Earn {0} mission stars to unlock.\nYour stars: {1}	ShopScreen.cs	Açmak için {0} görev yıldızı topla.\nYıldızların: {1}	ミッションスターを{0}個集めると解放。\n今のスター：{1}	미션 별 {0}개를 모으면 열려요.\n내 별: {1}	Sammle {0} Aufgabensterne zum Freischalten.\nDeine Sterne: {1}	Consigue {0} estrellas de misión para desbloquear.\nTus estrellas: {1}	Ganhe {0} estrelas de missão para desbloquear.\nSuas estrelas: {1}	Gagne {0} étoiles de mission pour débloquer.\nTes étoiles : {1}
+Big paddle!	Big paddle!	GameUI.cs	Dev raket!	ビッグパドル！	큰 패들!	Großer Schläger!	¡Pala gigante!	Raquete gigante!	Grande raquette !
+Slow ball!	Slow ball!	GameUI.cs	Yavaş top!	スローボール！	느린 공!	Langsamer Ball!	¡Bola lenta!	Bola lenta!	Balle lente !
+Double points!	Double points!	GameUI.cs	Çift puan!	ポイント2倍！	점수 2배!	Doppelte Punkte!	¡Puntos dobles!	Pontos em dobro!	Points doublés !
+Shield!	Shield!	GameUI.cs	Kalkan!	シールド！	방패!	Schild!	¡Escudo!	Escudo!	Bouclier !
+Stella	Stella	cos_ball_stella.asset	Yıldız	ステラ	스텔라	Stella	Estela	Estrela	Stella
+Starry	Starry	cos_paddle_starry.asset	Yıldızlı	スターリー	별빛	Sternchen	Estrellado	Estrelado	Étoilé
+Aurora	Aurora	cos_paddle_aurora.asset	Aurora	オーロラ	오로라	Polarlicht	Aurora	Aurora	Aurore

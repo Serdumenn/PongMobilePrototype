@@ -33,6 +33,29 @@ public sealed class CosmeticsService : MonoBehaviour
         Inventory.Save();
     }
 
+    public int Stars => Inventory != null ? Inventory.Stars : 0;
+
+    public void AddStars(int count)
+    {
+        if (count <= 0 || Inventory == null) return;
+
+        Inventory.AddStars(count);
+        GrantWhere(UnlockKind.Stars, Inventory.Stars, true);
+        Inventory.Save();
+        Changed?.Invoke();
+    }
+
+    public CosmeticItem NextStarReward()
+    {
+        CosmeticItem next = null;
+        foreach (var item in Catalog.Items)
+        {
+            if (item == null || item.Unlock != UnlockKind.Stars || Inventory.IsUnlocked(item)) continue;
+            if (next == null || item.UnlockValue < next.UnlockValue) next = item;
+        }
+        return next;
+    }
+
     public int CurrentDayStreak => Records != null && Records.Records != null ? Records.DayStreak : 0;
 
     public void RestoreInventory(string json)
@@ -42,6 +65,7 @@ public sealed class CosmeticsService : MonoBehaviour
         Inventory = restored;
         EnsureEquippedDefaults();
         GrantScoreUnlocks(PlayerPrefs.GetInt(SoloScoreManager.BestScoreKey, 0), false);
+        GrantWhere(UnlockKind.Stars, Inventory.Stars, false);
         Inventory.Save();
         ApplyAdRules();
         Changed?.Invoke();

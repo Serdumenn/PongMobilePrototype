@@ -162,7 +162,58 @@ Amaç: bir koşunun unutulmaz anlarını işaretlemek. Hepsi tek kişilik koşul
 - **Metin:** "Yeni rekor!" mevcut çeviriden gelir; "{0} in a row!" 8 dile eklendi, JA/KO font alt kümeleri yenilendi.
 - **Testler:** `RunMarksTests` (EditMode), `MomentsPlayTests` (PlayMode).
 
-Sıradaki: kostüme özel efektler, skora göre değişen dünya, müzikli vuruşlar, günlük görevler, güçlendirmeler ve Pingi tepki baloncukları.
+#### Ekler (2026-10-15)
+
+**Kostüme özel efektler.** Her top kostümü vuruş parçacıklarında kendi şeklini kullanır (`CosmeticItem.Burst`); renk yine kostümün vurgu rengidir.
+
+| Kostüm | Şekil | Ek |
+|---|---|---|
+| Pingi | Yuvarlak nokta | — |
+| Minty | Yaprak | — |
+| Sunny | Dört köşeli pırıltı | — |
+| Grape | Halka (baloncuk) | — |
+| Panda | Kalp | — |
+| Kitty | Pati | — |
+| Froggy | Su damlası | — |
+| Golden | Yıldız | Yıldız izi (`Sparkle`) |
+| Astro | Yıldız | Yıldız izi (`Sparkle`) |
+
+- Yıldız izi yalnız Pingi Pass'e özel Golden ve 7 günlük seri ödülü Astro'da: top oyundayken arkasında 0,05 sn'de bir küçük yıldız bırakır. Ücretli ve emekle kazanılan kostümleri öne çıkarır.
+- Yerel ve çevrimiçi maçlarda top, son vuranın kostümünü giydiğinde bu şekilleri ve izi de taşır (`BallFeel.Wear`).
+
+**Skora göre değişen dünya.** Koşu skoru 10, 25, 50 ve 100'ü geçtikçe arka planda yavaşça yükselen ışık parçacıkları belirir (`WorldLevels`).
+
+| Seviye | Skor | Parçacık | Şekiller |
+|---|---|---|---|
+| 0 | 0–9 | yok | — |
+| 1 | 10+ | 7 | nokta |
+| 2 | 25+ | 13 | nokta, halka |
+| 3 | 50+ | 19 | nokta, halka, pırıltı |
+| 4 | 100+ | 26 | nokta, halka, pırıltı, yıldız |
+
+- Parçacıkların yarısı beyaz (%60), yarısı kostümün vurgu renginde (%45); lekelerin önünde, saha çizgilerinin arkasında çizilir. Tema renklerine dokunulmaz.
+- Seviye atlayınca arka plan lekeleri 2,5 kat güçlü bir nabız atar. Menüye dönünce parçacıklar 1,2 sn'de söner.
+
+**Müzikli vuruşlar.** Raket vuruşları C majör pentatonikte 16 notalık bir ezgi çalar (`Melody`: 0, 4, 7, 4, 2, 7, 9, 7, 4, 9, 12, 9, 7, 12, 9, 12 yarım ton). Her 16 vuruşta ezgi bir tam ton yükselir, en çok 6 yarım ton. Perfect sesi de aynı tona kayar, ezgiyle uyumlu kalır. `AudioManager.MusicalHits` kapatılınca eski düz yükselen ses geri gelir.
+
+**Pingi'nin baloncukları.** Topun yanında kısa bir konuşma baloncuğu belirir (`PingiBubbles`); 0,2 sn'de esneyerek açılır, 0,9 sn kalır.
+
+| Baloncuk | Ne zaman | Renk |
+|---|---|---|
+| Yıldız | Koşu içinde yeni rekor | Sarı |
+| Damla ("oh be") | Kıl payı kurtarış | Mavi |
+| Alev | Top en yüksek hıza ulaşınca, seride bir kez | Turuncu |
+| Kalp | Her 3 Perfect'lik seride | Pembe |
+| Nota | Menüde 7 sn'de bir (Pingi mırıldanır) | Mor |
+
+- Önemli haber küçüğünü ezer (yıldız > damla > alev > kalp > nota); nota iki baloncuk arasında 1,2 sn bekler.
+- Baloncuk ekran kenarına gelince topun öbür yanına geçer ve ekranın içinde kalır.
+
+**Sprite'lar:** `spr_fx_star`, `spr_fx_heart`, `spr_fx_flame`, `spr_fx_drop`, `spr_fx_note`, `spr_fx_leaf`, `spr_fx_paw`, `spr_fx_bubble`; hepsi `generate_fx.py` ile üretilir, beyaz çizilir ve çalışırken boyanır (baloncuğun kendisi boyanmaz).
+
+**Testler:** `MelodyTests`, `RunMarksTests`, `GameDataTests` (EditMode), `ExtrasPlayTests` (PlayMode).
+
+**Günlük görevler ve güçlendirmeler:** kurallar [modes.md](modes.md)'de. Görsel dil aynı: görev kartı duraklatma kartının düzenini kullanır (Pingi maskotu, başlık, satırlar, "Tamam"); güçlendirme çipleri seri rozetiyle aynı koyu zeminde sarı dolgulu çubuk taşır. Renkler tokenlardan gelir ve tema okunabilirlik testine uyar.
 
 ## Pingi'nin ifadeleri
 
@@ -181,7 +232,7 @@ Tüm efektler bize ait. `ArtSource/tools/generate_sfx.py` ile sentezleniyor (mon
 
 | Efekt | Karakter | Süre | Oyun içi ses seviyesi | Ne zaman |
 |---|---|---|---|---|
-| `sfx_paddle_hit` | Marimba "tok", C5 | 0.20 s | 0.80 | Raket vuruşu. Seri boyunca her vuruşta +0.5 yarım ton, en fazla 1 oktav; top yeniden servis edilince sıfırlanır |
+| `sfx_paddle_hit` | Marimba "tok", C5 | 0.20 s | 0.80 | Raket vuruşu. Seri bir ezgi çalar (aşağıda **Müzikli vuruşlar**); top yeniden servis edilince başa döner |
 | `sfx_wall_bounce` | Yumuşak, alçak "tup" | 0.12 s | 0.45 | Duvar ve tavan |
 | `sfx_perfect` | Parlak "ding", E6 + B6 | 0.50 s | 0.55 | Rush'ta Perfect vuruş (raket sesinin üstüne) |
 | `sfx_ui_tap` | Yukarı kayan baloncuk | 0.08 s | 0.50 | Buton, kart, sekme |
@@ -194,6 +245,7 @@ Tüm efektler bize ait. `ArtSource/tools/generate_sfx.py` ile sentezleniyor (mon
 | `sfx_point` | E5 → A5 iki nota | 0.48 s | 0.70 | Yerel maçta sayı ya da can kaybı |
 | `sfx_match_win` | C-E-G-C arpeji, uzun E6 ve pırıltı | 1.24 s | 0.85 | Düello ve partide kazanan; ortak rallide yeni rekor |
 | `sfx_milestone` | Hızlı E-A-C#-E arpeji ve A6 pırıltı | 0.62 s | 0.80 | Üst üste 10, 25, 50, 100 vuruş ve sonrası |
+| `sfx_power` | Yükselen G5→D6→G6 ve B6 pırıltı | 0.53 s | 0.75 | Rush'ta güçlendirme alınınca (kalkanda `sfx_shield`) |
 
 - **Yönlendirme:** `AudioManager` (Services) 6 kanalı döngüyle kullanır ve hepsini `MainMixer` → `SFX` grubuna gönderir. `Music` grubu ileride müzik için hazır.
 - **Kamera:** Kamerada `AudioListener` olmalı.

@@ -23,6 +23,8 @@ public sealed class HudScreen : UIScreen
     private readonly Label ghostDelta;
     private readonly Label perfect;
     private readonly Label banner;
+    private readonly VisualElement[] powers = new VisualElement[PowerSchedule.KindCount];
+    private readonly VisualElement[] powerFills = new VisualElement[PowerSchedule.KindCount];
 
     private IVisualElementScheduledItem perfectJob;
     private IVisualElementScheduledItem bannerJob;
@@ -39,6 +41,11 @@ public sealed class HudScreen : UIScreen
         ghostDelta = root.Q<Label>("ghost-delta");
         perfect = root.Q<Label>("perfect");
         banner = root.Q<Label>("banner");
+        for (int i = 0; i < powers.Length; i++)
+        {
+            powers[i] = root.Q($"power-{i}");
+            powerFills[i] = root.Q($"power-{i}-fill");
+        }
 
         Bind("pause-button", onPause);
     }
@@ -77,6 +84,21 @@ public sealed class HudScreen : UIScreen
         banner.AddToClassList(BannerShowClass);
         bannerJob?.Pause();
         bannerJob = banner.schedule.Execute(() => banner.RemoveFromClassList(BannerShowClass)).StartingIn(BannerMs);
+    }
+
+    public void SetPower(PowerKind kind, bool active, float fraction)
+    {
+        int index = (int)kind;
+        if (index < 0 || index >= powers.Length || powers[index] == null) return;
+
+        powers[index].EnableInClassList("power--hidden", !active);
+        if (active && powerFills[index] != null) powerFills[index].style.width = Length.Percent(Mathf.Clamp01(fraction) * 100f);
+    }
+
+    public bool PowerShown(PowerKind kind)
+    {
+        int index = (int)kind;
+        return index >= 0 && index < powers.Length && powers[index] != null && !powers[index].ClassListContains("power--hidden");
     }
 
     public void HideBanner()

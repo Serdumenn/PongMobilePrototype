@@ -58,6 +58,7 @@ public sealed class SoloGameManager : MonoBehaviour
     public bool DailyRun => Kind == RunKind.Daily;
     public bool GhostRun => Kind == RunKind.Ghost;
     public GameModeDefinition RunMode { get; private set; }
+    public int PointMultiplier { get; set; } = 1;
 
     private readonly List<Participant> participants = new List<Participant>();
     private int? nextSeed;
@@ -250,6 +251,7 @@ public sealed class SoloGameManager : MonoBehaviour
         if (State != GameState.Playing || Rules == null || hitter == null) return;
 
         var hit = Rules.ScoreHit(hitter, paddleOffset);
+        if (PointMultiplier > 1) hit = new HitResult(hit.Points * PointMultiplier, hit.Perfect, hit.PerfectStreak);
         if (Score != null) Score.AddPoints(hit.Points);
         if (Records != null) Records.AddHit();
 
@@ -335,6 +337,7 @@ public sealed class SoloGameManager : MonoBehaviour
     private void StartRun(GameModeDefinition mode)
     {
         Time.timeScale = 1f;
+        PointMultiplier = 1;
         StopRespawn();
         RunMode = mode;
 

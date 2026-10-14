@@ -24,12 +24,15 @@ Tek kaynak: `Assets/_Game/Data/CosmeticCatalog.asset` ve `Assets/_Game/Data/Cosm
 | Froggy | Pingi | 15 reklam | `skin_froggy` | $1.99 |
 | Golden | Pingi | Yalnızca Pass | — | — |
 | Astro | Pingi | 7 gün üst üste oyna | — | — |
+| Stella | Pingi | 40 görev yıldızı | — | — |
 | Teal | Raket | Ücretsiz | — | — |
 | Coral | Raket | Best 15 | `paddle_coral` | $0.99 |
 | Candy | Raket | 5 reklam | `paddle_candy` | $0.99 |
 | Wood | Raket | 10 reklam | `paddle_wood` | $1.49 |
 | Rainbow | Raket | 15 reklam | `paddle_rainbow` | $1.99 |
 | Gold | Raket | Yalnızca Pass | — | — |
+| Starry | Raket | 15 görev yıldızı | — | — |
+| Aurora | Raket | 80 görev yıldızı | — | — |
 | Soft Pop | Tema | Ücretsiz | — | — |
 | Mint | Tema | Best 30 | `theme_mint` | $0.99 |
 | Sunset | Tema | 10 reklam | `theme_sunset` | $1.49 |
@@ -45,6 +48,7 @@ Hepsi **tek seferlik (non-consumable)**, toplam 15 ürün. Fiyatlar Play Console
 ## Davranış
 - Reklam ilerlemesi içerik başına saklanır (ör. Kitty 7/10). "Watch ad" her zaman kullanıcının seçimidir ve gereken reklam sayısı önceden gösterilir.
 - **Astro** yalnızca 7 günlük oyun serisiyle açılır: Pass'e dahil değildir ve satılmaz. Seri, Skorlar ekranında ve Dolap'taki kilit penceresinde görünür ([modes.md](modes.md)).
+- **Görev ödülleri (Stella, Starry, Aurora)** yalnızca günlük görev yıldızlarıyla açılır: Pass'e dahil değildir ve satılmaz. Yıldızlar `cosmetics.json` içinde (`Stars`) tutulur ve buluta kaydedilir; iki cihaz birleşirken büyük olan alınır. Dolap'ta kilit "yıldız/hedef" olarak görünür. Stella, Golden ve Astro gibi yıldız izi bırakır ([modes.md](modes.md) · Günlük görevler).
 - Skor kilitleri Game Over'da kontrol edilir ve her zaman **Classic** rekoruna bakar. Yeni açılan içerik "New costume / paddle / theme!" penceresiyle gelir ve pencereden hemen takılabilir. Güncellemeden önce kazanılmış skorlar sessizce açılır.
 - Satın alma akışı: ödül verilir, `cosmetics.json`'a kaydedilir, **ancak kayıt başarılıysa** `ConfirmPurchase` çağrılır. Aynı sipariş ikinci kez gelirse sipariş kimliğiyle engellenir.
 - Satın almalar uygulama açılışında mağazadan geri yüklenir (`FetchPurchases`).
@@ -79,4 +83,5 @@ Hepsi **tek seferlik (non-consumable)**, toplam 15 ürün. Fiyatlar Play Console
 - [x] Gelir modeli: paketler + tek tek satış (2026-09-30)
 - [x] Unity IAP 5.4.3 eklendi (2026-09-30)
 - [x] Seri ödülü kostümü Astro eklendi (2026-09-30)
+- [x] Görev yıldızı ödülleri: 15 Starry, 40 Stella, 80 Aurora (2026-10-15)
 - [ ] Fiyatların son onayı (Play Console'da)
