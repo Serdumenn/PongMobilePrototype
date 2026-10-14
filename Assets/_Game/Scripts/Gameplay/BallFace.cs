@@ -12,20 +12,13 @@ public sealed class BallFace : MonoBehaviour
     [SerializeField] private Sprite Sad;
     [SerializeField] private float HappyDuration = 0.15f;
 
-    [Header("Punch")]
-    [SerializeField] private float PunchScale = 1.18f;
-    [SerializeField] private float PunchDuration = 0.14f;
-
     private Ball ball;
-    private Vector3 baseScale;
     private float happyUntil;
-    private float punchStart = -1f;
 
     private void Awake()
     {
         ball = GetComponent<Ball>();
         if (Visual == null) Visual = GetComponentInChildren<SpriteRenderer>();
-        if (Visual != null) baseScale = Visual.transform.localScale;
     }
 
     private void OnEnable()
@@ -51,14 +44,6 @@ public sealed class BallFace : MonoBehaviour
 
         if (Visual.sprite == Happy && Time.unscaledTime >= happyUntil)
             SetSprite(Idle);
-
-        if (punchStart < 0f) return;
-
-        float t = Mathf.Clamp01((Time.unscaledTime - punchStart) / Mathf.Max(0.01f, PunchDuration));
-        float eased = 1f - (1f - t) * (1f - t);
-        Visual.transform.localScale = baseScale * Mathf.Lerp(PunchScale, 1f, eased);
-
-        if (t >= 1f) punchStart = -1f;
     }
 
     public void SetExpressions(Sprite idle, Sprite happy, Sprite sad)
@@ -78,14 +63,11 @@ public sealed class BallFace : MonoBehaviour
     {
         SetSprite(Happy);
         happyUntil = Time.unscaledTime + HappyDuration;
-        punchStart = Time.unscaledTime;
     }
 
     private void OnMissed()
     {
         SetSprite(Sad);
-        punchStart = -1f;
-        if (Visual != null) Visual.transform.localScale = baseScale;
     }
 
     private void ShowIdle()

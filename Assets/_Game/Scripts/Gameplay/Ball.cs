@@ -11,6 +11,14 @@ public sealed class Ball : MonoBehaviour
     [SerializeField] private float MaxSpeed = 12f;
     [SerializeField] private float SpeedIncreasePercent = 0.01f;
 
+    [Header("Pace")]
+    [SerializeField] private bool SteadyPace = true;
+    [SerializeField] private float PaceStart = 10f;
+    [SerializeField] private float PaceMax = 18f;
+    [SerializeField] private float PaceIncreasePercent = 0.013f;
+    [SerializeField] private float MinSideSpeed = 1.5f;
+    [SerializeField] private float MaxSideSpeed = 5.5f;
+
     [Header("Stability")]
     [SerializeField, Range(0.05f, 0.95f)] private float MinVerticalDot = 0.40f;
     [SerializeField] private float WallBounceJitter = 3f;
@@ -27,12 +35,14 @@ public sealed class Ball : MonoBehaviour
     public event Action WallHit;
     public event Action Missed;
     public event Action RoundReset;
+    public event Action Stopped;
     public event Action<Paddle, float> PaddleStruck;
     public event Action<Goal> GoalEntered;
 
     private Rigidbody2D rb;
     private Collider2D col;
     private SpriteRenderer sr;
+    private FieldLayout layout;
 
     private Paddle server;
     private Vector2? serveOrigin;
@@ -48,18 +58,26 @@ public sealed class Ball : MonoBehaviour
     public MatchRandom ServeRng { get; set; }
     public Paddle Server => server;
     public float CurrentSpeed => currentSpeed;
+    public bool Steady => SteadyPace && (layout == null || layout.Topology != FieldTopology.FourSides);
     public float SpeedBoost => speedBoost;
     public bool InPlay => roundActive && !waitingForServe && rb.simulated;
     public Vector2 LastVelocity => lastVelocity;
     public bool WaitingForServe => waitingForServe;
     public Vector2 ExitPoint { get; private set; }
+    public Vector2 LastNormal { get; private set; } = Vector2.up;
+    public Vector2 LastContact { get; private set; }
     public Vector2 Position => rb != null ? rb.position : (Vector2)transform.position;
+
+    private float StartSpeed => Steady ? PaceStart : LaunchSpeed;
+    private float TopSpeed => Steady ? PaceMax : MaxSpeed;
+    private float Growth => Steady ? PaceIncreasePercent : SpeedIncreasePercent;
 
     private void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
         col = GetComponent<Collider2D>();
         sr = GetComponentInChildren<SpriteRenderer>();
+        layout = FindFirstObjectByType<FieldLayout>();
 
         rb.gravityScale = 0f;
         rb.linearDamping = 0f;
@@ -96,13 +114,15 @@ public sealed class Ball : MonoBehaviour
     {
         if (!roundActive || waitingForServe || !rb.simulated) return;
 
-        if (rb.linearVelocity.sqrMagnitude > 0.0001f)
-            lastVelocity = rb.linearVelocity;
+        Vector2 velocity = rb.linearVelocity;
+        if (velocity.sqrMagnitude <= 0.0001f) return;
 
-        float actualSpeed = rb.linearVelocity.magnitude;
-        float target = currentSpeed * speedBoost;
-        if (actualSpeed > 0.01f && actualSpeed < target * 0.95f)
-            rb.linearVelocity = rb.linearVelocity.normalized * target;
+        lastVelocity = velocity;
+
+        bool steady = Steady;
+        float actualSpeed = steady ? Mathf.Abs(velocity.y) : velocity.magnitude;
+        if (actualSpeed < currentSpeed * speedBoost * 0.95f)
+            ApplyVelocity(steady ? SafeDirection(velocity) : velocity.normalized);
     }
 
     public void SetServer(Paddle paddle)
@@ -125,7 +145,7 @@ public sealed class Ball : MonoBehaviour
     {
         roundActive = true;
         waitingForServe = false;
-        currentSpeed = Mathf.Clamp(LaunchSpeed, 0.1f, MaxSpeed);
+        currentSpeed = Mathf.Clamp(StartSpeed, 0.1f, TopSpeed);
 
         SnapTo(origin);
         SetBallVisible(true);
@@ -143,7 +163,7 @@ public sealed class Ball : MonoBehaviour
     public void Enter(Vector2 origin, Vector2 direction, float speed)
     {
         ServeToward(origin, direction);
-        currentSpeed = Mathf.Clamp(speed, Mathf.Min(LaunchSpeed, MaxSpeed), MaxSpeed);
+        currentSpeed = Mathf.Clamp(speed, Mathf.Min(StartSpeed, TopSpeed), TopSpeed);
         ApplyVelocity(lastVelocity.normalized);
     }
 
@@ -160,14 +180,14 @@ public sealed class Ball : MonoBehaviour
 
     public void ScaleSpeed(float factor)
     {
-        currentSpeed = Mathf.Clamp(currentSpeed * factor, Mathf.Min(LaunchSpeed, MaxSpeed), MaxSpeed);
+        currentSpeed = Mathf.Clamp(currentSpeed * factor, Mathf.Min(StartSpeed, TopSpeed), TopSpeed);
         if (rb.simulated && lastVelocity.sqrMagnitude > 0.0001f) ApplyVelocity(lastVelocity.normalized);
     }
 
     public void StartRound()
     {
         roundActive = true;
-        currentSpeed = Mathf.Clamp(LaunchSpeed, 0.1f, MaxSpeed);
+        currentSpeed = Mathf.Clamp(StartSpeed, 0.1f, TopSpeed);
 
         rb.linearVelocity = Vector2.zero;
         rb.angularVelocity = 0f;
@@ -198,6 +218,7 @@ public sealed class Ball : MonoBehaviour
 
         SetBallVisible(false);
         SnapToServePoint();
+        Stopped?.Invoke();
     }
 
     public void StopRoundKeepVisible()
@@ -222,9 +243,7 @@ public sealed class Ball : MonoBehaviour
         col.enabled = true;
         rb.WakeUp();
 
-        Vector2 dir = GetLaunchDir();
-        lastVelocity = dir * currentSpeed * speedBoost;
-        rb.linearVelocity = lastVelocity;
+        ApplyVelocity(GetLaunchDir());
 
         Launched?.Invoke();
     }
@@ -234,7 +253,9 @@ public sealed class Ball : MonoBehaviour
         var dice = ServeRng ?? Rng;
         float x = dice.Sign();
         float y = dice.Range(0.60f, 1.00f);
-        Vector2 dir = new Vector2(x, y).normalized;
+        Vector2 dir = Steady
+            ? BallPace.ServeDirection(x, Mathf.InverseLerp(0.60f, 1.00f, y), currentSpeed * speedBoost, MaxSideSpeed)
+            : new Vector2(x, y).normalized;
 
         if (Mathf.Abs(dir.y) < MinVerticalDot)
             dir = EnforceMinVertical(dir);
@@ -258,6 +279,9 @@ public sealed class Ball : MonoBehaviour
             ? collision.GetContact(0).normal
             : Vector2.up;
 
+        LastNormal = normal;
+        LastContact = collision.contactCount > 0 ? collision.GetContact(0).point : rb.position;
+
         Vector2 outDir = Vector2.Reflect(inVel.normalized, normal).normalized;
 
         SeparateFromSurface(normal);
@@ -267,7 +291,7 @@ public sealed class Ball : MonoBehaviour
         {
             PaddleStruck?.Invoke(paddle, paddle.AxisOffset(rb.position));
 
-            currentSpeed = Mathf.Min(currentSpeed * (1f + SpeedIncreasePercent), MaxSpeed);
+            currentSpeed = Mathf.Min(currentSpeed * (1f + Growth), TopSpeed);
 
             Vector2 inward = paddle.Inward;
             float along = Vector2.Dot(outDir, inward);
@@ -311,7 +335,8 @@ public sealed class Ball : MonoBehaviour
 
     private void ApplyVelocity(Vector2 dir)
     {
-        lastVelocity = dir * currentSpeed * speedBoost;
+        float pace = currentSpeed * speedBoost;
+        lastVelocity = Steady ? BallPace.Velocity(dir, pace, MinSideSpeed, MaxSideSpeed) : dir * pace;
         rb.linearVelocity = lastVelocity;
     }
 

@@ -82,6 +82,8 @@ Bu klasör oyunun görsel ve UX kararlarının tek kaynağıdır. Her faz bir **
 | 2026-10-05 | **Arkadaşlar (M6):** UGS Friends; arkadaş kodu `Ad#rakamlar`; istek/kabul, durum, davet, Friends sıralaması; dünya listesi ilk 50 | Ürün sahibinin "herkesin skoru nerede, arkadaş nasıl eklenir" sorusu ve tam yetkisi. Sohbet yok, mesajlar yalnızca davet |
 | 2026-10-05 | Kapı L: diller EN, TR, JA, KO, DE, ES (Latin Amerika), PT-BR, FR; kendi yerelleştirme sistemimiz; JA/KO için M PLUS Rounded 1c ve Jua; oyuncu adları İngilizce | Android oyun geliri ve reklam fiyatına göre en güçlü pazarlar; Rusça (Google reklam ve ödemeleri durdurdu) ve Çin anakarası (Google Play yok) elendi |
 | 2026-10-05 | **Yerelleştirme: 8 dil**, biri Türkçe; diller en çok gelir getirecek pazarlara göre seçilecek | Ürün sahibinin kararı. Çok oyunculu fazlar bittikten sonra yapılacak; dil listesi güncel pazar verisiyle araştırılıp onaya sunulacak. Kusursuz olmalı: tüm metinler, fontlar (Fredoka yalnızca Latin + Türkçe; gerekirse yedek font), uzun metinler ve her dilde cihaz denetimi |
+| 2026-10-14 | **Tempo:** topun dikey hızı sabit (10 → 18), açı yalnız yana hızı belirler; çevrimiçi protokol 3 ([modes.md](modes.md)) | Oynanış testi: oyun yavaş başlıyordu, uzun telefonda topun gidip gelmesi bekletiyordu. İlk gidiş-dönüş 3,2 sn'den 1,6 sn'ye indi |
+| 2026-10-14 | **Oyun hissi, 1. katman:** top ezilmesi ve izi, vuruş parçacıkları, raket geri tepmesi, ekran itmesi, Perfect duraksaması ([design-system.md](design-system.md) · Hareket) | Aynı test: oyun güzel görünüyor ama vuruşlar hissedilmiyordu. Efektler fiziğe ve skora dokunmaz |
 
 ## Asset takibi
 
@@ -105,6 +107,7 @@ Durumlar: `Brief → WIP → Review → Approved → Integrated`
 | Tema renkleri | Yüzey ve metin tokenları | Integrated | Sabit renkler tokenlara taşındı, Gece teması düzeltildi; `ThemeColorTests` denetler. Bulgular `docs/qa/audit-2026-10-10.md` |
 | Değerlendirme isteği | Google Play In-App Review | Integrated | `ReviewGate`, `ReviewPrompt`, `InAppReview`; Ayarlar'da "Rate the game" bağlantısı |
 | Açılış ekranı | Ocean Forge logosu | Integrated | Unity açılış ekranı: lacivert `#1E2140` zemin, Unity logosu kapalı, "Dolly" yakınlaşma, 2 sn. Logo (örs + dalga + kıvılcım, Fredoka yazı) `generate_brand.py` ile üretilir; kaynak `ArtSource/brand/` |
+| `spr_fx_dot/ring/spark` | SVG sprite | Integrated | Vuruş parçacıkları, halka ve Perfect yıldızı; beyaz çizilir, kostüm rengine boyanır. `generate_fx.py` üretir |
 
 ## Lisans kaydı
 

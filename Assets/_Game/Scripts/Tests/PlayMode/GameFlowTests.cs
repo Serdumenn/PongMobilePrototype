@@ -9,9 +9,10 @@ using TouchPhase = UnityEngine.InputSystem.TouchPhase;
 
 public sealed class GameFlowTests : GameSceneFixture
 {
-    private const float LaunchSpeed = 6f;
-    private const float MaxSpeed = 16f;
-    private const float SpeedGrowth = 1.015f;
+    private const float PaceStart = 10f;
+    private const float PaceMax = 18f;
+    private const float PaceGrowth = 1.013f;
+    private const float MaxSideSpeed = 5.5f;
 
     [UnityTest]
     public IEnumerator Classic_RunScoresAndEndsOnFirstMiss()
@@ -139,7 +140,8 @@ public sealed class GameFlowTests : GameSceneFixture
         while (launches == 0 && Time.realtimeSinceStartup < deadline) yield return null;
         Assert.AreEqual(1, launches, $"Ball did not launch on touch (active={paddle.HasActiveInput}, screen={Screen.width}x{Screen.height})");
         Assert.Greater(body.linearVelocity.y, 0f);
-        Assert.AreEqual(LaunchSpeed, body.linearVelocity.magnitude, 0.01f);
+        Assert.AreEqual(PaceStart, body.linearVelocity.y, 0.01f);
+        Assert.LessOrEqual(Mathf.Abs(body.linearVelocity.x), MaxSideSpeed + 0.01f);
 
         Time.timeScale = 3f;
         deadline = Time.realtimeSinceStartup + 60f;
@@ -153,8 +155,9 @@ public sealed class GameFlowTests : GameSceneFixture
         Assert.AreEqual(8, paddleHits);
         Assert.AreEqual(paddleHits, Game.ScoreManager.Score);
         Assert.Greater(wallHits, 0);
-        float expectedSpeed = Mathf.Min(LaunchSpeed * Mathf.Pow(SpeedGrowth, paddleHits), MaxSpeed);
-        Assert.AreEqual(expectedSpeed, body.linearVelocity.magnitude, expectedSpeed * 0.05f);
+        float expectedPace = Mathf.Min(PaceStart * Mathf.Pow(PaceGrowth, paddleHits), PaceMax);
+        Assert.AreEqual(expectedPace, Mathf.Abs(body.linearVelocity.y), expectedPace * 0.05f);
+        Assert.LessOrEqual(Mathf.Abs(body.linearVelocity.x), MaxSideSpeed + 0.01f);
 
         deadline = Time.realtimeSinceStartup + 60f;
         while (misses == 0 && Time.realtimeSinceStartup < deadline)
@@ -169,6 +172,33 @@ public sealed class GameFlowTests : GameSceneFixture
         Assert.AreEqual(SoloGameManager.GameState.GameOver, Game.State);
         Assert.AreEqual(1, Game.RecordsSource.Records.GamesPlayed);
         Assert.AreEqual(Game.ScoreManager.Score, PlayerPrefs.GetInt("bestScore"));
+    }
+
+    [UnityTest]
+    public IEnumerator ShallowBall_ClimbsAtFullPace()
+    {
+        yield return LoadGame();
+
+        var ball = Game.Ball;
+        var body = ball.GetComponent<Rigidbody2D>();
+        int wallHits = 0;
+        ball.WallHit += () => wallHits++;
+
+        Game.StartGameFromMenu();
+        ball.ServeToward(ball.Position, new Vector2(1f, 0.1f));
+        Assert.AreEqual(PaceStart, body.linearVelocity.y, 0.01f);
+        Assert.AreEqual(MaxSideSpeed, body.linearVelocity.x, 0.01f);
+
+        float deadline = Time.realtimeSinceStartup + 5f;
+        while (wallHits == 0 && Time.realtimeSinceStartup < deadline) yield return null;
+        Assert.Greater(wallHits, 0, "The ball never reached a wall");
+        yield return new WaitForFixedUpdate();
+
+        Assert.AreEqual(PaceStart, Mathf.Abs(body.linearVelocity.y), PaceStart * 0.05f);
+        Assert.LessOrEqual(Mathf.Abs(body.linearVelocity.x), MaxSideSpeed + 0.01f);
+
+        Game.ReturnToMenu();
+        yield return null;
     }
 
     [UnityTest]

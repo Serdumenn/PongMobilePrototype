@@ -23,6 +23,26 @@ Görsel öneri (v1 öncesi, 4 modlu taslak): [modes/index.html](modes/index.html
 
 **Kostüm kilitleriyle ilişki:** Skorla açılan kostümler **Classic** rekoruna bakar; Rush'ın skor ölçeği farklı.
 
+### Tempo (2026-10-14)
+
+Oynanış testinden gelen geri bildirim: oyun yavaş başlıyor ve topun gidip gelmesi fazla bekletiyor. Ölçüm: top yolu tek yön yaklaşık 8,1 birim; eski ayarlarla ilk gidiş-dönüş 3,2 sn, yatık açıda 6,8 sn; 20. vuruşa 56 saniyede varılıyordu.
+
+**Sabit dikey hız:** topun dikey hızı açıdan bağımsızdır; açı yalnız yana hızı belirler. Yatık açıdaki uzun zikzaklar ortadan kalkar ve gidiş-dönüş süresi her vuruşta öngörülebilir olur.
+
+| Değer (`Ball`) | Ayar | Anlamı |
+|---|---|---|
+| `SteadyPace` | açık | Kapatılınca eski model (`LaunchSpeed`, `MaxSpeed`, `SpeedIncreasePercent`) geri gelir; karşılaştırma için |
+| `PaceStart` | 10 | Başlangıç dikey hızı: gidiş-dönüş 1,6 sn |
+| `PaceMax` | 18 | En yüksek dikey hız: gidiş-dönüş 0,9 sn |
+| `PaceIncreasePercent` | %1,3 | Her raket vuruşunda artış; 45. vuruşta, yaklaşık 56. saniyede en yüksek hıza ulaşılır |
+| `MaxSideSpeed` | 5,5 | Yana hız sınırı; dikey hız artsa da sabit kalır |
+| `MinSideSpeed` | 1,5 | Top dümdüz inip çıkmasın diye en az yana hız |
+
+- Servis: yön ve açı aynı rastgele sayılardan üretilir (aynı tohum, aynı servis); yana hız sınırın %35–85'i arasındadır.
+- Kapsam: tek kişilik modlar, Table Duel, Co-op Rally, Portal Duel, Rush Battle. Party Table (dört kenar) eski modelde kalır.
+- Çevrimiçi protokol sürümü 3 oldu; eski sürümle eşleşme yapılmaz.
+- Mantık `BallPace` içinde, testleri `BallPaceTests` ve `GameFlowTests`.
+
 ### Rush HUD'u
 - Üstte süre çubuğu. Son 10 saniyede mercan rengine döner. Altında `m:ss` sayacı.
 - Perfect vuruşta ekranın ortasında "Perfect! +N" yazısı çıkar (520 ms).

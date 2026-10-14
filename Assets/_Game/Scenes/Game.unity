@@ -578,6 +578,7 @@ MonoBehaviour:
   cosmetics: {fileID: 315089630}
   game: {fileID: 7019952436038793779}
   UploadDelay: 8
+  SyncInEditor: 0
 --- !u!1 &517429098
 GameObject:
   m_ObjectHideFlags: 0
@@ -821,6 +822,7 @@ MonoBehaviour:
   Cloud: {fileID: 315089639}
   HintRuns: 3
   RewardDelayMs: 650
+  ReviewDelayMs: 1800
   CodeLifetime: 600
   MaxContentWidth: 1080
   HintInset: 56
@@ -1149,6 +1151,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 871148361}
+  - component: {fileID: 871148362}
   m_Layer: 0
   m_Name: GameWorld
   m_TagString: Untagged
@@ -1177,6 +1180,43 @@ Transform:
   - {fileID: 271303676}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &871148362
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 871148360}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4247e27290741849b759034375f6cdb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Pingi.Runtime::GameFeel
+  Game: {fileID: 7019952436038793779}
+  Match: {fileID: 7019952436038793782}
+  Punch: {fileID: 1822548377}
+  OnlineRush: {fileID: 7019952436038793784}
+  OnlineMatch: {fileID: 7019952436038793783}
+  Dot: {fileID: 3286163911610860551, guid: 3ce47c5a031dc374b82d6775789d36fd, type: 3}
+  Ring: {fileID: 3286163911610860551, guid: 3556487a7d1004a459fdb690358d7a6f, type: 3}
+  Spark: {fileID: 3286163911610860551, guid: 1fc92e5a253817a40b22f3bef8911f51, type: 3}
+  DotsPerHit: 6
+  DotSpeed: 3.4
+  DotSize: 0.13
+  DotLife: 0.34
+  DotSpread: 130
+  RingSize: 0.95
+  RingLife: 0.3
+  RingAlpha: 0.55
+  SortingOrder: -2
+  PerfectColor: {r: 1, g: 0.84, b: 0.35, a: 1}
+  SparksPerPerfect: 7
+  SparkSpeed: 4.6
+  SparkSize: 0.26
+  SparkLife: 0.5
+  FreezeSeconds: 0.04
+  HitPunch: 0.035
+  PerfectPunch: 0.08
 --- !u!1 &937802654
 GameObject:
   m_ObjectHideFlags: 0
@@ -1342,6 +1382,7 @@ GameObject:
   - component: {fileID: 1185500013}
   - component: {fileID: 1185500008}
   - component: {fileID: 1185500012}
+  - component: {fileID: 1185500014}
   m_Layer: 0
   m_Name: playerPaddle
   m_TagString: racket
@@ -1463,6 +1504,26 @@ MonoBehaviour:
   Duration: 0.75
   Delay: 0.15
   OffScreenOffset: 3
+--- !u!114 &1185500014
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1185500007}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4eb94028c72fb3a48871fc14a55eb835, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Pingi.Runtime::PaddleFeel
+  Visual: {fileID: 1469351843}
+  KickDistance: 0.14
+  KickSquash: 0.16
+  Frequency: 3.6
+  Damping: 13
+  restPosition: {x: 0, y: 0, z: 0}
+  restScale: {x: 1, y: 1, z: 1}
+  restKnown: 0
 --- !u!1 &1278500347
 GameObject:
   m_ObjectHideFlags: 0
@@ -1629,6 +1690,7 @@ GameObject:
   - component: {fileID: 1378371382}
   - component: {fileID: 1378371384}
   - component: {fileID: 1378371387}
+  - component: {fileID: 1378371388}
   m_Layer: 0
   m_Name: ball
   m_TagString: ball
@@ -1730,6 +1792,12 @@ MonoBehaviour:
   LaunchSpeed: 6
   MaxSpeed: 16
   SpeedIncreasePercent: 0.015
+  SteadyPace: 1
+  PaceStart: 10
+  PaceMax: 18
+  PaceIncreasePercent: 0.013
+  MinSideSpeed: 1.5
+  MaxSideSpeed: 5.5
   MinVerticalDot: 0.4
   WallBounceJitter: 3
   CollisionSeparation: 0.05
@@ -1767,8 +1835,31 @@ MonoBehaviour:
   Happy: {fileID: 3286163911610860551, guid: e6aa080a1ba91d14aa7087edea9b1faf, type: 3}
   Sad: {fileID: 3286163911610860551, guid: c5a7ba77cc93f3c489d931cefbac73df, type: 3}
   HappyDuration: 0.15
-  PunchScale: 1.18
-  PunchDuration: 0.14
+--- !u!114 &1378371388
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1378371381}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b463da4b884d634408d3e6671ffc735b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Pingi.Runtime::BallFeel
+  Visual: {fileID: 764209564}
+  PaddleSquash: 0.3
+  WallSquash: 0.2
+  Frequency: 3.2
+  Damping: 14
+  FlightStretch: 0.06
+  TrailSeconds: 0.16
+  TrailWidth: 0.75
+  TrailAlpha: 0.45
+  TrailOrder: -5
+  Accent: {r: 1, g: 0.42, b: 0.34, a: 1}
+  restScale: {x: 1, y: 1, z: 1}
+  restKnown: 0
 --- !u!1 &1456813198
 GameObject:
   m_ObjectHideFlags: 0
@@ -2208,6 +2299,7 @@ GameObject:
   - component: {fileID: 1822548375}
   - component: {fileID: 1822548374}
   - component: {fileID: 1822548376}
+  - component: {fileID: 1822548377}
   m_Layer: 0
   m_Name: Camera
   m_TagString: MainCamera
@@ -2289,6 +2381,21 @@ AudioListener:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1822548372}
   m_Enabled: 1
+--- !u!114 &1822548377
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1822548372}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: df35723018f18c744b6534b0641be119, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Pingi.Runtime::CameraPunch
+  Frequency: 5
+  Damping: 16
+  MaxOffset: 0.15
 --- !u!1 &2060388130
 GameObject:
   m_ObjectHideFlags: 0

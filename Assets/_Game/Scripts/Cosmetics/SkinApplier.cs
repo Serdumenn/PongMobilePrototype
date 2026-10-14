@@ -40,7 +40,12 @@ public sealed class SkinApplier : MonoBehaviour
     private void Apply()
     {
         var ball = Cosmetics.Equipped(CosmeticCategory.Ball);
-        if (ball != null && Ball != null) Ball.SetExpressions(ball.Idle, ball.Happy, ball.Sad);
+        if (ball != null && Ball != null)
+        {
+            Ball.SetExpressions(ball.Idle, ball.Happy, ball.Sad);
+            var feel = Ball.GetComponent<BallFeel>();
+            if (feel != null) feel.SetAccent(ball.Accent);
+        }
 
         var paddle = Cosmetics.Equipped(CosmeticCategory.Paddle);
         if (paddle != null && Paddle != null) Paddle.sprite = paddle.PaddleSprite;

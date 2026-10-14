@@ -104,12 +104,38 @@ Durumlar: **normal · basılı** (kenar 16 → 4, 12 px aşağı) · **pasif** (
 
 Kural: UI animasyonları `Time.timeScale`'dan etkilenmez (pause ve game over sırasında da çalışır).
 
+### Oyun hissi (2026-10-14)
+
+Amaç: her vuruş hissedilsin. Efektler kısa, yumuşak ve Soft Pop diline uygun; oyunun fiziğine dokunmaz, yalnız görseli oynatır.
+
+| Efekt | Ne zaman | Değer | Yer |
+|---|---|---|---|
+| Top ezilmesi | Raket ve duvar vuruşu | Vuruş ekseninde %30 (raket) / %20 (duvar) basılır, yana genişler; yay gibi 0,4 sn'de oturur | `BallFeel` |
+| Uçuş esnemesi | Top oyundayken | Hareket yönünde %6 uzama | `BallFeel` |
+| İz | Top oyundayken | 0,16 sn, top çapının %75'i, kostümün vurgu rengi, %45 opaklık | `BallFeel` (`Trail`) |
+| Vuruş parçacıkları | Raket: 6 nokta + halka · duvar: 3 nokta | Vuruş yönünden yelpaze, 0,3 sn; topun ve raketin arkasında çizilir | `GameFeel` |
+| Raket geri tepmesi | Raket vuruşu | 0,14 birim geri, %16 basılma, yaylı dönüş | `PaddleFeel` |
+| Ekran itmesi | Raket vuruşu | 0,035 birim; Perfect'te 0,08 birim | `CameraPunch` |
+| Perfect | Perfect vuruş | 7 sarı yıldız, büyük halka, 40 ms duraksama | `GameFeel` |
+
+- **Vurgu rengi:** her top kostümünün `Accent` rengi iz ve parçacıkları boyar (Pingi mercan, Minty nane, Grape mor, Sunny sarı, Panda bej, Kitty turuncu, Froggy yeşil, Golden altın, Astro mavi).
+- **Fizik aynı kalır:** yalnız `Visual` çocukları ve kamera görüntüsü oynar; collider, hız ve skor değişmez. Kamera yalnız çizim sırasında kayar, oyun mantığı kamerayı hep yerinde görür.
+- **Zaman:** efektler `unscaledDeltaTime` ile ilerler ve kare başına en fazla 50 ms sayılır; takılan bir kare animasyonu atlatmaz. Duraksama yalnız `timeScale` 1 iken uygulanır, pause ve geri sayımı bozmaz.
+- **Çevrimiçi:** çevrimiçi turlarda duraksama uygulanmaz; süre gerçek zamanla sayıldığı için Perfect yapan oyuncu süre kaybetmez. Diğer efektler aynen çalışır.
+- **Çoklu top ve ek raketler:** kopyalar asıl boyutu devralır; ezilme sırasında çoğaltılan top bozuk boyutta kalmaz. Perfect patlaması vurulan topun değdiği noktada çıkar.
+- **Kapsam dışı (şimdilik):** Canlı Düello kendi simülasyonuyla çizildiği için bu efektleri henüz almaz.
+- **Bütçe:** 48 hazır parçacık, vuruş başına bellek ayrılmaz; rastgelelik oyunun tohumlu sayı üretecini kullanmaz (çevrimiçi eşitlik korunur).
+- **Sprite'lar:** `spr_fx_dot`, `spr_fx_ring`, `spr_fx_spark` beyazdır, çalışırken boyanır; `ArtSource/tools/generate_fx.py` üretir.
+- **Testler:** `FeelMathTests` (EditMode), `FeelPlayTests` (PlayMode).
+
+Sıradaki katmanlar: ralliyle canlanan arka plan ve hıza göre top parlaması; rekor, kıl payı kurtarış ve kaybediş anları.
+
 ## Pingi'nin ifadeleri
 
 | Durum | Görsel | Ne zaman |
 |---|---|---|
 | `idle` | Açık gözler, hafif gülümseme | Varsayılan |
-| `happy` | Kısık "^ ^" gözler, geniş gülüş | Raket vuruşunda 150 ms |
+| `happy` | Kısık "^ ^" gözler, geniş gülüş | Raket vuruşunda 150 ms; ezilme ve esneme `BallFeel` ile gelir |
 | `sad` | Düşük kaşlar, ters ağız | Game Over |
 
 ## Ses paleti (Faz 4) — uygulandı
