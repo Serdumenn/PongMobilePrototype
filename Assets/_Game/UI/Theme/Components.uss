@@ -257,6 +257,7 @@
 .icon--star { background-image: url("/Assets/_Game/Art/UI/Icons/ui_icon_star.svg"); }
 .icon--big-paddle { background-image: url("/Assets/_Game/Art/UI/Icons/ui_icon_big_paddle.svg"); }
 .icon--double { background-image: url("/Assets/_Game/Art/UI/Icons/ui_icon_double.svg"); }
+.icon--coin { background-image: url("/Assets/_Game/Art/UI/Icons/ui_icon_coin.svg"); }
 
 .caption {
     color: var(--color-ink-muted);
@@ -403,4 +404,110 @@
 
 .switch--on > .switch__knob {
     translate: 80px 0;
+}
+
+.btn--gold {
+    background-color: var(--color-sun-edge);
+}
+
+.btn--gold > .btn__face {
+    bottom: 20px;
+    border-width: 0;
+    background-color: var(--color-sun);
+}
+
+.btn--gold:active > .btn__face {
+    translate: 0 16px;
+}
+
+.btn--gold .btn__label {
+    color: var(--color-on-sun);
+}
+
+.btn--gold .icon {
+    -unity-background-image-tint-color: var(--color-on-sun);
+}
+
+.gold-chip {
+    flex-direction: row;
+    align-items: center;
+    align-self: flex-start;
+    padding: 12px 28px 12px 20px;
+    border-radius: 48px;
+    background-color: var(--color-chip-deep);
+}
+
+.gold-chip--hidden {
+    display: none;
+}
+
+.gold-chip .icon {
+    width: 64px;
+    height: 64px;
+    -unity-background-image-tint-color: var(--color-sun-bright);
+}
+
+.gold-chip__label {
+    margin-left: 10px;
+    color: var(--color-sun-bright);
+    font-size: 48px;
+    -unity-font-definition: url("/Assets/_Game/Fonts/fnt_fredoka_bold_sdf.asset");
+}
+
+.gold-row {
+    flex-direction: row;
+    align-items: center;
+    align-self: stretch;
+    justify-content: space-between;
+    margin-top: 40px;
+    padding: 16px 16px 16px 32px;
+    border-radius: 48px;
+    background-color: var(--color-sun-tint);
+}
+
+.gold-row__amount {
+    flex-direction: row;
+    align-items: center;
+}
+
+.gold-row__amount .icon {
+    width: 72px;
+    height: 72px;
+    -unity-background-image-tint-color: var(--color-sun-ink);
+}
+
+.gold-row__label {
+    margin-left: 12px;
+    color: var(--color-sun-ink);
+    font-size: 56px;
+    -unity-font-definition: url("/Assets/_Game/Fonts/fnt_fredoka_bold_sdf.asset");
+}
+
+.gold-row__double {
+    flex-grow: 0;
+    flex-shrink: 0;
+    width: 360px;
+    height: 144px;
+    margin-left: 24px;
+}
+
+.gold-row__double > .btn__face {
+    padding: 0 36px;
+}
+
+.gold-row__double .icon {
+    width: 56px;
+    height: 56px;
+}
+
+.gold-row__double .btn__label {
+    margin-left: 12px;
+    font-size: 48px;
+}
+
+.topbar__side--gold {
+    width: auto;
+    min-width: 176px;
+    justify-content: center;
+    align-items: flex-end;
 }

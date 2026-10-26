@@ -29,6 +29,7 @@ public sealed class CosmeticItem : ScriptableObject
     [field: SerializeField] public UnlockKind Unlock { get; private set; }
     [field: SerializeField] public int UnlockValue { get; private set; }
     [field: SerializeField] public string ProductId { get; private set; }
+    [field: SerializeField] public int GoldPrice { get; private set; }
 
     [field: Header("Ball")]
     [field: SerializeField] public Sprite Idle { get; private set; }
@@ -49,6 +50,7 @@ public sealed class CosmeticItem : ScriptableObject
     [field: SerializeField] public string UiClass { get; private set; }
 
     public bool IsPurchasable => !string.IsNullOrEmpty(ProductId);
+    public bool SoldForGold => GoldPrice > 0 && (Unlock == UnlockKind.Score || Unlock == UnlockKind.Ads);
     public string Title => Loc.T(DisplayName);
 
     public Sprite Preview => Category switch

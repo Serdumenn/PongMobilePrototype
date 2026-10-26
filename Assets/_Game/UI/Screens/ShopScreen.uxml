@@ -7,7 +7,12 @@
                 </ui:VisualElement>
             </ui:Button>
             <ui:Label text="Collection" class="screen-title" picking-mode="Ignore" />
-            <ui:VisualElement class="topbar__side" picking-mode="Ignore" />
+            <ui:VisualElement class="topbar__side topbar__side--gold" picking-mode="Ignore">
+                <ui:VisualElement class="gold-chip" picking-mode="Ignore">
+                    <ui:VisualElement class="icon icon--coin" picking-mode="Ignore" />
+                    <ui:Label name="gold-balance" text="" class="gold-chip__label" picking-mode="Ignore" />
+                </ui:VisualElement>
+            </ui:VisualElement>
         </ui:VisualElement>
         <ui:VisualElement class="tabs fit-group" picking-mode="Ignore">
             <ui:Button name="tab-ball" text="Pingi" class="tab" />
@@ -47,6 +52,12 @@
                     <ui:VisualElement class="btn__face" picking-mode="Ignore">
                         <ui:VisualElement name="dialog-primary-icon" class="icon icon--play icon--light" picking-mode="Ignore" />
                         <ui:Label name="dialog-primary-label" text="Watch ad" class="btn__label" picking-mode="Ignore" />
+                    </ui:VisualElement>
+                </ui:Button>
+                <ui:Button name="dialog-gold" class="btn btn--gold btn--buy">
+                    <ui:VisualElement class="btn__face" picking-mode="Ignore">
+                        <ui:VisualElement class="icon icon--coin" picking-mode="Ignore" />
+                        <ui:Label name="dialog-gold-label" text="" class="btn__label" picking-mode="Ignore" />
                     </ui:VisualElement>
                 </ui:Button>
                 <ui:Button name="dialog-buy" class="btn btn--buy">

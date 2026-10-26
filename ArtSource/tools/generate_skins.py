@@ -97,17 +97,43 @@ BALLS = {
     "stella": stella,
 }
 
-def paddle(face_fill, edge, extra="", defs=""):
-    return (f'<svg xmlns="http://www.w3.org/2000/svg" width="430" height="131" viewBox="0 0 430 131">{defs}'
-            f'<rect x="0" y="21" width="430" height="110" rx="55" fill="{edge}"/><rect x="0" y="0" width="430" height="110" rx="55" fill="{face_fill}"/>{extra}'
-            f'<rect x="48" y="18" width="150" height="14" rx="7" fill="#FFFFFF" fill-opacity="0.3"/></svg>')
+PW, PH, CAP, BEND, LIP = 430, 110, 55, 12, 21
 
-clip = '<clipPath id="pc"><rect x="0" y="0" width="430" height="110" rx="55"/></clipPath>'
+
+def bar_path(dy=0):
+    mid = PW / 2
+    return (f"M{CAP} {BEND + dy}Q{mid} {-BEND + dy} {PW - CAP} {BEND + dy}"
+            f"A{CAP} {CAP} 0 0 1 {PW - CAP} {PH + BEND + dy}"
+            f"Q{mid} {PH - BEND + dy} {CAP} {PH + BEND + dy}"
+            f"A{CAP} {CAP} 0 0 1 {CAP} {BEND + dy}Z")
+
+
+def top_point(t):
+    x = (1 - t) ** 2 * CAP + 2 * (1 - t) * t * PW / 2 + t ** 2 * (PW - CAP)
+    y = (1 - t) ** 2 * BEND + 2 * (1 - t) * t * -BEND + t ** 2 * BEND
+    return x, y
+
+
+def shine(t1=0.04, t2=0.42, depth=25):
+    x1, y1 = top_point(t1)
+    x2, y2 = top_point(t2)
+    cx = (1 - t1) * (1 - t2) * CAP + ((1 - t1) * t2 + t1 * (1 - t2)) * PW / 2 + t1 * t2 * (PW - CAP)
+    cy = (1 - t1) * (1 - t2) * BEND + ((1 - t1) * t2 + t1 * (1 - t2)) * -BEND + t1 * t2 * BEND
+    return (f'<path d="M{x1:.1f} {y1 + depth:.1f}Q{cx:.1f} {cy + depth:.1f} {x2:.1f} {y2 + depth:.1f}" '
+            f'fill="none" stroke="#FFFFFF" stroke-opacity="0.3" stroke-width="14" stroke-linecap="round"/>')
+
+
+def paddle(face_fill, edge, extra="", defs=""):
+    height = PH + BEND + LIP
+    return (f'<svg xmlns="http://www.w3.org/2000/svg" width="{PW}" height="{height}" viewBox="0 0 {PW} {height}">{defs}'
+            f'<path d="{bar_path(LIP)}" fill="{edge}"/><path d="{bar_path()}" fill="{face_fill}"/>{extra}{shine()}</svg>')
+
+clip = f'<clipPath id="pc"><path d="{bar_path()}"/></clipPath>'
 stripes = '<g clip-path="url(#pc)">' + "".join(f'<path d="M{x} 0h28l-50 110h-28z" fill="#FF8FA3"/>' for x in range(0, 520, 64)) + '</g>'
 grain = '<g clip-path="url(#pc)" fill="none" stroke="#B97A45" stroke-width="5" stroke-linecap="round"><path d="M40 40q80-14 160 0t190 0"/><path d="M20 72q100 16 200 0t190-4"/><path d="M230 26q40 10 80 0"/></g>'
 rainbow_d = '<defs><linearGradient id="rb" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#FF6B57"/><stop offset="0.25" stop-color="#FFC93C"/><stop offset="0.5" stop-color="#7ED957"/><stop offset="0.75" stop-color="#4FA8FF"/><stop offset="1" stop-color="#9B6BFF"/></linearGradient></defs>'
 gold_d = '<defs><linearGradient id="gp" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FFE37A"/><stop offset="1" stop-color="#F2B400"/></linearGradient></defs>'
-sky_clip = '<clipPath id="sc"><rect x="0" y="0" width="430" height="110" rx="55"/></clipPath>'
+sky_clip = f'<clipPath id="sc"><path d="{bar_path()}"/></clipPath>'
 night_stars = ('<g clip-path="url(#sc)" fill="#FFE27A">'
                + "".join(f'<path d="M{x} {y}l4 9 9 4-9 4-4 9-4-9-9-4 9-4z"/>' for x, y in ((92, 30), (168, 66), (240, 26), (300, 70), (372, 38)))
                + '</g><g fill="#FFFFFF" fill-opacity="0.75">'

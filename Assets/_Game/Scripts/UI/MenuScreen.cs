@@ -107,7 +107,7 @@ public sealed class MenuScreen : UIScreen
         {
             var glyph = new VisualElement { pickingMode = PickingMode.Ignore };
             glyph.AddToClassList("icon");
-            glyph.AddToClassList(mode.Kind == GameModeKind.Rush ? "icon--clock" : "icon--play");
+            glyph.AddToClassList(mode.Kind == GameModeKind.Rush ? "icon--clock" : mode.Kind == GameModeKind.Arcade ? "icon--coin" : "icon--play");
             modeArt.Add(glyph);
         }
 

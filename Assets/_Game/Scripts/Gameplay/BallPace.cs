@@ -13,6 +13,15 @@ public static class BallPace
         return new Vector2(direction.x >= 0f ? side : -side, direction.y >= 0f ? pace : -pace);
     }
 
+    public static Vector2 Aim(float offset, Vector2 inward, Vector2 axis, Vector2 reflected, float spread, float carry)
+    {
+        float forward = Mathf.Abs(Vector2.Dot(reflected, inward));
+        float drift = forward > 0.0001f ? Vector2.Dot(reflected, axis) / forward : 0f;
+        float side = Mathf.Clamp(offset, -1f, 1f) * spread + drift * Mathf.Clamp01(carry);
+        if (Mathf.Abs(side) < 0.0001f) side = drift < 0f ? -0.0001f : 0.0001f;
+        return (inward + axis * side).normalized;
+    }
+
     public static Vector2 ServeDirection(float sign, float roll, float pace, float maxSide)
     {
         float side = Mathf.Lerp(ServeWide, ServeNarrow, Mathf.Clamp01(roll)) * maxSide;

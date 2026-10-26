@@ -12,8 +12,12 @@ public sealed class GameOverScreen : UIScreen
     private readonly VisualElement mascot;
     private readonly Button homeButton;
     private readonly Button retryButton;
+    private readonly VisualElement goldRow;
+    private readonly Label goldAmount;
+    private readonly Button doubleButton;
+    private readonly Label doubleLabel;
 
-    public GameOverScreen(VisualElement root, Action onRetry, Action onHome) : base(root)
+    public GameOverScreen(VisualElement root, Action onRetry, Action onHome, Action onDouble = null) : base(root)
     {
         title = root.Q<Label>("title");
         scoreCaption = root.Q<Label>("score-caption");
@@ -24,6 +28,27 @@ public sealed class GameOverScreen : UIScreen
 
         retryButton = Bind("retry-button", onRetry);
         homeButton = Bind("home-button", onHome);
+
+        goldRow = root.Q("gold-row");
+        goldAmount = root.Q<Label>("gold-amount");
+        doubleLabel = root.Q<Label>("double-label");
+        doubleButton = Bind("double-button", onDouble);
+        SetGold(0, false, false);
+    }
+
+    public bool GoldShown => goldRow != null && goldRow.style.display != DisplayStyle.None;
+    public bool DoubleShown => doubleButton != null && doubleButton.style.display != DisplayStyle.None;
+    public string GoldText => goldAmount != null ? goldAmount.text : null;
+
+    public void SetGold(int amount, bool canDouble, bool waiting)
+    {
+        if (goldRow == null) return;
+
+        goldRow.style.display = amount > 0 ? DisplayStyle.Flex : DisplayStyle.None;
+        goldAmount.text = "+" + amount;
+        doubleButton.style.display = canDouble ? DisplayStyle.Flex : DisplayStyle.None;
+        doubleButton.SetEnabled(!waiting);
+        doubleLabel.text = waiting ? Loc.T("Loading…") : Loc.T("2× gold");
     }
 
     public void SetResult(string modeName, int score, int best, int previousBest, bool isNewBest, Sprite happyMascot, Sprite sadMascot)

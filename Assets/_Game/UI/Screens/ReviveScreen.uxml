@@ -1,0 +1,24 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" editor-extension-mode="False">
+    <ui:VisualElement class="scrim" />
+    <ui:VisualElement class="safe overlay" picking-mode="Ignore">
+        <ui:VisualElement class="card">
+            <ui:VisualElement name="mascot" class="card__mascot" picking-mode="Ignore" />
+            <ui:Label text="Keep going?" class="card__title" picking-mode="Ignore" />
+            <ui:Label text="Watch a short ad and keep your score." class="caption card__subtitle" picking-mode="Ignore" />
+            <ui:Label name="revive-count" text="" class="card__number" picking-mode="Ignore" />
+            <ui:VisualElement class="card__actions" picking-mode="Ignore">
+                <ui:Button name="later-button" class="btn btn--secondary">
+                    <ui:VisualElement class="btn__face" picking-mode="Ignore">
+                        <ui:VisualElement class="icon icon--close" picking-mode="Ignore" />
+                    </ui:VisualElement>
+                </ui:Button>
+                <ui:Button name="continue-button" class="btn btn--primary">
+                    <ui:VisualElement class="btn__face" picking-mode="Ignore">
+                        <ui:VisualElement class="icon icon--play icon--light" picking-mode="Ignore" />
+                        <ui:Label text="Keep playing" class="btn__label" picking-mode="Ignore" />
+                    </ui:VisualElement>
+                </ui:Button>
+            </ui:VisualElement>
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>

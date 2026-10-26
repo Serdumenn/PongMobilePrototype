@@ -8,6 +8,18 @@
             <ui:Label name="final-score" text="0" class="card__number" picking-mode="Ignore" />
             <ui:Label name="best-line" text="Best 0" class="caption" picking-mode="Ignore" />
             <ui:Label name="new-best-badge" text="New best!" class="badge" picking-mode="Ignore" />
+            <ui:VisualElement name="gold-row" class="gold-row" picking-mode="Ignore">
+                <ui:VisualElement class="gold-row__amount" picking-mode="Ignore">
+                    <ui:VisualElement class="icon icon--coin" picking-mode="Ignore" />
+                    <ui:Label name="gold-amount" text="" class="gold-row__label" picking-mode="Ignore" />
+                </ui:VisualElement>
+                <ui:Button name="double-button" class="btn btn--gold gold-row__double">
+                    <ui:VisualElement class="btn__face" picking-mode="Ignore">
+                        <ui:VisualElement class="icon icon--play" picking-mode="Ignore" />
+                        <ui:Label name="double-label" text="" class="btn__label" picking-mode="Ignore" />
+                    </ui:VisualElement>
+                </ui:Button>
+            </ui:VisualElement>
             <ui:VisualElement class="card__actions" picking-mode="Ignore">
                 <ui:Button name="home-button" class="btn btn--secondary">
                     <ui:VisualElement class="btn__face" picking-mode="Ignore">

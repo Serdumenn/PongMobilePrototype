@@ -34,6 +34,31 @@ public sealed class CosmeticsService : MonoBehaviour
     }
 
     public int Stars => Inventory != null ? Inventory.Stars : 0;
+    public int Gold => Inventory != null ? Inventory.Gold : 0;
+
+    public void EarnGold(int amount)
+    {
+        if (amount <= 0 || Inventory == null) return;
+
+        Inventory.EarnGold(amount);
+        Inventory.Save();
+        Changed?.Invoke();
+    }
+
+    public bool CanBuyWithGold(CosmeticItem item)
+    {
+        return item != null && item.SoldForGold && !Inventory.IsUnlocked(item) && Gold >= item.GoldPrice;
+    }
+
+    public bool BuyWithGold(CosmeticItem item)
+    {
+        if (!CanBuyWithGold(item) || !Inventory.SpendGold(item.GoldPrice)) return false;
+
+        Inventory.Grant(item.Id);
+        Inventory.Save();
+        Changed?.Invoke();
+        return true;
+    }
 
     public void AddStars(int count)
     {

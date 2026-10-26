@@ -36,6 +36,9 @@ public sealed class ShopScreen : UIScreen
     private readonly Label dialogPrimaryLabel;
     private readonly Button dialogBuy;
     private readonly Label dialogBuyLabel;
+    private readonly Button dialogGold;
+    private readonly Label dialogGoldLabel;
+    private readonly Label goldBalance;
     private readonly Button dialogPass;
 
     private CosmeticCategory category = CosmeticCategory.Ball;
@@ -68,6 +71,9 @@ public sealed class ShopScreen : UIScreen
         dialogPrimaryLabel = root.Q<Label>("dialog-primary-label");
         dialogBuy = root.Q<Button>("dialog-buy");
         dialogBuyLabel = root.Q<Label>("dialog-buy-label");
+        dialogGold = root.Q<Button>("dialog-gold");
+        dialogGoldLabel = root.Q<Label>("dialog-gold-label");
+        goldBalance = root.Q<Label>("gold-balance");
         dialogPass = root.Q<Button>("dialog-pass");
 
         var golden = cosmetics.CatalogAsset.Find("ball_golden");
@@ -82,6 +88,7 @@ public sealed class ShopScreen : UIScreen
         Bind("noads-button", () => StartPurchase(CosmeticCatalog.RemoveAdsProductId));
         Bind("dialog-primary", OnDialogPrimary);
         Bind("dialog-buy", OnDialogBuy);
+        Bind("dialog-gold", OnDialogGold);
         Bind("dialog-pass", OpenPassDialog);
         root.Q("dialog-scrim").RegisterCallback<ClickEvent>(_ => CloseDialog());
 
@@ -147,6 +154,7 @@ public sealed class ShopScreen : UIScreen
     private void Refresh()
     {
         var inventory = cosmetics.Inventory;
+        ShowGoldBalance();
 
         passButton.style.display = inventory.HasPass ? DisplayStyle.None : DisplayStyle.Flex;
         noAdsButton.style.display = inventory.NoAds ? DisplayStyle.None : DisplayStyle.Flex;
@@ -295,6 +303,7 @@ public sealed class ShopScreen : UIScreen
         bool streakOnly = item.Unlock == UnlockKind.Streak || item.Unlock == UnlockKind.Stars;
         dialogPass.style.display = unlocked || streakOnly || cosmetics.Inventory.HasPass ? DisplayStyle.None : DisplayStyle.Flex;
         SetBuy(unlocked || streakOnly ? null : item.ProductId);
+        SetGoldOffer(unlocked ? null : item);
 
         if (unlocked)
         {
@@ -364,6 +373,7 @@ public sealed class ShopScreen : UIScreen
         dialogDots.Clear();
         dialogPass.style.display = DisplayStyle.None;
         dialogBuy.style.display = DisplayStyle.None;
+        if (dialogGold != null) dialogGold.style.display = DisplayStyle.None;
 
         string price = cosmetics.PriceOf(CosmeticCatalog.PassProductId);
         SetPrimary(true, null, price != null ? Loc.T("Get Pass · {0}", price) : Loc.T("Store unavailable"));
@@ -403,6 +413,35 @@ public sealed class ShopScreen : UIScreen
         dialogPrimaryIcon.RemoveFromClassList("icon--check");
         if (icon != null) dialogPrimaryIcon.AddToClassList("icon--" + icon);
         dialogPrimaryLabel.text = label;
+    }
+
+    public string GoldBalanceText => goldBalance != null ? goldBalance.text : null;
+    public bool GoldOfferShown => dialogGold != null && dialogGold.style.display != DisplayStyle.None;
+
+    private void ShowGoldBalance()
+    {
+        if (goldBalance != null) goldBalance.text = cosmetics.Gold.ToString();
+    }
+
+    private void SetGoldOffer(CosmeticItem item)
+    {
+        if (dialogGold == null) return;
+
+        bool offered = item != null && item.SoldForGold;
+        dialogGold.style.display = offered ? DisplayStyle.Flex : DisplayStyle.None;
+        if (!offered) return;
+
+        dialogGoldLabel.text = Loc.T("Unlock for {0} gold", item.GoldPrice);
+        dialogGold.SetEnabled(cosmetics.Gold >= item.GoldPrice);
+    }
+
+    private void OnDialogGold()
+    {
+        var item = dialogItem;
+        if (item == null || !cosmetics.BuyWithGold(item)) return;
+
+        cosmetics.Equip(item);
+        FillItemDialog(item);
     }
 
     private void SetBuy(string productId)

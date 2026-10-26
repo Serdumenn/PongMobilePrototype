@@ -18,6 +18,7 @@ MonoBehaviour:
   <Unlock>k__BackingField: 2
   <UnlockValue>k__BackingField: 10
   <ProductId>k__BackingField: skin_kitty
+  <GoldPrice>k__BackingField: 500
   <Idle>k__BackingField: {fileID: 3286163911610860551, guid: d05238d60b6dc034f9b9e853c9a088e8, type: 3}
   <Happy>k__BackingField: {fileID: 3286163911610860551, guid: aee29ce06acfd9f4583a779fd46e0d51, type: 3}
   <Sad>k__BackingField: {fileID: 3286163911610860551, guid: 07529071f66d28441b8d3a0b44f6ba71, type: 3}

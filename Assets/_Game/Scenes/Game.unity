@@ -319,6 +319,7 @@ GameObject:
   - component: {fileID: 315089638}
   - component: {fileID: 315089639}
   - component: {fileID: 315089640}
+  - component: {fileID: 315089641}
   m_Layer: 0
   m_Name: Services
   m_TagString: Untagged
@@ -490,6 +491,10 @@ MonoBehaviour:
     Clip: {fileID: 8300000, guid: 7aa484c1f9c7daf4480322d82051b51d, type: 3}
     Volume: 0.75
     PitchJitter: 0
+  - Id: 19
+    Clip: {fileID: 8300000, guid: 2dca51a0b8dc0304a92bca623b3ae3a7, type: 3}
+    Volume: 0.7
+    PitchJitter: 0.04
   Voices: 6
   SemitonesPerHit: 0.5
   MaxSemitones: 12
@@ -501,6 +506,7 @@ MonoBehaviour:
   Online: {fileID: 7019952436038793783}
   Moments: {fileID: 871148363}
   Powers: {fileID: 871148365}
+  Coins: {fileID: 871148366}
 --- !u!114 &315089634
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -609,6 +615,23 @@ MonoBehaviour:
   Cosmetics: {fileID: 315089630}
   Moments: {fileID: 871148363}
   Powers: {fileID: 871148365}
+  GoldPerMission: 25
+--- !u!114 &315089641
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 315089627}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 368c4e4dda7db1947a9098694cea2427, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Pingi.Runtime::RunPurse
+  Game: {fileID: 7019952436038793779}
+  Cosmetics: {fileID: 315089630}
+  Coins: {fileID: 871148366}
+  ScorePerGold: 5
 --- !u!1 &517429098
 GameObject:
   m_ObjectHideFlags: 0
@@ -853,6 +876,7 @@ MonoBehaviour:
   Moments: {fileID: 871148363}
   Missions: {fileID: 315089640}
   Powers: {fileID: 871148365}
+  Purse: {fileID: 315089641}
   HintRuns: 3
   RewardDelayMs: 650
   ReviewDelayMs: 1800
@@ -1188,6 +1212,7 @@ GameObject:
   - component: {fileID: 871148363}
   - component: {fileID: 871148364}
   - component: {fileID: 871148365}
+  - component: {fileID: 871148366}
   m_Layer: 0
   m_Name: GameWorld
   m_TagString: Untagged
@@ -1393,6 +1418,36 @@ MonoBehaviour:
   ShieldGap: 0.55
   ShieldThickness: 0.14
   Order: 4
+--- !u!114 &871148366
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 871148360}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5f86dea36fea2a54a80b401f4fee60f4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Pingi.Runtime::GoldCoins
+  Game: {fileID: 7019952436038793779}
+  Layout: {fileID: 248741024}
+  Feel: {fileID: 871148362}
+  Coin: {fileID: 3286163911610860551, guid: b7042a64cb299b5499abccc78126723e, type: 3}
+  Sparkle: {r: 1, g: 0.84, b: 0.35, a: 1}
+  FirstAt: 3
+  GapMin: 3.5
+  GapMax: 6
+  Life: 5
+  EndScale: 0.45
+  Value: 5
+  BigValue: 15
+  BigChance: 0.15
+  Size: 0.62
+  BigSize: 0.82
+  EdgeMargin: 0.6
+  TopMargin: 1.4
+  Order: 3
 --- !u!1 &937802654
 GameObject:
   m_ObjectHideFlags: 0
@@ -1621,7 +1676,7 @@ Transform:
   m_GameObject: {fileID: 1185500007}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: -4, z: 0}
+  m_LocalPosition: {x: 0, y: -3.1, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -1974,6 +2029,9 @@ MonoBehaviour:
   PaceIncreasePercent: 0.013
   MinSideSpeed: 1.5
   MaxSideSpeed: 5.5
+  AimControl: 1
+  AimSpread: 0.6
+  AimCarry: 0.25
   MinVerticalDot: 0.4
   WallBounceJitter: 3
   CollisionSeparation: 0.05
@@ -2910,6 +2968,7 @@ MonoBehaviour:
   RacketEntrance: {fileID: 1185500013}
   MenuBallOffset: 0.45
   Modes:
+  - {fileID: 11400000, guid: 3e5347c82fbe60b4ead57ed76e294c0f, type: 2}
   - {fileID: 11400000, guid: b150161e9e806d849a7ec04ca87537f3, type: 2}
   - {fileID: 11400000, guid: 098ce274e8c35144286e6ad84cf9edb5, type: 2}
 --- !u!114 &7019952436038793781

@@ -253,6 +253,8 @@ public sealed class LocalMatchTests : GameSceneFixture
 
         Click(root.Q("menu").Q<Button>("mode-prev"));
         yield return null;
+        Click(root.Q("menu").Q<Button>("mode-prev"));
+        yield return null;
         Assert.AreEqual("Together", root.Q("menu").Q<Label>("mode-name").text);
 
         Click(root.Q("menu").Q<Button>("play-button"));

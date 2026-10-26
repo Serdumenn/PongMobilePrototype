@@ -140,7 +140,7 @@ public sealed class PowerUps : MonoBehaviour
     {
         EndAll();
         var mode = Game.RunMode;
-        running = mode != null && mode.Kind == GameModeKind.Rush && !Game.BattleRun;
+        running = mode != null && (mode.Kind == GameModeKind.Rush || mode.Kind == GameModeKind.Arcade) && !Game.BattleRun;
         schedule = new PowerSchedule(unchecked(Game.RunSeed ^ SeedSalt), FirstAt, GapMin, GapMax);
         runTime = 0f;
         launched = false;

@@ -43,6 +43,20 @@ Tek kaynak: `Assets/_Game/Data/CosmeticCatalog.asset` ve `Assets/_Game/Data/Cosm
 | Pingi Pass | `pingi_pass` | $4.99 | Her şeyi açar + Golden set |
 | Reklamları kaldır | `remove_ads` | $2.99 | Geçiş reklamları kapanır; ödüllü reklamlar isteğe bağlı kalır |
 
+**Altınla açma (2026-10-27):** skorla ya da reklamla açılan her içerik altınla da açılabilir. Pass'e özel, seri ve görev ödülü içerikler altınla satılmaz.
+
+| Altın fiyatı | İçerik |
+|---|---|
+| 150 | Minty |
+| 200 | Coral raket |
+| 250 | Grape, Candy raket |
+| 300 | Sunny |
+| 400 | Mint tema |
+| 500 | Panda, Kitty, Wood raket, Sunset tema |
+| 750 | Froggy, Rainbow raket, Night tema |
+
+Altın `cosmetics.json` içinde kazanılan ve harcanan toplam olarak tutulur (bakiye = kazanılan − harcanan); iki cihaz birleşirken ikisi de büyük olandan alınır, böylece bir cihazda harcanan altın geri gelmez. Kazanma yolları [modes.md](modes.md) · Arcade'de.
+
 Hepsi **tek seferlik (non-consumable)**, toplam 15 ürün. Fiyatlar Play Console'da belirlenir ve ülke bazında yerelleşir; oyun fiyatı mağazadan okur.
 
 ## Davranış

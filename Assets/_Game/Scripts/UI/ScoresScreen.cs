@@ -26,7 +26,7 @@ public sealed class ScoresScreen : UIScreen
     private readonly Label streakTitle;
     private readonly VisualElement streakDays;
     private readonly Label streakNote;
-    private static readonly string[] Boards = { OnlineScores.ClassicBoard, OnlineScores.RushBoard, OnlineScores.DailyBoard, OnlineScores.CoopBoard };
+    private static readonly string[] Boards = { OnlineScores.ArcadeBoard, OnlineScores.ClassicBoard, OnlineScores.RushBoard, OnlineScores.DailyBoard, OnlineScores.CoopBoard };
 
     private readonly OnlineScores onlineScores;
     private readonly VisualElement worldModes;
@@ -199,7 +199,7 @@ public sealed class ScoresScreen : UIScreen
             return;
         }
 
-        await onlineScores.SyncBestsAsync(game.BestFor(game.FindMode("classic")), game.BestFor(game.FindMode("rush")));
+        await onlineScores.SyncBestsAsync(game.BestFor(game.FindMode("classic")), game.BestFor(game.FindMode("rush")), game.BestFor(game.FindMode("arcade")));
         if (request != worldRequest || !IsVisible || tab != 2) return;
         if (!friends.IsReady)
         {
@@ -229,7 +229,7 @@ public sealed class ScoresScreen : UIScreen
             return;
         }
 
-        await onlineScores.SyncBestsAsync(game.BestFor(game.FindMode("classic")), game.BestFor(game.FindMode("rush")));
+        await onlineScores.SyncBestsAsync(game.BestFor(game.FindMode("classic")), game.BestFor(game.FindMode("rush")), game.BestFor(game.FindMode("arcade")));
         var result = await onlineScores.LoadAsync(board);
         if (request != worldRequest || !IsVisible || tab != 1) return;
         Fill(result, board, false);
@@ -345,6 +345,7 @@ public sealed class ScoresScreen : UIScreen
         {
             OnlineScores.ClassicBoard => Loc.T("Classic"),
             OnlineScores.RushBoard => Loc.T("Rush"),
+            OnlineScores.ArcadeBoard => Loc.T("Arcade"),
             OnlineScores.DailyBoard => Loc.T("Daily"),
             _ => Loc.T("Co-op")
         };

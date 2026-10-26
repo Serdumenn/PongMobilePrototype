@@ -12,6 +12,9 @@ public sealed class DailyMissions : MonoBehaviour
     [SerializeField] private RunMoments Moments;
     [SerializeField] private PowerUps Powers;
 
+    [Header("Rewards")]
+    [SerializeField] private int GoldPerMission = 25;
+
     public event Action Changed;
     public event Action<int> Completed;
     public event Action AllCompleted;
@@ -171,6 +174,7 @@ public sealed class DailyMissions : MonoBehaviour
         bool bonus = log.ClaimBonus();
         log.Save();
         if (Cosmetics != null && completed + (bonus ? 1 : 0) > 0) Cosmetics.AddStars(completed + (bonus ? 1 : 0));
+        if (Cosmetics != null && completed > 0) Cosmetics.EarnGold(completed * GoldPerMission);
         if (bonus) AllCompleted?.Invoke();
         Changed?.Invoke();
     }

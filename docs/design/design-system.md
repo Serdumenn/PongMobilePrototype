@@ -246,6 +246,7 @@ Tüm efektler bize ait. `ArtSource/tools/generate_sfx.py` ile sentezleniyor (mon
 | `sfx_match_win` | C-E-G-C arpeji, uzun E6 ve pırıltı | 1.24 s | 0.85 | Düello ve partide kazanan; ortak rallide yeni rekor |
 | `sfx_milestone` | Hızlı E-A-C#-E arpeji ve A6 pırıltı | 0.62 s | 0.80 | Üst üste 10, 25, 50, 100 vuruş ve sonrası |
 | `sfx_power` | Yükselen G5→D6→G6 ve B6 pırıltı | 0.53 s | 0.75 | Rush'ta güçlendirme alınınca (kalkanda `sfx_shield`) |
+| `sfx_coin` | Kısa B5 → E6 "çın" | 0.39 s | 0.70 | Arcade'de altın alınınca |
 
 - **Yönlendirme:** `AudioManager` (Services) 6 kanalı döngüyle kullanır ve hepsini `MainMixer` → `SFX` grubuna gönderir. `Music` grubu ileride müzik için hazır.
 - **Kamera:** Kamerada `AudioListener` olmalı.

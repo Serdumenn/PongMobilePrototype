@@ -1,10 +1,17 @@
 <ui:UXML xmlns:ui="UnityEngine.UIElements" editor-extension-mode="False">
+    <ui:VisualElement name="thumb-rail" class="thumb-rail" picking-mode="Ignore">
+        <ui:VisualElement class="icon icon--drag thumb-rail__grip" picking-mode="Ignore" />
+    </ui:VisualElement>
     <ui:VisualElement name="hint" class="hint hint--hidden" picking-mode="Ignore">
         <ui:VisualElement class="icon icon--drag" picking-mode="Ignore" />
         <ui:Label text="Drag here to move" class="caption hint__label" picking-mode="Ignore" />
     </ui:VisualElement>
     <ui:VisualElement class="safe" picking-mode="Ignore">
         <ui:VisualElement class="topbar" picking-mode="Ignore">
+            <ui:VisualElement name="gold" class="gold-chip gold-chip--hidden" picking-mode="Ignore">
+                <ui:VisualElement class="icon icon--coin" picking-mode="Ignore" />
+                <ui:Label name="gold-label" text="" class="gold-chip__label" picking-mode="Ignore" />
+            </ui:VisualElement>
             <ui:VisualElement name="rush" class="rush rush--hidden" picking-mode="Ignore">
                 <ui:VisualElement class="rush-bar" picking-mode="Ignore">
                     <ui:VisualElement name="rush-fill" class="rush-bar__fill" picking-mode="Ignore" />

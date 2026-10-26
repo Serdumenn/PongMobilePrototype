@@ -9,7 +9,8 @@ public enum GameModeKind
     PartyTable,
     PortalDuel,
     RushBattle,
-    LiveDuel
+    LiveDuel,
+    Arcade
 }
 
 public enum FieldTopology

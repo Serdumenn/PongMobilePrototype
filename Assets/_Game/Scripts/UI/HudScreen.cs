@@ -23,6 +23,8 @@ public sealed class HudScreen : UIScreen
     private readonly Label ghostDelta;
     private readonly Label perfect;
     private readonly Label banner;
+    private readonly VisualElement gold;
+    private readonly Label goldLabel;
     private readonly VisualElement[] powers = new VisualElement[PowerSchedule.KindCount];
     private readonly VisualElement[] powerFills = new VisualElement[PowerSchedule.KindCount];
 
@@ -41,6 +43,8 @@ public sealed class HudScreen : UIScreen
         ghostDelta = root.Q<Label>("ghost-delta");
         perfect = root.Q<Label>("perfect");
         banner = root.Q<Label>("banner");
+        gold = root.Q("gold");
+        goldLabel = root.Q<Label>("gold-label");
         for (int i = 0; i < powers.Length; i++)
         {
             powers[i] = root.Q($"power-{i}");
@@ -84,6 +88,17 @@ public sealed class HudScreen : UIScreen
         banner.AddToClassList(BannerShowClass);
         bannerJob?.Pause();
         bannerJob = banner.schedule.Execute(() => banner.RemoveFromClassList(BannerShowClass)).StartingIn(BannerMs);
+    }
+
+    public bool GoldShown => gold != null && !gold.ClassListContains("gold-chip--hidden");
+    public string GoldText => goldLabel != null ? goldLabel.text : null;
+
+    public void SetGold(int? amount)
+    {
+        if (gold == null) return;
+
+        gold.EnableInClassList("gold-chip--hidden", !amount.HasValue);
+        if (amount.HasValue) goldLabel.text = amount.Value.ToString();
     }
 
     public void SetPower(PowerKind kind, bool active, float fraction)

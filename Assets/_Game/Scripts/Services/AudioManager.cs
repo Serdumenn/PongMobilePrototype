@@ -22,7 +22,8 @@ public enum Sfx
     AttackWarn,
     Shield,
     Milestone,
-    Power
+    Power,
+    Coin
 }
 
 public sealed class AudioManager : MonoBehaviour
@@ -55,6 +56,7 @@ public sealed class AudioManager : MonoBehaviour
     [SerializeField] private OnlineMatchController Online;
     [SerializeField] private RunMoments Moments;
     [SerializeField] private PowerUps Powers;
+    [SerializeField] private GoldCoins Coins;
 
     private AudioSource[] sources;
     private int nextSource;
@@ -112,6 +114,9 @@ public sealed class AudioManager : MonoBehaviour
         if (Powers == null) Powers = FindFirstObjectByType<PowerUps>();
         if (Powers != null) Powers.Collected += OnPowerCollected;
 
+        if (Coins == null) Coins = FindFirstObjectByType<GoldCoins>();
+        if (Coins != null) Coins.Collected += OnCoinCollected;
+
         if (Game == null) Game = FindFirstObjectByType<SoloGameManager>();
         if (Game == null) return;
 
@@ -148,6 +153,7 @@ public sealed class AudioManager : MonoBehaviour
         }
 
         if (Powers != null) Powers.Collected -= OnPowerCollected;
+        if (Coins != null) Coins.Collected -= OnCoinCollected;
 
         if (Game == null) return;
 
@@ -242,6 +248,11 @@ public sealed class AudioManager : MonoBehaviour
     private void OnMilestoneReached(int streak)
     {
         Play(Sfx.Milestone);
+    }
+
+    private void OnCoinCollected(int amount)
+    {
+        Play(Sfx.Coin);
     }
 
     private void OnPowerCollected(PowerKind kind)

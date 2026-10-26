@@ -29,6 +29,7 @@ public sealed class Paddle : MonoBehaviour
     private float halfLength;
     private Vector3 baseScale;
     private float lengthScale = 1f;
+    private float drop;
     private float currentTiltAngle;
     private FieldSide defaultSide;
     private Vector2 defaultPosition;
@@ -37,6 +38,7 @@ public sealed class Paddle : MonoBehaviour
 
     public FieldSide Side => PlaySide;
     public Vector2 Inward => PlaySide.Inward();
+    public Vector2 Axis => Horizontal ? Vector2.right : Vector2.up;
     public IPaddleController Controller { get; set; }
     public bool InputEnabled { get; set; }
     public bool HasActiveInput { get; private set; }
@@ -118,6 +120,7 @@ public sealed class Paddle : MonoBehaviour
 
     public void ResetPosition()
     {
+        drop = 0f;
         Vector2 home = Horizontal ? new Vector2(0f, basePosition.y) : new Vector2(basePosition.x, 0f);
         rb.position = home;
         transform.position = new Vector3(home.x, home.y, 0f);
@@ -125,8 +128,17 @@ public sealed class Paddle : MonoBehaviour
         currentTiltAngle = 0f;
     }
 
+    public void Lower(float distance)
+    {
+        drop = Mathf.Max(0f, distance);
+        Vector2 spot = WithAxis(AxisValue(rb.position));
+        rb.position = spot;
+        transform.position = new Vector3(spot.x, spot.y, 0f);
+    }
+
     public void PlaceAtHome()
     {
+        drop = 0f;
         rb.position = basePosition;
         transform.position = new Vector3(basePosition.x, basePosition.y, 0f);
         transform.rotation = Quaternion.Euler(0f, 0f, BaseAngle);
@@ -224,6 +236,7 @@ public sealed class Paddle : MonoBehaviour
 
     private Vector2 WithAxis(float value)
     {
-        return Horizontal ? new Vector2(value, basePosition.y) : new Vector2(basePosition.x, value);
+        Vector2 rest = basePosition - Inward * drop;
+        return Horizontal ? new Vector2(value, rest.y) : new Vector2(rest.x, value);
     }
 }

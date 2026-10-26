@@ -19,6 +19,11 @@ public sealed class Ball : MonoBehaviour
     [SerializeField] private float MinSideSpeed = 1.5f;
     [SerializeField] private float MaxSideSpeed = 5.5f;
 
+    [Header("Aim")]
+    [SerializeField] private bool AimControl = true;
+    [SerializeField] private float AimSpread = 0.6f;
+    [SerializeField, Range(0f, 1f)] private float AimCarry = 0.25f;
+
     [Header("Stability")]
     [SerializeField, Range(0.05f, 0.95f)] private float MinVerticalDot = 0.40f;
     [SerializeField] private float WallBounceJitter = 3f;
@@ -59,6 +64,7 @@ public sealed class Ball : MonoBehaviour
     public Paddle Server => server;
     public float CurrentSpeed => currentSpeed;
     public bool Steady => SteadyPace && (layout == null || layout.Topology != FieldTopology.FourSides);
+    public bool Aiming => AimControl && Steady;
     public float SpeedBoost => speedBoost;
     public float Heat => TopSpeed > StartSpeed + 0.0001f ? Mathf.InverseLerp(StartSpeed, TopSpeed, currentSpeed) : 0f;
     public bool InPlay => roundActive && !waitingForServe && rb.simulated;
@@ -290,14 +296,22 @@ public sealed class Ball : MonoBehaviour
         var paddle = collision.collider.GetComponentInParent<Paddle>();
         if (paddle != null)
         {
-            PaddleStruck?.Invoke(paddle, paddle.AxisOffset(rb.position));
+            float offset = paddle.AxisOffset(rb.position);
+            PaddleStruck?.Invoke(paddle, offset);
 
             currentSpeed = Mathf.Min(currentSpeed * (1f + Growth), TopSpeed);
 
             Vector2 inward = paddle.Inward;
-            float along = Vector2.Dot(outDir, inward);
-            if (along < 0f)
-                outDir -= 2f * along * inward;
+            if (Aiming)
+            {
+                outDir = BallPace.Aim(offset, inward, paddle.Axis, outDir, AimSpread, AimCarry);
+            }
+            else
+            {
+                float along = Vector2.Dot(outDir, inward);
+                if (along < 0f)
+                    outDir -= 2f * along * inward;
+            }
 
             outDir = SafeDirection(outDir);
             ApplyVelocity(outDir);

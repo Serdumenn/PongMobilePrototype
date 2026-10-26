@@ -18,9 +18,14 @@ MonoBehaviour:
   <Unlock>k__BackingField: 2
   <UnlockValue>k__BackingField: 15
   <ProductId>k__BackingField: paddle_rainbow
+  <GoldPrice>k__BackingField: 750
   <Idle>k__BackingField: {fileID: 0}
   <Happy>k__BackingField: {fileID: 0}
   <Sad>k__BackingField: {fileID: 0}
+  <Wow>k__BackingField: {fileID: 0}
+  <Accent>k__BackingField: {r: 1, g: 0.42, b: 0.34, a: 1}
+  <Burst>k__BackingField: {fileID: 0}
+  <Sparkle>k__BackingField: 0
   <PaddleSprite>k__BackingField: {fileID: 3286163911610860551, guid: 6344b03909bebd944ac1cde9a0847e8e, type: 3}
   <BackgroundColor>k__BackingField: {r: 1, g: 1, b: 1, a: 1}
   <BlobPrimary>k__BackingField: {r: 1, g: 1, b: 1, a: 1}

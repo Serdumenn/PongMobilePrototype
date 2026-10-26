@@ -76,6 +76,7 @@ public abstract class GameSceneFixture
 
         Game = Object.FindFirstObjectByType<SoloGameManager>();
         Assert.IsNotNull(Game, "SoloGameManager missing in scene");
+        Game.ReviveAvailable = () => false;
         Assert.AreEqual(SoloGameManager.GameState.Menu, Game.State);
     }
 

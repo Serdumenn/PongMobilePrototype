@@ -25,6 +25,7 @@ public sealed class GameUI : MonoBehaviour
     [SerializeField] private RunMoments Moments;
     [SerializeField] private DailyMissions Missions;
     [SerializeField] private PowerUps Powers;
+    [SerializeField] private RunPurse Purse;
 
     [Header("Onboarding")]
     [SerializeField] private int HintRuns = 3;
@@ -65,6 +66,8 @@ public sealed class GameUI : MonoBehaviour
     private GhostCodeScreen ghostCode;
     private FriendsScreen friendsScreen;
     private MissionsScreen missionsScreen;
+    private ReviveScreen reviveScreen;
+    private bool doublingGold;
     private InviteBanner inviteBanner;
     private string pendingInvite;
     private string lastOpponentId;
@@ -103,6 +106,7 @@ public sealed class GameUI : MonoBehaviour
         if (Moments == null) Moments = FindFirstObjectByType<RunMoments>();
         if (Missions == null) Missions = FindFirstObjectByType<DailyMissions>();
         if (Powers == null) Powers = FindFirstObjectByType<PowerUps>();
+        if (Purse == null) Purse = FindFirstObjectByType<RunPurse>();
 
         root = GetComponent<UIDocument>().rootVisualElement;
         root.Query<Button>().ForEach(b => b.RemoveFromClassList(Button.ussClassName));
@@ -113,9 +117,10 @@ public sealed class GameUI : MonoBehaviour
 
         menu = new MenuScreen(root.Q("menu"), OnMenuPlay, OpenSettings, OpenShop, OpenScores, StepMode, OpenMissions);
         missionsScreen = new MissionsScreen(root.Q("missions"), CloseMissions);
+        reviveScreen = new ReviveScreen(root.Q("revive"), ReviveWithAd, DeclineRevive);
         hud = new HudScreen(root.Q("hud"), OnHudPause);
         pause = new PauseScreen(root.Q("pause"), Resume, LeaveFromPause);
-        gameOver = new GameOverScreen(root.Q("game-over"), () => ContinueAfterAd(RetryRun, gameOver.SetInteractable), () => ContinueAfterAd(HomeFromGameOver, gameOver.SetInteractable));
+        gameOver = new GameOverScreen(root.Q("game-over"), () => ContinueAfterAd(RetryRun, gameOver.SetInteractable), () => ContinueAfterAd(HomeFromGameOver, gameOver.SetInteractable), DoubleGold);
         toast = new ToastView(root.Q("toast"));
         settings = new SettingsScreen(root.Q("settings"), CloseSettings, () => Game.ScoreManager.BestFor(SoloScoreManager.BestScoreKey), ResetBests, DeleteOnlineData,
             Online, toast.Show);
@@ -176,6 +181,10 @@ public sealed class GameUI : MonoBehaviour
             Missions.AllCompleted += OnAllMissionsCompleted;
         }
         if (Powers != null) Powers.Collected += OnPowerCollected;
+        if (Purse != null) Purse.Changed += OnPurseChanged;
+        Game.ReviveOffered += OnReviveOffered;
+        Game.Revived += OnRevived;
+        if (Game.ReviveAvailable == null) Game.ReviveAvailable = () => AdManager.Instance != null && AdManager.Instance.IsRewardedReady;
         RefreshMissionsBadge();
 
         built = true;
@@ -207,6 +216,9 @@ public sealed class GameUI : MonoBehaviour
             Missions.AllCompleted -= OnAllMissionsCompleted;
         }
         if (Powers != null) Powers.Collected -= OnPowerCollected;
+        if (Purse != null) Purse.Changed -= OnPurseChanged;
+        Game.ReviveOffered -= OnReviveOffered;
+        Game.Revived -= OnRevived;
         if (Match != null)
         {
             Match.StateChanged -= OnMatchState;
@@ -1063,6 +1075,79 @@ public sealed class GameUI : MonoBehaviour
         hud.ShowBanner(PowerName(kind), false);
     }
 
+    private bool ArcadeRun => Game.RunMode != null && Game.RunMode.Kind == GameModeKind.Arcade;
+
+    private void OnPurseChanged()
+    {
+        hud.SetGold(ArcadeRun && Game.State != SoloGameManager.GameState.Menu ? Purse.Collected : (int?)null);
+        if (gameOver.IsVisible) ShowRunGold();
+    }
+
+    private void ShowRunGold()
+    {
+        if (Purse == null) return;
+        gameOver.SetGold(Purse.LastRunGold, Purse.CanDouble && AdManager.Instance != null, doublingGold);
+    }
+
+    private void DoubleGold()
+    {
+        var ads = AdManager.Instance;
+        if (Purse == null || !Purse.CanDouble || doublingGold) return;
+        if (ads == null || !ads.IsRewardedReady)
+        {
+            toast.Show(Loc.T("No ad available right now. Please try again in a moment."));
+            return;
+        }
+
+        doublingGold = true;
+        ShowRunGold();
+        ads.ShowRewarded(null, earned =>
+        {
+            doublingGold = false;
+            if (earned)
+            {
+                Purse.ApplyDouble();
+                toast.Show(Loc.T("Gold doubled!"));
+            }
+
+            ShowRunGold();
+        });
+    }
+
+    private void OnReviveOffered()
+    {
+        reviveScreen.Present(EquippedBall()?.Sad);
+    }
+
+    private void OnRevived()
+    {
+        if (reviveScreen.IsVisible) reviveScreen.Close();
+    }
+
+    private void ReviveWithAd()
+    {
+        var ads = AdManager.Instance;
+        if (ads == null)
+        {
+            DeclineRevive();
+            return;
+        }
+
+        reviveScreen.SetWaiting(true);
+        ads.ShowRewarded(null, earned =>
+        {
+            reviveScreen.Close();
+            if (earned) Game.AcceptRevive();
+            else Game.DeclineRevive();
+        });
+    }
+
+    private void DeclineRevive()
+    {
+        reviveScreen.Close();
+        Game.DeclineRevive();
+    }
+
     public static string PowerName(PowerKind kind)
     {
         return kind switch
@@ -1120,6 +1205,7 @@ public sealed class GameUI : MonoBehaviour
         switch (state)
         {
             case SoloGameManager.GameState.Menu:
+                if (reviveScreen.IsVisible) reviveScreen.Close();
                 RefreshMissionsBadge();
                 hud.Hide();
                 pause.Hide();
@@ -1161,6 +1247,7 @@ public sealed class GameUI : MonoBehaviour
                 break;
 
             case SoloGameManager.GameState.GameOver:
+                if (reviveScreen.IsVisible) reviveScreen.Close();
                 pause.Hide();
                 SetHint(false);
                 ReviewPrompt.NoteRun(DateTime.Now);
@@ -1192,6 +1279,7 @@ public sealed class GameUI : MonoBehaviour
         var ball = EquippedBall();
         var score = Game.ScoreManager;
         gameOver.SetResult(Game.CurrentMode?.Title, score.Score, score.BestScore, score.PreviousBest, score.IsNewBest, ball?.Happy, ball?.Sad);
+        ShowRunGold();
         gameOver.Show();
     }
 
@@ -1212,6 +1300,7 @@ public sealed class GameUI : MonoBehaviour
         hud.SetTimed(timed);
         if (timed) hud.SetTime(rules.TimeRemaining, rules.TimeLimit);
         hud.SetScore(Game.ScoreManager.Score, false);
+        hud.SetGold(ArcadeRun ? 0 : (int?)null);
         SetHint(GameSettings.HintRunsShown < HintRuns);
     }
 
@@ -1352,6 +1441,12 @@ public sealed class GameUI : MonoBehaviour
         if (missionsScreen.IsVisible)
         {
             CloseMissions();
+            return;
+        }
+
+        if (reviveScreen.IsVisible)
+        {
+            DeclineRevive();
             return;
         }
 

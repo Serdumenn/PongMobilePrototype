@@ -9,6 +9,7 @@ public sealed class OnlineScores : MonoBehaviour
 {
     public const string ClassicBoard = "classic";
     public const string RushBoard = "rush";
+    public const string ArcadeBoard = "arcade";
     public const string DailyBoard = "daily";
     public const string CoopBoard = "coop";
 
@@ -66,6 +67,7 @@ public sealed class OnlineScores : MonoBehaviour
         {
             GameModeKind.Classic => ClassicBoard,
             GameModeKind.Rush => RushBoard,
+            GameModeKind.Arcade => ArcadeBoard,
             _ => null
         };
     }
@@ -119,12 +121,13 @@ public sealed class OnlineScores : MonoBehaviour
         }
     }
 
-    public async Task SyncBestsAsync(int classicBest, int rushBest)
+    public async Task SyncBestsAsync(int classicBest, int rushBest, int arcadeBest = 0)
     {
         if (synced) return;
         synced = true;
         if (classicBest > 0) await SubmitAsync(ClassicBoard, classicBest, null, true);
         if (rushBest > 0) await SubmitAsync(RushBoard, rushBest, null, true);
+        if (arcadeBest > 0) await SubmitAsync(ArcadeBoard, arcadeBest, null, true);
     }
 
     public async Task<Board> LoadAsync(string board)

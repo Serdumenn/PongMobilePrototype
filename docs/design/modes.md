@@ -16,8 +16,27 @@ Görsel öneri (v1 öncesi, 4 modlu taslak): [modes/index.html](modes/index.html
 
 | Mod | Kural | Değerler (`mode_*.asset`) | Açılma |
 |---|---|---|---|
+| **Arcade** (2026-10-27, menüde ilk) | 1 can. Puanlar Rush gibi (Perfect 2, art arda 3+ Perfect 3). Sahada altınlar ve güçlendirmeler çıkar | Normal 1 · Perfect 2 · seri 3 puan | Açık |
 | **Classic** | 1 can. Her vuruş 1 puan. Top her vuruşta hızlanır | — | Açık |
 | **Rush** | 60 saniye; süre ilk vuruşla başlar. Top kaçınca 1 sn sonra yeniden gelir ve süreden 5 sn düşer. Topun raketin orta %25'ine denk gelmesi **Perfect** sayılır | Normal vuruş 1 · Perfect 2 · art arda 3+ Perfect 3 puan | Açık |
+
+### Arcade, altın ve "devam et" (2026-10-27)
+
+Oyun testinden gelen geri bildirim: oyun sadece "vur, skor yap" olarak kalırsa zayıf; altın, olaylar ve geri dönme sebebi gerekiyor. Ürün sahibi kararı: her şeyin olduğu yeni ana mod **Arcade**; Classic ve Rush saf kalır; tek para birimi **Altın**; reklamla iki katlama altına uygulanır, skora asla.
+
+- **Arcade:** yeni oyuncular buradan başlar (mod listesinde ilk). Kurallar Rush puanlamasıyla Classic'in tek canı. Güçlendirmeler Arcade'de de çıkar. Dünya sıralaması `arcade` (UGS panelinde aynı ayarlarla oluşturulmalı).
+- **Sahada altın:** ilk servisten 3 sn sonra, sonra 3,5–6 sn'de bir sahanın üst yarısında altın çıkar, 5 sn'de küçülerek kaybolur. Top değerse alınır: normal altın 5, büyük altın (%15) 15. Sıra ve yer koşunun tohumundan gelir (`GoldCoins`).
+- **Koşu sonu altını:** toplanan altın + her 5 puan için 1 altın (`RunPurse`). Her modda kazanılır; Arcade'de sol üstte sayaç görünür.
+- **2× altın:** oyun sonunda ödüllü reklamla o koşunun altını bir kez daha verilir. Skor ve sıralama değişmez.
+- **Bir kez devam et:** Classic ve Arcade'de koşuyu bitiren kaçıştan sonra "Devam mı?" kartı çıkar (5 sn geri sayım). Reklam izlenirse skor korunur, top yeniden servis edilir. Koşu başına bir kez; Rush, Günlük, Hayalet ve Rush Battle'da yoktur. Reklam hazır değilse kart hiç çıkmaz.
+- **Görev altını:** her tamamlanan günlük görev ayrıca 25 altın verir.
+- Kod: `Assets/_Game/Scripts/Economy/` (`GoldCoins`, `CoinTrigger`, `RunPurse`), `SoloGameManager` (devam et), `ReviveScreen`; testler `GoldTests`, `ArcadePlayTests`.
+
+### Raket konumu ve nişan (2026-10-27)
+
+- **Raket yukarıda:** oyunda raket ekranın altından %19 yukarıda durur (eskiden %10); başparmak raketin altında kalır ve raket görünür. Menüde raket eski yerinde (0,9 birim aşağıda) durur, oyun başlarken yerine geçer; menü düzeni değişmez.
+- **Parmak şeridi:** oyun sırasında en altta silik bir şerit ve sürükleme ikonu başparmağın yerini gösterir.
+- **Kavisli raket:** topun rakete değdiği yer yönü belirler. Sağ uçtan vuruş sağa, sol uçtan sola gider; ortadan vuruş düze yakın çıkar (Perfect bölgesi). Yan hız = vuruş noktası × 0,6 (en çok yan hız sınırı) + gelen açının %25'i (`BallPace.Aim`). Raket görselleri bunu anlatmak için hafif öne kavislidir. Party Table eski fizikte kalır; Canlı Düello kendi simülasyonunu kullanır, henüz değişmedi. Çevrimiçi protokol sürümü 4 oldu.
 
 **Yedekte (v1 sonrası):** Party (çoklu top), Daily (günlük değiştiriciler), Zen, Duel.
 

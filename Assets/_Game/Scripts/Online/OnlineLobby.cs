@@ -9,7 +9,7 @@ using UnityEngine;
 
 public sealed class OnlineLobby : MonoBehaviour
 {
-    public const string ProtocolVersion = "3";
+    public const string ProtocolVersion = "4";
 
     public enum Failure
     {

@@ -35,6 +35,7 @@ public sealed class SoloGameManager : MonoBehaviour
 
     [Header("Menu")]
     [SerializeField] private float MenuBallOffset = 0.45f;
+    [SerializeField] private float MenuPaddleDrop = 0.9f;
 
     [Header("Modes")]
     [SerializeField] private List<GameModeDefinition> Modes = new List<GameModeDefinition>();
@@ -42,6 +43,8 @@ public sealed class SoloGameManager : MonoBehaviour
     public event Action<GameState> StateChanged;
     public event Action<GameModeDefinition> ModeChanged;
     public event Action<HitResult> HitScored;
+    public event Action ReviveOffered;
+    public event Action Revived;
 
     public GameState State { get; private set; } = GameState.Menu;
     public bool IsGameOver => State == GameState.GameOver;
@@ -59,6 +62,9 @@ public sealed class SoloGameManager : MonoBehaviour
     public bool GhostRun => Kind == RunKind.Ghost;
     public GameModeDefinition RunMode { get; private set; }
     public int PointMultiplier { get; set; } = 1;
+    public Func<bool> ReviveAvailable { get; set; }
+    public bool AwaitingRevive { get; private set; }
+    public bool ReviveUsed { get; private set; }
 
     private readonly List<Participant> participants = new List<Participant>();
     private int? nextSeed;
@@ -207,6 +213,7 @@ public sealed class SoloGameManager : MonoBehaviour
 
     public void ReturnToMenu()
     {
+        AwaitingRevive = false;
         Time.timeScale = 1f;
         StopRespawn();
         Kind = RunKind.Normal;
@@ -222,6 +229,7 @@ public sealed class SoloGameManager : MonoBehaviour
 
     public void SetPaused(bool paused)
     {
+        if (AwaitingRevive) return;
         if (paused && State != GameState.Playing) return;
         if (!paused && State != GameState.Paused) return;
 
@@ -266,6 +274,12 @@ public sealed class SoloGameManager : MonoBehaviour
         conceded.BreakStreak();
         if (Rules == null || Rules.OnMiss(conceded))
         {
+            if (CanOfferRevive())
+            {
+                OfferRevive();
+                return;
+            }
+
             GameOver();
             return;
         }
@@ -298,9 +312,49 @@ public sealed class SoloGameManager : MonoBehaviour
         return null;
     }
 
+    private bool CanOfferRevive()
+    {
+        return !ReviveUsed && Kind == RunKind.Normal && Rules != null && !Rules.IsTimed && ReviveAvailable != null && ReviveAvailable();
+    }
+
+    private void OfferRevive()
+    {
+        AwaitingRevive = true;
+        StopRespawn();
+        Time.timeScale = 0f;
+        if (Paddle != null) Paddle.InputEnabled = false;
+        ReviveOffered?.Invoke();
+    }
+
+    public void AcceptRevive()
+    {
+        if (!AwaitingRevive) return;
+
+        AwaitingRevive = false;
+        ReviveUsed = true;
+        Time.timeScale = 1f;
+        if (Paddle != null) Paddle.InputEnabled = true;
+        if (SoloBall != null)
+        {
+            SoloBall.StartRound();
+            SoloBall.EnableServe();
+        }
+
+        Revived?.Invoke();
+    }
+
+    public void DeclineRevive()
+    {
+        if (!AwaitingRevive) return;
+
+        AwaitingRevive = false;
+        GameOver();
+    }
+
     public void GameOver()
     {
         if (State == GameState.GameOver) return;
+        AwaitingRevive = false;
 
         Time.timeScale = 0f;
         StopRespawn();
@@ -338,6 +392,8 @@ public sealed class SoloGameManager : MonoBehaviour
     {
         Time.timeScale = 1f;
         PointMultiplier = 1;
+        AwaitingRevive = false;
+        ReviveUsed = false;
         StopRespawn();
         RunMode = mode;
 
@@ -398,7 +454,11 @@ public sealed class SoloGameManager : MonoBehaviour
 
     private void PlayEntranceAnimations(bool forGameplay)
     {
-        if (Paddle != null) Paddle.ResetPosition();
+        if (Paddle != null)
+        {
+            Paddle.ResetPosition();
+            if (!forGameplay) Paddle.Lower(MenuPaddleDrop);
+        }
 
         if (SoloBall != null)
         {

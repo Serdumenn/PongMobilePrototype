@@ -63,6 +63,7 @@ public abstract class MatchRules
         return mode.Kind switch
         {
             GameModeKind.Rush => new RushRules(mode),
+            GameModeKind.Arcade => new ArcadeRules(mode),
             GameModeKind.RushBattle => new RushRules(mode),
             GameModeKind.TableDuel => new TableDuelRules(mode),
             GameModeKind.CoopRally => new CoopRallyRules(mode),
@@ -185,6 +186,33 @@ public sealed class TableDuelRules : MatchRules
         }
 
         return winner != null;
+    }
+}
+
+public sealed class ArcadeRules : MatchRules
+{
+    public ArcadeRules(GameModeDefinition mode) : base(mode)
+    {
+    }
+
+    public override HitResult ScoreHit(Participant hitter, float paddleOffset)
+    {
+        bool perfect = Mathf.Abs(paddleOffset) <= Mode.PerfectZone;
+        hitter.PerfectStreak = perfect ? hitter.PerfectStreak + 1 : 0;
+
+        int points = !perfect ? 1 : hitter.PerfectStreak >= Mode.ComboThreshold ? Mode.ComboPoints : Mode.PerfectPoints;
+        return new HitResult(points, perfect, hitter.PerfectStreak);
+    }
+
+    public override bool OnMiss(Participant conceded)
+    {
+        conceded.PerfectStreak = 0;
+        return true;
+    }
+
+    public override bool MissWouldEnd(Participant conceded)
+    {
+        return true;
     }
 }
 

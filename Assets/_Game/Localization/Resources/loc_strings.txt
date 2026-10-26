@@ -414,3 +414,10 @@ Shield!	Shield!	GameUI.cs	Kalkan!	シールド！	방패!	Schild!	¡Escudo!	Escu
 Stella	Stella	cos_ball_stella.asset	Yıldız	ステラ	스텔라	Stella	Estela	Estrela	Stella
 Starry	Starry	cos_paddle_starry.asset	Yıldızlı	スターリー	별빛	Sternchen	Estrellado	Estrelado	Étoilé
 Aurora	Aurora	cos_paddle_aurora.asset	Aurora	オーロラ	오로라	Polarlicht	Aurora	Aurora	Aurore
+Arcade	Arcade	mode_arcade.asset, ScoresScreen.cs	Arcade	アーケード	아케이드	Arcade	Arcade	Arcade	Arcade
+Grab gold and power-ups!	Grab gold and power-ups!	mode_arcade.asset	Altınları ve güçlendirmeleri kap!	ゴールドとパワーアップをゲット！	골드와 파워업을 잡아요!	Schnapp dir Gold und Power-ups!	¡Atrapa oro y potenciadores!	Pegue ouro e power-ups!	Attrape l'or et les bonus !
+Keep going?	Keep going?	ReviveScreen.uxml	Devam mı?	続ける？	계속할까요?	Weitermachen?	¿Seguimos?	Continuar?	On continue ?
+Watch a short ad and keep your score.	Watch a short ad and keep your score.	ReviveScreen.uxml	Kısa bir reklam izle, skorun kalsın.	短い広告を見ればスコアはそのまま。	짧은 광고를 보면 점수가 유지돼요.	Kurz Werbung ansehen und Punkte behalten.	Mira un anuncio corto y conserva tu puntuación.	Veja um anúncio curto e mantenha sua pontuação.	Regarde une courte pub et garde ton score.
+2× gold	2× gold	GameOverScreen.cs	2× altın	ゴールド2倍	골드 2배	2× Gold	2× oro	2× ouro	2× or
+Gold doubled!	Gold doubled!	GameUI.cs	Altın ikiye katlandı!	ゴールドが2倍に！	골드 2배 획득!	Gold verdoppelt!	¡Oro duplicado!	Ouro dobrado!	Or doublé !
+Unlock for {0} gold	Unlock for {0} gold	ShopScreen.cs	{0} altınla aç	{0}ゴールドで解放	{0}골드로 열기	Für {0} Gold freischalten	Desbloquear por {0} de oro	Desbloquear por {0} de ouro	Débloquer pour {0} or

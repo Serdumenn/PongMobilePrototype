@@ -118,6 +118,16 @@ def bar():
     return f'<svg xmlns="http://www.w3.org/2000/svg" width="512" height="48" viewBox="0 0 512 48"><rect x="0" y="0" width="512" height="48" rx="24" fill="{WHITE}"/></svg>\n'
 
 
+def coin():
+    shadow = '<circle cx="66" cy="72" r="58" fill="#2B2D42" fill-opacity="0.16"/>'
+    rim = '<circle cx="64" cy="64" r="58" fill="#E5A800"/>'
+    face = '<circle cx="64" cy="60" r="52" fill="#FFD23F"/>'
+    ring = '<circle cx="64" cy="60" r="38" fill="none" stroke="#F2B400" stroke-width="6"/>'
+    star = '<path d="M64 36l7 15 16 2-12 11 3 16-14-8-14 8 3-16-12-11 16-2z" fill="#F2B400" stroke="#F2B400" stroke-width="4" stroke-linejoin="round"/>'
+    shine = '<path d="M34 46a34 34 0 0 1 22-20" fill="none" stroke="#FFFFFF" stroke-opacity="0.7" stroke-width="8" stroke-linecap="round"/>'
+    return f'<svg xmlns="http://www.w3.org/2000/svg" width="132" height="134" viewBox="0 0 132 134">{shadow}{rim}{face}{ring}{star}{shine}</svg>' + chr(10)
+
+
 SHAPES = {
     "spr_fx_star": star,
     "spr_fx_heart": heart,
@@ -133,6 +143,7 @@ SHAPES = {
     "spr_fx_power_double": power_double,
     "spr_fx_power_shield": power_shield,
     "spr_fx_bar": bar,
+    "spr_fx_coin": coin,
 }
 
 

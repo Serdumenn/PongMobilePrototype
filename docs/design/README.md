@@ -89,6 +89,8 @@ Bu klasör oyunun görsel ve UX kararlarının tek kaynağıdır. Her faz bir **
 | 2026-10-15 | **Oyun hissi, ekler:** kostüme özel vuruş şekilleri (Golden ve Astro'da yıldız izi), skora göre yükselen ışık parçacıkları, pentatonik ezgi çalan vuruşlar, Pingi'nin baloncukları ([design-system.md](design-system.md) · Hareket) | Kostümlerin değeri oyunda görünsün, uzun koşu dünyayı değiştirsin, ritim duyulsun, Pingi bir karakter gibi tepki versin |
 | 2026-10-15 | **Günlük görevler:** her gün herkese aynı 3 görev; ödül görev yıldızı; 15/40/80 yıldızda görevle açılan Starry, Stella, Aurora ([modes.md](modes.md)) | Ürün sahibinin kararı. Her gün geri dönmek için sebep; reklam ve satın alma gelirine dokunmaz |
 | 2026-10-15 | **Güçlendirmeler yalnız Rush'ta:** dev raket, yavaş top, çift puan, kalkan; tohumlu jetonlar ([modes.md](modes.md)) | Ürün sahibinin kararı. Classic saf beceri olarak kalır; Rush sıralaması yayından önce sıfırlanacak |
+| 2026-10-27 | **Raket yukarı + parmak şeridi + kavisli raket:** oyunda raket %19 yükseklikte, vuruş noktası yönü belirler ([modes.md](modes.md)) | İkinci oyun testi: raket başparmağın altında görünmüyordu; vuruşta nişan alma yoktu |
+| 2026-10-27 | **Arcade modu ve Altın:** yeni ana mod (altın, güçlendirmeler), tek para birimi Altın, altınla kostüm, oyun sonu 2× altın ve bir kez devam et reklamları ([modes.md](modes.md), [cosmetics.md](cosmetics.md)) | Ürün sahibinin kararı. Classic ve Rush saf kalır; reklam skoru değil altını katlar, sıralama adil kalır |
 
 ## Asset takibi
 
@@ -121,6 +123,9 @@ Durumlar: `Brief → WIP → Review → Approved → Integrated`
 | Görev ödülleri (Stella × 4 ifade, Starry, Aurora) | SVG sprite | Integrated | `generate_skins.py`; top ifadeleri 200, raketler 430 doku boyutunda içe aktarılır |
 | `ui_icon_star/big_paddle/double` | SVG ikon | Integrated | Görev düğmesi ve güçlendirme çipleri |
 | `sfx_power` | SFX | Integrated | Güçlendirme sesi, `generate_sfx.py` |
+| `spr_fx_coin`, `ui_icon_coin` | SVG | Integrated | Altın parası (sahada) ve altın ikonu (HUD, oyun sonu, mağaza) |
+| `sfx_coin` | SFX | Integrated | Altın sesi, `generate_sfx.py` |
+| Kavisli raketler (8 kostüm + 4 oyuncu rengi) | SVG sprite | Integrated | `generate_skins.py` `bar_path`; 12 birim öne kavis |
 
 ## Lisans kaydı
 

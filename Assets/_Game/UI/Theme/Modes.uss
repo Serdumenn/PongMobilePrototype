@@ -633,3 +633,21 @@
     font-size: 44px;
     -unity-font-definition: url("/Assets/_Game/Fonts/fnt_fredoka_bold_sdf.asset");
 }
+
+.thumb-rail {
+    position: absolute;
+    left: 20%;
+    right: 20%;
+    bottom: 3%;
+    height: 7%;
+    align-items: center;
+    justify-content: center;
+    border-radius: 96px;
+    background-color: var(--color-hint);
+}
+
+.thumb-rail__grip {
+    width: 72px;
+    height: 72px;
+    -unity-background-image-tint-color: var(--color-hint-icon);
+}

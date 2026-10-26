@@ -133,6 +133,12 @@ def power():
     return s
 
 
+def coin():
+    s = tone(note("B5"), note("B5"), 0.12, 0.05, ((1.0, 1.0), (3.0, 0.15)))
+    mix(s, tone(note("E6"), note("E6"), 0.32, 0.1, ((1.0, 1.0), (2.0, 0.2))), 0.07, 0.9)
+    return s
+
+
 def countdown_tick():
     return marimba(note("G5"), 0.18, 0.05, 0.22)
 
@@ -209,6 +215,7 @@ SOUNDS = {
     "sfx_shield": shield,
     "sfx_milestone": milestone,
     "sfx_power": power,
+    "sfx_coin": coin,
 }
 
 

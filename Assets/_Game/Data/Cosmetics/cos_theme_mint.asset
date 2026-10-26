@@ -18,9 +18,14 @@ MonoBehaviour:
   <Unlock>k__BackingField: 1
   <UnlockValue>k__BackingField: 30
   <ProductId>k__BackingField: theme_mint
+  <GoldPrice>k__BackingField: 400
   <Idle>k__BackingField: {fileID: 0}
   <Happy>k__BackingField: {fileID: 0}
   <Sad>k__BackingField: {fileID: 0}
+  <Wow>k__BackingField: {fileID: 0}
+  <Accent>k__BackingField: {r: 1, g: 0.42, b: 0.34, a: 1}
+  <Burst>k__BackingField: {fileID: 0}
+  <Sparkle>k__BackingField: 0
   <PaddleSprite>k__BackingField: {fileID: 0}
   <BackgroundColor>k__BackingField: {r: 0.9019608, g: 0.98039216, b: 0.9529412, a: 1}
   <BlobPrimary>k__BackingField: {r: 0.7882353, g: 0.94509804, b: 0.8901961, a: 1}

@@ -21,6 +21,8 @@ public sealed class CosmeticInventory
         public bool HasPass;
         public bool NoAds;
         public int Stars;
+        public int GoldEarned;
+        public int GoldSpent;
     }
 
     private readonly string path;
@@ -28,6 +30,7 @@ public sealed class CosmeticInventory
 
     public bool HasPass => data.HasPass;
     public int Stars => data.Stars;
+    public int Gold => Math.Max(0, data.GoldEarned - data.GoldSpent);
     public bool NoAds => data.NoAds;
 
     private CosmeticInventory(string path, SaveData data)
@@ -93,6 +96,8 @@ public sealed class CosmeticInventory
         data.HasPass |= o.HasPass;
         data.NoAds |= o.NoAds;
         data.Stars = Math.Max(data.Stars, o.Stars);
+        data.GoldEarned = Math.Max(data.GoldEarned, o.GoldEarned);
+        data.GoldSpent = Math.Max(data.GoldSpent, o.GoldSpent);
         if (string.IsNullOrEmpty(data.Ball)) data.Ball = o.Ball;
         if (string.IsNullOrEmpty(data.Paddle)) data.Paddle = o.Paddle;
         if (string.IsNullOrEmpty(data.Theme)) data.Theme = o.Theme;
@@ -124,6 +129,18 @@ public sealed class CosmeticInventory
     public void AddStars(int count)
     {
         if (count > 0) data.Stars += count;
+    }
+
+    public void EarnGold(int amount)
+    {
+        if (amount > 0) data.GoldEarned += amount;
+    }
+
+    public bool SpendGold(int amount)
+    {
+        if (amount <= 0 || Gold < amount) return false;
+        data.GoldSpent += amount;
+        return true;
     }
 
     public bool Grant(string itemId)
