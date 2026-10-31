@@ -12,13 +12,14 @@ public sealed class HeatPlayTests : GameSceneFixture
         for (int i = 0; i < WaitFrames && !done(); i++) yield return null;
     }
 
-    private Ball ServeAndHold()
+    private IEnumerator ServeAndHold()
     {
         var ball = Game.Ball;
         Game.StartGameFromMenu();
+        yield return Until(() => ball.WaitingForServe);
+        Assert.IsTrue(ball.WaitingForServe, "The ball never got ready to serve");
         ball.ServeToward(Vector2.zero, Vector2.up);
         Hold(ball);
-        return ball;
     }
 
     private static void Hold(Ball ball)
@@ -49,7 +50,8 @@ public sealed class HeatPlayTests : GameSceneFixture
     {
         yield return LoadGame();
 
-        var ball = ServeAndHold();
+        yield return ServeAndHold();
+        var ball = Game.Ball;
         Assert.AreEqual(0f, ball.Heat, 0.0001f);
 
         ball.ScaleSpeed(1.2f);
@@ -69,7 +71,8 @@ public sealed class HeatPlayTests : GameSceneFixture
     {
         yield return LoadGame();
 
-        var ball = ServeAndHold();
+        yield return ServeAndHold();
+        var ball = Game.Ball;
         var feel = ball.GetComponent<BallFeel>();
         float calmTrail = feel.TrailTime;
         yield return null;
@@ -94,7 +97,8 @@ public sealed class HeatPlayTests : GameSceneFixture
     {
         yield return LoadGame();
 
-        var ball = ServeAndHold();
+        yield return ServeAndHold();
+        var ball = Game.Ball;
         var face = ball.GetComponent<BallFace>();
         var view = ball.GetComponentInChildren<SpriteRenderer>();
         var look = Object.FindFirstObjectByType<CosmeticsService>().Equipped(CosmeticCategory.Ball);
