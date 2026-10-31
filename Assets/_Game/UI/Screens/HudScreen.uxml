@@ -12,6 +12,11 @@
                 <ui:VisualElement class="icon icon--coin" picking-mode="Ignore" />
                 <ui:Label name="gold-label" text="" class="gold-chip__label" picking-mode="Ignore" />
             </ui:VisualElement>
+            <ui:VisualElement name="lives" class="gold-chip lives-chip gold-chip--hidden" picking-mode="Ignore">
+                <ui:VisualElement name="life-0" class="icon icon--heart" picking-mode="Ignore" />
+                <ui:VisualElement name="life-1" class="icon icon--heart" picking-mode="Ignore" />
+                <ui:VisualElement name="life-2" class="icon icon--heart" picking-mode="Ignore" />
+            </ui:VisualElement>
             <ui:VisualElement name="rush" class="rush rush--hidden" picking-mode="Ignore">
                 <ui:VisualElement class="rush-bar" picking-mode="Ignore">
                     <ui:VisualElement name="rush-fill" class="rush-bar__fill" picking-mode="Ignore" />
@@ -30,6 +35,19 @@
         <ui:Label name="score-label" text="0" class="hud-score" picking-mode="Ignore" />
         <ui:Label name="ghost-delta" text="" class="ghost-delta ghost-delta--hidden" picking-mode="Ignore" />
         <ui:Label name="combo" text="" class="combo combo--hidden" picking-mode="Ignore" />
+        <ui:VisualElement name="event-card" class="event-card event-card--hidden" picking-mode="Ignore">
+            <ui:VisualElement class="event-card__badge" picking-mode="Ignore">
+                <ui:VisualElement name="event-icon" class="icon icon--light" picking-mode="Ignore" />
+            </ui:VisualElement>
+            <ui:VisualElement class="event-card__body" picking-mode="Ignore">
+                <ui:Label name="event-title" text="" class="event-card__title" picking-mode="Ignore" />
+                <ui:Label name="event-goal" text="" class="event-card__goal" picking-mode="Ignore" />
+                <ui:VisualElement class="event-card__track" picking-mode="Ignore">
+                    <ui:VisualElement name="event-time" class="event-card__time" picking-mode="Ignore" />
+                </ui:VisualElement>
+            </ui:VisualElement>
+            <ui:Label name="event-count" text="" class="event-card__count" picking-mode="Ignore" />
+        </ui:VisualElement>
         <ui:VisualElement name="powers" class="powers" picking-mode="Ignore">
             <ui:VisualElement name="power-0" class="power power--hidden" picking-mode="Ignore">
                 <ui:VisualElement class="icon icon--big-paddle icon--light" picking-mode="Ignore" />

@@ -25,6 +25,15 @@ public sealed class HudScreen : UIScreen
     private readonly Label banner;
     private readonly VisualElement gold;
     private readonly Label goldLabel;
+    private readonly VisualElement lives;
+    private readonly VisualElement[] hearts = new VisualElement[3];
+    private readonly VisualElement eventCard;
+    private readonly VisualElement eventIcon;
+    private readonly Label eventTitle;
+    private readonly Label eventGoal;
+    private readonly VisualElement eventTime;
+    private readonly Label eventCount;
+    private string eventIconClass;
     private readonly VisualElement[] powers = new VisualElement[PowerSchedule.KindCount];
     private readonly VisualElement[] powerFills = new VisualElement[PowerSchedule.KindCount];
 
@@ -45,6 +54,14 @@ public sealed class HudScreen : UIScreen
         banner = root.Q<Label>("banner");
         gold = root.Q("gold");
         goldLabel = root.Q<Label>("gold-label");
+        lives = root.Q("lives");
+        for (int i = 0; i < hearts.Length; i++) hearts[i] = root.Q($"life-{i}");
+        eventCard = root.Q("event-card");
+        eventIcon = root.Q("event-icon");
+        eventTitle = root.Q<Label>("event-title");
+        eventGoal = root.Q<Label>("event-goal");
+        eventTime = root.Q("event-time");
+        eventCount = root.Q<Label>("event-count");
         for (int i = 0; i < powers.Length; i++)
         {
             powers[i] = root.Q($"power-{i}");
@@ -75,6 +92,7 @@ public sealed class HudScreen : UIScreen
         combo.AddToClassList("combo--hidden");
         perfect.RemoveFromClassList("perfect--show");
         HideBanner();
+        HideEvent();
         shownSeconds = -1;
     }
 
@@ -88,6 +106,57 @@ public sealed class HudScreen : UIScreen
         banner.AddToClassList(BannerShowClass);
         bannerJob?.Pause();
         bannerJob = banner.schedule.Execute(() => banner.RemoveFromClassList(BannerShowClass)).StartingIn(BannerMs);
+    }
+
+    public bool EventShown => eventCard != null && !eventCard.ClassListContains("event-card--hidden");
+    public string EventTitleText => eventTitle != null ? eventTitle.text : null;
+    public string EventCountText => eventCount != null ? eventCount.text : null;
+
+    public void ShowEvent(string icon, string title, string goal)
+    {
+        if (eventCard == null) return;
+
+        if (!string.IsNullOrEmpty(eventIconClass)) eventIcon.RemoveFromClassList(eventIconClass);
+        eventIconClass = "icon--" + icon;
+        eventIcon.AddToClassList(eventIconClass);
+        eventTitle.text = title;
+        eventGoal.text = goal;
+        eventCard.RemoveFromClassList("event-card--hidden");
+    }
+
+    public void SetEventProgress(string count, float timeLeft)
+    {
+        if (eventCard == null) return;
+
+        eventCount.text = count;
+        eventTime.style.width = Length.Percent(Mathf.Clamp01(timeLeft) * 100f);
+    }
+
+    public void HideEvent()
+    {
+        eventCard?.AddToClassList("event-card--hidden");
+    }
+
+    public bool LivesShown => lives != null && !lives.ClassListContains("gold-chip--hidden");
+
+    public int HeartsLeft
+    {
+        get
+        {
+            int left = 0;
+            foreach (var heart in hearts)
+                if (heart != null && !heart.ClassListContains("life--lost")) left++;
+            return left;
+        }
+    }
+
+    public void SetLives(int? left)
+    {
+        if (lives == null) return;
+
+        lives.EnableInClassList("gold-chip--hidden", !left.HasValue);
+        if (!left.HasValue) return;
+        for (int i = 0; i < hearts.Length; i++) hearts[i]?.EnableInClassList("life--lost", i >= left.Value);
     }
 
     public bool GoldShown => gold != null && !gold.ClassListContains("gold-chip--hidden");

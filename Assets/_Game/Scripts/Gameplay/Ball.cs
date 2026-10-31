@@ -102,10 +102,12 @@ public sealed class Ball : MonoBehaviour
 
     private void Start()
     {
-        rb.simulated = false;
-        col.enabled = false;
         if (ServePoint != null && DefaultServer != null)
             serveGap = Mathf.Max(0.1f, ServePoint.position.y - DefaultServer.Home.y);
+        if (InPlay) return;
+
+        rb.simulated = false;
+        col.enabled = false;
         SnapToServePoint();
     }
 

@@ -4,6 +4,9 @@ using UnityEngine.UIElements;
 
 public sealed class GameOverScreen : UIScreen
 {
+    private const float XpDelay = 0.35f;
+    private const float XpSeconds = 0.9f;
+
     private readonly Label title;
     private readonly Label scoreCaption;
     private readonly Label finalScore;
@@ -16,6 +19,11 @@ public sealed class GameOverScreen : UIScreen
     private readonly Label goldAmount;
     private readonly Button doubleButton;
     private readonly Label doubleLabel;
+    private readonly VisualElement xpRow;
+    private readonly Label xpLevel;
+    private readonly Label xpText;
+    private readonly VisualElement xpFill;
+    private IVisualElementScheduledItem xpAnimation;
 
     public GameOverScreen(VisualElement root, Action onRetry, Action onHome, Action onDouble = null) : base(root)
     {
@@ -34,11 +42,53 @@ public sealed class GameOverScreen : UIScreen
         doubleLabel = root.Q<Label>("double-label");
         doubleButton = Bind("double-button", onDouble);
         SetGold(0, false, false);
+
+        xpRow = root.Q("xp-row");
+        xpLevel = root.Q<Label>("xp-level");
+        xpText = root.Q<Label>("xp-text");
+        xpFill = root.Q("xp-fill");
+        SetXp(0, default, default, null);
     }
 
     public bool GoldShown => goldRow != null && goldRow.style.display != DisplayStyle.None;
     public bool DoubleShown => doubleButton != null && doubleButton.style.display != DisplayStyle.None;
     public string GoldText => goldAmount != null ? goldAmount.text : null;
+    public bool XpShown => xpRow != null && xpRow.style.display != DisplayStyle.None;
+    public string XpText => xpText != null ? xpText.text : null;
+    public string XpLevel => xpLevel != null ? xpLevel.text : null;
+
+    public void SetXp(int gained, RoadStanding start, RoadStanding end, string levelUp)
+    {
+        if (xpRow == null) return;
+
+        xpAnimation?.Pause();
+        xpRow.style.display = gained > 0 ? DisplayStyle.Flex : DisplayStyle.None;
+        if (gained <= 0) return;
+
+        bool up = end.Level > start.Level;
+        xpRow.EnableInClassList("xp-row--up", up);
+        xpText.text = up && !string.IsNullOrEmpty(levelUp) ? levelUp : $"+{gained} XP";
+        xpLevel.text = start.Level.ToString();
+        xpFill.style.width = Length.Percent(100f * start.Fraction);
+
+        float began = Time.unscaledTime + XpDelay;
+        bool done = false;
+        xpAnimation = Root.schedule.Execute(() =>
+        {
+            float t = Mathf.Clamp01((Time.unscaledTime - began) / XpSeconds);
+            float shown;
+            if (!up) shown = Mathf.Lerp(start.Fraction, end.Fraction, t);
+            else if (t < 0.5f) shown = Mathf.Lerp(start.Fraction, 1f, t * 2f);
+            else
+            {
+                xpLevel.text = end.Level.ToString();
+                shown = Mathf.Lerp(0f, end.Fraction, t * 2f - 1f);
+            }
+
+            xpFill.style.width = Length.Percent(100f * shown);
+            done = t >= 1f;
+        }).Every(16).Until(() => done);
+    }
 
     public void SetGold(int amount, bool canDouble, bool waiting)
     {

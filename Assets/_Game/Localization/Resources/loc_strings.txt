@@ -1,13 +1,13 @@
 key	en	note	tr	ja	ko	de	es	pt	fr
-So close!	So close!	GameOverScreen.uxml, GameOverScreen.cs, MatchResultScreen.cs, OnlineResultScreen.cs	Az kaldı!	おしい！	아깝다!	Knapp daneben!	¡Casi!	Quase!	Presque !
+So close!	So close!	GameOverScreen.uxml, AdventureResultScreen.cs, GameOverScreen.cs, MatchResultScreen.cs, OnlineResultScreen.cs	Az kaldı!	おしい！	아깝다!	Knapp daneben!	¡Casi!	Quase!	Presque !
 Score	Score	GameOverScreen.uxml, GameOverScreen.cs	Skor	スコア	점수	Punkte	Puntos	Pontos	Score
-New best!	New best!	GameOverScreen.uxml, MatchResultScreen.cs	Yeni rekor!	自己ベスト！	최고 기록!	Neuer Rekord!	¡Nuevo récord!	Novo recorde!	Nouveau record !
-Play again	Play again	GameOverScreen.uxml, RushResultScreen.uxml	Tekrar oyna	もう一回	다시 하기	Nochmal	Jugar otra vez	Jogar de novo	Rejouer
+New best!	New best!	GameOverScreen.uxml, HudScreen.uxml, GameUI.cs, MatchResultScreen.cs	Yeni rekor!	自己ベスト！	최고 기록!	Neuer Rekord!	¡Nuevo récord!	Novo recorde!	Nouveau record !
+Play again	Play again	GameOverScreen.uxml, RushResultScreen.uxml, AdventureResultScreen.cs	Tekrar oyna	もう一回	다시 하기	Nochmal	Jugar otra vez	Jogar de novo	Rejouer
 Your ghost code	Your ghost code	GhostCodeScreen.uxml	Hayalet kodun	あなたのゴーストコード	내 고스트 코드	Dein Geistercode	Tu código fantasma	Seu código fantasma	Ton code fantôme
 Friends type it in Challenges to race your run. It works for 7 days.	Friends type it in Challenges to race your run. It works for 7 days.	GhostCodeScreen.uxml	Arkadaşların koşunla yarışmak için bunu Meydan Okuma'ya yazar. 7 gün geçerli.	友だちが「チャレンジ」で入力すると、あなたのプレイと勝負できます。7日間有効です。	친구가 '챌린지'에서 입력하면 내 플레이와 대결할 수 있어요. 7일 동안 유효해요.	Freunde geben ihn unter Challenges ein und treten gegen deinen Lauf an. 7 Tage gültig.	Tus amigos lo escriben en Desafíos para competir contra tu partida. Vale por 7 días.	Seus amigos digitam em Desafios para disputar sua partida. Vale por 7 dias.	Tes amis le saisissent dans Défis pour affronter ta partie. Valable 7 jours.
 Copy	Copy	FriendsScreen.uxml, GhostCodeScreen.uxml, LobbyScreen.uxml	Kopyala	コピー	복사	Kopieren	Copiar	Copiar	Copier
 Share	Share	FriendsScreen.uxml, GhostCodeScreen.uxml, LobbyScreen.uxml	Paylaş	シェア	공유	Teilen	Compartir	Compartilhar	Partager
-Done	Done	GhostCodeScreen.uxml	Tamam	OK	완료	Fertig	Listo	Pronto	Terminé
+Done	Done	GhostCodeScreen.uxml, MissionsScreen.uxml, RoadScreen.uxml	Tamam	OK	완료	Fertig	Listo	Pronto	Terminé
 Ghost	Ghost	GhostRaceScreen.uxml, GhostResultScreen.uxml, GhostRace.cs, GhostRaceScreen.cs	Hayalet	ゴースト	고스트	Geist	Fantasma	Fantasma	Fantôme
 You beat the ghost!	You beat the ghost!	GhostResultScreen.uxml, GhostResultScreen.cs	Hayaleti yendin!	ゴーストに勝った！	고스트를 이겼어요!	Geist besiegt!	¡Venciste al fantasma!	Você venceu o fantasma!	Fantôme battu !
 Ghost Challenge	Ghost Challenge	GhostResultScreen.uxml, HubScreen.uxml	Hayalet Yarışı	ゴーストチャレンジ	고스트 챌린지	Geisterrennen	Desafío fantasma	Desafio fantasma	Défi fantôme
@@ -52,7 +52,7 @@ Ball leaves through the portal	Ball leaves through the portal	OnlineHudScreen.ux
 Your serve · tap to start	Your serve · tap to start	OnlineHudScreen.uxml	Servis sende · başlamak için dokun	あなたのサーブ・タップでスタート	내 서브 · 탭해서 시작	Dein Aufschlag · tippe zum Start	Tu saque · toca para empezar	Seu saque · toque para começar	Ton service · touche pour commencer
 Leave match?	Leave match?	OnlineHudScreen.uxml, RushBattleScreen.uxml	Maçtan çıkılsın mı?	対戦をやめますか？	대전에서 나갈까요?	Spiel verlassen?	¿Salir de la partida?	Sair da partida?	Quitter la partie ?
 Your friend wins if you leave.	Your friend wins if you leave.	OnlineHudScreen.uxml	Çıkarsan arkadaşın kazanır.	退出すると相手の勝ちになります。	나가면 친구가 이겨요.	Wenn du gehst, gewinnt dein Freund.	Si sales, gana tu amigo.	Se você sair, seu amigo vence.	Si tu pars, ton ami gagne.
-Keep playing	Keep playing	OnlineHudScreen.uxml, RushBattleScreen.uxml	Oynamaya devam	続ける	계속하기	Weiterspielen	Seguir jugando	Continuar jogando	Continuer
+Keep playing	Keep playing	OnlineHudScreen.uxml, ReviveScreen.uxml, RushBattleScreen.uxml	Oynamaya devam	続ける	계속하기	Weiterspielen	Seguir jugando	Continuar jogando	Continuer
 Your friend's connection dropped. We'll wait 10 seconds before ending the match.	Your friend's connection dropped. We'll wait 10 seconds before ending the match.	OnlineHudScreen.uxml	Arkadaşının bağlantısı koptu. Maçı bitirmeden önce 10 saniye bekleyeceğiz.	相手の接続が切れました。対戦を終える前に10秒待ちます。	친구의 연결이 끊겼어요. 대전을 끝내기 전에 10초 기다릴게요.	Die Verbindung deines Freundes ist weg. Wir warten 10 Sekunden, bevor das Spiel endet.	Tu amigo perdió la conexión. Esperaremos 10 segundos antes de terminar la partida.	A conexão do seu amigo caiu. Vamos esperar 10 segundos antes de encerrar a partida.	Ton ami a perdu la connexion. On attend 10 secondes avant de terminer la partie.
 Leave match	Leave match	OnlineHudScreen.uxml	Maçtan çık	対戦をやめる	대전 나가기	Spiel verlassen	Salir de la partida	Sair da partida	Quitter la partie
 You win!	You win!	OnlineResultScreen.uxml, MatchResultScreen.cs, OnlineResultScreen.cs	Kazandın!	あなたの勝ち！	승리!	Gewonnen!	¡Ganaste!	Você venceu!	Gagné !
@@ -122,7 +122,7 @@ Rainbow	Rainbow	cos_paddle_rainbow.asset	Gökkuşağı	レインボー	무지개
 Teal	Teal	cos_paddle_teal.asset	Turkuaz	ティール	청록	Petrol	Turquesa	Turquesa	Turquoise
 Wood	Wood	cos_paddle_wood.asset	Ahşap	ウッド	나무	Holz	Madera	Madeira	Bois
 Mint	Mint	cos_theme_mint.asset	Nane	ミント	민트	Minze	Menta	Menta	Menthe
-Night	Night	cos_theme_night.asset	Gece	ナイト	밤	Nacht	Noche	Noite	Nuit
+Night	Night	cos_theme_night.asset, adventure_book.asset	Gece	ナイト	밤	Nacht	Noche	Noite	Nuit
 Soft Pop	Soft Pop	cos_theme_softpop.asset	Soft Pop	ソフトポップ	소프트 팝	Soft Pop	Soft Pop	Soft Pop	Soft Pop
 Sunset	Sunset	cos_theme_sunset.asset	Gün Batımı	サンセット	노을	Abendrot	Atardecer	Pôr do sol	Crépuscule
 Language	Language	SettingsScreen.uxml	Dil	言語	언어	Sprache	Idioma	Idioma	Langue
@@ -264,7 +264,7 @@ Best co-op rally	Best co-op rally	ScoresScreen.cs	En iyi ortak ralli	協力ラ�
 Day {0}: {1}. Come back tomorrow!	Day {0}: {1}. Come back tomorrow!	ScoresScreen.cs	{0}. gün: {1}. Yarın tekrar gel!	{0}日目：{1}。また明日！	{0}일째: {1}. 내일 또 만나요!	Tag {0}: {1}. Komm morgen wieder!	Día {0}: {1}. ¡Vuelve mañana!	Dia {0}: {1}. Volte amanhã!	Jour {0} : {1}. Reviens demain !
 Day {0}: {1}. Play today to keep it!	Day {0}: {1}. Play today to keep it!	ScoresScreen.cs	{0}. gün: {1}. Seriyi korumak için bugün oyna!	{0}日目：{1}。今日プレイしてキープ！	{0}일째: {1}. 오늘 플레이해서 이어가요!	Tag {0}: {1}. Spiel heute, um dranzubleiben!	Día {0}: {1}. ¡Juega hoy para mantenerla!	Dia {0}: {1}. Jogue hoje para manter!	Jour {0} : {1}. Joue aujourd'hui pour garder ta série !
 Today · {0}	Today · {0}	ScoresScreen.cs	Bugün · {0}	今日・{0}	오늘 · {0}	Heute · {0}	Hoy · {0}	Hoje · {0}	Aujourd'hui · {0}
-Loading…	Loading…	ScoresScreen.cs, ShopScreen.cs	Yükleniyor…	読み込み中…	불러오는 중…	Lädt…	Cargando…	Carregando…	Chargement…
+Loading…	Loading…	GameOverScreen.cs, ScoresScreen.cs, ShopScreen.cs	Yükleniyor…	読み込み中…	불러오는 중…	Lädt…	Cargando…	Carregando…	Chargement…
 World rankings are not available.	World rankings are not available.	ScoresScreen.cs	Dünya sıralaması şu anda kullanılamıyor.	ワールドランキングは利用できません。	세계 랭킹을 이용할 수 없어요.	Die Weltrangliste ist nicht verfügbar.	La clasificación mundial no está disponible.	O ranking mundial não está disponível.	Le classement mondial n'est pas disponible.
 You're offline. Connect to see the world rankings.	You're offline. Connect to see the world rankings.	ScoresScreen.cs	Çevrimdışısın. Dünya sıralamasını görmek için bağlan.	オフラインです。ワールドランキングを見るには接続してください。	오프라인이에요. 세계 랭킹을 보려면 연결하세요.	Du bist offline. Verbinde dich, um die Weltrangliste zu sehen.	Sin conexión. Conéctate para ver la clasificación mundial.	Você está offline. Conecte-se para ver o ranking mundial.	Tu es hors ligne. Connecte-toi pour voir le classement mondial.
 Rankings open soon.	Rankings open soon.	ScoresScreen.cs	Sıralamalar yakında açılıyor.	ランキングはまもなく公開。	랭킹이 곧 열려요.	Ranglisten kommen bald.	Las clasificaciones abren pronto.	Os rankings abrem em breve.	Les classements arrivent bientôt.
@@ -296,7 +296,7 @@ Get Pass · {0}	Get Pass · {0}	ShopScreen.cs	Pass al · {0}	Passを購入・{0}
 Store unavailable	Store unavailable	ShopScreen.cs	Mağaza kullanılamıyor	ストアを利用できません	스토어를 이용할 수 없어요	Store nicht verfügbar	Tienda no disponible	Loja indisponível	Boutique indisponible
 Buy · {0}	Buy · {0}	ShopScreen.cs	Satın al · {0}	購入・{0}	구매 · {0}	Kaufen · {0}	Comprar · {0}	Comprar · {0}	Acheter · {0}
 The ad was closed early, so it didn't count.	The ad was closed early, so it didn't count.	ShopScreen.cs	Reklam erken kapatıldı, sayılmadı.	広告が途中で閉じられたため、カウントされませんでした。	광고를 중간에 닫아서 카운트되지 않았어요.	Die Werbung wurde zu früh geschlossen und zählt nicht.	El anuncio se cerró antes, así que no contó.	O anúncio foi fechado antes, então não contou.	La pub a été fermée trop tôt, elle ne compte pas.
-No ad available right now. Please try again in a moment.	No ad available right now. Please try again in a moment.	ShopScreen.cs	Şu anda reklam yok. Lütfen birazdan tekrar dene.	今は広告がありません。少ししてからもう一度試してください。	지금은 광고가 없어요. 잠시 후 다시 시도해 주세요.	Gerade ist keine Werbung verfügbar. Versuch es gleich nochmal.	No hay anuncios por ahora. Inténtalo de nuevo en un momento.	Nenhum anúncio disponível agora. Tente de novo em instantes.	Aucune pub disponible pour le moment. Réessaie dans un instant.
+No ad available right now. Please try again in a moment.	No ad available right now. Please try again in a moment.	GameUI.cs, ShopScreen.cs	Şu anda reklam yok. Lütfen birazdan tekrar dene.	今は広告がありません。少ししてからもう一度試してください。	지금은 광고가 없어요. 잠시 후 다시 시도해 주세요.	Gerade ist keine Werbung verfügbar. Versuch es gleich nochmal.	No hay anuncios por ahora. Inténtalo de nuevo en un momento.	Nenhum anúncio disponível agora. Tente de novo em instantes.	Aucune pub disponible pour le moment. Réessaie dans un instant.
 The store isn't available right now. Please try again later.	The store isn't available right now. Please try again later.	ShopScreen.cs	Mağaza şu anda kullanılamıyor. Lütfen daha sonra tekrar dene.	現在ストアを利用できません。あとでもう一度試してください。	지금은 스토어를 이용할 수 없어요. 나중에 다시 시도해 주세요.	Der Store ist gerade nicht verfügbar. Bitte versuch es später nochmal.	La tienda no está disponible ahora. Inténtalo más tarde.	A loja não está disponível agora. Tente mais tarde.	La boutique n'est pas disponible. Réessaie plus tard.
 A purchase is already in progress.	A purchase is already in progress.	ShopScreen.cs	Zaten süren bir satın alma var.	すでに購入処理中です。	이미 구매가 진행 중이에요.	Ein Kauf läuft bereits.	Ya hay una compra en curso.	Já existe uma compra em andamento.	Un achat est déjà en cours.
 This item can't be purchased right now.	This item can't be purchased right now.	ShopScreen.cs	Bu öğe şu anda satın alınamıyor.	このアイテムは今は購入できません。	이 아이템은 지금 구매할 수 없어요.	Dieses Item kann gerade nicht gekauft werden.	Este artículo no se puede comprar ahora.	Este item não pode ser comprado agora.	Cet objet ne peut pas être acheté pour le moment.
@@ -396,8 +396,8 @@ New missions every day	New missions every day	MissionsScreen.uxml, MissionsScree
 All done! New missions tomorrow	All done! New missions tomorrow	MissionsScreen.cs	Hepsi tamam! Yarın yeni görevler	全部クリア！明日また新しいミッション	모두 완료! 내일 새 미션	Alles geschafft! Morgen gibt es neue	¡Todo listo! Mañana hay más	Tudo feito! Amanhã tem mais	Tout est fait ! D'autres demain
 Make {0} hits in one Classic run	Make {0} hits in one Classic run	MissionsScreen.cs	Tek Klasik oyununda {0} vuruş yap	クラシック1回で{0}回打ち返す	클래식 한 판에서 {0}번 치기	Schaffe {0} Treffer in einer Runde Klassisch	Haz {0} golpes en una partida de Clásico	Faça {0} rebatidas em uma partida de Clássico	Fais {0} frappes en une partie de Classique
 Score {0} in one Rush run	Score {0} in one Rush run	MissionsScreen.cs	Tek Rush oyununda {0} puan yap	ラッシュ1回で{0}点取る	러시 한 판에서 {0}점 얻기	Hol {0} Punkte in einer Runde Rush	Consigue {0} puntos en una partida de Rush	Faça {0} pontos em uma partida de Rush	Marque {0} points en une partie de Rush
-Make {0} Perfect hits	Make {0} Perfect hits	MissionsScreen.cs	{0} Mükemmel vuruş yap	パーフェクトを{0}回出す	퍼펙트 {0}번 치기	Schaffe {0} perfekte Treffer	Consigue {0} golpes perfectos	Faça {0} rebatidas perfeitas	Réussis {0} frappes parfaites
-Make {0} hits	Make {0} hits	MissionsScreen.cs	{0} vuruş yap	{0}回打ち返す	{0}번 치기	Schaffe {0} Treffer	Haz {0} golpes	Faça {0} rebatidas	Fais {0} frappes
+Make {0} Perfect hits	Make {0} Perfect hits	AdventureScreen.cs, MissionsScreen.cs	{0} Mükemmel vuruş yap	パーフェクトを{0}回出す	퍼펙트 {0}번 치기	Schaffe {0} perfekte Treffer	Consigue {0} golpes perfectos	Faça {0} rebatidas perfeitas	Réussis {0} frappes parfaites
+Make {0} hits	Make {0} hits	AdventureScreen.cs, GameUI.cs, MissionsScreen.cs	{0} vuruş yap	{0}回打ち返す	{0}번 치기	Schaffe {0} Treffer	Haz {0} golpes	Faça {0} rebatidas	Fais {0} frappes
 Hit {0} in a row	Hit {0} in a row	MissionsScreen.cs	Üst üste {0} vuruş yap	{0}回連続で打ち返す	{0}번 연속 치기	Schaffe {0} Treffer in Folge	Golpea {0} seguidos	Rebata {0} seguidas	Frappe {0} fois d'affilée
 Play {0} runs	Play {0} runs	MissionsScreen.cs	{0} oyun oyna	{0}回プレイする	{0}판 플레이하기	Spiele {0} Runden	Juega {0} partidas	Jogue {0} partidas	Joue {0} parties
 Make {0} close saves	Make {0} close saves	MissionsScreen.cs	{0} kıl payı kurtarış yap	ギリギリセーブを{0}回する	아슬아슬한 세이브 {0}번	Schaffe {0} knappe Rettungen	Haz {0} salvadas al límite	Faça {0} defesas no limite	Fais {0} sauvetages de justesse
@@ -414,10 +414,59 @@ Shield!	Shield!	GameUI.cs	Kalkan!	シールド！	방패!	Schild!	¡Escudo!	Escu
 Stella	Stella	cos_ball_stella.asset	Yıldız	ステラ	스텔라	Stella	Estela	Estrela	Stella
 Starry	Starry	cos_paddle_starry.asset	Yıldızlı	スターリー	별빛	Sternchen	Estrellado	Estrelado	Étoilé
 Aurora	Aurora	cos_paddle_aurora.asset	Aurora	オーロラ	오로라	Polarlicht	Aurora	Aurora	Aurore
-Arcade	Arcade	mode_arcade.asset, ScoresScreen.cs	Arcade	アーケード	아케이드	Arcade	Arcade	Arcade	Arcade
+Arcade	Arcade	ScoresScreen.cs, mode_arcade.asset	Arcade	アーケード	아케이드	Arcade	Arcade	Arcade	Arcade
 Grab gold and power-ups!	Grab gold and power-ups!	mode_arcade.asset	Altınları ve güçlendirmeleri kap!	ゴールドとパワーアップをゲット！	골드와 파워업을 잡아요!	Schnapp dir Gold und Power-ups!	¡Atrapa oro y potenciadores!	Pegue ouro e power-ups!	Attrape l'or et les bonus !
 Keep going?	Keep going?	ReviveScreen.uxml	Devam mı?	続ける？	계속할까요?	Weitermachen?	¿Seguimos?	Continuar?	On continue ?
 Watch a short ad and keep your score.	Watch a short ad and keep your score.	ReviveScreen.uxml	Kısa bir reklam izle, skorun kalsın.	短い広告を見ればスコアはそのまま。	짧은 광고를 보면 점수가 유지돼요.	Kurz Werbung ansehen und Punkte behalten.	Mira un anuncio corto y conserva tu puntuación.	Veja um anúncio curto e mantenha sua pontuação.	Regarde une courte pub et garde ton score.
 2× gold	2× gold	GameOverScreen.cs	2× altın	ゴールド2倍	골드 2배	2× Gold	2× oro	2× ouro	2× or
 Gold doubled!	Gold doubled!	GameUI.cs	Altın ikiye katlandı!	ゴールドが2倍に！	골드 2배 획득!	Gold verdoppelt!	¡Oro duplicado!	Ouro dobrado!	Or doublé !
 Unlock for {0} gold	Unlock for {0} gold	ShopScreen.cs	{0} altınla aç	{0}ゴールドで解放	{0}골드로 열기	Für {0} Gold freischalten	Desbloquear por {0} de oro	Desbloquear por {0} de ouro	Débloquer pour {0} or
+Ball Storm!	Ball Storm!	GameUI.cs	Top Fırtınası!	ボールストーム！	공 폭풍!	Ballsturm!	¡Tormenta de bolas!	Tempestade de bolas!	Tempête de balles !
+Gold Rain!	Gold Rain!	GameUI.cs	Altın Yağmuru!	ゴールドの雨！	골드 비!	Goldregen!	¡Lluvia de oro!	Chuva de ouro!	Pluie d'or !
+Target Board!	Target Board!	GameUI.cs	Hedef Tahtası!	まと当て！	과녁 맞히기!	Zielscheiben!	¡Tiro al blanco!	Tiro ao alvo!	Tir sur cibles !
+Giant Pingi!	Giant Pingi!	GameUI.cs	Dev Pingi!	ジャイアントピンギ！	거대 핑기!	Riesen-Pingi!	¡Pingi gigante!	Pingi gigante!	Pingi géant !
+Keep {0} balls in play	Keep {0} balls in play	GameUI.cs	{0} topu oyunda tut	ボールを{0}個キープ	공 {0}개를 지키기	Halte {0} Bälle im Spiel	Mantén {0} bolas en juego	Mantenha {0} bolas em jogo	Garde {0} balles en jeu
+Grab {0} coins	Grab {0} coins	AdventureScreen.cs, GameUI.cs	{0} altın kap	コインを{0}枚ゲット	코인 {0}개 잡기	Schnapp dir {0} Münzen	Atrapa {0} monedas	Pegue {0} moedas	Attrape {0} pièces
+Hit all {0} targets	Hit all {0} targets	AdventureScreen.cs, GameUI.cs	{0} hedefin hepsini vur	まと{0}個を全部当てる	과녁 {0}개 모두 맞히기	Triff alle {0} Ziele	Golpea los {0} blancos	Acerte os {0} alvos	Touche les {0} cibles
+Event complete! +{0} gold	Event complete! +{0} gold	GameUI.cs	Başardın! +{0} altın	クリア！+{0}ゴールド	성공! +{0}골드	Geschafft! +{0} Gold	¡Logrado! +{0} de oro	Conseguiu! +{0} de ouro	Réussi ! +{0} or
+Time's up!	Time's up!	GameUI.cs	Süre doldu!	時間切れ！	시간 종료!	Zeit um!	¡Se acabó el tiempo!	Acabou o tempo!	Temps écoulé !
+Complete {0} Arcade events	Complete {0} Arcade events	MissionsScreen.cs	{0} Arcade olayını başar	アーケードのイベントを{0}回クリア	아케이드 이벤트 {0}번 성공	Schaffe {0} Arcade-Events	Supera {0} eventos de Arcade	Vença {0} eventos do Arcade	Réussis {0} événements Arcade
+Collect {0} gold	Collect {0} gold	MissionsScreen.cs	{0} altın topla	ゴールドを{0}集める	골드 {0} 모으기	Sammle {0} Gold	Consigue {0} de oro	Junte {0} de ouro	Ramasse {0} or
+Level	Level	MenuScreen.uxml	Seviye	レベル	레벨	Level	Nivel	Nível	Niveau
+Level {0}	Level {0}	RoadScreen.cs, ShopScreen.cs	Seviye {0}	レベル{0}	레벨 {0}	Level {0}	Nivel {0}	Nível {0}	Niveau {0}
+Level {0}!	Level {0}!	GameUI.cs	Seviye {0}!	レベル{0}！	레벨 {0}!	Level {0}!	¡Nivel {0}!	Nível {0}!	Niveau {0} !
+Pingi Road	Pingi Road	RoadScreen.uxml	Pingi Yolu	ピンギロード	핑기 로드	Pingi-Pfad	Camino Pingi	Caminho Pingi	Route Pingi
+Play to earn XP. Every level has a reward.	Play to earn XP. Every level has a reward.	RoadScreen.uxml	Oynadıkça XP kazan. Her seviyenin bir ödülü var.	遊んでXPをためよう。レベルごとにごほうび！	플레이하고 XP를 모으세요. 레벨마다 보상이 있어요.	Spiele und sammle XP. Jedes Level hat eine Belohnung.	Juega para ganar XP. Cada nivel tiene un premio.	Jogue para ganhar XP. Cada nível tem um prêmio.	Joue pour gagner de l'XP. Chaque niveau a sa récompense.
++{0} gold	+{0} gold	GameUI.cs, RoadScreen.cs	+{0} altın	+{0}ゴールド	+{0} 골드	+{0} Gold	+{0} de oro	+{0} de ouro	+{0} or
+{0} gold	{0} gold	RoadScreen.cs	{0} altın	{0}ゴールド	{0} 골드	{0} Gold	{0} de oro	{0} de ouro	{0} or
+{0} mission star	{0} mission star	RoadScreen.cs	{0} görev yıldızı	ミッションスター{0}個	미션 별 {0}개	{0} Aufgabenstern	{0} estrella de misión	{0} estrela de missão	{0} étoile de mission
+{0} mission stars	{0} mission stars	RoadScreen.cs	{0} görev yıldızı	ミッションスター{0}個	미션 별 {0}개	{0} Aufgabensterne	{0} estrellas de misión	{0} estrelas de missão	{0} étoiles de mission
+{0} mission stars!\n{1} is unlocked.	{0} mission stars!\n{1} is unlocked.	RewardScreen.cs	{0} görev yıldızı!\n{1} açıldı.	ミッションスター{0}個！\n{1}を解放	미션 별 {0}개!\n{1} 열림!	{0} Aufgabensterne!\n{1} ist freigeschaltet.	¡{0} estrellas de misión!\n{1} desbloqueado.	{0} estrelas de missão!\n{1} desbloqueado.	{0} étoiles de mission !\n{1} est débloqué.
+Level {0}!\n{1} is unlocked.	Level {0}!\n{1} is unlocked.	RewardScreen.cs	Seviye {0}!\n{1} açıldı.	レベル{0}！\n{1}を解放	레벨 {0}!\n{1} 열림!	Level {0}!\n{1} ist freigeschaltet.	¡Nivel {0}!\n{1} desbloqueado.	Nível {0}!\n{1} desbloqueado.	Niveau {0} !\n{1} est débloqué.
+Reach level {0} on the Pingi Road to unlock.\nYour level: {1}	Reach level {0} on the Pingi Road to unlock.\nYour level: {1}	ShopScreen.cs	Açmak için Pingi Yolu'nda {0}. seviyeye ulaş.\nSeviyen: {1}	ピンギロードでレベル{0}になると解放。\n今のレベル：{1}	핑기 로드에서 레벨 {0}이 되면 열려요.\n내 레벨: {1}	Erreiche Level {0} auf dem Pingi-Pfad zum Freischalten.\nDein Level: {1}	Llega al nivel {0} del Camino Pingi para desbloquear.\nTu nivel: {1}	Chegue ao nível {0} do Caminho Pingi para desbloquear.\nSeu nível: {1}	Atteins le niveau {0} sur la Route Pingi pour débloquer.\nTon niveau : {1}
+Comet	Comet	cos_paddle_comet.asset	Kuyruklu Yıldız	コメット	혜성	Komet	Cometa	Cometa	Comète
+Champ	Champ	cos_ball_champ.asset	Şampiyon	チャンプ	챔프	Champ	Campeón	Campeão	Champion
+Ocean	Ocean	cos_theme_ocean.asset	Okyanus	オーシャン	바다	Ozean	Océano	Oceano	Océan
+Adventure	Adventure	AdventureScreen.uxml, mode_adventure.asset	Macera	アドベンチャー	모험	Abenteuer	Aventura	Aventura	Aventure
+30 stages in 3 worlds. Collect the stars!	30 stages in 3 worlds. Collect the stars!	mode_adventure.asset	3 dünyada 30 bölüm. Yıldızları topla!	3つのワールドに30ステージ。スターを集めよう！	3개 월드, 30개 스테이지. 별을 모으세요!	30 Stufen in 3 Welten. Sammle die Sterne!	30 fases en 3 mundos. ¡Consigue las estrellas!	30 fases em 3 mundos. Pegue as estrelas!	30 niveaux dans 3 mondes. Ramasse les étoiles !
+Meadow	Meadow	adventure_book.asset	Çayır	草原	초원	Wiese	Pradera	Campina	Prairie
+Beach	Beach	adventure_book.asset	Kumsal	ビーチ	해변	Strand	Playa	Praia	Plage
+{0} stages	{0} stages	AdventureScreen.cs	{0} bölüm	{0}ステージ	스테이지 {0}개	{0} Stufen	{0} fases	{0} fases	{0} niveaux
+Finish {0} to open	Finish {0} to open	AdventureScreen.cs	Açmak için {0} dünyasını bitir	{0}をクリアすると解放	{0}을(를) 끝내면 열려요	Schließe {0} ab zum Freischalten	Termina {0} para abrir	Termine {0} para abrir	Termine {0} pour débloquer
+Stage {0}	Stage {0}	AdventureResultScreen.cs, AdventureScreen.cs, GameUI.cs	Bölüm {0}	ステージ{0}	스테이지 {0}	Stufe {0}	Fase {0}	Fase {0}	Niveau {0}
+Survive {0} seconds	Survive {0} seconds	AdventureScreen.cs	{0} saniye dayan	{0}秒たえよう	{0}초 버티기	Überstehe {0} Sekunden	Aguanta {0} segundos	Aguente {0} segundos	Tiens {0} secondes
+{0} sec	{0} sec	AdventureScreen.cs	{0} sn	{0}秒	{0}초	{0} s	{0} s	{0} s	{0} s
+Fast ball	Fast ball	AdventureScreen.cs	Hızlı top	速いボール	빠른 공	Schneller Ball	Bola rápida	Bola rápida	Balle rapide
+Giant ball	Giant ball	AdventureScreen.cs	Dev top	巨大ボール	거대한 공	Riesenball	Bola gigante	Bola gigante	Balle géante
+Bumpers	Bumpers	AdventureScreen.cs	Engeller	バンパー	범퍼	Puffer	Obstáculos	Obstáculos	Obstacles
+Moving bumpers	Moving bumpers	AdventureScreen.cs	Hareketli engeller	動くバンパー	움직이는 범퍼	Bewegliche Puffer	Obstáculos móviles	Obstáculos móveis	Obstacles mobiles
+Moving targets	Moving targets	AdventureScreen.cs	Hareketli hedefler	動く的	움직이는 표적	Bewegliche Ziele	Dianas móviles	Alvos móveis	Cibles mobiles
+Best: {0} of 3 stars	Best: {0} of 3 stars	AdventureScreen.cs	En iyi: 3 yıldızdan {0}	ベスト：3つ中{0}つのスター	최고: 별 3개 중 {0}개	Bestwert: {0} von 3 Sternen	Mejor: {0} de 3 estrellas	Melhor: {0} de 3 estrelas	Meilleur : {0} étoiles sur 3
+First clear: +{0} gold	First clear: +{0} gold	AdventureScreen.cs	İlk geçiş: +{0} altın	初クリア：+{0}ゴールド	첫 클리어: +{0} 골드	Erster Sieg: +{0} Gold	Primera vez: +{0} de oro	Primeira vez: +{0} de ouro	Première victoire : +{0} or
+3 tries. Tries left become stars.	3 tries. Tries left become stars.	AdventureScreen.uxml	3 hakkın var. Kalan hakların yıldız olur.	チャンスは3回。残ったチャンスがスターになる。	기회는 3번. 남은 기회가 별이 돼요.	3 Versuche. Übrige Versuche werden zu Sternen.	3 intentos. Los que te queden serán estrellas.	3 tentativas. As que sobrarem viram estrelas.	3 essais. Les essais restants deviennent des étoiles.
+Play	Play	AdventureScreen.uxml	Oyna	プレイ	플레이	Spielen	Jugar	Jogar	Jouer
+Stage clear!	Stage clear!	AdventureResultScreen.cs	Bölüm tamam!	ステージクリア！	스테이지 클리어!	Stufe geschafft!	¡Fase superada!	Fase concluída!	Niveau réussi !
+Perfect! All 3 stars	Perfect! All 3 stars	AdventureResultScreen.cs	Kusursuz! 3 yıldız	パーフェクト！スター3つ	완벽해요! 별 3개	Perfekt! Alle 3 Sterne	¡Perfecto! 3 estrellas	Perfeito! 3 estrelas	Parfait ! 3 étoiles
+Keep more tries for more stars	Keep more tries for more stars	AdventureResultScreen.cs	Daha çok yıldız için hak kaybetme	チャンスを残すとスターが増える	기회를 아끼면 별이 늘어요	Spar Versuche für mehr Sterne	Guarda intentos para más estrellas	Guarde tentativas para mais estrelas	Garde des essais pour plus d'étoiles
+Next	Next	AdventureResultScreen.uxml, AdventureResultScreen.cs	Sonraki	次へ	다음	Weiter	Siguiente	Próxima	Suivant
+{0} of {1} stars	{0} of {1} stars	GameUI.cs	{0}/{1} yıldız	スター{0}/{1}	별 {0}/{1}	{0} von {1} Sternen	{0} de {1} estrellas	{0} de {1} estrelas	{0} étoiles sur {1}

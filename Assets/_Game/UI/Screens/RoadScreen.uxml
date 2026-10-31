@@ -1,0 +1,31 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" editor-extension-mode="False">
+    <ui:VisualElement name="road-scrim" class="scrim" />
+    <ui:VisualElement class="safe overlay" picking-mode="Ignore">
+        <ui:VisualElement class="card road-card">
+            <ui:VisualElement name="road-mascot" class="card__mascot" picking-mode="Ignore" />
+            <ui:Label text="Pingi Road" class="card__title" picking-mode="Ignore" />
+            <ui:Label text="Play to earn XP. Every level has a reward." class="caption card__subtitle" picking-mode="Ignore" />
+            <ui:VisualElement class="road-head" picking-mode="Ignore">
+                <ui:VisualElement class="road-badge" picking-mode="Ignore">
+                    <ui:Label name="road-level" text="1" class="road-badge__number fit-skip" picking-mode="Ignore" />
+                </ui:VisualElement>
+                <ui:VisualElement class="mission__body" picking-mode="Ignore">
+                    <ui:Label name="road-title" text="" class="mission__text" picking-mode="Ignore" />
+                    <ui:VisualElement class="mission__track" picking-mode="Ignore">
+                        <ui:VisualElement name="road-fill" class="mission__fill mission__fill--reward" picking-mode="Ignore" />
+                    </ui:VisualElement>
+                </ui:VisualElement>
+                <ui:Label name="road-xp" text="" class="mission__count road-head__xp fit-skip" picking-mode="Ignore" />
+            </ui:VisualElement>
+            <ui:ScrollView name="road-list" class="road-list" mode="Vertical" horizontal-scroller-visibility="Hidden" vertical-scroller-visibility="Hidden" />
+            <ui:VisualElement class="card__actions" picking-mode="Ignore">
+                <ui:Button name="road-back-button" class="btn btn--primary">
+                    <ui:VisualElement class="btn__face" picking-mode="Ignore">
+                        <ui:VisualElement class="icon icon--check icon--light" picking-mode="Ignore" />
+                        <ui:Label text="Done" class="btn__label" picking-mode="Ignore" />
+                    </ui:VisualElement>
+                </ui:Button>
+            </ui:VisualElement>
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>

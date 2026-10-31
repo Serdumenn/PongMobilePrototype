@@ -17,6 +17,7 @@ CS_LITERAL = r'"((?:[^"\\]|\\.)*)"'
 CS_T = re.compile(r"\bLoc\.T\(\s*" + CS_LITERAL)
 CS_PLURAL = re.compile(r"\bLoc\.Plural\(\s*" + CS_LITERAL + r"\s*,\s*" + CS_LITERAL)
 ASSET_TEXT = re.compile(r"<(DisplayName|Tagline)>k__BackingField: (.*)$", re.M)
+WORLD_TEXT = re.compile(r"<Name>k__BackingField: (.*)$", re.M)
 
 
 SUFFIX = re.compile(r"#[A-Za-z][\w-]*$")
@@ -83,6 +84,11 @@ def collect(ignore):
             name = os.path.basename(path)
             for match in ASSET_TEXT.finditer(open(path, encoding="utf-8").read()):
                 add(yaml_unquote(match.group(2)), name)
+
+    book = os.path.join(GAME, "Data", "adventure_book.asset")
+    if os.path.exists(book):
+        for match in WORLD_TEXT.finditer(open(book, encoding="utf-8").read()):
+            add(yaml_unquote(match.group(1)), os.path.basename(book))
 
     return found
 

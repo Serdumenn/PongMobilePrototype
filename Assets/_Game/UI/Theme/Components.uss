@@ -258,6 +258,15 @@
 .icon--big-paddle { background-image: url("/Assets/_Game/Art/UI/Icons/ui_icon_big_paddle.svg"); }
 .icon--double { background-image: url("/Assets/_Game/Art/UI/Icons/ui_icon_double.svg"); }
 .icon--coin { background-image: url("/Assets/_Game/Art/UI/Icons/ui_icon_coin.svg"); }
+.icon--storm { background-image: url("/Assets/_Game/Art/UI/Icons/ui_icon_storm.svg"); }
+.icon--target { background-image: url("/Assets/_Game/Art/UI/Icons/ui_icon_target.svg"); }
+.icon--giant { background-image: url("/Assets/_Game/Art/UI/Icons/ui_icon_giant.svg"); }
+.icon--level { background-image: url("/Assets/_Game/Art/UI/Icons/ui_icon_level.svg"); }
+.icon--map { background-image: url("/Assets/_Game/Art/UI/Icons/ui_icon_map.svg"); }
+.icon--star-fill { background-image: url("/Assets/_Game/Art/UI/Icons/ui_icon_star_fill.svg"); }
+.icon--leaf { background-image: url("/Assets/_Game/Art/UI/Icons/ui_icon_leaf.svg"); }
+.icon--wave { background-image: url("/Assets/_Game/Art/UI/Icons/ui_icon_wave.svg"); }
+.icon--moon { background-image: url("/Assets/_Game/Art/UI/Icons/ui_icon_moon.svg"); }
 
 .caption {
     color: var(--color-ink-muted);
@@ -510,4 +519,19 @@
     min-width: 176px;
     justify-content: center;
     align-items: flex-end;
+}
+
+.lives-chip {
+    padding: 14px 22px;
+}
+
+.lives-chip .icon {
+    width: 56px;
+    height: 56px;
+    margin: 0 4px;
+    -unity-background-image-tint-color: var(--color-coral);
+}
+
+.lives-chip .life--lost {
+    opacity: 0.25;
 }

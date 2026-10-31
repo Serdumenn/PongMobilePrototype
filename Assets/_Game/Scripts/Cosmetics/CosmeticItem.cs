@@ -14,7 +14,8 @@ public enum UnlockKind
     Ads,
     PassOnly,
     Streak,
-    Stars
+    Stars,
+    Level
 }
 
 [CreateAssetMenu(menuName = "Pingi/Cosmetic Item", fileName = "cos_item")]

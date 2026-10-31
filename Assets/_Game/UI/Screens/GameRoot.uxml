@@ -22,6 +22,9 @@
     <ui:Template name="Friends" src="FriendsScreen.uxml" />
     <ui:Template name="Missions" src="MissionsScreen.uxml" />
     <ui:Template name="Revive" src="ReviveScreen.uxml" />
+    <ui:Template name="Road" src="RoadScreen.uxml" />
+    <ui:Template name="Adventure" src="AdventureScreen.uxml" />
+    <ui:Template name="AdventureResult" src="AdventureResultScreen.uxml" />
     <ui:VisualElement name="root" class="root" picking-mode="Ignore">
         <ui:Instance template="Hud" name="hud" class="screen" picking-mode="Ignore" />
         <ui:Instance template="Menu" name="menu" class="screen" picking-mode="Ignore" />
@@ -32,6 +35,7 @@
         <ui:Instance template="MatchSetup" name="match-setup" class="screen screen--solid" />
         <ui:Instance template="Lobby" name="lobby" class="screen screen--solid" />
         <ui:Instance template="Friends" name="friends" class="screen screen--solid" />
+        <ui:Instance template="Adventure" name="adventure" class="screen screen--solid" />
         <ui:Instance template="MatchHud" name="match-hud" class="screen" picking-mode="Ignore" />
         <ui:Instance template="MatchResult" name="match-result" class="screen" picking-mode="Ignore" />
         <ui:Instance template="OnlineHud" name="online-hud" class="screen" picking-mode="Ignore" />
@@ -42,9 +46,11 @@
         <ui:Instance template="GhostResult" name="ghost-result" class="screen" picking-mode="Ignore" />
         <ui:Instance template="Pause" name="pause" class="screen" picking-mode="Ignore" />
         <ui:Instance template="GameOver" name="game-over" class="screen" picking-mode="Ignore" />
+        <ui:Instance template="AdventureResult" name="adventure-result" class="screen" picking-mode="Ignore" />
         <ui:Instance template="Reward" name="reward" class="screen" picking-mode="Ignore" />
         <ui:Instance template="GhostCode" name="ghost-code" class="screen" picking-mode="Ignore" />
         <ui:Instance template="Missions" name="missions" class="screen" picking-mode="Ignore" />
+        <ui:Instance template="Road" name="road" class="screen" picking-mode="Ignore" />
         <ui:Instance template="Revive" name="revive" class="screen" picking-mode="Ignore" />
         <ui:VisualElement name="invite-banner" class="invite-banner invite-banner--hidden" picking-mode="Ignore">
             <ui:VisualElement class="invite-banner__card">

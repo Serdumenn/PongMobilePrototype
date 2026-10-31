@@ -35,6 +35,51 @@ public sealed class CosmeticsService : MonoBehaviour
 
     public int Stars => Inventory != null ? Inventory.Stars : 0;
     public int Gold => Inventory != null ? Inventory.Gold : 0;
+    public int Xp => Inventory != null ? Inventory.Xp : 0;
+    public int RoadLevel => Inventory != null ? Inventory.RoadLevel : 1;
+
+    public void MarkXpSeeded()
+    {
+        if (Inventory == null || Inventory.XpSeeded) return;
+
+        Inventory.MarkXpSeeded();
+        Inventory.Save();
+    }
+
+    public int LevelStarsAt(int index)
+    {
+        return Inventory != null ? Inventory.LevelStarsAt(index) : 0;
+    }
+
+    public bool RecordLevel(int index, int stars, int gold)
+    {
+        if (Inventory == null) return false;
+
+        bool better = Inventory.RecordLevel(index, stars);
+        Inventory.EarnGold(gold);
+        if (!better && gold <= 0) return false;
+
+        Inventory.Save();
+        Changed?.Invoke();
+        return better;
+    }
+
+    public void AddProgress(int xp, int level, int gold, int stars)
+    {
+        if (Inventory == null) return;
+
+        Inventory.AddXp(xp);
+        Inventory.ReachLevel(level);
+        Inventory.EarnGold(gold);
+        if (stars > 0)
+        {
+            Inventory.AddStars(stars);
+            GrantWhere(UnlockKind.Stars, Inventory.Stars, true);
+        }
+        GrantWhere(UnlockKind.Level, Inventory.RoadLevel, true);
+        Inventory.Save();
+        Changed?.Invoke();
+    }
 
     public void EarnGold(int amount)
     {
@@ -91,6 +136,7 @@ public sealed class CosmeticsService : MonoBehaviour
         EnsureEquippedDefaults();
         GrantScoreUnlocks(PlayerPrefs.GetInt(SoloScoreManager.BestScoreKey, 0), false);
         GrantWhere(UnlockKind.Stars, Inventory.Stars, false);
+        GrantWhere(UnlockKind.Level, Inventory.RoadLevel, false);
         Inventory.Save();
         ApplyAdRules();
         Changed?.Invoke();

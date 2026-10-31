@@ -320,6 +320,7 @@ GameObject:
   - component: {fileID: 315089639}
   - component: {fileID: 315089640}
   - component: {fileID: 315089641}
+  - component: {fileID: 315089642}
   m_Layer: 0
   m_Name: Services
   m_TagString: Untagged
@@ -507,6 +508,7 @@ MonoBehaviour:
   Moments: {fileID: 871148363}
   Powers: {fileID: 871148365}
   Coins: {fileID: 871148366}
+  Events: {fileID: 871148367}
 --- !u!114 &315089634
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -615,6 +617,8 @@ MonoBehaviour:
   Cosmetics: {fileID: 315089630}
   Moments: {fileID: 871148363}
   Powers: {fileID: 871148365}
+  Events: {fileID: 871148367}
+  Coins: {fileID: 871148366}
   GoldPerMission: 25
 --- !u!114 &315089641
 MonoBehaviour:
@@ -632,6 +636,31 @@ MonoBehaviour:
   Cosmetics: {fileID: 315089630}
   Coins: {fileID: 871148366}
   ScorePerGold: 5
+--- !u!114 &315089642
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 315089627}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9e66b38e3cb564e45af8a4499df2a8bc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Pingi.Runtime::PlayerLevel
+  Road: {fileID: 11400000, guid: e2c44cd435adbda429e09f0386a9a9a8, type: 2}
+  Cosmetics: {fileID: 315089630}
+  Game: {fileID: 7019952436038793779}
+  Events: {fileID: 871148367}
+  Missions: {fileID: 315089640}
+  LocalMatch: {fileID: 7019952436038793782}
+  OnlineMatch: {fileID: 7019952436038793783}
+  Adventure: {fileID: 871148369}
+  EventXp: 15
+  MissionXp: 20
+  BonusXp: 30
+  MatchXp: 15
+  StageXp: 25
 --- !u!1 &517429098
 GameObject:
   m_ObjectHideFlags: 0
@@ -877,6 +906,9 @@ MonoBehaviour:
   Missions: {fileID: 315089640}
   Powers: {fileID: 871148365}
   Purse: {fileID: 315089641}
+  Events: {fileID: 871148367}
+  Level: {fileID: 315089642}
+  Adventure: {fileID: 871148369}
   HintRuns: 3
   RewardDelayMs: 650
   ReviewDelayMs: 1800
@@ -1213,6 +1245,10 @@ GameObject:
   - component: {fileID: 871148364}
   - component: {fileID: 871148365}
   - component: {fileID: 871148366}
+  - component: {fileID: 871148368}
+  - component: {fileID: 871148367}
+  - component: {fileID: 871148370}
+  - component: {fileID: 871148369}
   m_Layer: 0
   m_Name: GameWorld
   m_TagString: Untagged
@@ -1414,7 +1450,7 @@ MonoBehaviour:
   ShieldSeconds: 12
   TokenSize: 0.66
   EdgeMargin: 0.7
-  TopMargin: 1.6
+  TopMargin: 2.6
   ShieldGap: 0.55
   ShieldThickness: 0.14
   Order: 4
@@ -1446,8 +1482,116 @@ MonoBehaviour:
   Size: 0.62
   BigSize: 0.82
   EdgeMargin: 0.6
-  TopMargin: 1.4
+  TopMargin: 2.6
   Order: 3
+--- !u!114 &871148367
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 871148360}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 46f1b63bee27b914893603483e3c90b4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Pingi.Runtime::ArcadeEvents
+  Game: {fileID: 7019952436038793779}
+  Coins: {fileID: 871148366}
+  Purse: {fileID: 315089641}
+  Powers: {fileID: 871148365}
+  Board: {fileID: 871148368}
+  Feel: {fileID: 871148362}
+  WorldCamera: {fileID: 1822548374}
+  FirstAt: 20
+  GapMin: 30
+  GapMax: 40
+  StormExtraBalls: 4
+  StormSeconds: 10
+  StormKeep: 3
+  StormPointsPerBall: 3
+  StormGold: 25
+  StormSpeed: 1.15
+  StormSpread: 120
+  RainSeconds: 9
+  RainEvery: 0.55
+  RainGoal: 6
+  RainGold: 20
+  TargetCount: 5
+  TargetSeconds: 12
+  TargetPoints: 3
+  TargetGold: 25
+  GiantSeconds: 10
+  GiantGoal: 8
+  GiantScale: 1.8
+  GiantBoost: 1.2
+  GiantGold: 20
+  Confetti: 14
+--- !u!114 &871148368
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 871148360}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c20f5afbe39d60a4d99a639ee11a3f66, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Pingi.Runtime::TargetBoard
+  Layout: {fileID: 248741024}
+  Feel: {fileID: 871148362}
+  Target: {fileID: 3286163911610860551, guid: be2f79a8993246040bbeed9517b41dac, type: 3}
+  Burst: {r: 1, g: 0.42, b: 0.34, a: 1}
+  Size: 0.7
+  TopGap: 3.6
+  Rise: 0.45
+  EdgeMargin: 0.55
+  Order: 3
+  SwaySpeed: 1.3
+--- !u!114 &871148369
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 871148360}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 23d8d8ecf5f30a243b3419ae3b6993fa, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Pingi.Runtime::AdventureRun
+  Book: {fileID: 11400000, guid: ebd9011acf6ac2947b55e88523bc135f, type: 2}
+  Game: {fileID: 7019952436038793779}
+  Cosmetics: {fileID: 315089630}
+  Board: {fileID: 871148368}
+  Coins: {fileID: 871148366}
+  Obstacles: {fileID: 871148370}
+  Feel: {fileID: 871148362}
+  WorldCamera: {fileID: 1822548374}
+  RainEvery: 0.9
+  Confetti: 16
+--- !u!114 &871148370
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 871148360}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 20d824a6f0f34a9418d59936f7ce6fa7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Pingi.Runtime::FieldObstacles
+  Layout: {fileID: 248741024}
+  Feel: {fileID: 871148362}
+  Bumper: {fileID: 3286163911610860551, guid: e07e4222137939544938d8e7daa28026, type: 3}
+  Burst: {r: 0.31, g: 0.66, b: 1, a: 1}
+  Size: 0.62
+  TopGap: 3.6
+  EdgeMargin: 0.5
+  SwaySpeed: 1.1
+  Order: 2
 --- !u!1 &937802654
 GameObject:
   m_ObjectHideFlags: 0
@@ -2967,8 +3111,10 @@ MonoBehaviour:
   BallEntrance: {fileID: 1378371386}
   RacketEntrance: {fileID: 1185500013}
   MenuBallOffset: 0.45
+  MenuPaddleDrop: 0.9
   Modes:
   - {fileID: 11400000, guid: 3e5347c82fbe60b4ead57ed76e294c0f, type: 2}
+  - {fileID: 11400000, guid: e1238305fa581834491d572167c2ca83, type: 2}
   - {fileID: 11400000, guid: b150161e9e806d849a7ec04ca87537f3, type: 2}
   - {fileID: 11400000, guid: 098ce274e8c35144286e6ad84cf9edb5, type: 2}
 --- !u!114 &7019952436038793781

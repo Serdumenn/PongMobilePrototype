@@ -91,6 +91,9 @@ Bu klasör oyunun görsel ve UX kararlarının tek kaynağıdır. Her faz bir **
 | 2026-10-15 | **Güçlendirmeler yalnız Rush'ta:** dev raket, yavaş top, çift puan, kalkan; tohumlu jetonlar ([modes.md](modes.md)) | Ürün sahibinin kararı. Classic saf beceri olarak kalır; Rush sıralaması yayından önce sıfırlanacak |
 | 2026-10-27 | **Raket yukarı + parmak şeridi + kavisli raket:** oyunda raket %19 yükseklikte, vuruş noktası yönü belirler ([modes.md](modes.md)) | İkinci oyun testi: raket başparmağın altında görünmüyordu; vuruşta nişan alma yoktu |
 | 2026-10-27 | **Arcade modu ve Altın:** yeni ana mod (altın, güçlendirmeler), tek para birimi Altın, altınla kostüm, oyun sonu 2× altın ve bir kez devam et reklamları ([modes.md](modes.md), [cosmetics.md](cosmetics.md)) | Ürün sahibinin kararı. Classic ve Rush saf kalır; reklam skoru değil altını katlar, sıralama adil kalır |
+| 2026-10-31 | **Arcade alan olayları:** Top Fırtınası, Altın Yağmuru, Hedef Tahtası, Dev Pingi; görev gibi hedef, süre ve altın ödülü ([modes.md](modes.md)) | Ürün sahibinin kararı. Koşunun ortasında sürpriz ve hedef; Classic ve Rush saf kalır |
+| 2026-10-31 | **Pingi Yolu:** XP ile seviye; sezon ve ücretli yol yok, tek ve bitmeyen yol; her seviye altın, her 5. seviye yıldız, 10/25/40'ta yola özel kostüm ([modes.md](modes.md)) | Ürün sahibinin kararı. Uzun vadeli geri dönme sebebi; içerik yükü olmadan sürer, ücretli ürün gerekmez |
+| 2026-10-31 | **Macera:** 3 dünya × 10 bölüm, her bölümde hedef ve 3 hak (kalan hak = yıldız); can/enerji sistemi yok; Kumsal'da engeller, Gece'de hareketli hedefler ([modes.md](modes.md)) | Ürün sahibinin kararı. Skor dışında ilerleme ve merak; kaybeden oyuncu bekletilmez, yeni dünyalar güncellemeyle gelir |
 
 ## Asset takibi
 
@@ -126,6 +129,12 @@ Durumlar: `Brief → WIP → Review → Approved → Integrated`
 | `spr_fx_coin`, `ui_icon_coin` | SVG | Integrated | Altın parası (sahada) ve altın ikonu (HUD, oyun sonu, mağaza) |
 | `sfx_coin` | SFX | Integrated | Altın sesi, `generate_sfx.py` |
 | Kavisli raketler (8 kostüm + 4 oyuncu rengi) | SVG sprite | Integrated | `generate_skins.py` `bar_path`; 12 birim öne kavis |
+| `spr_fx_target` | SVG sprite | Integrated | Hedef Tahtası olayının hedefi; `generate_fx.py` üretir |
+| Yol kostümleri (Şampiyon × 4 ifade, Kuyruklu Yıldız raketi, Okyanus teması) | SVG sprite / tema | Integrated | `generate_skins.py` (`champ`, `comet`); top 200, raket 430 doku boyutu; Okyanus `Themes.uss` `theme-ocean` |
+| `ui_icon_level` | SVG ikon | Integrated | Dolap'ta "Seviye N" kilidi |
+| `spr_fx_bumper` | SVG sprite | Integrated | Macera tamponu (engel); `generate_fx.py` üretir |
+| `ui_icon_map/star_fill/leaf/wave/moon` | SVG ikon | Integrated | Macera kartı, dolu yıldız, dünya rozetleri (Çayır, Kumsal, Gece) |
+| `ui_icon_storm/target/giant` | SVG ikon | Integrated | Olay kartı rozetleri (Top Fırtınası, Hedef Tahtası, Dev Pingi); Altın Yağmuru `ui_icon_coin` kullanır |
 
 ## Lisans kaydı
 

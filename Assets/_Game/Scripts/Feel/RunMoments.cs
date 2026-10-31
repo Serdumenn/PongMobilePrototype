@@ -98,7 +98,7 @@ public sealed class RunMoments : MonoBehaviour
 
     private void Update()
     {
-        if (falling || !Playing || Game.Rules == null || ball == null || !ball.InPlay) return;
+        if (falling || !Playing || Game.Sheltered || Game.Rules == null || ball == null || !ball.InPlay) return;
 
         var paddle = Game.Player != null ? Game.Player.Paddle : null;
         if (paddle == null || !Game.Rules.MissWouldEnd(Game.Player)) return;

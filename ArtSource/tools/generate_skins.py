@@ -82,6 +82,17 @@ def stella(e):
     return wrap(glow + body("#7C83FD", 0.5) + star_mark + face(e, cheek="#FF9ACB") + twinkles)
 
 
+def champ(e):
+    defs = f'<defs><clipPath id="hb"><circle cx="{C}" cy="{C}" r="{R}"/></clipPath></defs>'
+    band = (f'<g clip-path="url(#hb)"><rect x="0" y="{C-52}" width="200" height="19" fill="#FF5A6E"/>'
+            f'<rect x="0" y="{C-45}" width="200" height="4" fill="#FFFFFF" fill-opacity="0.9"/></g>')
+    tails = (f'<path d="M{C+70} {C-46}q16 2 24 14q-14-2-22-6z" fill="#FF5A6E"/>'
+             f'<path d="M{C+70} {C-40}q10 10 10 26q-8-10-14-18z" fill="#E8475B"/>'
+             f'<circle cx="{C+70}" cy="{C-43}" r="7" fill="#E8475B"/>')
+    shine = f'<circle cx="{C-46}" cy="{C-22}" r="8" fill="#FFFFFF" fill-opacity="0.55"/>'
+    return wrap(f'<circle cx="{C}" cy="{C}" r="{R}" fill="#4FA8FF"/>' + band + shine + face(e, cheek="#FF8FB1") + tails, defs)
+
+
 EXPRESSIONS = ("idle", "happy", "sad", "wow")
 
 BALLS = {
@@ -95,6 +106,7 @@ BALLS = {
     "golden": golden,
     "astro":  astro,
     "stella": stella,
+    "champ":  champ,
 }
 
 PW, PH, CAP, BEND, LIP = 430, 110, 55, 12, 21
@@ -140,6 +152,13 @@ night_stars = ('<g clip-path="url(#sc)" fill="#FFE27A">'
                + "".join(f'<circle cx="{x}" cy="{y}" r="4"/>' for x, y in ((130, 80), (206, 40), (270, 88), (340, 22), (60, 70)))
                + '</g>')
 aurora_d = '<defs><linearGradient id="au" x1="0" y1="0" x2="1" y2="0.4"><stop offset="0" stop-color="#3DDBB4"/><stop offset="0.5" stop-color="#7C83FD"/><stop offset="1" stop-color="#FF8FC7"/></linearGradient></defs>'
+comet_d = ('<defs><linearGradient id="cm" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#FF5E8A"/><stop offset="1" stop-color="#FFB547"/></linearGradient>'
+           f'<clipPath id="cc"><path d="{bar_path()}"/></clipPath></defs>')
+comet_tail = ('<g clip-path="url(#cc)" stroke="#FFFFFF" stroke-linecap="round" fill="none">'
+              '<path d="M150 62H318" stroke-opacity="0.4" stroke-width="12"/>'
+              '<path d="M205 42H322" stroke-opacity="0.28" stroke-width="6"/>'
+              '<path d="M215 82H322" stroke-opacity="0.28" stroke-width="6"/></g>'
+              '<circle cx="342" cy="62" r="27" fill="#FFFFFF" fill-opacity="0.28"/><circle cx="342" cy="62" r="16" fill="#FFFFFF"/>')
 PADDLES = {
     "teal":    paddle("#2EC4B6", "#1E9C90"),
     "coral":   paddle("#FF6B57", "#D94C39"),
@@ -149,6 +168,7 @@ PADDLES = {
     "gold":    paddle("url(#gp)", "#C98F00", '<path d="M360 30l4 10 10 4-10 4-4 10-4-10-10-4 10-4z" fill="#FFFFFF"/>', gold_d),
     "starry":  paddle("#2E3270", "#1C1F4D", night_stars, "<defs>" + sky_clip + "</defs>"),
     "aurora":  paddle("url(#au)", "#5B4BC4", '<path d="M372 28l4 10 10 4-10 4-4 10-4-10-10-4 10-4z" fill="#FFFFFF"/>', aurora_d),
+    "comet":   paddle("url(#cm)", "#C9416A", comet_tail, comet_d),
 }
 
 PLAYER_PADDLES = {

@@ -1,0 +1,33 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9cff33aa0ba42fb44aad9d9ad5277cef, type: 3}
+  m_Name: cos_ball_champ
+  m_EditorClassIdentifier: Pingi.Runtime::CosmeticItem
+  <Id>k__BackingField: ball_champ
+  <Category>k__BackingField: 0
+  <DisplayName>k__BackingField: Champ
+  <Unlock>k__BackingField: 6
+  <UnlockValue>k__BackingField: 25
+  <ProductId>k__BackingField: 
+  <GoldPrice>k__BackingField: 0
+  <Idle>k__BackingField: {fileID: 3286163911610860551, guid: dca0385f4e3e7904bbfba30526b1f46b, type: 3}
+  <Happy>k__BackingField: {fileID: 3286163911610860551, guid: 3a1ab23d1b478334696b01c9d3918e91, type: 3}
+  <Sad>k__BackingField: {fileID: 3286163911610860551, guid: a5f55ae3be280184f84a9940c0d260ba, type: 3}
+  <Wow>k__BackingField: {fileID: 3286163911610860551, guid: 52d3617177bf34340bbf54239a3f9d04, type: 3}
+  <Accent>k__BackingField: {r: 0.31, g: 0.659, b: 1, a: 1}
+  <Burst>k__BackingField: {fileID: 3286163911610860551, guid: 61e4ff3f1f1b5524a9631f2bce152620, type: 3}
+  <Sparkle>k__BackingField: 1
+  <PaddleSprite>k__BackingField: {fileID: 0}
+  <BackgroundColor>k__BackingField: {r: 1, g: 1, b: 1, a: 1}
+  <BlobPrimary>k__BackingField: {r: 1, g: 1, b: 1, a: 1}
+  <BlobSecondary>k__BackingField: {r: 1, g: 1, b: 1, a: 1}
+  <UiClass>k__BackingField: 

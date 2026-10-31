@@ -41,7 +41,7 @@ public sealed class PowerUps : MonoBehaviour
     [Header("Layout")]
     [SerializeField] private float TokenSize = 0.66f;
     [SerializeField] private float EdgeMargin = 0.7f;
-    [SerializeField] private float TopMargin = 1.6f;
+    [SerializeField] private float TopMargin = 2.6f;
     [SerializeField] private float ShieldGap = 0.55f;
     [SerializeField] private float ShieldThickness = 0.14f;
     [SerializeField] private int Order = 4;
@@ -65,6 +65,7 @@ public sealed class PowerUps : MonoBehaviour
     private bool running;
 
     public bool Running => running;
+    public bool Paused { get; set; }
     public bool TokenShown => token != null && token.gameObject.activeSelf;
     public PowerKind TokenKind => tokenKind;
     public Vector2 TokenPosition => token != null ? (Vector2)token.position : Vector2.zero;
@@ -139,6 +140,7 @@ public sealed class PowerUps : MonoBehaviour
     private void StartRun()
     {
         EndAll();
+        Paused = false;
         var mode = Game.RunMode;
         running = mode != null && (mode.Kind == GameModeKind.Rush || mode.Kind == GameModeKind.Arcade) && !Game.BattleRun;
         schedule = new PowerSchedule(unchecked(Game.RunSeed ^ SeedSalt), FirstAt, GapMin, GapMax);
@@ -172,7 +174,7 @@ public sealed class PowerUps : MonoBehaviour
         }
 
         if (TokenShown) AnimateToken(step);
-        else if (launched && schedule != null && runTime >= schedule.NextAt)
+        else if (launched && !Paused && schedule != null && runTime >= schedule.NextAt)
         {
             Spawn(schedule.TakeKind(), schedule.TakeSpot(Area()));
             schedule.Advance();
@@ -233,6 +235,11 @@ public sealed class PowerUps : MonoBehaviour
         bool wasActive = IsActive(kind);
         remaining[(int)kind] = Duration(kind);
         if (!wasActive) Apply(kind, true);
+    }
+
+    public void Cancel(PowerKind kind)
+    {
+        if (IsActive(kind)) End(kind);
     }
 
     public void ShieldHit()

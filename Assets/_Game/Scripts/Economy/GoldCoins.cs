@@ -4,7 +4,7 @@ using UnityEngine;
 public sealed class GoldCoins : MonoBehaviour
 {
     private const int SeedSalt = 0x1B873593;
-    private const int PoolSize = 3;
+    private const int PoolSize = 5;
     private const float PopSeconds = 0.25f;
 
     private struct Slot
@@ -41,7 +41,7 @@ public sealed class GoldCoins : MonoBehaviour
     [SerializeField] private float Size = 0.62f;
     [SerializeField] private float BigSize = 0.82f;
     [SerializeField] private float EdgeMargin = 0.6f;
-    [SerializeField] private float TopMargin = 1.4f;
+    [SerializeField] private float TopMargin = 2.6f;
     [SerializeField] private int Order = 3;
 
     public event Action<int> Collected;
@@ -51,10 +51,13 @@ public sealed class GoldCoins : MonoBehaviour
     private SoloGameManager.GameState lastState;
     private float runTime;
     private float nextAt;
+    private float rainUntil = -1f;
+    private float rainEvery;
     private bool launched;
     private bool running;
 
     public bool Running => running;
+    public bool Raining => rainUntil >= 0f && runTime < rainUntil;
 
     public int ActiveCount
     {
@@ -129,6 +132,7 @@ public sealed class GoldCoins : MonoBehaviour
         rng = new MatchRandom(unchecked(Game.RunSeed ^ SeedSalt));
         runTime = 0f;
         nextAt = FirstAt;
+        rainUntil = -1f;
         launched = false;
     }
 
@@ -150,9 +154,30 @@ public sealed class GoldCoins : MonoBehaviour
         if (!launched || runTime < nextAt || rng == null) return;
 
         Rect area = Area();
-        bool big = rng.Value() < BigChance;
+        bool raining = Raining;
+        bool big = !raining && rng.Value() < BigChance;
         Spawn(new Vector2(rng.Range(area.xMin, area.xMax), rng.Range(area.yMin, area.yMax)), big);
-        nextAt = runTime + rng.Range(GapMin, GapMax);
+        nextAt = runTime + (raining ? rainEvery : rng.Range(GapMin, GapMax));
+    }
+
+    public void Open()
+    {
+        if (Game == null || Game.State != SoloGameManager.GameState.Playing) return;
+        running = true;
+        if (MainBall != null && MainBall.InPlay) launched = true;
+    }
+
+    public void StartRain(float seconds, float every)
+    {
+        rainEvery = Mathf.Max(0.1f, every);
+        rainUntil = runTime + Mathf.Max(0f, seconds);
+        nextAt = runTime;
+    }
+
+    public void StopRain()
+    {
+        rainUntil = -1f;
+        if (rng != null) nextAt = runTime + rng.Range(GapMin, GapMax);
     }
 
     public Rect Area()

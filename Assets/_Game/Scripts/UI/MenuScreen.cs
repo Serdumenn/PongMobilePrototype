@@ -15,12 +15,14 @@ public sealed class MenuScreen : UIScreen
     private readonly VisualElement modeDots;
     private readonly Button playButton;
     private readonly Label missionsCount;
+    private readonly Label levelNumber;
+    private readonly VisualElement levelFill;
     private readonly Action<int> onStepMode;
 
     private Vector2 swipeStart;
     private bool swiping;
 
-    public MenuScreen(VisualElement root, Action onPlay, Action onSettings, Action onShop, Action onScores, Action<int> onStepMode, Action onMissions = null) : base(root)
+    public MenuScreen(VisualElement root, Action onPlay, Action onSettings, Action onShop, Action onScores, Action<int> onStepMode, Action onMissions = null, Action onLevel = null) : base(root)
     {
         this.onStepMode = onStepMode;
 
@@ -38,6 +40,9 @@ public sealed class MenuScreen : UIScreen
         Bind("scores-button", onScores);
         Bind("missions-button", onMissions);
         missionsCount = root.Q<Label>("missions-count");
+        Bind("level-button", onLevel);
+        levelNumber = root.Q<Label>("level-number");
+        levelFill = root.Q("level-fill");
         Bind("mode-prev", () => onStepMode?.Invoke(-1));
         Bind("mode-next", () => onStepMode?.Invoke(1));
 
@@ -57,6 +62,14 @@ public sealed class MenuScreen : UIScreen
         missionsCount.style.display = total > 0 ? DisplayStyle.Flex : DisplayStyle.None;
         missionsCount.text = $"{done}/{total}";
         missionsCount.EnableInClassList("missions-button__count--done", total > 0 && done >= total);
+    }
+
+    public void SetLevel(int level, float fraction)
+    {
+        if (levelNumber == null) return;
+
+        levelNumber.text = level.ToString();
+        levelFill.style.width = Length.Percent(100f * Mathf.Clamp01(fraction));
     }
 
     public void SetTogether(int index, int count, Sprite left, Sprite right)
@@ -89,7 +102,7 @@ public sealed class MenuScreen : UIScreen
         SetDots(index, count);
     }
 
-    public void SetMode(GameModeDefinition mode, int index, int count, int best, bool unlocked, Sprite art)
+    public void SetMode(GameModeDefinition mode, int index, int count, int best, bool unlocked, Sprite art, string note = null)
     {
         if (mode == null) return;
 
@@ -107,21 +120,29 @@ public sealed class MenuScreen : UIScreen
         {
             var glyph = new VisualElement { pickingMode = PickingMode.Ignore };
             glyph.AddToClassList("icon");
-            glyph.AddToClassList(mode.Kind == GameModeKind.Rush ? "icon--clock" : mode.Kind == GameModeKind.Arcade ? "icon--coin" : "icon--play");
+            glyph.AddToClassList(mode.Kind switch
+            {
+                GameModeKind.Rush => "icon--clock",
+                GameModeKind.Arcade => "icon--coin",
+                GameModeKind.Adventure => "icon--map",
+                _ => "icon--play"
+            });
             modeArt.Add(glyph);
         }
 
         if (unlocked)
         {
             modeTagline.text = mode.Blurb;
-            modeBestIcon.EnableInClassList("icon--crown", true);
+            modeBestIcon.EnableInClassList("icon--crown", note == null);
+            modeBestIcon.EnableInClassList("icon--star-fill", note != null);
             modeBestIcon.EnableInClassList("icon--lock", false);
-            modeBestLabel.text = best > 0 ? Loc.T("Best {0}", best) : Loc.T("No record yet");
+            modeBestLabel.text = note ?? (best > 0 ? Loc.T("Best {0}", best) : Loc.T("No record yet"));
         }
         else
         {
             modeTagline.text = mode.Blurb;
             modeBestIcon.EnableInClassList("icon--crown", false);
+            modeBestIcon.EnableInClassList("icon--star-fill", false);
             modeBestIcon.EnableInClassList("icon--lock", true);
             modeBestLabel.text = Loc.T("Classic best {0} to unlock", mode.RequiredClassicBest);
         }

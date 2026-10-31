@@ -33,7 +33,7 @@ public sealed class GameDataTests
     {
         var items = TestData.LoadCatalog().Items;
 
-        Assert.AreEqual(22, items.Count);
+        Assert.AreEqual(25, items.Count);
         Assert.That(items, Has.None.Null);
         CollectionAssert.AllItemsAreUnique(items.Select(i => i.Id));
         Assert.That(items.Select(i => i.Id), Has.None.Null.And.None.Empty);
@@ -44,9 +44,9 @@ public sealed class GameDataTests
     {
         var catalog = TestData.LoadCatalog();
 
-        Assert.AreEqual(10, catalog.InCategory(CosmeticCategory.Ball).Count);
-        Assert.AreEqual(8, catalog.InCategory(CosmeticCategory.Paddle).Count);
-        Assert.AreEqual(4, catalog.InCategory(CosmeticCategory.Theme).Count);
+        Assert.AreEqual(11, catalog.InCategory(CosmeticCategory.Ball).Count);
+        Assert.AreEqual(9, catalog.InCategory(CosmeticCategory.Paddle).Count);
+        Assert.AreEqual(5, catalog.InCategory(CosmeticCategory.Theme).Count);
     }
 
     [Test]
@@ -87,16 +87,19 @@ public sealed class GameDataTests
             { "ball_froggy", (UnlockKind.Ads, 15) },
             { "ball_golden", (UnlockKind.PassOnly, 0) },
             { "ball_astro", (UnlockKind.Streak, 7) },
+            { "ball_champ", (UnlockKind.Level, 25) },
             { "paddle_teal", (UnlockKind.Free, 0) },
             { "paddle_coral", (UnlockKind.Score, 15) },
             { "paddle_candy", (UnlockKind.Ads, 5) },
             { "paddle_wood", (UnlockKind.Ads, 10) },
             { "paddle_rainbow", (UnlockKind.Ads, 15) },
             { "paddle_gold", (UnlockKind.PassOnly, 0) },
+            { "paddle_comet", (UnlockKind.Level, 10) },
             { "theme_softpop", (UnlockKind.Free, 0) },
             { "theme_mint", (UnlockKind.Score, 30) },
             { "theme_sunset", (UnlockKind.Ads, 10) },
-            { "theme_night", (UnlockKind.Ads, 15) }
+            { "theme_night", (UnlockKind.Ads, 15) },
+            { "theme_ocean", (UnlockKind.Level, 40) }
         };
 
         foreach (var pair in expected)
@@ -141,7 +144,7 @@ public sealed class GameDataTests
 
         foreach (var ball in catalog.InCategory(CosmeticCategory.Ball))
         {
-            bool premium = ball.Id == "ball_golden" || ball.Id == "ball_astro" || ball.Id == "ball_stella";
+            bool premium = ball.Id == "ball_golden" || ball.Id == "ball_astro" || ball.Id == "ball_stella" || ball.Id == "ball_champ";
             Assert.AreEqual(premium, ball.Sparkle, ball.Id);
             if (ball.Id == "ball_pingi")
             {

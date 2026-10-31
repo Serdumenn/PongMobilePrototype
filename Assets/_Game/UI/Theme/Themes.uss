@@ -30,6 +30,22 @@
     --color-ink-faint: rgba(58, 36, 48, 0.55);
 }
 
+.root.theme-ocean {
+    --color-bg: #E3F2FF;
+    --color-surface-edge: #C6DDF2;
+    --color-card-edge: #BDD6EE;
+    --color-ink: #1C2F4A;
+    --color-ink-muted: #4E6480;
+    --color-divider: #D8E8F6;
+    --color-track-off: #CADDEF;
+    --color-field: #F2F8FF;
+    --color-inset: #E9F3FD;
+    --color-fog: rgba(242, 248, 255, 0.94);
+    --color-fog-soft: rgba(242, 248, 255, 0.6);
+    --color-watermark: rgba(28, 47, 74, 0.12);
+    --color-ink-faint: rgba(28, 47, 74, 0.55);
+}
+
 .root.theme-night {
     --color-bg: #1E2140;
     --color-surface: #2E3358;

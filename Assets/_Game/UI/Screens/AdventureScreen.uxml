@@ -1,0 +1,70 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" editor-extension-mode="False">
+    <ui:VisualElement class="safe" picking-mode="Ignore">
+        <ui:VisualElement class="topbar" picking-mode="Ignore">
+            <ui:Button name="adv-back-button" class="btn btn--icon">
+                <ui:VisualElement class="btn__face" picking-mode="Ignore">
+                    <ui:VisualElement class="icon icon--back" picking-mode="Ignore" />
+                </ui:VisualElement>
+            </ui:Button>
+            <ui:Label text="Adventure" class="screen-title" picking-mode="Ignore" />
+            <ui:VisualElement class="topbar__side topbar__side--gold" picking-mode="Ignore">
+                <ui:VisualElement class="gold-chip" picking-mode="Ignore">
+                    <ui:VisualElement class="icon icon--star-fill" picking-mode="Ignore" />
+                    <ui:Label name="adv-stars" text="" class="gold-chip__label" picking-mode="Ignore" />
+                </ui:VisualElement>
+            </ui:VisualElement>
+        </ui:VisualElement>
+        <ui:VisualElement class="tabs fit-group" picking-mode="Ignore">
+            <ui:Button name="adv-world-0" text="" class="tab" />
+            <ui:Button name="adv-world-1" text="" class="tab" />
+            <ui:Button name="adv-world-2" text="" class="tab" />
+        </ui:VisualElement>
+        <ui:ScrollView name="adv-scroll" mode="Vertical" horizontal-scroller-visibility="Hidden" vertical-scroller-visibility="Hidden" class="shop-scroll">
+            <ui:VisualElement name="adv-world" class="adv-world" picking-mode="Ignore">
+                <ui:VisualElement name="adv-world-badge" class="adv-world__badge" picking-mode="Ignore">
+                    <ui:VisualElement name="adv-world-icon" class="icon icon--light" picking-mode="Ignore" />
+                </ui:VisualElement>
+                <ui:VisualElement class="adv-world__body" picking-mode="Ignore">
+                    <ui:Label name="adv-world-name" text="" class="adv-world__name" picking-mode="Ignore" />
+                    <ui:Label name="adv-world-note" text="" class="adv-world__note" picking-mode="Ignore" />
+                </ui:VisualElement>
+                <ui:Label name="adv-world-stars" text="" class="adv-world__stars fit-skip" picking-mode="Ignore" />
+            </ui:VisualElement>
+            <ui:VisualElement name="adv-path" class="adv-path" picking-mode="Ignore" />
+            <ui:VisualElement class="shop-end" picking-mode="Ignore" />
+        </ui:ScrollView>
+    </ui:VisualElement>
+    <ui:VisualElement name="adv-dialog" class="adv-dialog adv-dialog--hidden" picking-mode="Ignore">
+        <ui:VisualElement name="adv-dialog-scrim" class="scrim" />
+        <ui:VisualElement class="safe overlay" picking-mode="Ignore">
+            <ui:VisualElement class="card adv-card">
+                <ui:VisualElement name="adv-dialog-badge" class="adv-card__badge" picking-mode="Ignore">
+                    <ui:VisualElement name="adv-dialog-icon" class="icon icon--light" picking-mode="Ignore" />
+                </ui:VisualElement>
+                <ui:Label name="adv-dialog-title" text="" class="card__title" picking-mode="Ignore" />
+                <ui:Label name="adv-dialog-goal" text="" class="adv-card__goal" picking-mode="Ignore" />
+                <ui:VisualElement name="adv-dialog-tags" class="adv-tags" picking-mode="Ignore" />
+                <ui:VisualElement name="adv-dialog-stars" class="adv-stars" picking-mode="Ignore">
+                    <ui:VisualElement class="icon icon--star-fill adv-star" picking-mode="Ignore" />
+                    <ui:VisualElement class="icon icon--star-fill adv-star" picking-mode="Ignore" />
+                    <ui:VisualElement class="icon icon--star-fill adv-star" picking-mode="Ignore" />
+                </ui:VisualElement>
+                <ui:Label text="3 tries. Tries left become stars." class="caption adv-card__note" picking-mode="Ignore" />
+                <ui:Label name="adv-dialog-reward" text="" class="adv-card__reward" picking-mode="Ignore" />
+                <ui:VisualElement class="card__actions" picking-mode="Ignore">
+                    <ui:Button name="adv-dialog-close" class="btn btn--secondary">
+                        <ui:VisualElement class="btn__face" picking-mode="Ignore">
+                            <ui:VisualElement class="icon icon--close" picking-mode="Ignore" />
+                        </ui:VisualElement>
+                    </ui:Button>
+                    <ui:Button name="adv-dialog-play" class="btn btn--primary">
+                        <ui:VisualElement class="btn__face" picking-mode="Ignore">
+                            <ui:VisualElement class="icon icon--play icon--light" picking-mode="Ignore" />
+                            <ui:Label text="Play" class="btn__label" picking-mode="Ignore" />
+                        </ui:VisualElement>
+                    </ui:Button>
+                </ui:VisualElement>
+            </ui:VisualElement>
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>

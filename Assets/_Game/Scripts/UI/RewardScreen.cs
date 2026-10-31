@@ -30,9 +30,13 @@ public sealed class RewardScreen : UIScreen
             CosmeticCategory.Paddle => Loc.T("New paddle!"),
             _ => Loc.T("New theme!")
         };
-        text.text = item.Unlock == UnlockKind.Streak
-            ? Loc.T("{0} days in a row!\n{1} is unlocked.", item.UnlockValue, item.Title)
-            : Loc.T("You reached {0} points.\n{1} is unlocked.", item.UnlockValue, item.Title);
+        text.text = item.Unlock switch
+        {
+            UnlockKind.Streak => Loc.T("{0} days in a row!\n{1} is unlocked.", item.UnlockValue, item.Title),
+            UnlockKind.Stars => Loc.T("{0} mission stars!\n{1} is unlocked.", item.UnlockValue, item.Title),
+            UnlockKind.Level => Loc.T("Level {0}!\n{1} is unlocked.", item.UnlockValue, item.Title),
+            _ => Loc.T("You reached {0} points.\n{1} is unlocked.", item.UnlockValue, item.Title)
+        };
 
         art.Clear();
         art.EnableInClassList("dialog__art--paddle", item.Category == CosmeticCategory.Paddle);

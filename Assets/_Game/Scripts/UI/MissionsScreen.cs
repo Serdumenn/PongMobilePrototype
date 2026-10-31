@@ -79,6 +79,8 @@ public sealed class MissionsScreen : UIScreen
             MissionKind.Streak => Loc.T("Hit {0} in a row", n),
             MissionKind.Runs => Loc.T("Play {0} runs", n),
             MissionKind.CloseSaves => Loc.T("Make {0} close saves", n),
+            MissionKind.Events => Loc.T("Complete {0} Arcade events", n),
+            MissionKind.Gold => Loc.T("Collect {0} gold", n),
             _ => Loc.T("Collect {0} power-ups", n)
         };
     }
@@ -94,6 +96,8 @@ public sealed class MissionsScreen : UIScreen
             MissionKind.Streak => "flame",
             MissionKind.Runs => "retry",
             MissionKind.CloseSaves => "shield",
+            MissionKind.Events => "storm",
+            MissionKind.Gold => "coin",
             _ => "bolt"
         };
     }

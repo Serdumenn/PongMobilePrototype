@@ -1,0 +1,40 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" editor-extension-mode="False">
+    <ui:VisualElement class="scrim" />
+    <ui:VisualElement class="safe overlay" picking-mode="Ignore">
+        <ui:VisualElement class="card">
+            <ui:VisualElement name="adv-result-mascot" class="card__mascot" picking-mode="Ignore" />
+            <ui:Label name="adv-result-title" text="" class="card__title" picking-mode="Ignore" />
+            <ui:Label name="adv-result-stage" text="" class="caption card__label" picking-mode="Ignore" />
+            <ui:VisualElement name="adv-result-stars" class="adv-stars adv-stars--big" picking-mode="Ignore">
+                <ui:VisualElement class="icon icon--star-fill adv-star" picking-mode="Ignore" />
+                <ui:VisualElement class="icon icon--star-fill adv-star" picking-mode="Ignore" />
+                <ui:VisualElement class="icon icon--star-fill adv-star" picking-mode="Ignore" />
+            </ui:VisualElement>
+            <ui:Label name="adv-result-note" text="" class="adv-card__goal" picking-mode="Ignore" />
+            <ui:VisualElement name="adv-result-gold" class="gold-row adv-result__gold" picking-mode="Ignore">
+                <ui:VisualElement class="gold-row__amount" picking-mode="Ignore">
+                    <ui:VisualElement class="icon icon--coin" picking-mode="Ignore" />
+                    <ui:Label name="adv-result-gold-label" text="" class="gold-row__label" picking-mode="Ignore" />
+                </ui:VisualElement>
+            </ui:VisualElement>
+            <ui:VisualElement class="card__actions" picking-mode="Ignore">
+                <ui:Button name="adv-map-button" class="btn btn--secondary adv-result__side">
+                    <ui:VisualElement class="btn__face" picking-mode="Ignore">
+                        <ui:VisualElement class="icon icon--map" picking-mode="Ignore" />
+                    </ui:VisualElement>
+                </ui:Button>
+                <ui:Button name="adv-retry-button" class="btn btn--secondary adv-result__side adv-result__retry">
+                    <ui:VisualElement class="btn__face" picking-mode="Ignore">
+                        <ui:VisualElement class="icon icon--retry" picking-mode="Ignore" />
+                    </ui:VisualElement>
+                </ui:Button>
+                <ui:Button name="adv-next-button" class="btn btn--primary">
+                    <ui:VisualElement class="btn__face" picking-mode="Ignore">
+                        <ui:VisualElement name="adv-next-icon" class="icon icon--retry icon--light" picking-mode="Ignore" />
+                        <ui:Label name="adv-next-label" text="Next" class="btn__label" picking-mode="Ignore" />
+                    </ui:VisualElement>
+                </ui:Button>
+            </ui:VisualElement>
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>

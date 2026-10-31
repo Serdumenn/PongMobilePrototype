@@ -1,11 +1,22 @@
 <ui:UXML xmlns:ui="UnityEngine.UIElements" editor-extension-mode="False">
     <ui:VisualElement class="safe" picking-mode="Ignore">
-        <ui:VisualElement class="topbar" picking-mode="Ignore">
-            <ui:Button name="settings-button" class="btn btn--icon">
-                <ui:VisualElement class="btn__face" picking-mode="Ignore">
-                    <ui:VisualElement class="icon icon--settings" picking-mode="Ignore" />
-                </ui:VisualElement>
-            </ui:Button>
+        <ui:VisualElement class="topbar topbar--menu" picking-mode="Ignore">
+            <ui:VisualElement class="topbar__group topbar__group--left" picking-mode="Ignore">
+                <ui:Button name="settings-button" class="btn btn--icon">
+                    <ui:VisualElement class="btn__face" picking-mode="Ignore">
+                        <ui:VisualElement class="icon icon--settings" picking-mode="Ignore" />
+                    </ui:VisualElement>
+                </ui:Button>
+                <ui:Button name="level-button" class="btn btn--icon level-chip">
+                    <ui:VisualElement class="btn__face level-chip__face" picking-mode="Ignore">
+                        <ui:Label name="level-caption" text="Level" class="level-chip__caption" picking-mode="Ignore" />
+                        <ui:Label name="level-number" text="1" class="level-chip__number fit-skip" picking-mode="Ignore" />
+                        <ui:VisualElement class="level-chip__track" picking-mode="Ignore">
+                            <ui:VisualElement name="level-fill" class="level-chip__fill" picking-mode="Ignore" />
+                        </ui:VisualElement>
+                    </ui:VisualElement>
+                </ui:Button>
+            </ui:VisualElement>
             <ui:VisualElement class="topbar__group" picking-mode="Ignore">
                 <ui:Button name="missions-button" class="btn btn--icon missions-button">
                     <ui:VisualElement class="btn__face" picking-mode="Ignore">

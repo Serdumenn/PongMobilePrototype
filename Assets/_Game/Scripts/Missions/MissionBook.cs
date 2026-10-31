@@ -10,7 +10,9 @@ public enum MissionKind
     Streak,
     Runs,
     CloseSaves,
-    PowerUps
+    PowerUps,
+    Events,
+    Gold
 }
 
 public readonly struct MissionDef
@@ -38,7 +40,9 @@ public static class MissionBook
         new MissionDef(MissionKind.ClassicHits, 8),
         new MissionDef(MissionKind.Streak, 8),
         new MissionDef(MissionKind.Perfects, 3),
-        new MissionDef(MissionKind.PowerUps, 1)
+        new MissionDef(MissionKind.PowerUps, 1),
+        new MissionDef(MissionKind.Events, 1),
+        new MissionDef(MissionKind.Gold, 30)
     };
 
     private static readonly MissionDef[] Medium =
@@ -49,7 +53,9 @@ public static class MissionBook
         new MissionDef(MissionKind.RushScore, 25),
         new MissionDef(MissionKind.Perfects, 8),
         new MissionDef(MissionKind.CloseSaves, 1),
-        new MissionDef(MissionKind.PowerUps, 3)
+        new MissionDef(MissionKind.PowerUps, 3),
+        new MissionDef(MissionKind.Events, 2),
+        new MissionDef(MissionKind.Gold, 80)
     };
 
     private static readonly MissionDef[] Hard =
@@ -60,7 +66,9 @@ public static class MissionBook
         new MissionDef(MissionKind.RushScore, 45),
         new MissionDef(MissionKind.Perfects, 15),
         new MissionDef(MissionKind.CloseSaves, 3),
-        new MissionDef(MissionKind.Runs, 8)
+        new MissionDef(MissionKind.Runs, 8),
+        new MissionDef(MissionKind.Events, 4),
+        new MissionDef(MissionKind.Gold, 160)
     };
 
     public static string DayKey(DateTime date)

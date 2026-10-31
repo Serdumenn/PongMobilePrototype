@@ -78,6 +78,14 @@ public sealed class RunPurse : MonoBehaviour
         Changed?.Invoke();
     }
 
+    public void Add(int amount)
+    {
+        if (amount <= 0) return;
+
+        Collected += amount;
+        Changed?.Invoke();
+    }
+
     public void ApplyDouble()
     {
         if (!CanDouble) return;

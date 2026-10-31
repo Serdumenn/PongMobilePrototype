@@ -128,6 +128,22 @@ def coin():
     return f'<svg xmlns="http://www.w3.org/2000/svg" width="132" height="134" viewBox="0 0 132 134">{shadow}{rim}{face}{ring}{star}{shine}</svg>' + chr(10)
 
 
+def target():
+    shadow = '<circle cx="66" cy="72" r="58" fill="#2B2D42" fill-opacity="0.16"/>'
+    rings = ('<circle cx="64" cy="64" r="58" fill="#FF6B57"/><circle cx="64" cy="64" r="44" fill="#FFFFFF"/>'
+             '<circle cx="64" cy="64" r="30" fill="#FF6B57"/><circle cx="64" cy="64" r="15" fill="#FFFFFF"/>'
+             '<circle cx="64" cy="64" r="6" fill="#FF6B57"/>')
+    return f'<svg xmlns="http://www.w3.org/2000/svg" width="132" height="134" viewBox="0 0 132 134">{shadow}{rings}</svg>' + chr(10)
+
+
+def bumper():
+    shadow = '<circle cx="66" cy="72" r="58" fill="#2B2D42" fill-opacity="0.18"/>'
+    body = ('<circle cx="64" cy="64" r="58" fill="#4A63E0"/><circle cx="64" cy="64" r="50" fill="#6F8BFF"/>'
+            '<circle cx="64" cy="64" r="34" fill="#4A63E0"/><circle cx="64" cy="64" r="34" fill="none" stroke="#FFFFFF" stroke-opacity="0.85" stroke-width="5"/>'
+            '<ellipse cx="44" cy="40" rx="13" ry="8" fill="#FFFFFF" fill-opacity="0.7" transform="rotate(-35 44 40)"/>')
+    return f'<svg xmlns="http://www.w3.org/2000/svg" width="132" height="134" viewBox="0 0 132 134">{shadow}{body}</svg>' + chr(10)
+
+
 SHAPES = {
     "spr_fx_star": star,
     "spr_fx_heart": heart,
@@ -144,6 +160,8 @@ SHAPES = {
     "spr_fx_power_shield": power_shield,
     "spr_fx_bar": bar,
     "spr_fx_coin": coin,
+    "spr_fx_target": target,
+    "spr_fx_bumper": bumper,
 }
 
 

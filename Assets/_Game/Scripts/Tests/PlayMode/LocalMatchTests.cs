@@ -251,10 +251,11 @@ public sealed class LocalMatchTests : GameSceneFixture
         yield return LoadMatch();
         var root = Object.FindFirstObjectByType<UIDocument>().rootVisualElement;
 
-        Click(root.Q("menu").Q<Button>("mode-prev"));
-        yield return null;
-        Click(root.Q("menu").Q<Button>("mode-prev"));
-        yield return null;
+        for (int i = 0; i < 8 && root.Q("menu").Q<Label>("mode-name").text != "Together"; i++)
+        {
+            Click(root.Q("menu").Q<Button>("mode-prev"));
+            yield return null;
+        }
         Assert.AreEqual("Together", root.Q("menu").Q<Label>("mode-name").text);
 
         Click(root.Q("menu").Q<Button>("play-button"));

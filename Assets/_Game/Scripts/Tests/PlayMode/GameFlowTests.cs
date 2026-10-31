@@ -185,6 +185,8 @@ public sealed class GameFlowTests : GameSceneFixture
         ball.WallHit += () => wallHits++;
 
         Game.StartGameFromMenu();
+        float ready = Time.realtimeSinceStartup + 5f;
+        while (!ball.WaitingForServe && Time.realtimeSinceStartup < ready) yield return null;
         ball.ServeToward(ball.Position, new Vector2(1f, 0.1f));
         Assert.AreEqual(PaceStart, body.linearVelocity.y, 0.01f);
         Assert.AreEqual(MaxSideSpeed, body.linearVelocity.x, 0.01f);

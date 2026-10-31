@@ -18,7 +18,8 @@ public sealed class SoloGameManager : MonoBehaviour
         Normal,
         Battle,
         Daily,
-        Ghost
+        Ghost,
+        Adventure
     }
 
     private const string SelectedModeKey = "SelectedMode";
@@ -44,6 +45,7 @@ public sealed class SoloGameManager : MonoBehaviour
     public event Action<GameModeDefinition> ModeChanged;
     public event Action<HitResult> HitScored;
     public event Action ReviveOffered;
+    public event Action MissSheltered;
     public event Action Revived;
 
     public GameState State { get; private set; } = GameState.Menu;
@@ -60,9 +62,12 @@ public sealed class SoloGameManager : MonoBehaviour
     public bool BattleRun => Kind == RunKind.Battle;
     public bool DailyRun => Kind == RunKind.Daily;
     public bool GhostRun => Kind == RunKind.Ghost;
+    public bool InAdventure => Kind == RunKind.Adventure;
+    public AdventureLevel RunLevel { get; private set; }
     public GameModeDefinition RunMode { get; private set; }
     public int PointMultiplier { get; set; } = 1;
     public Func<bool> ReviveAvailable { get; set; }
+    public bool Sheltered { get; set; }
     public bool AwaitingRevive { get; private set; }
     public bool ReviveUsed { get; private set; }
 
@@ -211,12 +216,23 @@ public sealed class SoloGameManager : MonoBehaviour
         StartRun(mode);
     }
 
+    public void StartAdventureRun(GameModeDefinition mode, AdventureLevel level)
+    {
+        if (mode == null || level == null || State == GameState.Playing || State == GameState.Paused) return;
+
+        Kind = RunKind.Adventure;
+        RunLevel = level;
+        StartRun(mode);
+    }
+
     public void ReturnToMenu()
     {
         AwaitingRevive = false;
+        Sheltered = false;
         Time.timeScale = 1f;
         StopRespawn();
         Kind = RunKind.Normal;
+        RunLevel = null;
         if (Score != null) Score.Unranked = false;
 
         if (SoloBall != null) SoloBall.StopRoundKeepVisible();
@@ -251,7 +267,17 @@ public sealed class SoloGameManager : MonoBehaviour
 
     public void OnBallMissed()
     {
+        if (Shelter()) return;
         Concede(Player);
+    }
+
+    private bool Shelter()
+    {
+        if (!Sheltered || State != GameState.Playing) return false;
+
+        Player?.BreakStreak();
+        MissSheltered?.Invoke();
+        return true;
     }
 
     private void RegisterHit(Participant hitter, float paddleOffset)
@@ -295,7 +321,17 @@ public sealed class SoloGameManager : MonoBehaviour
 
     private void OnGoalEntered(Goal goal)
     {
+        if (Shelter()) return;
         Concede(FindParticipant(goal.Side));
+    }
+
+    public void RespawnMainBall()
+    {
+        if (State != GameState.Playing || SoloBall == null || SoloBall.InPlay) return;
+
+        StopRespawn();
+        SoloBall.StartRound();
+        SoloBall.EnableServe();
     }
 
     private Participant FindParticipant(Paddle paddle)
@@ -314,7 +350,9 @@ public sealed class SoloGameManager : MonoBehaviour
 
     private bool CanOfferRevive()
     {
-        return !ReviveUsed && Kind == RunKind.Normal && Rules != null && !Rules.IsTimed && ReviveAvailable != null && ReviveAvailable();
+        if (ReviveUsed || Rules == null || ReviveAvailable == null) return false;
+        bool allowed = Kind == RunKind.Normal && !Rules.IsTimed || Kind == RunKind.Adventure;
+        return allowed && ReviveAvailable();
     }
 
     private void OfferRevive()
@@ -332,6 +370,7 @@ public sealed class SoloGameManager : MonoBehaviour
 
         AwaitingRevive = false;
         ReviveUsed = true;
+        Rules?.OnRevived();
         Time.timeScale = 1f;
         if (Paddle != null) Paddle.InputEnabled = true;
         if (SoloBall != null)
@@ -385,6 +424,7 @@ public sealed class SoloGameManager : MonoBehaviour
     private void StartNewRun()
     {
         Kind = RunKind.Normal;
+        RunLevel = null;
         StartRun(CurrentMode);
     }
 
@@ -392,6 +432,7 @@ public sealed class SoloGameManager : MonoBehaviour
     {
         Time.timeScale = 1f;
         PointMultiplier = 1;
+        Sheltered = false;
         AwaitingRevive = false;
         ReviveUsed = false;
         StopRespawn();
@@ -404,7 +445,7 @@ public sealed class SoloGameManager : MonoBehaviour
             Score.ResetScore();
         }
 
-        Rules = MatchRules.Create(mode);
+        Rules = Kind == RunKind.Adventure && RunLevel != null ? new AdventureRules(mode, RunLevel) : MatchRules.Create(mode);
         Rules.Begin(participants);
         runSeconds = 0f;
 

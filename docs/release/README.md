@@ -119,7 +119,7 @@ Monetize → Products → In-app products. 15 ürün, hepsi tek seferlik. Kimlik
 - **Store settings:** Category Games → Arcade; iletişim e-postası 1. adımdaki adres, web sitesi yukarıdaki adres.
 
 ### 10. Yayından hemen önce
-- Unity Cloud → Leaderboards → classic, rush, daily, coop panoları **Reset** edilir (geliştirme sırasındaki skorlar silinir).
+- Unity Cloud → Leaderboards → classic, rush, arcade, daily, coop panoları **Reset** edilir (geliştirme sırasındaki skorlar silinir).
 - Internal testte kontrol:
   - Play Games girişi; Ayarlar'da "Connected" görünür.
   - Reklam onay penceresi (VPN ile AB'den denenebilir).
@@ -133,3 +133,4 @@ Monetize → Products → In-app products. 15 ürün, hepsi tek seferlik. Kimlik
 - Bir commit tek bir konuyu kapsar; ilgisiz değişiklikler ayrı commit'lere bölünür.
 - Yayın: GitHub Desktop → **History** → yayınlanacak commit'e sağ tık → **Create Tag** → `v1.0.1` → **Push origin**. Etiket imzalı AAB'yi üretir; sürüm adı etiketten alınır, sürüm kodu kendiliğinden artar (Player Settings'e dokunmak gerekmez).
 - GitHub → Releases → **Draft a new release** → aynı etiket → kısa sürüm notu ("What's new"). Play Console'daki "Release notes" ile aynı metin kullanılır.
+- 1.2.0 sürüm notu (8 dil, Play'e yapıştırmaya hazır): [whats-new-1.2.md](whats-new-1.2.md).

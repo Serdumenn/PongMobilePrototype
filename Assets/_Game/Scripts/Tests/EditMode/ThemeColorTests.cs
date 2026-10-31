@@ -17,7 +17,7 @@ public sealed class ThemeColorTests
     private static readonly Regex Token = new Regex(@"(--[a-z0-9-]+)\s*:\s*([^;]+);");
     private static readonly Regex Literal = new Regex(@"#[0-9A-Fa-f]{3,8}\b|rgba?\(");
 
-    private static readonly string[] Themes = { "", "theme-mint", "theme-sunset", "theme-night" };
+    private static readonly string[] Themes = { "", "theme-mint", "theme-sunset", "theme-night", "theme-ocean" };
 
     private static readonly (string text, string surface, float min)[] Pairs =
     {

@@ -11,6 +11,8 @@ public sealed class DailyMissions : MonoBehaviour
     [SerializeField] private CosmeticsService Cosmetics;
     [SerializeField] private RunMoments Moments;
     [SerializeField] private PowerUps Powers;
+    [SerializeField] private ArcadeEvents Events;
+    [SerializeField] private GoldCoins Coins;
 
     [Header("Rewards")]
     [SerializeField] private int GoldPerMission = 25;
@@ -34,6 +36,8 @@ public sealed class DailyMissions : MonoBehaviour
         if (Cosmetics == null) Cosmetics = FindFirstObjectByType<CosmeticsService>();
         if (Moments == null) Moments = FindFirstObjectByType<RunMoments>();
         if (Powers == null) Powers = FindFirstObjectByType<PowerUps>();
+        if (Events == null) Events = FindFirstObjectByType<ArcadeEvents>();
+        if (Coins == null) Coins = FindFirstObjectByType<GoldCoins>();
         Reload();
     }
 
@@ -47,6 +51,8 @@ public sealed class DailyMissions : MonoBehaviour
 
         if (Moments != null) Moments.NearMissed += OnNearMissed;
         if (Powers != null) Powers.Collected += OnPowerCollected;
+        if (Events != null) Events.Finished += OnEventFinished;
+        if (Coins != null) Coins.Collected += OnCoinCollected;
     }
 
     private void OnDisable()
@@ -59,6 +65,8 @@ public sealed class DailyMissions : MonoBehaviour
 
         if (Moments != null) Moments.NearMissed -= OnNearMissed;
         if (Powers != null) Powers.Collected -= OnPowerCollected;
+        if (Events != null) Events.Finished -= OnEventFinished;
+        if (Coins != null) Coins.Collected -= OnCoinCollected;
     }
 
     private void OnApplicationFocus(bool focused)
@@ -130,6 +138,16 @@ public sealed class DailyMissions : MonoBehaviour
     private void OnNearMissed()
     {
         Add(MissionKind.CloseSaves, 1);
+    }
+
+    private void OnEventFinished(EventKind kind, bool success, int gold)
+    {
+        if (success) Add(MissionKind.Events, 1);
+    }
+
+    private void OnCoinCollected(int value)
+    {
+        Add(MissionKind.Gold, value);
     }
 
     private void OnPowerCollected(PowerKind kind)

@@ -56,6 +56,10 @@ public abstract class MatchRules
         return false;
     }
 
+    public virtual void OnRevived()
+    {
+    }
+
     public static MatchRules Create(GameModeDefinition mode)
     {
         if (mode == null) return new ClassicRules(null);

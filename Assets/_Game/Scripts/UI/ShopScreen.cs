@@ -201,6 +201,7 @@ public sealed class ShopScreen : UIScreen
         else if (item.Unlock == UnlockKind.Score) face.Add(Status("status--score", "lock", Loc.T("Best {0}", item.UnlockValue)));
         else if (item.Unlock == UnlockKind.Streak) face.Add(Status("status--streak", "flame", Loc.Plural("{0} day", "{0} days", item.UnlockValue)));
         else if (item.Unlock == UnlockKind.Stars) face.Add(Status("status--stars", "star", $"{Mathf.Min(cosmetics.Stars, item.UnlockValue)}/{item.UnlockValue}"));
+        else if (item.Unlock == UnlockKind.Level) face.Add(Status("status--level", "level", Loc.T("Level {0}", item.UnlockValue)));
         else if (item.Unlock == UnlockKind.Ads)
         {
             int views = cosmetics.AdViews(item);
@@ -300,7 +301,7 @@ public sealed class ShopScreen : UIScreen
         dialogDots.Clear();
 
         bool unlocked = cosmetics.IsUnlocked(item);
-        bool streakOnly = item.Unlock == UnlockKind.Streak || item.Unlock == UnlockKind.Stars;
+        bool streakOnly = item.Unlock == UnlockKind.Streak || item.Unlock == UnlockKind.Stars || item.Unlock == UnlockKind.Level;
         dialogPass.style.display = unlocked || streakOnly || cosmetics.Inventory.HasPass ? DisplayStyle.None : DisplayStyle.Flex;
         SetBuy(unlocked || streakOnly ? null : item.ProductId);
         SetGoldOffer(unlocked ? null : item);
@@ -350,6 +351,11 @@ public sealed class ShopScreen : UIScreen
 
             case UnlockKind.Stars:
                 dialogText.text = Loc.T("Earn {0} mission stars to unlock.\nYour stars: {1}", item.UnlockValue, cosmetics.Stars);
+                SetPrimary(false, null, null);
+                break;
+
+            case UnlockKind.Level:
+                dialogText.text = Loc.T("Reach level {0} on the Pingi Road to unlock.\nYour level: {1}", item.UnlockValue, cosmetics.RoadLevel);
                 SetPrimary(false, null, null);
                 break;
 

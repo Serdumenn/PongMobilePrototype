@@ -241,6 +241,18 @@
     -unity-background-image-tint-color: var(--color-on-sun);
 }
 
+.status--level {
+    background-color: var(--color-coral-tint);
+}
+
+.status--level .item__status-label {
+    color: var(--color-coral-ink);
+}
+
+.status--level .icon {
+    -unity-background-image-tint-color: var(--color-coral-ink);
+}
+
 .status--pass {
     background-color: var(--color-chip-deep);
 }

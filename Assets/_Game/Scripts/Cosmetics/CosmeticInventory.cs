@@ -23,6 +23,10 @@ public sealed class CosmeticInventory
         public int Stars;
         public int GoldEarned;
         public int GoldSpent;
+        public int Xp;
+        public int RoadLevel;
+        public List<int> LevelStars = new List<int>();
+        public bool XpSeeded;
     }
 
     private readonly string path;
@@ -32,6 +36,19 @@ public sealed class CosmeticInventory
     public int Stars => data.Stars;
     public int Gold => Math.Max(0, data.GoldEarned - data.GoldSpent);
     public bool NoAds => data.NoAds;
+    public int Xp => data.Xp;
+    public int RoadLevel => Math.Max(1, data.RoadLevel);
+    public bool XpSeeded => data.XpSeeded;
+
+    public int TotalLevelStars
+    {
+        get
+        {
+            int total = 0;
+            foreach (int stars in data.LevelStars) total += Math.Max(0, stars);
+            return total;
+        }
+    }
 
     private CosmeticInventory(string path, SaveData data)
     {
@@ -98,6 +115,10 @@ public sealed class CosmeticInventory
         data.Stars = Math.Max(data.Stars, o.Stars);
         data.GoldEarned = Math.Max(data.GoldEarned, o.GoldEarned);
         data.GoldSpent = Math.Max(data.GoldSpent, o.GoldSpent);
+        data.Xp = Math.Max(data.Xp, o.Xp);
+        data.RoadLevel = Math.Max(data.RoadLevel, o.RoadLevel);
+        data.XpSeeded |= o.XpSeeded;
+        for (int i = 0; i < o.LevelStars.Count; i++) RecordLevel(i, o.LevelStars[i]);
         if (string.IsNullOrEmpty(data.Ball)) data.Ball = o.Ball;
         if (string.IsNullOrEmpty(data.Paddle)) data.Paddle = o.Paddle;
         if (string.IsNullOrEmpty(data.Theme)) data.Theme = o.Theme;
@@ -122,7 +143,7 @@ public sealed class CosmeticInventory
     {
         if (item == null) return false;
         if (item.Unlock == UnlockKind.Free) return true;
-        if (item.Unlock == UnlockKind.Streak || item.Unlock == UnlockKind.Stars) return data.Owned.Contains(item.Id);
+        if (item.Unlock == UnlockKind.Streak || item.Unlock == UnlockKind.Stars || item.Unlock == UnlockKind.Level) return data.Owned.Contains(item.Id);
         return data.HasPass || data.Owned.Contains(item.Id);
     }
 
@@ -134,6 +155,35 @@ public sealed class CosmeticInventory
     public void EarnGold(int amount)
     {
         if (amount > 0) data.GoldEarned += amount;
+    }
+
+    public void AddXp(int amount)
+    {
+        if (amount > 0) data.Xp += amount;
+    }
+
+    public void MarkXpSeeded()
+    {
+        data.XpSeeded = true;
+    }
+
+    public void ReachLevel(int level)
+    {
+        data.RoadLevel = Math.Max(data.RoadLevel, level);
+    }
+
+    public int LevelStarsAt(int index)
+    {
+        return index >= 0 && index < data.LevelStars.Count ? data.LevelStars[index] : 0;
+    }
+
+    public bool RecordLevel(int index, int stars)
+    {
+        if (index < 0 || stars <= LevelStarsAt(index)) return false;
+
+        while (data.LevelStars.Count <= index) data.LevelStars.Add(0);
+        data.LevelStars[index] = stars;
+        return true;
     }
 
     public bool SpendGold(int amount)

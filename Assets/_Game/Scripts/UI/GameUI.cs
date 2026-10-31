@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -26,6 +27,9 @@ public sealed class GameUI : MonoBehaviour
     [SerializeField] private DailyMissions Missions;
     [SerializeField] private PowerUps Powers;
     [SerializeField] private RunPurse Purse;
+    [SerializeField] private ArcadeEvents Events;
+    [SerializeField] private PlayerLevel Level;
+    [SerializeField] private AdventureRun Adventure;
 
     [Header("Onboarding")]
     [SerializeField] private int HintRuns = 3;
@@ -66,6 +70,9 @@ public sealed class GameUI : MonoBehaviour
     private GhostCodeScreen ghostCode;
     private FriendsScreen friendsScreen;
     private MissionsScreen missionsScreen;
+    private RoadScreen roadScreen;
+    private AdventureScreen adventureScreen;
+    private AdventureResultScreen adventureResult;
     private ReviveScreen reviveScreen;
     private bool doublingGold;
     private InviteBanner inviteBanner;
@@ -107,6 +114,9 @@ public sealed class GameUI : MonoBehaviour
         if (Missions == null) Missions = FindFirstObjectByType<DailyMissions>();
         if (Powers == null) Powers = FindFirstObjectByType<PowerUps>();
         if (Purse == null) Purse = FindFirstObjectByType<RunPurse>();
+        if (Events == null) Events = FindFirstObjectByType<ArcadeEvents>();
+        if (Level == null) Level = FindFirstObjectByType<PlayerLevel>();
+        if (Adventure == null) Adventure = FindFirstObjectByType<AdventureRun>();
 
         root = GetComponent<UIDocument>().rootVisualElement;
         root.Query<Button>().ForEach(b => b.RemoveFromClassList(Button.ussClassName));
@@ -115,8 +125,14 @@ public sealed class GameUI : MonoBehaviour
         textFit = new TextFit(root);
         Loc.Changed += OnLanguageChanged;
 
-        menu = new MenuScreen(root.Q("menu"), OnMenuPlay, OpenSettings, OpenShop, OpenScores, StepMode, OpenMissions);
+        menu = new MenuScreen(root.Q("menu"), OnMenuPlay, OpenSettings, OpenShop, OpenScores, StepMode, OpenMissions, OpenRoad);
         missionsScreen = new MissionsScreen(root.Q("missions"), CloseMissions);
+        roadScreen = new RoadScreen(root.Q("road"), CloseRoad);
+        adventureScreen = new AdventureScreen(root.Q("adventure"), CloseAdventure, PlayStage);
+        adventureResult = new AdventureResultScreen(root.Q("adventure-result"),
+            () => ContinueAfterAd(MapFromResult, adventureResult.SetInteractable),
+            () => ContinueAfterAd(() => PlayStage(Adventure.Index), adventureResult.SetInteractable),
+            () => ContinueAfterAd(() => PlayStage(Adventure.Index + 1), adventureResult.SetInteractable));
         reviveScreen = new ReviveScreen(root.Q("revive"), ReviveWithAd, DeclineRevive);
         hud = new HudScreen(root.Q("hud"), OnHudPause);
         pause = new PauseScreen(root.Q("pause"), Resume, LeaveFromPause);
@@ -182,10 +198,22 @@ public sealed class GameUI : MonoBehaviour
         }
         if (Powers != null) Powers.Collected += OnPowerCollected;
         if (Purse != null) Purse.Changed += OnPurseChanged;
+        if (Events != null)
+        {
+            Events.Started += OnEventStarted;
+            Events.Finished += OnEventFinished;
+        }
+        if (Level != null)
+        {
+            Level.Changed += OnLevelChanged;
+            Level.LevelsReached += OnLevelsReached;
+        }
+        if (Adventure != null) Adventure.Started += OnStageStarted;
         Game.ReviveOffered += OnReviveOffered;
         Game.Revived += OnRevived;
         if (Game.ReviveAvailable == null) Game.ReviveAvailable = () => AdManager.Instance != null && AdManager.Instance.IsRewardedReady;
         RefreshMissionsBadge();
+        RefreshLevelBadge();
 
         built = true;
         lastState = Game.State;
@@ -217,6 +245,17 @@ public sealed class GameUI : MonoBehaviour
         }
         if (Powers != null) Powers.Collected -= OnPowerCollected;
         if (Purse != null) Purse.Changed -= OnPurseChanged;
+        if (Events != null)
+        {
+            Events.Started -= OnEventStarted;
+            Events.Finished -= OnEventFinished;
+        }
+        if (Level != null)
+        {
+            Level.Changed -= OnLevelChanged;
+            Level.LevelsReached -= OnLevelsReached;
+        }
+        if (Adventure != null) Adventure.Started -= OnStageStarted;
         Game.ReviveOffered -= OnReviveOffered;
         Game.Revived -= OnRevived;
         if (Match != null)
@@ -245,6 +284,8 @@ public sealed class GameUI : MonoBehaviour
         if (Game.State == SoloGameManager.GameState.Playing && rules != null && rules.IsTimed)
             hud.SetTime(rules.TimeRemaining, rules.TimeLimit);
         if (Powers != null && hud.IsVisible) ShowPowers();
+        if (Events != null && Events.Active && hud.IsVisible) ShowEventProgress();
+        if (Adventure != null && Adventure.Running && hud.IsVisible) ShowStageProgress();
 
         if (Screen.safeArea != lastSafeArea || Screen.width != lastScreenSize.x || Screen.height != lastScreenSize.y)
             ApplySafeArea();
@@ -556,6 +597,7 @@ public sealed class GameUI : MonoBehaviour
         localizer.Apply();
         textFit.ResetAll();
         RefreshMenuMode();
+        RefreshLevelBadge();
     }
 
     private void OnModeChanged(GameModeDefinition mode)
@@ -584,7 +626,10 @@ public sealed class GameUI : MonoBehaviour
         for (int i = 0; i < modes.Count; i++) if (modes[i] == mode) index = i;
 
         Sprite art = mode.Kind == GameModeKind.Classic ? EquippedBall()?.Happy : null;
-        menu.SetMode(mode, index, count, Game.BestFor(mode), Game.IsModeUnlocked(mode), art);
+        string note = mode.Kind == GameModeKind.Adventure && Adventure != null && Adventure.BookAsset != null
+            ? Loc.T("{0} of {1} stars", Adventure.TotalStars, Adventure.BookAsset.MaxStars)
+            : null;
+        menu.SetMode(mode, index, count, Game.BestFor(mode), Game.IsModeUnlocked(mode), art, note);
     }
 
     private void StepMode(int direction)
@@ -606,6 +651,7 @@ public sealed class GameUI : MonoBehaviour
     private void OnMenuPlay()
     {
         if (togetherSelected && HasTogether) OpenHub();
+        else if (Game.CurrentMode != null && Game.CurrentMode.Kind == GameModeKind.Adventure) OpenAdventure();
         else Game.StartGameFromMenu();
     }
 
@@ -778,6 +824,7 @@ public sealed class GameUI : MonoBehaviour
     {
         var ball = EquippedBall();
         gameOver.SetDaily(dailyLabel, dailyScore, dailyBest, dailyNewBest, ball?.Happy, ball?.Sad);
+        ShowRunXp();
         gameOver.Show();
     }
 
@@ -1075,6 +1122,58 @@ public sealed class GameUI : MonoBehaviour
         hud.ShowBanner(PowerName(kind), false);
     }
 
+    public static string EventName(EventKind kind)
+    {
+        return kind switch
+        {
+            EventKind.Storm => Loc.T("Ball Storm!"),
+            EventKind.GoldRain => Loc.T("Gold Rain!"),
+            EventKind.Targets => Loc.T("Target Board!"),
+            _ => Loc.T("Giant Pingi!")
+        };
+    }
+
+    public static string EventGoal(EventKind kind, int target)
+    {
+        return kind switch
+        {
+            EventKind.Storm => Loc.T("Keep {0} balls in play", target),
+            EventKind.GoldRain => Loc.T("Grab {0} coins", target),
+            EventKind.Targets => Loc.T("Hit all {0} targets", target),
+            _ => Loc.T("Make {0} hits", target)
+        };
+    }
+
+    private static string EventIcon(EventKind kind)
+    {
+        return kind switch
+        {
+            EventKind.Storm => "storm",
+            EventKind.GoldRain => "coin",
+            EventKind.Targets => "target",
+            _ => "giant"
+        };
+    }
+
+    private void OnEventStarted(EventKind kind)
+    {
+        hud.HideBanner();
+        hud.ShowEvent(EventIcon(kind), EventName(kind), EventGoal(kind, Events.Target));
+        ShowEventProgress();
+    }
+
+    private void ShowEventProgress()
+    {
+        string count = Events.Current == EventKind.Storm ? $"{Events.Progress}/{Events.Total}" : $"{Events.Progress}/{Events.Target}";
+        hud.SetEventProgress(count, Events.Duration > 0f ? Events.TimeLeft / Events.Duration : 0f);
+    }
+
+    private void OnEventFinished(EventKind kind, bool success, int gold)
+    {
+        hud.HideEvent();
+        hud.ShowBanner(success ? Loc.T("Event complete! +{0} gold", gold) : Loc.T("Time's up!"), success);
+    }
+
     private bool ArcadeRun => Game.RunMode != null && Game.RunMode.Kind == GameModeKind.Arcade;
 
     private void OnPurseChanged()
@@ -1174,6 +1273,134 @@ public sealed class GameUI : MonoBehaviour
         RefreshMissionsBadge();
     }
 
+    private void OpenAdventure()
+    {
+        if (Adventure == null || Adventure.BookAsset == null) return;
+
+        menu.Hide();
+        adventureScreen.Present(Adventure, Adventure.BookAsset.WorldOf(Adventure.NextIndex));
+        adventureScreen.Show();
+        Game.HideGameObjects();
+    }
+
+    private void CloseAdventure()
+    {
+        adventureScreen.Hide();
+        ShowMenuFromOverlay();
+    }
+
+    private void PlayStage(int index)
+    {
+        if (Adventure == null) return;
+
+        leavingResult = false;
+        adventureResult.Hide();
+        gameOver.Hide();
+        reward.Hide();
+        if (!Adventure.Play(index)) OpenAdventure();
+    }
+
+    private void MapFromResult()
+    {
+        int world = Adventure != null && Adventure.BookAsset != null ? Adventure.BookAsset.WorldOf(Mathf.Max(0, Adventure.Index)) : 0;
+        adventureResult.Hide();
+        reward.Hide();
+        adventureScreen.Present(Adventure, world);
+        adventureScreen.Show();
+        Game.ReturnToMenu();
+        Game.HideGameObjects();
+    }
+
+    private void OnStageStarted()
+    {
+        var book = Adventure.BookAsset;
+        var level = Adventure.Level;
+        if (book == null || level == null) return;
+
+        hud.HideBanner();
+        hud.ShowEvent(AdventureScreen.GoalIcon(level.Goal), Loc.T("Stage {0}", book.Label(Adventure.Index)), AdventureScreen.Goal(level));
+        ShowStageProgress();
+    }
+
+    private void ShowStageProgress()
+    {
+        var rules = Adventure.Rules;
+        var level = Adventure.Level;
+        if (rules == null || level == null) return;
+
+        string count = level.Goal == AdventureGoal.Survive
+            ? Mathf.CeilToInt(rules.TimeRemaining) + "s"
+            : $"{Adventure.Progress}/{Adventure.Target}";
+        hud.SetEventProgress(count, rules.HasClock ? rules.TimeRemaining / rules.TimeLimit : 1f);
+        hud.SetLives(rules.Lives);
+    }
+
+    private void ShowStageResult()
+    {
+        var book = Adventure != null ? Adventure.BookAsset : null;
+        var level = Adventure != null ? Adventure.Level : null;
+        if (book == null || level == null) return;
+
+        hud.HideEvent();
+        var ball = EquippedBall();
+        int runGold = Purse != null ? Purse.LastRunGold : 0;
+        adventureResult.Present(book.Label(Adventure.Index), Adventure.Won, Adventure.StarsEarned, Adventure.GoldEarned, runGold,
+            Adventure.HasNext, AdventureScreen.Goal(level), ball?.Happy, ball?.Sad);
+        adventureResult.Show();
+    }
+
+    private void OpenRoad()
+    {
+        if (Level == null) return;
+
+        roadScreen.Present(Level, EquippedBall()?.Happy);
+        roadScreen.Show();
+    }
+
+    private void CloseRoad()
+    {
+        roadScreen.Hide();
+        RefreshLevelBadge();
+    }
+
+    private void RefreshLevelBadge()
+    {
+        if (Level == null || menu == null) return;
+        var standing = Level.Standing;
+        menu.SetLevel(standing.Level, standing.Fraction);
+    }
+
+    private void OnLevelChanged()
+    {
+        RefreshLevelBadge();
+        if (gameOver.IsVisible) ShowRunXp();
+        if (roadScreen.IsVisible) roadScreen.Present(Level, EquippedBall()?.Happy);
+    }
+
+    private void OnLevelsReached(IReadOnlyList<RoadReward> reached)
+    {
+        if (Game.State == SoloGameManager.GameState.Playing || Game.State == SoloGameManager.GameState.GameOver) return;
+
+        int gold = 0;
+        foreach (var step in reached) gold += step.Gold;
+        toast.Show(LevelUpLine(reached[reached.Count - 1].Level, gold));
+    }
+
+    private static string LevelUpLine(int level, int gold)
+    {
+        return gold > 0 ? Loc.T("Level {0}!", level) + "  " + Loc.T("+{0} gold", gold) : Loc.T("Level {0}!", level);
+    }
+
+    private void ShowRunXp()
+    {
+        if (Level == null) return;
+
+        int gold = 0;
+        foreach (var reached in Level.RunRewards) gold += reached.Gold;
+        var now = Level.Standing;
+        gameOver.SetXp(Level.RunXp, Level.RunStart, now, LevelUpLine(now.Level, gold));
+    }
+
     private void RefreshMissionsBadge()
     {
         if (Missions == null) return;
@@ -1213,7 +1440,8 @@ public sealed class GameUI : MonoBehaviour
                 reward.Hide();
                 ghostRace.Hide();
                 hud.SetDelta(null);
-                if (!settings.IsVisible && !shop.IsVisible && !scores.IsVisible && !hub.IsVisible && !lobbyScreen.IsVisible && !ghostResult.IsVisible
+                adventureResult.Hide();
+                if (!settings.IsVisible && !shop.IsVisible && !scores.IsVisible && !hub.IsVisible && !lobbyScreen.IsVisible && !ghostResult.IsVisible && !adventureScreen.IsVisible
                     && !onlineHud.IsVisible && !onlineResult.IsVisible && !rushBattle.IsVisible && !rushResult.IsVisible
                     && (Match == null || !Match.IsActive) && (OnlineMatch == null || !OnlineMatch.IsActive) && (OnlineRush == null || !OnlineRush.IsActive))
                 {
@@ -1226,6 +1454,8 @@ public sealed class GameUI : MonoBehaviour
                 menu.Hide();
                 pause.Hide();
                 gameOver.Hide();
+                adventureResult.Hide();
+                adventureScreen.Hide();
                 reward.Hide();
                 if (previous != SoloGameManager.GameState.Paused) BeginRun();
                 hud.Show();
@@ -1256,6 +1486,7 @@ public sealed class GameUI : MonoBehaviour
                 hud.SetDelta(null);
                 if (Game.DailyRun) FinishDaily();
                 else if (Game.GhostRun) FinishGhost();
+                else if (Game.InAdventure) ShowStageResult();
                 else
                 {
                     ShowGameOverResult();
@@ -1280,6 +1511,7 @@ public sealed class GameUI : MonoBehaviour
         var score = Game.ScoreManager;
         gameOver.SetResult(Game.CurrentMode?.Title, score.Score, score.BestScore, score.PreviousBest, score.IsNewBest, ball?.Happy, ball?.Sad);
         ShowRunGold();
+        ShowRunXp();
         gameOver.Show();
     }
 
@@ -1301,6 +1533,8 @@ public sealed class GameUI : MonoBehaviour
         if (timed) hud.SetTime(rules.TimeRemaining, rules.TimeLimit);
         hud.SetScore(Game.ScoreManager.Score, false);
         hud.SetGold(ArcadeRun ? 0 : (int?)null);
+        hud.SetLives(Game.Rules is AdventureRules stage ? stage.Lives : (int?)null);
+        hud.HideEvent();
         SetHint(GameSettings.HintRunsShown < HintRuns);
     }
 
