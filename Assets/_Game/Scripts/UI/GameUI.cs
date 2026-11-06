@@ -30,6 +30,7 @@ public sealed class GameUI : MonoBehaviour
     [SerializeField] private ArcadeEvents Events;
     [SerializeField] private PlayerLevel Level;
     [SerializeField] private AdventureRun Adventure;
+    [SerializeField] private BackdropDirector Backdrop;
 
     [Header("Onboarding")]
     [SerializeField] private int HintRuns = 3;
@@ -117,6 +118,7 @@ public sealed class GameUI : MonoBehaviour
         if (Events == null) Events = FindFirstObjectByType<ArcadeEvents>();
         if (Level == null) Level = FindFirstObjectByType<PlayerLevel>();
         if (Adventure == null) Adventure = FindFirstObjectByType<AdventureRun>();
+        if (Backdrop == null) Backdrop = FindFirstObjectByType<BackdropDirector>();
 
         root = GetComponent<UIDocument>().rootVisualElement;
         root.Query<Button>().ForEach(b => b.RemoveFromClassList(Button.ussClassName));
@@ -286,6 +288,7 @@ public sealed class GameUI : MonoBehaviour
         if (Powers != null && hud.IsVisible) ShowPowers();
         if (Events != null && Events.Active && hud.IsVisible) ShowEventProgress();
         if (Adventure != null && Adventure.Running && hud.IsVisible) ShowStageProgress();
+        if (Backdrop != null) Backdrop.Calm = Game.State != SoloGameManager.GameState.Menu || (Match != null && Match.IsActive) || (OnlineMatch != null && OnlineMatch.IsActive) || (OnlineRush != null && OnlineRush.IsActive);
 
         if (Screen.safeArea != lastSafeArea || Screen.width != lastScreenSize.x || Screen.height != lastScreenSize.y)
             ApplySafeArea();
@@ -611,25 +614,32 @@ public sealed class GameUI : MonoBehaviour
     {
         var modes = Game.ModeList;
         int count = modes.Count + (HasTogether ? 1 : 0);
+        if (count == 0) return;
 
-        if (togetherSelected && HasTogether)
+        int index = togetherSelected && HasTogether ? modes.Count : 0;
+        if (!(togetherSelected && HasTogether))
+            for (int i = 0; i < modes.Count; i++) if (modes[i] == Game.CurrentMode) index = i;
+
+        if (Backdrop != null) Backdrop.Show(index >= modes.Count ? BackdropScene.Together : BackdropScenes.For(modes[index].Kind));
+        menu.SetCards(CardAt(index - 1, count), CardAt(index, count), CardAt(index + 1, count), index, count);
+    }
+
+    private ModeCardData CardAt(int index, int count)
+    {
+        var modes = Game.ModeList;
+        index = (index % count + count) % count;
+        if (index >= modes.Count)
         {
             var friend = Cosmetics != null ? Cosmetics.CatalogAsset.Find("ball_minty") : null;
-            menu.SetTogether(modes.Count, count, EquippedBall()?.Happy, friend != null ? friend.Happy : null);
-            return;
+            return new ModeCardData(EquippedBall()?.Happy, friend != null ? friend.Happy : null);
         }
 
-        var mode = Game.CurrentMode;
-        if (mode == null) return;
-
-        int index = 0;
-        for (int i = 0; i < modes.Count; i++) if (modes[i] == mode) index = i;
-
+        var mode = modes[index];
         Sprite art = mode.Kind == GameModeKind.Classic ? EquippedBall()?.Happy : null;
         string note = mode.Kind == GameModeKind.Adventure && Adventure != null && Adventure.BookAsset != null
             ? Loc.T("{0} of {1} stars", Adventure.TotalStars, Adventure.BookAsset.MaxStars)
             : null;
-        menu.SetMode(mode, index, count, Game.BestFor(mode), Game.IsModeUnlocked(mode), art, note);
+        return new ModeCardData(mode, Game.BestFor(mode), Game.IsModeUnlocked(mode), art, note);
     }
 
     private void StepMode(int direction)
@@ -657,9 +667,7 @@ public sealed class GameUI : MonoBehaviour
 
     private void OpenHub()
     {
-        menu.Hide();
-        hub.Present(0);
-        Game.HideGameObjects();
+        OpenHubAt(0);
     }
 
     private void OpenHubAt(int tab)
@@ -667,6 +675,12 @@ public sealed class GameUI : MonoBehaviour
         menu.Hide();
         hub.Present(tab);
         Game.HideGameObjects();
+        ShowLiving();
+    }
+
+    private void ShowLiving()
+    {
+        if (Backdrop != null) Backdrop.Show(BackdropScene.Living);
     }
 
     private void StartDaily()
@@ -1457,7 +1471,11 @@ public sealed class GameUI : MonoBehaviour
                 adventureResult.Hide();
                 adventureScreen.Hide();
                 reward.Hide();
-                if (previous != SoloGameManager.GameState.Paused) BeginRun();
+                if (previous != SoloGameManager.GameState.Paused)
+                {
+                    BeginRun();
+                    if (Backdrop != null) Backdrop.Show(Game.RunMode != null ? BackdropScenes.For(Game.RunMode.Kind) : BackdropScene.Classic);
+                }
                 hud.Show();
                 if (Game.GhostRun && Race != null && Race.Active)
                 {
@@ -1608,6 +1626,7 @@ public sealed class GameUI : MonoBehaviour
         menu.Hide();
         settings.Show();
         Game.HideGameObjects();
+        ShowLiving();
     }
 
     private void CloseSettings()
@@ -1621,6 +1640,7 @@ public sealed class GameUI : MonoBehaviour
         menu.Hide();
         shop.Show();
         Game.HideGameObjects();
+        ShowLiving();
     }
 
     private void CloseShop()
@@ -1634,6 +1654,7 @@ public sealed class GameUI : MonoBehaviour
         menu.Hide();
         scores.Show();
         Game.HideGameObjects();
+        ShowLiving();
     }
 
     private void CloseScores()

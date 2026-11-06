@@ -251,10 +251,16 @@ public sealed class LocalMatchTests : GameSceneFixture
         yield return LoadMatch();
         var root = Object.FindFirstObjectByType<UIDocument>().rootVisualElement;
 
+        var strip = root.Q("menu").Q("mode-strip");
         for (int i = 0; i < 8 && root.Q("menu").Q<Label>("mode-name").text != "Together"; i++)
         {
-            Click(root.Q("menu").Q<Button>("mode-prev"));
+            Vector2 from = strip.worldBound.center;
+            SendPointer(strip, EventType.MouseDown, from);
             yield return null;
+            SendPointer(strip, EventType.MouseDrag, from + new Vector2(320f, 0f));
+            yield return null;
+            SendPointer(strip, EventType.MouseUp, from + new Vector2(320f, 0f));
+            yield return new WaitForSecondsRealtime(0.6f);
         }
         Assert.AreEqual("Together", root.Q("menu").Q<Label>("mode-name").text);
 
@@ -283,6 +289,20 @@ public sealed class LocalMatchTests : GameSceneFixture
         Assert.AreEqual(LocalMatchController.MatchState.Idle, match.State);
         Assert.AreEqual(SoloGameManager.GameState.Menu, Game.State);
         Assert.AreEqual(DisplayStyle.Flex, root.Q("menu").resolvedStyle.display);
+    }
+
+    private static void SendPointer(VisualElement target, EventType type, Vector2 at)
+    {
+        var source = new Event { type = type, mousePosition = at, button = 0, clickCount = 1 };
+        EventBase e = type switch
+        {
+            EventType.MouseDown => PointerDownEvent.GetPooled(source),
+            EventType.MouseDrag => PointerMoveEvent.GetPooled(source),
+            _ => PointerUpEvent.GetPooled(source)
+        };
+        e.target = target;
+        target.SendEvent(e);
+        e.Dispose();
     }
 
     private static void Click(Button button)

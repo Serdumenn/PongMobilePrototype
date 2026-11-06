@@ -34,6 +34,14 @@
             </ui:VisualElement>
             <ui:VisualElement class="divider" picking-mode="Ignore" />
             <ui:VisualElement class="row" picking-mode="Ignore">
+                <ui:VisualElement class="icon icon--wave row__icon" picking-mode="Ignore" />
+                <ui:Label text="Moving background" class="row__label" picking-mode="Ignore" />
+                <ui:VisualElement name="motion-switch" class="switch">
+                    <ui:VisualElement class="switch__knob" picking-mode="Ignore" />
+                </ui:VisualElement>
+            </ui:VisualElement>
+            <ui:VisualElement class="divider" picking-mode="Ignore" />
+            <ui:VisualElement class="row" picking-mode="Ignore">
                 <ui:VisualElement class="icon icon--trash row__icon" picking-mode="Ignore" />
                 <ui:Label text="Best scores" class="row__label" picking-mode="Ignore" />
                 <ui:Label name="best-value" text="0" class="row__value" picking-mode="Ignore" />

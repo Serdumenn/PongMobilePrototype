@@ -144,6 +144,50 @@ def bumper():
     return f'<svg xmlns="http://www.w3.org/2000/svg" width="132" height="134" viewBox="0 0 132 134">{shadow}{body}</svg>' + chr(10)
 
 
+def sheet(width, height, body):
+    return f'<svg xmlns="http://www.w3.org/2000/svg" width="{width}" height="{height}" viewBox="0 0 {width} {height}">{body}</svg>' + chr(10)
+
+
+def bg_cloud():
+    return sheet(160, 84, f'<g fill="{WHITE}"><circle cx="42" cy="54" r="28"/><circle cx="80" cy="38" r="36"/><circle cx="120" cy="54" r="28"/><rect x="42" y="50" width="78" height="32" rx="16"/></g>')
+
+
+def bg_hill():
+    return sheet(600, 200, f'<path d="M0 90C75 20 150 20 225 80S375 140 450 70 560 40 600 90V200H0Z" fill="{WHITE}"/>')
+
+
+def bg_table():
+    return sheet(500, 900, f'<rect x="10" y="10" width="480" height="880" rx="64" fill="none" stroke="{WHITE}" stroke-width="12"/>'
+                           f'<path d="M40 450H460" stroke="{WHITE}" stroke-width="12" stroke-dasharray="28 22" stroke-linecap="round"/>')
+
+
+def bg_stripe():
+    return sheet(1000, 24, f'<rect x="0" y="0" width="1000" height="24" rx="12" fill="{WHITE}"/>')
+
+
+def bg_streak():
+    return sheet(200, 16, f'<rect x="0" y="0" width="200" height="16" rx="8" fill="{WHITE}"/>')
+
+
+def bg_blob():
+    return sheet(220, 220, f'<path d="M112 8C162 6 210 40 212 98S184 206 120 212 12 186 8 120 54 10 112 8Z" fill="{WHITE}"/>')
+
+
+def bg_bubble():
+    return sheet(64, 64, f'<circle cx="32" cy="32" r="28" fill="{WHITE}" fill-opacity="0.45" stroke="{WHITE}" stroke-width="4"/><circle cx="23" cy="22" r="7" fill="{WHITE}"/>')
+
+
+BACKDROP = {
+    "spr_bg_cloud": bg_cloud,
+    "spr_bg_hill": bg_hill,
+    "spr_bg_table": bg_table,
+    "spr_bg_stripe": bg_stripe,
+    "spr_bg_streak": bg_streak,
+    "spr_bg_blob": bg_blob,
+    "spr_bg_bubble": bg_bubble,
+}
+
+
 SHAPES = {
     "spr_fx_star": star,
     "spr_fx_heart": heart,
@@ -167,7 +211,7 @@ SHAPES = {
 
 def main():
     os.makedirs(OUT, exist_ok=True)
-    for name, text in (("spr_fx_dot", dot()), ("spr_fx_ring", ring()), ("spr_fx_spark", spark()), ("spr_fx_glow", glow()), ("spr_fx_confetti", confetti())) + tuple((name, make()) for name, make in SHAPES.items()):
+    for name, text in (("spr_fx_dot", dot()), ("spr_fx_ring", ring()), ("spr_fx_spark", spark()), ("spr_fx_glow", glow()), ("spr_fx_confetti", confetti())) + tuple((name, make()) for name, make in SHAPES.items()) + tuple((name, make()) for name, make in BACKDROP.items()):
         path = os.path.join(OUT, name + ".svg")
         with open(path, "w", encoding="utf-8", newline="\n") as f:
             f.write(text)

@@ -42,26 +42,39 @@
             <ui:Label text="Pongi" class="title__line title__line--pongi" picking-mode="Ignore" />
         </ui:VisualElement>
         <ui:VisualElement class="spacer" picking-mode="Ignore" />
-        <ui:VisualElement class="mode-selector" picking-mode="Ignore">
-            <ui:Button name="mode-prev" class="btn btn--round">
-                <ui:VisualElement class="btn__face" picking-mode="Ignore">
-                    <ui:VisualElement class="icon icon--chevron-left" picking-mode="Ignore" />
+        <ui:VisualElement name="mode-strip" class="mode-strip">
+            <ui:VisualElement name="mode-track" class="mode-track" picking-mode="Ignore">
+                <ui:VisualElement name="mode-card" class="mode-card" picking-mode="Ignore">
+                    <ui:VisualElement name="mode-art" class="mode-card__art" picking-mode="Ignore" />
+                    <ui:Label name="mode-name" text="Classic" class="mode-card__name" picking-mode="Ignore" />
+                    <ui:Label name="mode-tagline" text="" class="caption mode-card__tagline" picking-mode="Ignore" />
+                    <ui:VisualElement name="mode-best" class="mode-card__best" picking-mode="Ignore">
+                        <ui:VisualElement name="mode-best-icon" class="icon icon--crown mode-card__best-icon" picking-mode="Ignore" />
+                        <ui:Label name="mode-best-label" text="Best 0" class="mode-card__best-label" picking-mode="Ignore" />
+                    </ui:VisualElement>
                 </ui:VisualElement>
-            </ui:Button>
-            <ui:VisualElement name="mode-card" class="mode-card">
-                <ui:VisualElement name="mode-art" class="mode-card__art" picking-mode="Ignore" />
-                <ui:Label name="mode-name" text="Classic" class="mode-card__name" picking-mode="Ignore" />
-                <ui:Label name="mode-tagline" text="" class="caption mode-card__tagline" picking-mode="Ignore" />
-                <ui:VisualElement name="mode-best" class="mode-card__best" picking-mode="Ignore">
-                    <ui:VisualElement name="mode-best-icon" class="icon icon--crown" picking-mode="Ignore" />
-                    <ui:Label name="mode-best-label" text="Best 0" class="mode-card__best-label" picking-mode="Ignore" />
+                <ui:VisualElement name="mode-card-prev" class="mode-card mode-card--peek mode-card--prev" picking-mode="Ignore">
+                    <ui:VisualElement class="mode-card__art" picking-mode="Ignore" />
+                    <ui:Label text="" class="mode-card__name" picking-mode="Ignore" />
+                    <ui:Label text="" class="caption mode-card__tagline" picking-mode="Ignore" />
+                    <ui:VisualElement class="mode-card__best" picking-mode="Ignore">
+                        <ui:VisualElement class="icon icon--crown mode-card__best-icon" picking-mode="Ignore" />
+                        <ui:Label text="" class="mode-card__best-label" picking-mode="Ignore" />
+                    </ui:VisualElement>
+                </ui:VisualElement>
+                <ui:VisualElement name="mode-card-next" class="mode-card mode-card--peek mode-card--next" picking-mode="Ignore">
+                    <ui:VisualElement class="mode-card__art" picking-mode="Ignore" />
+                    <ui:Label text="" class="mode-card__name" picking-mode="Ignore" />
+                    <ui:Label text="" class="caption mode-card__tagline" picking-mode="Ignore" />
+                    <ui:VisualElement class="mode-card__best" picking-mode="Ignore">
+                        <ui:VisualElement class="icon icon--crown mode-card__best-icon" picking-mode="Ignore" />
+                        <ui:Label text="" class="mode-card__best-label" picking-mode="Ignore" />
+                    </ui:VisualElement>
                 </ui:VisualElement>
             </ui:VisualElement>
-            <ui:Button name="mode-next" class="btn btn--round">
-                <ui:VisualElement class="btn__face" picking-mode="Ignore">
-                    <ui:VisualElement class="icon icon--chevron-right" picking-mode="Ignore" />
-                </ui:VisualElement>
-            </ui:Button>
+            <ui:VisualElement name="swipe-hint" class="swipe-hint swipe-hint--hidden" picking-mode="Ignore">
+                <ui:VisualElement class="icon icon--drag" picking-mode="Ignore" />
+            </ui:VisualElement>
         </ui:VisualElement>
         <ui:VisualElement name="mode-dots" class="mode-dots" picking-mode="Ignore" />
         <ui:VisualElement class="spacer spacer--2" picking-mode="Ignore" />

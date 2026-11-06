@@ -1261,3 +1261,60 @@
 .adv-result__retry {
     margin-left: 24px;
 }
+
+.mode-strip {
+    flex-shrink: 0;
+    align-items: center;
+    margin-top: 24px;
+}
+
+.mode-track {
+    width: 700px;
+}
+
+.mode-track > .mode-card {
+    flex-grow: 0;
+    margin: 0;
+}
+
+.mode-card--peek {
+    overflow: hidden;
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    opacity: 0.6;
+    scale: 0.8 0.8;
+}
+
+.mode-card--prev {
+    translate: -690px 0;
+}
+
+.mode-card--next {
+    translate: 690px 0;
+}
+
+.swipe-hint {
+    position: absolute;
+    left: 50%;
+    bottom: -8px;
+    width: 96px;
+    height: 96px;
+    margin-left: 236px;
+    align-items: center;
+    justify-content: center;
+    border-radius: 48px;
+    background-color: var(--color-surface);
+}
+
+.swipe-hint .icon {
+    width: 64px;
+    height: 64px;
+    -unity-background-image-tint-color: var(--color-ink-muted);
+}
+
+.swipe-hint--hidden {
+    display: none;
+}

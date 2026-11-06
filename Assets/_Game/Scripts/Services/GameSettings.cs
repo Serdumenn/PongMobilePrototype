@@ -6,6 +6,28 @@ public static class GameSettings
     private const string SoundKey = "SoundEnabled";
     private const string HintRunsKey = "HintRunsShown";
     private const string OnlineLookKey = "OnlineLook";
+    private const string MotionBackdropKey = "MotionBackdrop";
+    private const string SwipeHintDoneKey = "SwipeHintDone";
+
+    public static bool MotionBackdrop
+    {
+        get => PlayerPrefs.GetInt(MotionBackdropKey, 1) == 1;
+        set
+        {
+            PlayerPrefs.SetInt(MotionBackdropKey, value ? 1 : 0);
+            PlayerPrefs.Save();
+        }
+    }
+
+    public static bool SwipeHintDone
+    {
+        get => PlayerPrefs.GetInt(SwipeHintDoneKey, 0) == 1;
+        set
+        {
+            PlayerPrefs.SetInt(SwipeHintDoneKey, value ? 1 : 0);
+            PlayerPrefs.Save();
+        }
+    }
 
     public static bool HapticsEnabled
     {

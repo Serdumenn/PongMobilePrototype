@@ -470,3 +470,4 @@ Perfect! All 3 stars	Perfect! All 3 stars	AdventureResultScreen.cs	Kusursuz! 3 y
 Keep more tries for more stars	Keep more tries for more stars	AdventureResultScreen.cs	Daha çok yıldız için hak kaybetme	チャンスを残すとスターが増える	기회를 아끼면 별이 늘어요	Spar Versuche für mehr Sterne	Guarda intentos para más estrellas	Guarde tentativas para mais estrelas	Garde des essais pour plus d'étoiles
 Next	Next	AdventureResultScreen.uxml, AdventureResultScreen.cs	Sonraki	次へ	다음	Weiter	Siguiente	Próxima	Suivant
 {0} of {1} stars	{0} of {1} stars	GameUI.cs	{0}/{1} yıldız	スター{0}/{1}	별 {0}/{1}	{0} von {1} Sternen	{0} de {1} estrellas	{0} de {1} estrelas	{0} étoiles sur {1}
+Moving background	Moving background	SettingsScreen.uxml	Hareketli arka plan	動く背景	움직이는 배경	Bewegter Hintergrund	Fondo animado	Fundo animado	Fond animé

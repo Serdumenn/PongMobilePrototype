@@ -1,0 +1,514 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Pingi Pongi — Lobi</title>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box}
+body{margin:0;background:#131316;color:#ececf1;font-family:Inter,system-ui,sans-serif;line-height:1.5}
+.wrap{max-width:1240px;margin:0 auto;padding:0 16px 80px}
+header{padding:40px 0 8px}
+.eyebrow{font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:#9b9ba8}
+h1{font-size:36px;margin:6px 0 10px;letter-spacing:-.02em}
+h2{font-size:24px;margin:0 0 6px}
+.lead{color:#c9c9d3;max-width:820px;margin:0}
+section{margin:52px 0}
+.sub{color:#9b9ba8;margin:0 0 22px;font-size:14px;max-width:860px}
+.keep{display:flex;flex-wrap:wrap;gap:8px;margin:16px 0 0}
+.pill{font:600 12px Inter,sans-serif;padding:5px 11px;border-radius:999px;background:#22222a;color:#c9c9d3;border:1px solid #2e2e37}
+.pill.ok{background:#14302c;color:#7fe3d8;border-color:#1d4a44}
+.pill.new{background:#3a2a12;color:#ffd65a;border-color:#5a4318}
+.themes{position:sticky;top:0;z-index:20;background:rgba(19,19,22,.92);backdrop-filter:blur(8px);padding:12px 0;margin-top:20px;display:flex;flex-wrap:wrap;gap:8px;align-items:center;border-bottom:1px solid #24242b}
+.themes span{font-size:13px;color:#9b9ba8;margin-right:6px}
+.themes button{font:600 13px Inter,sans-serif;padding:7px 14px;border-radius:999px;border:1px solid #33333d;background:#1c1c21;color:#ececf1;cursor:pointer}
+.themes button.on{background:#ececf1;color:#131316;border-color:#ececf1}
+.phones{display:grid;grid-template-columns:repeat(auto-fill,minmax(316px,1fr));gap:34px 22px;justify-items:center}
+.opt{display:flex;flex-direction:column;align-items:center;gap:12px;max-width:320px}
+.tag{font:700 12px Inter,sans-serif;letter-spacing:.12em;color:#ffd65a}
+.opt h3{margin:0;font-size:19px;text-align:center}
+.opt p{margin:0;font-size:13.5px;color:#b9b9c4;text-align:center}
+.facts{display:grid;grid-template-columns:auto 1fr;gap:3px 10px;font-size:12.5px;color:#9b9ba8;width:100%;background:#1a1a1f;border:1px solid #26262d;border-radius:12px;padding:10px 12px}
+.facts b{color:#d9d9e2;font-weight:600}
+.ctrl{display:flex;gap:8px;align-items:center}
+.ctrl button{font:600 12px Inter,sans-serif;padding:6px 12px;border-radius:999px;border:1px solid #33333d;background:#1c1c21;color:#ececf1;cursor:pointer}
+.ctrl button.on{background:#2ec4b6;border-color:#2ec4b6;color:#0d2522}
+.rec{background:#17171c;border:1px solid #2a2a33;border-radius:18px;padding:22px 24px}
+.rec ol{margin:10px 0 0;padding-left:20px;color:#c9c9d3}
+.rec li{margin:6px 0}
+.rec .mine{color:#ffd65a}
+
+.phone{width:300px;height:650px;padding:8px;box-sizing:content-box;border-radius:40px;background:#0b0b0d;box-shadow:0 30px 60px rgba(0,0,0,.45),inset 0 0 0 1px #2b2b31}
+.scr{position:relative;width:300px;height:650px;border-radius:32px;overflow:hidden;background:var(--bg);color:var(--ink);font-family:Fredoka,sans-serif;transition:background .5s}
+.cam{position:absolute;top:10px;left:50%;width:10px;height:10px;margin-left:-5px;border-radius:50%;background:#0b0b0d;z-index:30}
+.layer{position:absolute;inset:0;pointer-events:none}
+.ui{position:absolute;inset:0;z-index:10}
+
+body.th-softpop{--bg:#FFF1E0;--b1:#FFE2C4;--b2:#FFDCE4;--surface:#FFFFFF;--edge:#F0D9C0;--ink:#2B2D42;--muted:#6B6D82;--track:#E6D6C4;--mist:rgba(255,255,255,.75)}
+body.th-sunset{--bg:#FFE6D9;--b1:#FFCBB4;--b2:#FFB7CB;--surface:#FFFFFF;--edge:#F2CDBD;--ink:#3A2430;--muted:#7A5A63;--track:#EBD2C6;--mist:rgba(255,255,255,.75)}
+body.th-mint{--bg:#E6FAF3;--b1:#C9F1E3;--b2:#FFF0C2;--surface:#FFFFFF;--edge:#CBE9DD;--ink:#1F3B36;--muted:#4F6B66;--track:#CFE7DE;--mist:rgba(255,255,255,.75)}
+body.th-night{--bg:#1E2140;--b1:#2A2F5C;--b2:#3A2D5C;--surface:#2E3358;--edge:#171A36;--ink:#F4F1FF;--muted:#B4B6D6;--track:#454A78;--mist:rgba(255,255,255,.10)}
+
+.btn{position:absolute;width:42px;height:42px;border-radius:13px;background:var(--edge)}
+.btn .f{position:absolute;inset:0 0 4px 0;border-radius:13px;background:var(--surface);display:flex;align-items:center;justify-content:center}
+.btn svg{width:22px;height:22px;color:var(--ink)}
+.badge{position:absolute;top:-5px;right:-6px;background:#E04E3A;color:#fff;font:600 9px Fredoka,sans-serif;padding:1px 5px;border-radius:8px}
+.lvl .f{flex-direction:column;gap:0}
+.lvl small{font:600 7px Fredoka,sans-serif;color:var(--muted);line-height:1}
+.lvl b{font:700 16px Fredoka,sans-serif;color:#E04E3A;line-height:1.1}
+.lvl i{display:block;width:30px;height:4px;border-radius:2px;background:var(--track);overflow:hidden}
+.lvl i:after{content:"";display:block;width:60%;height:100%;background:#FFC93C}
+.title{position:absolute;left:0;right:0;top:96px;text-align:center;font:700 50px/0.86 Fredoka,sans-serif;transform:rotate(-5deg);letter-spacing:-.5px}
+.title .a{color:#FF6B57;display:block}
+.title .b{color:#2EC4B6;display:block;margin-left:22px}
+.stage{position:absolute;left:0;right:0;top:238px;height:170px}
+.card{position:absolute;left:50%;top:0;width:196px;height:162px;margin-left:-98px;border-radius:20px;background:var(--edge)}
+.card .f{position:absolute;inset:0 0 6px 0;border-radius:20px;background:var(--surface);display:flex;flex-direction:column;align-items:center;padding-top:12px}
+.card .ic{width:36px;height:36px;border-radius:50%;background:#FF6B57;box-shadow:0 3px 0 #D94C39;display:flex;align-items:center;justify-content:center}
+.card .ic svg{width:21px;height:21px;color:#fff}
+.card .ic img{width:44px;height:44px}
+.card .ic.art{background:none;box-shadow:none}
+.card .nm{font:700 23px Fredoka,sans-serif;margin-top:6px;color:var(--ink)}
+.card .tg{font:500 10.5px Fredoka,sans-serif;color:var(--muted);text-align:center;padding:0 10px;line-height:1.25;margin-top:2px;min-height:26px}
+.card .bs{margin-top:5px;display:flex;align-items:center;gap:4px;padding:3px 10px;border-radius:999px;background:color-mix(in srgb,var(--edge) 55%,var(--surface));font:600 11px Fredoka,sans-serif;color:var(--ink)}
+.card .bs svg{width:12px;height:12px;color:#2EC4B6}
+.arrow{position:absolute;top:58px;width:40px;height:40px;border-radius:50%;background:var(--edge);cursor:pointer;z-index:4}
+.arrow .f{position:absolute;inset:0 0 3px 0;border-radius:50%;background:var(--surface);display:flex;align-items:center;justify-content:center}
+.arrow svg{width:22px;height:22px;color:var(--ink)}
+.arrow.l{left:12px}.arrow.r{right:12px}
+.dots{position:absolute;top:418px;left:0;right:0;display:flex;justify-content:center;gap:5px}
+.dots i{display:block;width:7px;height:7px;border-radius:4px;background:var(--track);transition:width .3s,background .3s}
+.dots i.on{width:20px;background:var(--ink)}
+.play{position:absolute;left:50%;top:446px;width:118px;height:126px;margin-left:-59px;border-radius:60px;background:#E5A800}
+.play .f{position:absolute;inset:0 0 9px 0;border-radius:60px;background:#FFC93C;display:flex;align-items:center;justify-content:center}
+.play svg{width:46px;height:46px;color:#2B2D42;margin-left:6px}
+.mascot{position:absolute;left:50%;top:582px;width:32px;height:32px;margin-left:-16px;z-index:6}
+.paddle{position:absolute;left:50%;top:612px;width:72px;margin-left:-36px;z-index:5}
+
+.blob{position:absolute;border-radius:50%}
+.drift{animation:drift 14s ease-in-out infinite alternate}
+@keyframes drift{from{transform:translate(0,0) scale(1)}to{transform:translate(-14px,18px) scale(1.04)}}
+
+.scene{position:absolute;inset:0;opacity:0;transition:opacity .7s ease}
+.scene.on{opacity:1}
+.coin{position:absolute;bottom:-40px;animation:rise linear infinite}
+.coin svg{display:block;width:100%;height:100%;animation:sway 3s ease-in-out infinite alternate}
+@keyframes rise{to{transform:translateY(-760px)}}
+@keyframes sway{from{transform:translateX(-8px) rotate(-12deg)}to{transform:translateX(8px) rotate(12deg)}}
+.spark{position:absolute;width:12px;height:12px;animation:twinkle 2.4s ease-in-out infinite}
+.spark:before,.spark:after{content:"";position:absolute;left:5px;top:0;width:2px;height:12px;border-radius:1px;background:#FFC93C}
+.spark:after{transform:rotate(90deg)}
+@keyframes twinkle{0%,100%{opacity:0;transform:scale(.3)}50%{opacity:.9;transform:scale(1)}}
+.glow{position:absolute;border-radius:50%;filter:blur(30px)}
+.cloud{position:absolute;height:26px;border-radius:20px;background:var(--mist);animation:cloud linear infinite}
+.cloud:before{content:"";position:absolute;width:34px;height:34px;border-radius:50%;background:inherit;left:14px;top:-15px}
+.cloud:after{content:"";position:absolute;width:24px;height:24px;border-radius:50%;background:inherit;left:42px;top:-9px}
+@keyframes cloud{from{transform:translateX(-120px)}to{transform:translateX(420px)}}
+.hills{position:absolute;left:0;bottom:0;width:600px;animation:pan 40s linear infinite}
+.hills.slow{animation-duration:70s}
+@keyframes pan{to{transform:translateX(-300px)}}
+.table{position:absolute;left:26px;right:26px;top:70px;bottom:40px;border-radius:26px;border:2px solid color-mix(in srgb,var(--ink) 9%,transparent)}
+.table:after{content:"";position:absolute;left:10px;right:10px;top:50%;border-top:3px dashed color-mix(in srgb,var(--ink) 10%,transparent)}
+.ghost{position:absolute;width:14px;height:14px;border-radius:50%;background:#FF6B57;opacity:.28;animation:rally 5.2s linear infinite}
+.ghost.t1{animation-delay:-.12s;opacity:.16}.ghost.t2{animation-delay:-.24s;opacity:.08}
+@keyframes rally{0%{left:60px;top:560px}25%{left:250px;top:330px}50%{left:120px;top:90px}75%{left:40px;top:330px}100%{left:60px;top:560px}}
+.stripes{position:absolute;inset:-40px;background:repeating-linear-gradient(115deg,transparent 0 26px,color-mix(in srgb,var(--b2) 75%,transparent) 26px 38px);animation:race 1.1s linear infinite}
+@keyframes race{to{background-position:96px 0}}
+.ring{position:absolute;left:150px;top:330px;width:60px;height:60px;margin:-30px 0 0 -30px;border-radius:50%;border:3px solid color-mix(in srgb,#9B6BFF 55%,transparent);animation:ping 2s ease-out infinite}
+.ring.r2{animation-delay:1s}
+@keyframes ping{from{transform:scale(.4);opacity:.9}to{transform:scale(6);opacity:0}}
+.streak{position:absolute;height:3px;border-radius:2px;background:var(--mist);animation:zip linear infinite}
+@keyframes zip{from{transform:translateX(340px)}to{transform:translateX(-200px)}}
+
+.pattern{position:absolute;inset:-60px;background:radial-gradient(circle at 25% 25%,var(--b1) 0 7px,transparent 8px),radial-gradient(circle at 75% 75%,color-mix(in srgb,var(--b2) 70%,transparent) 0 4px,transparent 5px);background-size:60px 60px;animation:wall 10s linear infinite}
+@keyframes wall{to{background-position:60px 60px}}
+
+.morph{position:absolute;animation:morph 13s ease-in-out infinite alternate,spin 50s linear infinite}
+@keyframes morph{0%{border-radius:42% 58% 63% 37%/45% 41% 59% 55%}50%{border-radius:61% 39% 44% 56%/58% 62% 38% 42%}100%{border-radius:36% 64% 52% 48%/40% 52% 48% 60%}}
+@keyframes spin{to{transform:rotate(360deg)}}
+.bubble{position:absolute;bottom:-30px;border-radius:50%;background:color-mix(in srgb,var(--b1) 80%,white);box-shadow:inset -3px -3px 0 rgba(0,0,0,.04);animation:rise linear infinite}
+.bubble:after{content:"";position:absolute;width:30%;height:30%;left:22%;top:18%;border-radius:50%;background:rgba(255,255,255,.7)}
+
+.buddy{position:absolute;width:34px;height:34px;opacity:.55;will-change:transform}
+.buddy img{width:100%;height:100%;display:block}
+
+.portal{position:absolute;inset:0;z-index:20;pointer-events:none;clip-path:circle(0px at 50% 50%)}
+.burst{position:absolute;width:10px;height:10px;z-index:25;pointer-events:none}
+.burst:before,.burst:after{content:"";position:absolute;left:4px;top:0;width:2px;height:10px;border-radius:1px;background:#FFC93C}
+.burst:after{transform:rotate(90deg)}
+</style>
+</head>
+<body class="th-sunset">
+<div class="wrap">
+<header>
+<div class="eyebrow">Tasarım seçenekleri · Lobi</div>
+<h1>Lobi: arka plan ve mod geçişi</h1>
+<p class="lead">Butonlar, kartlar, ikonlar, tatlı stil ve temalar olduğu gibi kalıyor. Değişen iki şey var: arayüzün arkasındaki tasarım ve lobide modlar arası geçiş. Her telefon canlı; oklara dokunarak da mod değiştirebilirsin.</p>
+<div class="keep">
+<span class="pill ok">Aynı kalır: butonlar</span><span class="pill ok">Aynı kalır: kartlar ve ikonlar</span><span class="pill ok">Aynı kalır: temalar ve renkler</span><span class="pill new">Değişir: arka plan</span><span class="pill new">Değişir: mod geçişi</span>
+</div>
+</header>
+
+<div class="themes" id="themes"><span>Tema:</span>
+<button data-t="th-softpop">Soft Pop</button><button data-t="th-sunset" class="on">Gün Batımı</button><button data-t="th-mint">Nane</button><button data-t="th-night">Gece</button>
+</div>
+
+<section>
+<h2>Bugün</h2>
+<p class="sub">Her ekranda aynı düzen: düz zemin ve iki büyük leke. Tema yalnızca renkleri değiştiriyor, mod değişince arka planda hiçbir şey olmuyor.</p>
+<div class="phones"><div class="opt"><div id="p-today"></div><div class="ctrl" data-for="p-today"></div></div></div>
+</section>
+
+<section>
+<h2>1. Arka plan seçenekleri</h2>
+<p class="sub">Hepsi temanın kendi renklerini kullanıyor; üstteki seçiciyle dene. Hareketler yavaş ve soluk tutuldu, yazılar ve kartlar hep okunur kalıyor.</p>
+<div class="phones">
+<div class="opt"><div class="tag">1A</div><h3>Mod dünyaları</h3><p>Her modun kendi canlı sahnesi var. Mod değişince arka plan o modun dünyasına dönüşüyor.</p><div id="p-worlds"></div><div class="ctrl" data-for="p-worlds"></div>
+<div class="facts"><b>Arcade</b><span>yükselen altınlar, parıltılar</span><b>Macera</b><span>kayan tepeler ve bulutlar</span><b>Klasik</b><span>masa çizgileri, gezen hayalet top</span><b>Rush</b><span>hız çizgileri, saat nabzı</span><b>Yapım</b><span>orta: her moda 3-5 yeni çizim</span></div></div>
+
+<div class="opt"><div class="tag">1B</div><h3>Kayan desen</h3><p>Lekelerin yerini çapraz kayan, top ve nokta desenli bir duvar kâğıdı alıyor. Her ekranın deseni farklı olabilir.</p><div id="p-pattern"></div><div class="ctrl" data-for="p-pattern"></div>
+<div class="facts"><b>Hareket</b><span>sürekli, çok yavaş kayma</span><b>Çeşitlilik</b><span>ekran başına farklı desen (Dolap'ta askılar, Görevler'de yıldızlar)</span><b>Yapım</b><span>küçük: tek döşeme çizimi</span><b>Risk</b><span>en sakin seçenek, sürpriz azdır</span></div></div>
+
+<div class="opt"><div class="tag">1C</div><h3>Canlı lekeler</h3><p>Bugünkü lekeler kalıyor ama yumuşakça şekil değiştiriyor, dönüyor; aralardan küçük baloncuklar yükseliyor.</p><div id="p-living"></div><div class="ctrl" data-for="p-living"></div>
+<div class="facts"><b>Hareket</b><span>nefes alan, dönen şekiller</span><b>Çeşitlilik</b><span>her ekranda lekelerin yeri ve sayısı değişir</span><b>Yapım</b><span>küçük: mevcut lekelerin gelişmiş hali</span><b>Risk</b><span>bugüne en yakın, en az kopuş</span></div></div>
+
+<div class="opt"><div class="tag">1D</div><h3>Pingi sahnesi</h3><p>Sahip olduğun Pingi kostümleri arkada yumuşakça zıplayıp kenarlardan seker. Koleksiyonun lobide yaşar.</p><div id="p-buddies"></div><div class="ctrl" data-for="p-buddies"></div>
+<div class="facts"><b>Hareket</b><span>yavaş seken, ezilip esneyen toplar</span><b>Çeşitlilik</b><span>açtığın her kostüm sahneye katılır</span><b>Yapım</b><span>orta: mevcut çizimler yeter</span><b>Risk</b><span>en hareketli; dikkat dağıtabilir</span></div></div>
+</div>
+</section>
+
+<section>
+<h2>2. Mod geçişi seçenekleri</h2>
+<p class="sub">Geçişler arka plandan bağımsız seçilebilir; burada 1A Mod dünyaları ile birlikte gösteriliyor. Telefonlar kendi kendine mod değiştiriyor, oklara dokunarak da deneyebilirsin.</p>
+<div class="phones">
+<div class="opt"><div class="tag">2A</div><h3>Komşu kartlar</h3><p>Yandaki modların kartları kenardan görünüyor. Kart yaylanarak kayıyor, arka plan da yeni modun dünyasına geçiyor.</p><div id="p-peek"></div><div class="ctrl" data-for="p-peek"></div>
+<div class="facts"><b>His</b><span>akıcı, hızlı; kaydırmaya çok uygun</span><b>Artı</b><span>başka modların olduğu ilk bakışta görünür</span><b>Süre</b><span>yaklaşık 0,5 sn</span><b>Yapım</b><span>küçük</span></div></div>
+
+<div class="opt"><div class="tag">2B</div><h3>Portal</h3><p>Yeni modun rengi okun olduğu yerden daire gibi açılıp ekranı kaplıyor, sonra kartın ikonuna toplanarak kartı ortaya çıkarıyor.</p><div id="p-portal"></div><div class="ctrl" data-for="p-portal"></div>
+<div class="facts"><b>His</b><span>gösterişli, "başka bir yere geçtim" duygusu</span><b>Süre</b><span>yaklaşık 0,8 sn</span><b>Not</b><span>hızlı kaydıranı yavaşlatabilir</span><b>Yapım</b><span>orta</span></div></div>
+
+<div class="opt"><div class="tag">2C</div><h3>Pingi vuruşu</h3><p>Raketteki Pingi zıplayıp karta çarpıyor; kart dönerek yeni moda geçiyor, çarpma yerinde parıltı çıkıyor.</p><div id="p-pingi"></div><div class="ctrl" data-for="p-pingi"></div>
+<div class="facts"><b>His</b><span>en oyunsu ve tatlı; oyunun kendisini hatırlatır</span><b>Süre</b><span>yaklaşık 0,9 sn</span><b>Not</b><span>dönüş efekti UI Toolkit'te daraltma ile taklit edilir</span><b>Yapım</b><span>orta</span></div></div>
+</div>
+</section>
+
+<section>
+<h2>Önerim</h2>
+<div class="rec">
+<p style="margin:0">Benim önerim <b>1A Mod dünyaları + 2A Komşu kartlar</b>; lobi dışındaki ekranlar (Dolap, Görevler, Skorlar) için <b>1C Canlı lekeler</b>.</p>
+<ol>
+<li>İki isteğin tek fikirde buluşuyor: arka plan artık tek tip değil, her mod kendi dünyası. Mod değiştirmek de "dünyalar arasında gezmek" gibi hissettiriyor.</li>
+<li>Komşu kartlar, oklara basmadan da başka modların olduğunu gösteriyor. Bugün Macera ve Rush okların arkasında saklı.</li>
+<li>Temalar korunuyor: sahneler temanın renkleriyle boyanıyor, Gece temasında da çalışıyor.</li>
+<li>Yapılabilir: sahneler, bugünkü lekelerin durduğu dünya katmanında sprite olarak çalışır; kart kayması UI Toolkit'in taşıma, boyut ve saydamlık geçişleriyle yapılır.</li>
+<li>Ayarlar'a "Hareketli arka plan" anahtarı eklenir; isteyen sade arka plana döner, pil de korunur.</li>
+</ol>
+<p class="mine" style="margin:14px 0 0">Ayrı bir fikrim (senin isteğin değil): 2B Portal mod değiştirmek için fazla uzun olabilir, ama Oyna'ya basıp oyuna girerken bir kez oynatılırsa çok güzel bir an olur.</p>
+</div>
+</section>
+</div>
+
+<script>
+const ICON = {
+settings:'<g fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h9M17 7h3M4 17h3M11 17h9"/><circle cx="15" cy="7" r="2.2"/><circle cx="9" cy="17" r="2.2"/></g>',
+star:'<g fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3.5l2.6 5.3 5.8.8-4.2 4.1 1 5.8L12 16.8l-5.2 2.7 1-5.8-4.2-4.1 5.8-.8z"/></g>',
+rank:'<g fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 20h17M5 20v-6h4.5v6M9.5 20V8.5h5V20M14.5 20v-8H19v8"/></g>',
+wardrobe:'<g fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 7.5a2.2 2.2 0 1 1 2.2-2.2c0 1.2-2.2 1.6-2.2 3.2"/><path d="M12 8.5L3.5 15.5a1 1 0 0 0 .6 1.8h15.8a1 1 0 0 0 .6-1.8z"/></g>',
+coin:'<g fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8.5"/><path d="M12 8.2l1.2 2.4 2.6.4-1.9 1.8.5 2.6L12 14.2l-2.4 1.2.5-2.6-1.9-1.8 2.6-.4z"/></g>',
+map:'<g fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 6.5l5.5-2.5 6 2.5 5.5-2.5v13.5l-5.5 2.5-6-2.5-5.5 2.5z"/><path d="M9 4v13.5"/><path d="M15 6.5V20"/></g>',
+clock:'<g fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="13.5" r="7.5"/><path d="M12 9.5v4l2.5 2M10 3h4M18.5 6.5l1.5-1.5"/></g>',
+play:'<path fill="currentColor" d="M8 5.6v12.8a1 1 0 0 0 1.53.85l10.1-6.4a1 1 0 0 0 0-1.7L9.53 4.75A1 1 0 0 0 8 5.6z"/>',
+left:'<g fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M15 6l-6 6 6 6"/></g>',
+right:'<g fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></g>',
+crown:'<g fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 17.5L3 7.5l5 4 4-6 4 6 5-4-1 10z"/></g>',
+starfill:'<path d="M12 3.5l2.6 5.3 5.8.8-4.2 4.1 1 5.8L12 16.8l-5.2 2.7 1-5.8-4.2-4.1 5.8-.8z" fill="currentColor" stroke="currentColor" stroke-width="2.5" stroke-linejoin="round"/>'
+};
+const svg = (name) => `<svg viewBox="0 0 24 24">${ICON[name]}</svg>`;
+const face = (fill, cheek, happy, extra = '') => {
+  const eyes = happy
+    ? '<path d="M67 96q11.5-15 23 0M110 96q11.5-15 23 0" fill="none" stroke="#2B2D42" stroke-width="8.6" stroke-linecap="round"/><path d="M77 114H123Q123 142 100 142Q77 142 77 114Z" fill="#2B2D42"/><ellipse cx="100" cy="134" rx="11" ry="6" fill="#FF9A8A"/>'
+    : '<ellipse cx="78.5" cy="92" rx="10" ry="13.3" fill="#2B2D42"/><ellipse cx="121.5" cy="92" rx="10" ry="13.3" fill="#2B2D42"/><path d="M82.5 121.5q17.5 14 35 0" fill="none" stroke="#2B2D42" stroke-width="8.6" stroke-linecap="round"/>';
+  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200">${extra}<circle cx="100" cy="100" r="78" fill="${fill}"/><circle cx="69" cy="62" r="12.5" fill="#FFFFFF" fill-opacity="0.55"/><ellipse cx="60" cy="118" rx="10" ry="6" fill="${cheek}"/><ellipse cx="140" cy="118" rx="10" ry="6" fill="${cheek}"/>${eyes}</svg>`;
+};
+const uri = (s) => 'data:image/svg+xml;utf8,' + encodeURIComponent(s);
+const KITTY = '<path d="M34 70L42 8L82 32Z" fill="#FF9F43"/><path d="M166 70L158 8L118 32Z" fill="#FF9F43"/><path d="M44 56L47 22L68 36Z" fill="#FFD1A6"/><path d="M156 56L153 22L132 36Z" fill="#FFD1A6"/>';
+const PINGI = uri(face('#FF6B57', '#FF9A8A', true));
+const BUDDIES = [
+  [face('#FF6B57', '#FF9A8A', false), face('#FF6B57', '#FF9A8A', true)],
+  [face('#4FD1B0', '#FFA7B7', false), face('#4FD1B0', '#FFA7B7', true)],
+  [face('#9B6BFF', '#FF9ACB', false), face('#9B6BFF', '#FF9ACB', true)],
+  [face('#FFC93C', '#FF9A5A', false), face('#FFC93C', '#FF9A5A', true)],
+  [face('#FF9F43', '#FFB37A', false, KITTY), face('#FF9F43', '#FFB37A', true, KITTY)]
+].map(p => p.map(uri));
+const PADDLE = uri('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 430 143"><path d="M55 33Q215.0 9 375 33A55 55 0 0 1 375 143Q215.0 119 55 143A55 55 0 0 1 55 33Z" fill="#1E9C90"/><path d="M55 12Q215.0 -12 375 12A55 55 0 0 1 375 122Q215.0 98 55 122A55 55 0 0 1 55 12Z" fill="#2EC4B6"/><path d="M67.8 35.2Q128.6 26.8 189.4 25.3" fill="none" stroke="#FFFFFF" stroke-opacity="0.3" stroke-width="14" stroke-linecap="round"/></svg>');
+const COIN = '<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="#FFC93C" stroke="#E5A800" stroke-width="2"/><path d="M12 7.6l1.4 2.8 3.1.5-2.3 2.2.6 3.1L12 14.7l-2.8 1.5.6-3.1-2.3-2.2 3.1-.5z" fill="#FFF3C4"/></svg>';
+
+const MODES = [
+  { id:'arcade', name:'Arcade', tag:'Altınları ve güçlendirmeleri kap!', best:'En iyi 70', bi:'crown', icon:'coin', accent:'#FFC93C' },
+  { id:'adventure', name:'Macera', tag:'3 dünyada 30 bölüm. Yıldızları topla!', best:'33/90 yıldız', bi:'starfill', icon:'map', accent:'#2EC4B6' },
+  { id:'classic', name:'Klasik', tag:"Tek can. Pingi'yi düşürme!", best:'En iyi 24', bi:'crown', icon:'art', accent:'#FF6B57' },
+  { id:'rush', name:'Rush', tag:'60 saniye. Vurabildiğin kadar vur!', best:'En iyi 15', bi:'crown', icon:'clock', accent:'#9B6BFF' }
+];
+
+function cardFace(m) {
+  const ic = m.icon === 'art' ? `<div class="ic art"><img src="${PINGI}" alt=""></div>` : `<div class="ic">${svg(m.icon)}</div>`;
+  return `<div class="f">${ic}<div class="nm">${m.name}</div><div class="tg">${m.tag}</div><div class="bs">${svg(m.bi)}${m.best}</div></div>`;
+}
+
+function ui() {
+  return `<div class="ui">
+  <div class="btn" style="left:14px;top:30px"><div class="f">${svg('settings')}</div></div>
+  <div class="btn lvl" style="left:62px;top:30px;width:46px"><div class="f"><small>Seviye</small><b>8</b><i></i></div></div>
+  <div class="btn" style="right:110px;top:30px"><div class="f">${svg('star')}</div><span class="badge">0/3</span></div>
+  <div class="btn" style="right:62px;top:30px"><div class="f">${svg('rank')}</div></div>
+  <div class="btn" style="right:14px;top:30px"><div class="f">${svg('wardrobe')}</div></div>
+  <div class="title"><span class="a">Pingi</span><span class="b">Pongi</span></div>
+  <div class="stage"></div>
+  <div class="dots">${MODES.map(() => '<i></i>').join('')}<i></i></div>
+  <div class="play"><div class="f">${svg('play')}</div></div>
+  <img class="mascot" src="${PINGI}" alt="">
+  <img class="paddle" src="${PADDLE}" alt="">
+  </div>`;
+}
+
+const rand = (a, b) => a + Math.random() * (b - a);
+
+function todayLayer(el) {
+  el.innerHTML = `<div class="blob drift" style="width:290px;height:290px;right:-120px;top:-110px;background:var(--b1)"></div>
+  <div class="blob drift" style="width:300px;height:300px;left:-170px;top:250px;background:var(--b2);animation-delay:-6s"></div>`;
+}
+
+function worldsLayer(el) {
+  let coins = '';
+  for (let i = 0; i < 11; i++) {
+    const s = rand(14, 24);
+    coins += `<div class="coin" style="left:${rand(6, 270)}px;width:${s}px;height:${s}px;opacity:${rand(.45, .8)};animation-duration:${rand(7, 12)}s;animation-delay:-${rand(0, 12)}s">${COIN}</div>`;
+  }
+  let sparks = '';
+  for (let i = 0; i < 9; i++) sparks += `<div class="spark" style="left:${rand(10, 280)}px;top:${rand(60, 600)}px;animation-delay:-${rand(0, 2.4)}s"></div>`;
+  let clouds = '';
+  [[70, 70, 30], [150, 90, 46], [210, 60, 38], [330, 80, 54]].forEach(([y, w, d], i) => clouds += `<div class="cloud" style="top:${y}px;width:${w}px;animation-duration:${d}s;animation-delay:-${i * 11}s"></div>`);
+  const hill = (fill, h, k) => `<svg class="hills${k ? ' slow' : ''}" viewBox="0 0 600 ${h}" style="height:${h}px" preserveAspectRatio="none"><path d="M0 ${h * .45} C 75 ${h * .1} 150 ${h * .1} 225 ${h * .4} S 375 ${h * .7} 450 ${h * .35} S 560 ${h * .2} 600 ${h * .45} V ${h} H 0 Z" fill="${fill}"/></svg>`;
+  let streaks = '';
+  for (let i = 0; i < 7; i++) streaks += `<div class="streak" style="top:${rand(60, 620)}px;width:${rand(40, 110)}px;animation-duration:${rand(.7, 1.3)}s;animation-delay:-${rand(0, 1.3)}s"></div>`;
+  el.innerHTML = `
+  <div class="scene" data-m="arcade">
+    <div class="glow" style="width:260px;height:260px;left:20px;top:150px;background:color-mix(in srgb,#FFC93C 30%,transparent)"></div>
+    <div class="blob" style="width:240px;height:240px;right:-110px;top:-90px;background:var(--b1)"></div>${coins}${sparks}
+  </div>
+  <div class="scene" data-m="adventure">
+    <div class="blob" style="width:200px;height:200px;right:-60px;top:-70px;background:color-mix(in srgb,#FFC93C 35%,var(--b1))"></div>${clouds}
+    ${hill('color-mix(in srgb,var(--b2) 85%,#2EC4B6)', 300, true)}
+    ${hill('color-mix(in srgb,var(--b1) 65%,#2EC4B6)', 230, false)}
+    ${hill('color-mix(in srgb,var(--b1) 45%,#2EC4B6)', 150, true)}
+  </div>
+  <div class="scene" data-m="classic">
+    <div class="table"></div>
+    <div class="ghost"></div><div class="ghost t1"></div><div class="ghost t2"></div>
+  </div>
+  <div class="scene" data-m="rush">
+    <div class="stripes"></div>${streaks}<div class="ring"></div><div class="ring r2"></div>
+  </div>`;
+}
+
+function patternLayer(el) {
+  el.innerHTML = `<div class="pattern"></div><div class="blob" style="width:240px;height:240px;right:-120px;top:-100px;background:color-mix(in srgb,var(--b1) 60%,transparent)"></div>`;
+}
+
+function livingLayer(el) {
+  let bubbles = '';
+  for (let i = 0; i < 8; i++) {
+    const s = rand(8, 20);
+    bubbles += `<div class="bubble" style="left:${rand(10, 280)}px;width:${s}px;height:${s}px;animation-duration:${rand(9, 15)}s;animation-delay:-${rand(0, 15)}s"></div>`;
+  }
+  el.innerHTML = `<div class="morph" style="width:270px;height:250px;right:-110px;top:-100px;background:var(--b1)"></div>
+  <div class="morph" style="width:280px;height:270px;left:-160px;top:240px;background:var(--b2);animation-delay:-5s,-20s"></div>
+  <div class="morph" style="width:120px;height:110px;right:-30px;top:470px;background:color-mix(in srgb,var(--b1) 70%,var(--b2));animation-delay:-9s,-35s"></div>${bubbles}`;
+}
+
+function buddiesLayer(el) {
+  el.innerHTML = `<div class="blob drift" style="width:260px;height:260px;right:-120px;top:-100px;background:var(--b1)"></div>`;
+  const W = 300, H = 650, S = 34;
+  const list = BUDDIES.map((pair, i) => {
+    const d = document.createElement('div');
+    d.className = 'buddy';
+    d.innerHTML = `<img src="${pair[0]}" alt="">`;
+    el.appendChild(d);
+    const a = rand(0, Math.PI * 2);
+    return { d, img: d.firstChild, pair, x: rand(10, W - S - 10), y: rand(60, H - S - 90), vx: Math.cos(a) * 38, vy: Math.sin(a) * 38, sq: 0, happy: 0 };
+  });
+  let last = performance.now();
+  function step(now) {
+    const dt = Math.min(.05, (now - last) / 1000);
+    last = now;
+    for (const b of list) {
+      b.x += b.vx * dt; b.y += b.vy * dt;
+      let hit = false;
+      if (b.x < 0) { b.x = 0; b.vx = Math.abs(b.vx); hit = true; }
+      if (b.x > W - S) { b.x = W - S; b.vx = -Math.abs(b.vx); hit = true; }
+      if (b.y < 40) { b.y = 40; b.vy = Math.abs(b.vy); hit = true; }
+      if (b.y > H - S - 60) { b.y = H - S - 60; b.vy = -Math.abs(b.vy); hit = true; }
+      if (hit) { b.sq = 1; b.happy = .6; b.img.src = b.pair[1]; }
+      b.sq = Math.max(0, b.sq - dt * 5);
+      if (b.happy > 0) { b.happy -= dt; if (b.happy <= 0) b.img.src = b.pair[0]; }
+      const k = 1 + .22 * Math.sin(b.sq * Math.PI);
+      b.d.style.transform = `translate(${b.x}px,${b.y}px) scale(${k},${2 - k})`;
+    }
+    requestAnimationFrame(step);
+  }
+  requestAnimationFrame(step);
+}
+
+function makePhone(id, layer, mode) {
+  const host = document.getElementById(id);
+  host.innerHTML = `<div class="phone"><div class="scr"><div class="cam"></div><div class="layer"></div>${ui()}</div></div>`;
+  const scr = host.querySelector('.scr');
+  const layerEl = scr.querySelector('.layer');
+  layer(layerEl);
+  const stage = scr.querySelector('.stage');
+  const dots = [...scr.querySelectorAll('.dots i')];
+  const state = { index: 0, busy: false, scr, stage, layerEl };
+
+  const showWorld = () => layerEl.querySelectorAll('.scene').forEach(s => s.classList.toggle('on', s.dataset.m === MODES[state.index].id));
+  const showDots = () => dots.forEach((d, i) => d.classList.toggle('on', i === state.index));
+
+  if (mode === 'peek') {
+    state.cards = MODES.map(m => {
+      const c = document.createElement('div');
+      c.className = 'card';
+      c.innerHTML = cardFace(m);
+      c.style.transition = 'transform .52s cubic-bezier(.34,1.56,.64,1), opacity .3s';
+      stage.appendChild(c);
+      return c;
+    });
+  } else {
+    state.card = document.createElement('div');
+    state.card.className = 'card';
+    stage.appendChild(state.card);
+  }
+
+  const layout = (animate) => {
+    const n = MODES.length;
+    state.cards.forEach((c, i) => {
+      let d = ((i - state.index) % n + n) % n;
+      if (d > n / 2) d -= n;
+      const jump = c.dataset.d !== undefined && Math.abs(Number(c.dataset.d) - d) > 1;
+      c.style.transition = animate && !jump ? 'transform .52s cubic-bezier(.34,1.56,.64,1), opacity .3s' : 'none';
+      c.dataset.d = d;
+      c.style.transform = `translateX(${d * 172}px) scale(${d === 0 ? 1 : .8})`;
+      c.style.opacity = d === 0 ? 1 : Math.abs(d) === 1 ? .6 : 0;
+      c.style.zIndex = d === 0 ? 2 : 1;
+    });
+  };
+
+  const render = () => {
+    if (state.cards) layout(true);
+    else state.card.innerHTML = cardFace(MODES[state.index]);
+    showWorld();
+    showDots();
+  };
+
+  const go = (dir) => {
+    if (state.busy) return;
+    const next = (state.index + dir + MODES.length) % MODES.length;
+    if (mode === 'portal') return portal(state, next, dir, render);
+    if (mode === 'pingi') return pingiHit(state, next, render);
+    state.index = next;
+    if (mode === 'swap') {
+      state.card.animate([{ opacity: .4 }, { opacity: 1 }], { duration: 160 });
+    }
+    render();
+  };
+
+  ['l', 'r'].forEach(side => {
+    const a = document.createElement('div');
+    a.className = 'arrow ' + side;
+    a.innerHTML = `<div class="f">${svg(side === 'l' ? 'left' : 'right')}</div>`;
+    a.onclick = () => { stop(); go(side === 'l' ? -1 : 1); };
+    stage.appendChild(a);
+  });
+
+  if (state.cards) layout(false);
+  render();
+
+  let timer = null;
+  const start = () => { stop(); timer = setInterval(() => go(1), 2800); };
+  const stop = () => { if (timer) clearInterval(timer); timer = null; syncCtrl(); };
+  const ctrl = document.querySelector(`.ctrl[data-for="${id}"]`);
+  let syncCtrl = () => {};
+  if (ctrl) {
+    ctrl.innerHTML = '<button data-a="prev">◀</button><button data-a="auto">Otomatik</button><button data-a="next">▶</button>';
+    const auto = ctrl.querySelector('[data-a="auto"]');
+    syncCtrl = () => auto.classList.toggle('on', !!timer);
+    ctrl.querySelector('[data-a="prev"]').onclick = () => { stop(); go(-1); };
+    ctrl.querySelector('[data-a="next"]').onclick = () => { stop(); go(1); };
+    auto.onclick = () => { if (timer) stop(); else { start(); syncCtrl(); } };
+  }
+  if (mode !== 'swap' || layer === worldsLayer) { start(); syncCtrl(); }
+}
+
+function portal(state, next, dir, render) {
+  state.busy = true;
+  const scr = state.scr;
+  const p = document.createElement('div');
+  p.className = 'portal';
+  p.style.background = MODES[next].accent;
+  scr.appendChild(p);
+  const from = dir > 0 ? '268px 316px' : '32px 316px';
+  const to = '150px 270px';
+  p.animate([{ clipPath: `circle(0px at ${from})` }, { clipPath: `circle(720px at ${from})` }], { duration: 380, easing: 'cubic-bezier(.55,0,.8,.4)', fill: 'forwards' }).onfinish = () => {
+    state.index = next;
+    render();
+    p.animate([{ clipPath: `circle(720px at ${to})` }, { clipPath: `circle(0px at ${to})` }], { duration: 420, easing: 'cubic-bezier(.2,.7,.3,1)', fill: 'forwards' }).onfinish = () => { p.remove(); state.busy = false; };
+    state.card.animate([{ transform: 'scale(.86)' }, { transform: 'scale(1.07)' }, { transform: 'scale(1)' }], { duration: 420, easing: 'ease-out' });
+  };
+}
+
+function pingiHit(state, next, render) {
+  state.busy = true;
+  const scr = state.scr;
+  const ball = scr.querySelector('.mascot');
+  const up = ball.animate([{ transform: 'translateY(0) scale(1)' }, { transform: 'translateY(-176px) scale(1.15)' }], { duration: 300, easing: 'cubic-bezier(.2,.8,.4,1)', fill: 'forwards' });
+  up.onfinish = () => {
+    burst(scr, 150, 400);
+    state.card.animate([{ transform: 'scaleX(1) translateY(0)' }, { transform: 'scaleX(0) translateY(-8px)' }], { duration: 150, easing: 'ease-in', fill: 'forwards' }).onfinish = () => {
+      state.index = next;
+      render();
+      state.card.animate([{ transform: 'scaleX(0) translateY(-8px)' }, { transform: 'scaleX(1.08) translateY(0)' }, { transform: 'scaleX(1)' }], { duration: 260, easing: 'ease-out', fill: 'forwards' });
+    };
+    ball.animate([{ transform: 'translateY(-176px) scale(1.15)' }, { transform: 'translateY(0) scale(1)' }], { duration: 320, easing: 'cubic-bezier(.6,0,.9,.6)', fill: 'forwards' }).onfinish = () => {
+      ball.animate([{ transform: 'scale(1.25,.75)' }, { transform: 'scale(1)' }], { duration: 200, easing: 'ease-out' });
+      state.busy = false;
+    };
+  };
+}
+
+function burst(scr, x, y) {
+  for (let i = 0; i < 8; i++) {
+    const s = document.createElement('div');
+    s.className = 'burst';
+    s.style.left = x + 'px';
+    s.style.top = y + 'px';
+    scr.appendChild(s);
+    const a = Math.PI * 2 * i / 8;
+    s.animate([{ transform: 'translate(0,0) scale(1)', opacity: 1 }, { transform: `translate(${Math.cos(a) * 40}px,${Math.sin(a) * 40 - 10}px) scale(.3)`, opacity: 0 }], { duration: 520, easing: 'ease-out' }).onfinish = () => s.remove();
+  }
+}
+
+makePhone('p-today', todayLayer, 'swap');
+makePhone('p-worlds', worldsLayer, 'swap');
+makePhone('p-pattern', patternLayer, 'swap');
+makePhone('p-living', livingLayer, 'swap');
+makePhone('p-buddies', buddiesLayer, 'swap');
+makePhone('p-peek', worldsLayer, 'peek');
+makePhone('p-portal', worldsLayer, 'portal');
+makePhone('p-pingi', worldsLayer, 'pingi');
+
+document.querySelectorAll('#themes button').forEach(b => b.onclick = () => {
+  document.querySelectorAll('#themes button').forEach(x => x.classList.toggle('on', x === b));
+  document.body.className = b.dataset.t;
+});
+</script>
+</body>
+</html>

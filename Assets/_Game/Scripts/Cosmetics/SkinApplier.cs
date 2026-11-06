@@ -12,6 +12,7 @@ public sealed class SkinApplier : MonoBehaviour
     [SerializeField] private Camera WorldCamera;
     [SerializeField] private SpriteRenderer BlobPrimary;
     [SerializeField] private SpriteRenderer BlobSecondary;
+    [SerializeField] private BackdropDirector Backdrop;
 
     [Header("UI")]
     [SerializeField] private UIDocument Document;
@@ -56,6 +57,7 @@ public sealed class SkinApplier : MonoBehaviour
         if (WorldCamera != null) WorldCamera.backgroundColor = theme.BackgroundColor;
         if (BlobPrimary != null) BlobPrimary.color = theme.BlobPrimary;
         if (BlobSecondary != null) BlobSecondary.color = theme.BlobSecondary;
+        if (Backdrop != null) Backdrop.SetPalette(theme.BlobPrimary, theme.BlobSecondary);
 
         var root = Document != null ? Document.rootVisualElement?.Q("root") : null;
         if (root == null) return;

@@ -346,6 +346,7 @@ MonoBehaviour:
   WorldCamera: {fileID: 1822548374}
   BlobPrimary: {fileID: 726041409}
   BlobSecondary: {fileID: 532565727}
+  Backdrop: {fileID: 604670280}
   Document: {fileID: 593968753}
 --- !u!114 &315089629
 MonoBehaviour:
@@ -661,6 +662,7 @@ MonoBehaviour:
   BonusXp: 30
   MatchXp: 15
   StageXp: 25
+  SeedCapLevel: 9
 --- !u!1 &517429098
 GameObject:
   m_ObjectHideFlags: 0
@@ -858,6 +860,111 @@ SpriteRenderer:
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
   m_SpriteSortPoint: 0
+--- !u!1 &537370261
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 537370262}
+  - component: {fileID: 537370263}
+  m_Layer: 0
+  m_Name: WorldTogether
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &537370262
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 537370261}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 604670279}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &537370263
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 537370261}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b167e58dd1a8b3c4f8e8b2100edd9929, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Pingi.Runtime::BackdropWorld
+  Accent: {r: 1, g: 0.41960785, b: 0.34117648, a: 1}
+  BaseOrder: -95
+  Seed: 15
+  Pieces:
+  - <Sprite>k__BackingField: {fileID: 3286163911610860551, guid: 82b28ab4d4e10ed4f830ade3d374d33f, type: 3}
+    <Motion>k__BackingField: 0
+    <Count>k__BackingField: 1
+    <Width>k__BackingField: {x: 0.84, y: 0.84}
+    <Speed>k__BackingField: 0
+    <Tint>k__BackingField: 1
+    <Alpha>k__BackingField: 1
+    <Area>k__BackingField:
+      serializedVersion: 2
+      x: 0.5
+      y: 0.5
+      width: 0
+      height: 0
+    <Order>k__BackingField: 0
+    <Spin>k__BackingField: 0
+    <Tilt>k__BackingField: 0
+    <Trail>k__BackingField: 0
+    <Color>k__BackingField: {r: 1, g: 1, b: 1, a: 1}
+    <Spacing>k__BackingField: 0
+  - <Sprite>k__BackingField: {fileID: 3286163911610860551, guid: 3ce47c5a031dc374b82d6775789d36fd, type: 3}
+    <Motion>k__BackingField: 4
+    <Count>k__BackingField: 2
+    <Width>k__BackingField: {x: 0.05, y: 0.05}
+    <Speed>k__BackingField: 0.8
+    <Tint>k__BackingField: 4
+    <Alpha>k__BackingField: 0.32
+    <Area>k__BackingField:
+      serializedVersion: 2
+      x: 0.16
+      y: 0.14
+      width: 0.68
+      height: 0.72
+    <Order>k__BackingField: 1
+    <Spin>k__BackingField: 0
+    <Tilt>k__BackingField: 0
+    <Trail>k__BackingField: 0.14
+    <Color>k__BackingField: {r: 1, g: 1, b: 1, a: 1}
+    <Spacing>k__BackingField: 0
+  - <Sprite>k__BackingField: {fileID: 3286163911610860551, guid: 3ce47c5a031dc374b82d6775789d36fd, type: 3}
+    <Motion>k__BackingField: 4
+    <Count>k__BackingField: 2
+    <Width>k__BackingField: {x: 0.05, y: 0.05}
+    <Speed>k__BackingField: 0.8
+    <Tint>k__BackingField: 5
+    <Alpha>k__BackingField: 0.32
+    <Area>k__BackingField:
+      serializedVersion: 2
+      x: 0.16
+      y: 0.14
+      width: 0.68
+      height: 0.72
+    <Order>k__BackingField: 1
+    <Spin>k__BackingField: 0
+    <Tilt>k__BackingField: 0
+    <Trail>k__BackingField: 0.14
+    <Color>k__BackingField: {r: 0.18039216, g: 0.76862746, b: 0.7137255, a: 1}
+    <Spacing>k__BackingField: 0
 --- !u!1 &593968751
 GameObject:
   m_ObjectHideFlags: 0
@@ -909,6 +1016,7 @@ MonoBehaviour:
   Events: {fileID: 871148367}
   Level: {fileID: 315089642}
   Adventure: {fileID: 871148369}
+  Backdrop: {fileID: 604670280}
   HintRuns: 3
   RewardDelayMs: 650
   ReviewDelayMs: 1800
@@ -954,6 +1062,65 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &604670278
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 604670279}
+  - component: {fileID: 604670280}
+  m_Layer: 0
+  m_Name: Worlds
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &604670279
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 604670278}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 1996969652}
+  - {fileID: 1802018430}
+  - {fileID: 1781550555}
+  - {fileID: 1159909259}
+  - {fileID: 537370262}
+  - {fileID: 887531511}
+  m_Father: {fileID: 1456813199}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &604670280
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 604670278}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7183ea91a994b6241a6d784e042557ed, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Pingi.Runtime::BackdropDirector
+  Arcade: {fileID: 1996969653}
+  Adventure: {fileID: 1802018431}
+  Classic: {fileID: 1781550556}
+  Rush: {fileID: 1159909260}
+  Together: {fileID: 537370263}
+  Living: {fileID: 887531512}
+  FadeSeconds: 0.65
+  CalmFade: 0.35
+  CalmPace: 0.3
 --- !u!1 &664251433
 GameObject:
   m_ObjectHideFlags: 0
@@ -1592,6 +1759,130 @@ MonoBehaviour:
   EdgeMargin: 0.5
   SwaySpeed: 1.1
   Order: 2
+--- !u!1 &887531510
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 887531511}
+  - component: {fileID: 887531512}
+  m_Layer: 0
+  m_Name: WorldLiving
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &887531511
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 887531510}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 604670279}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &887531512
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 887531510}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b167e58dd1a8b3c4f8e8b2100edd9929, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Pingi.Runtime::BackdropWorld
+  Accent: {r: 1, g: 1, b: 1, a: 1}
+  BaseOrder: -95
+  Seed: 16
+  Pieces:
+  - <Sprite>k__BackingField: {fileID: 3286163911610860551, guid: 7642b36c5ea15ea44888b2c97e02b6c5, type: 3}
+    <Motion>k__BackingField: 6
+    <Count>k__BackingField: 1
+    <Width>k__BackingField: {x: 0.55, y: 0.55}
+    <Speed>k__BackingField: 0.6
+    <Tint>k__BackingField: 0
+    <Alpha>k__BackingField: 1
+    <Area>k__BackingField:
+      serializedVersion: 2
+      x: 0.06
+      y: 0.95
+      width: 0
+      height: 0
+    <Order>k__BackingField: 0
+    <Spin>k__BackingField: 5
+    <Tilt>k__BackingField: 0
+    <Trail>k__BackingField: 0
+    <Color>k__BackingField: {r: 1, g: 1, b: 1, a: 1}
+    <Spacing>k__BackingField: 0
+  - <Sprite>k__BackingField: {fileID: 3286163911610860551, guid: 7642b36c5ea15ea44888b2c97e02b6c5, type: 3}
+    <Motion>k__BackingField: 6
+    <Count>k__BackingField: 1
+    <Width>k__BackingField: {x: 0.7, y: 0.7}
+    <Speed>k__BackingField: 0.5
+    <Tint>k__BackingField: 1
+    <Alpha>k__BackingField: 1
+    <Area>k__BackingField:
+      serializedVersion: 2
+      x: 1.02
+      y: 0.55
+      width: 0
+      height: 0
+    <Order>k__BackingField: 0
+    <Spin>k__BackingField: -4
+    <Tilt>k__BackingField: 0
+    <Trail>k__BackingField: 0
+    <Color>k__BackingField: {r: 1, g: 1, b: 1, a: 1}
+    <Spacing>k__BackingField: 0
+  - <Sprite>k__BackingField: {fileID: 3286163911610860551, guid: 7642b36c5ea15ea44888b2c97e02b6c5, type: 3}
+    <Motion>k__BackingField: 6
+    <Count>k__BackingField: 1
+    <Width>k__BackingField: {x: 0.5, y: 0.5}
+    <Speed>k__BackingField: 0.7
+    <Tint>k__BackingField: 2
+    <Alpha>k__BackingField: 1
+    <Area>k__BackingField:
+      serializedVersion: 2
+      x: 0.12
+      y: 0.1
+      width: 0
+      height: 0
+    <Order>k__BackingField: 1
+    <Spin>k__BackingField: 7
+    <Tilt>k__BackingField: 0
+    <Trail>k__BackingField: 0
+    <Color>k__BackingField: {r: 1, g: 1, b: 1, a: 1}
+    <Spacing>k__BackingField: 0
+  - <Sprite>k__BackingField: {fileID: 3286163911610860551, guid: ae03605eafa1fb04584a9b408c21320d, type: 3}
+    <Motion>k__BackingField: 1
+    <Count>k__BackingField: 10
+    <Width>k__BackingField: {x: 0.04, y: 0.08}
+    <Speed>k__BackingField: 0.05
+    <Tint>k__BackingField: 1
+    <Alpha>k__BackingField: 1
+    <Area>k__BackingField:
+      serializedVersion: 2
+      x: 0.05
+      y: 0
+      width: 0.9
+      height: 1
+    <Order>k__BackingField: 2
+    <Spin>k__BackingField: 0
+    <Tilt>k__BackingField: 0
+    <Trail>k__BackingField: 0
+    <Color>k__BackingField: {r: 1, g: 1, b: 1, a: 1}
+    <Spacing>k__BackingField: 0
 --- !u!1 &937802654
 GameObject:
   m_ObjectHideFlags: 0
@@ -1744,6 +2035,111 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Pingi.Runtime::Goal
   PlaySide: 1
+--- !u!1 &1159909258
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1159909259}
+  - component: {fileID: 1159909260}
+  m_Layer: 0
+  m_Name: WorldRush
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1159909259
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1159909258}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 604670279}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1159909260
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1159909258}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b167e58dd1a8b3c4f8e8b2100edd9929, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Pingi.Runtime::BackdropWorld
+  Accent: {r: 0.60784316, g: 0.41960785, b: 1, a: 1}
+  BaseOrder: -95
+  Seed: 14
+  Pieces:
+  - <Sprite>k__BackingField: {fileID: 3286163911610860551, guid: 8d5fb8be7d97fe343b1c93a7b7a67c67, type: 3}
+    <Motion>k__BackingField: 7
+    <Count>k__BackingField: 10
+    <Width>k__BackingField: {x: 2.6, y: 2.6}
+    <Speed>k__BackingField: 0.12
+    <Tint>k__BackingField: 1
+    <Alpha>k__BackingField: 0.55
+    <Area>k__BackingField:
+      serializedVersion: 2
+      x: -0.95
+      y: 0.5
+      width: 1
+      height: 0
+    <Order>k__BackingField: 0
+    <Spin>k__BackingField: 0
+    <Tilt>k__BackingField: 62
+    <Trail>k__BackingField: 0
+    <Color>k__BackingField: {r: 1, g: 1, b: 1, a: 1}
+    <Spacing>k__BackingField: 0.29
+  - <Sprite>k__BackingField: {fileID: 3286163911610860551, guid: a6510dd9d5d846b4d8e28fe5001b3e2b, type: 3}
+    <Motion>k__BackingField: 7
+    <Count>k__BackingField: 7
+    <Width>k__BackingField: {x: 0.12, y: 0.3}
+    <Speed>k__BackingField: 1.2
+    <Tint>k__BackingField: 3
+    <Alpha>k__BackingField: 0.6
+    <Area>k__BackingField:
+      serializedVersion: 2
+      x: 0
+      y: 0.05
+      width: 1
+      height: 0.9
+    <Order>k__BackingField: 1
+    <Spin>k__BackingField: 0
+    <Tilt>k__BackingField: 0
+    <Trail>k__BackingField: 0
+    <Color>k__BackingField: {r: 1, g: 1, b: 1, a: 1}
+    <Spacing>k__BackingField: 0
+  - <Sprite>k__BackingField: {fileID: 3286163911610860551, guid: 3556487a7d1004a459fdb690358d7a6f, type: 3}
+    <Motion>k__BackingField: 5
+    <Count>k__BackingField: 2
+    <Width>k__BackingField: {x: 0.18, y: 0.18}
+    <Speed>k__BackingField: 0.5
+    <Tint>k__BackingField: 4
+    <Alpha>k__BackingField: 0.55
+    <Area>k__BackingField:
+      serializedVersion: 2
+      x: 0.5
+      y: 0.5
+      width: 0
+      height: 0
+    <Order>k__BackingField: 2
+    <Spin>k__BackingField: 0
+    <Tilt>k__BackingField: 0
+    <Trail>k__BackingField: 0
+    <Color>k__BackingField: {r: 1, g: 1, b: 1, a: 1}
+    <Spacing>k__BackingField: 0
 --- !u!1 &1185500007
 GameObject:
   m_ObjectHideFlags: 0
@@ -2285,6 +2681,7 @@ Transform:
   m_Children:
   - {fileID: 726041407}
   - {fileID: 532565725}
+  - {fileID: 604670279}
   m_Father: {fileID: 871148361}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1456813200
@@ -2586,6 +2983,92 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Pingi.Runtime::Goal
   PlaySide: 3
+--- !u!1 &1781550554
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1781550555}
+  - component: {fileID: 1781550556}
+  m_Layer: 0
+  m_Name: WorldClassic
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1781550555
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1781550554}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 604670279}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1781550556
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1781550554}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b167e58dd1a8b3c4f8e8b2100edd9929, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Pingi.Runtime::BackdropWorld
+  Accent: {r: 1, g: 0.41960785, b: 0.34117648, a: 1}
+  BaseOrder: -95
+  Seed: 13
+  Pieces:
+  - <Sprite>k__BackingField: {fileID: 3286163911610860551, guid: 82b28ab4d4e10ed4f830ade3d374d33f, type: 3}
+    <Motion>k__BackingField: 0
+    <Count>k__BackingField: 1
+    <Width>k__BackingField: {x: 0.84, y: 0.84}
+    <Speed>k__BackingField: 0
+    <Tint>k__BackingField: 1
+    <Alpha>k__BackingField: 1
+    <Area>k__BackingField:
+      serializedVersion: 2
+      x: 0.5
+      y: 0.5
+      width: 0
+      height: 0
+    <Order>k__BackingField: 0
+    <Spin>k__BackingField: 0
+    <Tilt>k__BackingField: 0
+    <Trail>k__BackingField: 0
+    <Color>k__BackingField: {r: 1, g: 1, b: 1, a: 1}
+    <Spacing>k__BackingField: 0
+  - <Sprite>k__BackingField: {fileID: 3286163911610860551, guid: 3ce47c5a031dc374b82d6775789d36fd, type: 3}
+    <Motion>k__BackingField: 4
+    <Count>k__BackingField: 3
+    <Width>k__BackingField: {x: 0.045, y: 0.045}
+    <Speed>k__BackingField: 1
+    <Tint>k__BackingField: 4
+    <Alpha>k__BackingField: 0.32
+    <Area>k__BackingField:
+      serializedVersion: 2
+      x: 0.16
+      y: 0.14
+      width: 0.68
+      height: 0.72
+    <Order>k__BackingField: 1
+    <Spin>k__BackingField: 0
+    <Tilt>k__BackingField: 0
+    <Trail>k__BackingField: 0.12
+    <Color>k__BackingField: {r: 1, g: 1, b: 1, a: 1}
+    <Spacing>k__BackingField: 0
 --- !u!1 &1799850296
 GameObject:
   m_ObjectHideFlags: 0
@@ -2738,6 +3221,130 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Pingi.Runtime::Goal
   PlaySide: 0
+--- !u!1 &1802018429
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1802018430}
+  - component: {fileID: 1802018431}
+  m_Layer: 0
+  m_Name: WorldAdventure
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1802018430
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1802018429}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 604670279}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1802018431
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1802018429}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b167e58dd1a8b3c4f8e8b2100edd9929, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Pingi.Runtime::BackdropWorld
+  Accent: {r: 0.18039216, g: 0.76862746, b: 0.7137255, a: 1}
+  BaseOrder: -95
+  Seed: 12
+  Pieces:
+  - <Sprite>k__BackingField: {fileID: 3286163911610860551, guid: 04ea55c02c165c14e9e1c3ee046edb28, type: 3}
+    <Motion>k__BackingField: 3
+    <Count>k__BackingField: 4
+    <Width>k__BackingField: {x: 0.2, y: 0.3}
+    <Speed>k__BackingField: 0.018
+    <Tint>k__BackingField: 3
+    <Alpha>k__BackingField: 0.75
+    <Area>k__BackingField:
+      serializedVersion: 2
+      x: 0
+      y: 0.62
+      width: 1
+      height: 0.3
+    <Order>k__BackingField: 1
+    <Spin>k__BackingField: 0
+    <Tilt>k__BackingField: 0
+    <Trail>k__BackingField: 0
+    <Color>k__BackingField: {r: 1, g: 1, b: 1, a: 1}
+    <Spacing>k__BackingField: 0
+  - <Sprite>k__BackingField: {fileID: 3286163911610860551, guid: d804f191eedb8174bb5027299b7ba13a, type: 3}
+    <Motion>k__BackingField: 3
+    <Count>k__BackingField: 2
+    <Width>k__BackingField: {x: 1.3, y: 1.3}
+    <Speed>k__BackingField: 0.008
+    <Tint>k__BackingField: 1
+    <Alpha>k__BackingField: 0.9
+    <Area>k__BackingField:
+      serializedVersion: 2
+      x: -0.65
+      y: 0.17
+      width: 1
+      height: 0
+    <Order>k__BackingField: 2
+    <Spin>k__BackingField: 0
+    <Tilt>k__BackingField: 0
+    <Trail>k__BackingField: 0
+    <Color>k__BackingField: {r: 1, g: 1, b: 1, a: 1}
+    <Spacing>k__BackingField: 1.3
+  - <Sprite>k__BackingField: {fileID: 3286163911610860551, guid: d804f191eedb8174bb5027299b7ba13a, type: 3}
+    <Motion>k__BackingField: 3
+    <Count>k__BackingField: 2
+    <Width>k__BackingField: {x: 1.2, y: 1.2}
+    <Speed>k__BackingField: 0.016
+    <Tint>k__BackingField: 2
+    <Alpha>k__BackingField: 1
+    <Area>k__BackingField:
+      serializedVersion: 2
+      x: -0.3
+      y: 0.1
+      width: 1
+      height: 0
+    <Order>k__BackingField: 3
+    <Spin>k__BackingField: 0
+    <Tilt>k__BackingField: 0
+    <Trail>k__BackingField: 0
+    <Color>k__BackingField: {r: 1, g: 1, b: 1, a: 1}
+    <Spacing>k__BackingField: 1.2
+  - <Sprite>k__BackingField: {fileID: 3286163911610860551, guid: d804f191eedb8174bb5027299b7ba13a, type: 3}
+    <Motion>k__BackingField: 3
+    <Count>k__BackingField: 2
+    <Width>k__BackingField: {x: 1.4, y: 1.4}
+    <Speed>k__BackingField: 0.011
+    <Tint>k__BackingField: 0
+    <Alpha>k__BackingField: 1
+    <Area>k__BackingField:
+      serializedVersion: 2
+      x: -0.5
+      y: 0.03
+      width: 1
+      height: 0
+    <Order>k__BackingField: 4
+    <Spin>k__BackingField: 0
+    <Tilt>k__BackingField: 0
+    <Trail>k__BackingField: 0
+    <Color>k__BackingField: {r: 1, g: 1, b: 1, a: 1}
+    <Spacing>k__BackingField: 1.4
 --- !u!1 &1822548372
 GameObject:
   m_ObjectHideFlags: 0
@@ -2846,6 +3453,111 @@ MonoBehaviour:
   Frequency: 5
   Damping: 16
   MaxOffset: 0.15
+--- !u!1 &1996969651
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1996969652}
+  - component: {fileID: 1996969653}
+  m_Layer: 0
+  m_Name: WorldArcade
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1996969652
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1996969651}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 604670279}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1996969653
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1996969651}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b167e58dd1a8b3c4f8e8b2100edd9929, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Pingi.Runtime::BackdropWorld
+  Accent: {r: 1, g: 0.7882353, b: 0.23529412, a: 1}
+  BaseOrder: -95
+  Seed: 11
+  Pieces:
+  - <Sprite>k__BackingField: {fileID: 3286163911610860551, guid: 12bdc6890fbe8d34d90d5696f1e362d7, type: 3}
+    <Motion>k__BackingField: 2
+    <Count>k__BackingField: 1
+    <Width>k__BackingField: {x: 0.95, y: 0.95}
+    <Speed>k__BackingField: 0.12
+    <Tint>k__BackingField: 4
+    <Alpha>k__BackingField: 0.32
+    <Area>k__BackingField:
+      serializedVersion: 2
+      x: 0.5
+      y: 0.55
+      width: 0
+      height: 0
+    <Order>k__BackingField: 0
+    <Spin>k__BackingField: 0
+    <Tilt>k__BackingField: 0
+    <Trail>k__BackingField: 0
+    <Color>k__BackingField: {r: 1, g: 1, b: 1, a: 1}
+    <Spacing>k__BackingField: 0
+  - <Sprite>k__BackingField: {fileID: 3286163911610860551, guid: b7042a64cb299b5499abccc78126723e, type: 3}
+    <Motion>k__BackingField: 1
+    <Count>k__BackingField: 10
+    <Width>k__BackingField: {x: 0.05, y: 0.08}
+    <Speed>k__BackingField: 0.06
+    <Tint>k__BackingField: 6
+    <Alpha>k__BackingField: 0.7
+    <Area>k__BackingField:
+      serializedVersion: 2
+      x: 0.04
+      y: 0
+      width: 0.92
+      height: 1
+    <Order>k__BackingField: 2
+    <Spin>k__BackingField: 0
+    <Tilt>k__BackingField: 0
+    <Trail>k__BackingField: 0
+    <Color>k__BackingField: {r: 1, g: 1, b: 1, a: 1}
+    <Spacing>k__BackingField: 0
+  - <Sprite>k__BackingField: {fileID: 3286163911610860551, guid: 1fc92e5a253817a40b22f3bef8911f51, type: 3}
+    <Motion>k__BackingField: 2
+    <Count>k__BackingField: 8
+    <Width>k__BackingField: {x: 0.035, y: 0.055}
+    <Speed>k__BackingField: 0.8
+    <Tint>k__BackingField: 4
+    <Alpha>k__BackingField: 0.9
+    <Area>k__BackingField:
+      serializedVersion: 2
+      x: 0.06
+      y: 0.12
+      width: 0.88
+      height: 0.8
+    <Order>k__BackingField: 3
+    <Spin>k__BackingField: 0
+    <Tilt>k__BackingField: 0
+    <Trail>k__BackingField: 0
+    <Color>k__BackingField: {r: 1, g: 1, b: 1, a: 1}
+    <Spacing>k__BackingField: 0
 --- !u!1 &2060388130
 GameObject:
   m_ObjectHideFlags: 0

@@ -94,6 +94,7 @@ Bu klasör oyunun görsel ve UX kararlarının tek kaynağıdır. Her faz bir **
 | 2026-10-31 | **Arcade alan olayları:** Top Fırtınası, Altın Yağmuru, Hedef Tahtası, Dev Pingi; görev gibi hedef, süre ve altın ödülü ([modes.md](modes.md)) | Ürün sahibinin kararı. Koşunun ortasında sürpriz ve hedef; Classic ve Rush saf kalır |
 | 2026-10-31 | **Pingi Yolu:** XP ile seviye; sezon ve ücretli yol yok, tek ve bitmeyen yol; her seviye altın, her 5. seviye yıldız, 10/25/40'ta yola özel kostüm ([modes.md](modes.md)) | Ürün sahibinin kararı. Uzun vadeli geri dönme sebebi; içerik yükü olmadan sürer, ücretli ürün gerekmez |
 | 2026-10-31 | **Macera:** 3 dünya × 10 bölüm, her bölümde hedef ve 3 hak (kalan hak = yıldız); can/enerji sistemi yok; Kumsal'da engeller, Gece'de hareketli hedefler ([modes.md](modes.md)) | Ürün sahibinin kararı. Skor dışında ilerleme ve merak; kaybeden oyuncu bekletilmez, yeni dünyalar güncellemeyle gelir |
+| 2026-11-06 | **Ana menü arka planı ve kaydırarak mod geçişi:** her modun canlı dünyası, oklar kalktı ve kart parmakla kaydırılıyor, diğer menü ekranlarında canlı lekeler, "Hareketli arka plan" ayarı ([lobby.md](lobby.md)) | Ürün sahibinin kararı. Arka plan her ekranda aynıydı, mod geçişi sıradandı; butonlar ve temalar korunur |
 
 ## Asset takibi
 
@@ -132,6 +133,7 @@ Durumlar: `Brief → WIP → Review → Approved → Integrated`
 | `spr_fx_target` | SVG sprite | Integrated | Hedef Tahtası olayının hedefi; `generate_fx.py` üretir |
 | Yol kostümleri (Şampiyon × 4 ifade, Kuyruklu Yıldız raketi, Okyanus teması) | SVG sprite / tema | Integrated | `generate_skins.py` (`champ`, `comet`); top 200, raket 430 doku boyutu; Okyanus `Themes.uss` `theme-ocean` |
 | `ui_icon_level` | SVG ikon | Integrated | Dolap'ta "Seviye N" kilidi |
+| `spr_bg_cloud/hill/table/stripe/streak/blob/bubble` | SVG sprite | Integrated | Ana menü dünyaları ve canlı lekeler; beyaz çizilir, tema rengiyle boyanır; `generate_fx.py` üretir |
 | `spr_fx_bumper` | SVG sprite | Integrated | Macera tamponu (engel); `generate_fx.py` üretir |
 | `ui_icon_map/star_fill/leaf/wave/moon` | SVG ikon | Integrated | Macera kartı, dolu yıldız, dünya rozetleri (Çayır, Kumsal, Gece) |
 | `ui_icon_storm/target/giant` | SVG ikon | Integrated | Olay kartı rozetleri (Top Fırtınası, Hedef Tahtası, Dev Pingi); Altın Yağmuru `ui_icon_coin` kullanır |

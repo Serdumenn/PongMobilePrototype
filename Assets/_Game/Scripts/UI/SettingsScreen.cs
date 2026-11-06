@@ -48,6 +48,7 @@ public sealed class SettingsScreen : UIScreen
     }
 
     private readonly VisualElement vibrationSwitch;
+    private readonly VisualElement motionSwitch;
     private readonly VisualElement soundSwitch;
     private readonly Label bestValue;
     private readonly Label languageValue;
@@ -78,6 +79,7 @@ public sealed class SettingsScreen : UIScreen
         this.onDeleteOnline = onDeleteOnline;
 
         vibrationSwitch = root.Q("vibration-switch");
+        motionSwitch = root.Q("motion-switch");
         soundSwitch = root.Q("sound-switch");
         bestValue = root.Q<Label>("best-value");
         languageValue = root.Q<Label>("language-value");
@@ -86,6 +88,7 @@ public sealed class SettingsScreen : UIScreen
         root.Q<Label>("version-label").text = $"Pingi Pongi · v{Application.version}";
 
         vibrationSwitch.RegisterCallback<ClickEvent>(_ => ToggleVibration());
+        motionSwitch.RegisterCallback<ClickEvent>(_ => ToggleMotion());
         soundSwitch.RegisterCallback<ClickEvent>(_ => ToggleSound());
         Bind("back-button", onBack);
         reset = new ConfirmPill(Bind("reset-button", OnResetPressed), root.Q<Label>("reset-label"), "Reset");
@@ -215,6 +218,7 @@ public sealed class SettingsScreen : UIScreen
     protected override void OnShow()
     {
         vibrationSwitch.EnableInClassList(SwitchOnClass, GameSettings.HapticsEnabled);
+        motionSwitch.EnableInClassList(SwitchOnClass, GameSettings.MotionBackdrop);
         soundSwitch.EnableInClassList(SwitchOnClass, GameSettings.SoundEnabled);
         RefreshBest();
         RefreshLanguage();
@@ -236,6 +240,14 @@ public sealed class SettingsScreen : UIScreen
         GameSettings.HapticsEnabled = enabled;
         vibrationSwitch.EnableInClassList(SwitchOnClass, enabled);
         if (enabled) HapticManager.Soft();
+    }
+
+    private void ToggleMotion()
+    {
+        bool enabled = !GameSettings.MotionBackdrop;
+        GameSettings.MotionBackdrop = enabled;
+        motionSwitch.EnableInClassList(SwitchOnClass, enabled);
+        UiFeedback.Tap();
     }
 
     private void ToggleSound()
