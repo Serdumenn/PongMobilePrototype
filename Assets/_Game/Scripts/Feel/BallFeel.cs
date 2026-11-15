@@ -60,6 +60,25 @@ public sealed class BallFeel : MonoBehaviour
     private Vector2 squashed = Vector2.one;
     private float elapsed = -1f;
 
+    private static readonly Color[] Rainbow =
+    {
+        new Color(1f, 0.42f, 0.34f, 1f),
+        new Color(1f, 0.79f, 0.24f, 1f),
+        new Color(0.49f, 0.85f, 0.34f, 1f),
+        new Color(0.31f, 0.66f, 1f, 1f),
+        new Color(0.61f, 0.42f, 1f, 1f)
+    };
+
+    private readonly GradientColorKey[] rainbowKeys = new GradientColorKey[5];
+    private CosmeticItem trailLook;
+    private CosmeticItem hitLook;
+    private float traceClock;
+    private int traceCount;
+
+    public CosmeticItem TrailLook => trailLook;
+    public CosmeticItem HitLook => hitLook;
+    private bool StyledTrail => trailLook != null && trailLook.Unlock != UnlockKind.Free;
+    private bool StyledHit => hitLook != null && hitLook.Unlock != UnlockKind.Free;
     public Color AccentColor => Accent;
     public Sprite BurstSprite => Burst;
     public bool Sparkles => Sparkle;
@@ -143,6 +162,7 @@ public sealed class BallFeel : MonoBehaviour
         heat = Mathf.MoveTowards(heat, target, HeatFade * step);
         ShowHeat();
         if (Sparkle && ball.InPlay) EmitSparkles(step);
+        if (StyledTrail && trailLook.TrailShape != null && trailLook.TrailShapeRate > 0f && ball.InPlay) EmitTrace(step);
     }
 
     public void SetAccent(Color color)
@@ -161,6 +181,37 @@ public sealed class BallFeel : MonoBehaviour
         Sparkle = look.Sparkle;
         sparkleClock = 0f;
         SetAccent(look.Accent);
+    }
+
+    public void WearTrail(CosmeticItem look)
+    {
+        trailLook = look;
+        traceClock = 0f;
+        if (trail != null) trail.widthMultiplier = Diameter() * TrailWidth * (StyledTrail ? Mathf.Max(0.2f, look.TrailWidth) : 1f);
+        PaintTrail();
+    }
+
+    public void WearHit(CosmeticItem look)
+    {
+        hitLook = look;
+    }
+
+    private void EmitTrace(float step)
+    {
+        if (GameFeel.Instance == null) return;
+
+        traceClock += step;
+        float interval = 1f / trailLook.TrailShapeRate;
+        for (int guard = 0; traceClock >= interval && guard < 4; guard++)
+        {
+            traceClock -= interval;
+            Vector2 velocity = ball.LastVelocity;
+            Vector2 behind = velocity.sqrMagnitude > 0.0001f ? -velocity.normalized * (Diameter() * 0.5f) : Vector2.zero;
+            var color = traceCount++ % 2 == 0 ? trailLook.TrailHead : trailLook.TrailTail;
+            GameFeel.Instance.Trace(ball.Position + behind, trailLook.TrailDrift, color, trailLook.TrailShape);
+        }
+
+        if (traceClock > interval) traceClock = interval;
     }
 
     private void EmitSparkles(float step)
@@ -192,7 +243,9 @@ public sealed class BallFeel : MonoBehaviour
             if (kick != null) kick.Kick();
         }
 
-        if (GameFeel.Instance != null) GameFeel.Instance.Impact(ball.LastContact, ball.LastNormal, Accent, true, Burst);
+        if (GameFeel.Instance == null) return;
+        if (StyledHit) GameFeel.Instance.StyledImpact(ball.LastContact, ball.LastNormal, hitLook);
+        else GameFeel.Instance.Impact(ball.LastContact, ball.LastNormal, Accent, true, Burst);
     }
 
     private void OnWallHit()
@@ -304,12 +357,21 @@ public sealed class BallFeel : MonoBehaviour
         if (trail == null) return;
 
         paintedHeat = heat;
-        Color color = HeatColor;
-        colorKeys[0] = new GradientColorKey(color, 0f);
-        colorKeys[1] = new GradientColorKey(Accent, 1f);
         alphaKeys[0] = new GradientAlphaKey(Mathf.Clamp01(TrailAlpha * (1f + 0.5f * heat)), 0f);
         alphaKeys[1] = new GradientAlphaKey(0f, 1f);
-        paint.SetKeys(colorKeys, alphaKeys);
+        if (StyledTrail && trailLook.TrailRainbow)
+        {
+            for (int i = 0; i < rainbowKeys.Length; i++) rainbowKeys[i] = new GradientColorKey(Rainbow[i], i / (rainbowKeys.Length - 1f));
+            paint.SetKeys(rainbowKeys, alphaKeys);
+        }
+        else
+        {
+            Color head = StyledTrail ? FeelMath.Warm(trailLook.TrailHead, HotColor, heat * HotShare) : HeatColor;
+            Color tail = StyledTrail ? trailLook.TrailTail : Accent;
+            colorKeys[0] = new GradientColorKey(head, 0f);
+            colorKeys[1] = new GradientColorKey(tail, 1f);
+            paint.SetKeys(colorKeys, alphaKeys);
+        }
         trail.colorGradient = paint;
         trail.time = TrailSeconds * (1f + TrailHeatBoost * heat);
     }

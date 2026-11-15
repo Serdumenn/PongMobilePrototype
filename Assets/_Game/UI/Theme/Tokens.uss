@@ -1,4 +1,12 @@
 :root {
+    --color-frame-gold: #FFC93C;
+    --color-frame-fire: #FF7A45;
+    --color-frame-ice: #8FD8FF;
+    --color-frame-star: #FFD65A;
+    --color-frame-galaxy: #8C6CF2;
+    --color-frame-wave: #4FA8FF;
+    --color-frame-red: #FF6B57;
+    --color-frame-green: #7ED957;
     --color-bg: #FFF1E0;
     --color-surface: #FFFFFF;
     --color-surface-edge: #F0D9C0;

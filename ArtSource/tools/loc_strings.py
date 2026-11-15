@@ -18,6 +18,7 @@ CS_T = re.compile(r"\bLoc\.T\(\s*" + CS_LITERAL)
 CS_PLURAL = re.compile(r"\bLoc\.Plural\(\s*" + CS_LITERAL + r"\s*,\s*" + CS_LITERAL)
 ASSET_TEXT = re.compile(r"<(DisplayName|Tagline)>k__BackingField: (.*)$", re.M)
 WORLD_TEXT = re.compile(r"<Name>k__BackingField: (.*)$", re.M)
+SHOP_TEXT = re.compile(r"^    name: (.*)$", re.M)
 
 
 SUFFIX = re.compile(r"#[A-Za-z][\w-]*$")
@@ -89,6 +90,11 @@ def collect(ignore):
     if os.path.exists(book):
         for match in WORLD_TEXT.finditer(open(book, encoding="utf-8").read()):
             add(yaml_unquote(match.group(1)), os.path.basename(book))
+
+    shop = os.path.join(GAME, "Data", "ShopContent.asset")
+    if os.path.exists(shop):
+        for match in SHOP_TEXT.finditer(open(shop, encoding="utf-8").read()):
+            add(yaml_unquote(match.group(1)), os.path.basename(shop))
 
     return found
 

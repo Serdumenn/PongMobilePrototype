@@ -93,6 +93,73 @@ def champ(e):
     return wrap(f'<circle cx="{C}" cy="{C}" r="{R}" fill="#4FA8FF"/>' + band + shine + face(e, cheek="#FF8FB1") + tails, defs)
 
 
+def bunny(e):
+    fur, inner = "#FFE3EE", "#FFB3CF"
+    ears = (f'<ellipse cx="{C-30}" cy="{C-78}" rx="17" ry="40" fill="{fur}" transform="rotate(-12 {C-30} {C-78})"/>'
+            f'<ellipse cx="{C+30}" cy="{C-78}" rx="17" ry="40" fill="{fur}" transform="rotate(12 {C+30} {C-78})"/>'
+            f'<ellipse cx="{C-30}" cy="{C-76}" rx="8" ry="27" fill="{inner}" transform="rotate(-12 {C-30} {C-76})"/>'
+            f'<ellipse cx="{C+30}" cy="{C-76}" rx="8" ry="27" fill="{inner}" transform="rotate(12 {C+30} {C-76})"/>')
+    tooth = f'<rect x="{C-6}" y="{C+24}" width="12" height="11" rx="3" fill="#FFFFFF" stroke="{INK}" stroke-width="2.5"/>' if e == "idle" else ""
+    return wrap(ears + body(fur, 0.9) + face(e, cheek="#FF9ACB") + tooth)
+
+
+def bear(e):
+    fur, light = "#C98B5E", "#EBC29A"
+    ears = (f'<circle cx="{C-54}" cy="{C-54}" r="23" fill="{fur}"/><circle cx="{C+54}" cy="{C-54}" r="23" fill="{fur}"/>'
+            f'<circle cx="{C-54}" cy="{C-54}" r="12" fill="{light}"/><circle cx="{C+54}" cy="{C-54}" r="12" fill="{light}"/>')
+    muzzle = f'<ellipse cx="{C}" cy="{C+24}" rx="34" ry="26" fill="{light}"/><ellipse cx="{C}" cy="{C+8}" rx="9" ry="6.5" fill="#5A3A2A"/>'
+    return wrap(ears + body(fur) + muzzle + face(e, cheek="#F28F7A"))
+
+
+def penguin(e):
+    dark, white = "#33415F", "#F5F7FF"
+    defs = f'<defs><clipPath id="pg"><circle cx="{C}" cy="{C}" r="{R}"/></clipPath></defs>'
+    mask = f'<g clip-path="url(#pg)"><ellipse cx="{C}" cy="{C+18}" rx="62" ry="64" fill="{white}"/></g>'
+    beak = f'<path d="M{C-9} {C+5}h18l-9 10z" fill="#FFB443" stroke="#FFB443" stroke-width="3" stroke-linejoin="round"/>'
+    return wrap(f'<circle cx="{C}" cy="{C}" r="{R}" fill="{dark}"/>' + mask + f'<circle cx="{C-31}" cy="{C-52}" r="10" fill="#FFFFFF" fill-opacity="0.45"/>' + face(e, cheek="#FF9ACB") + beak, defs)
+
+
+def octo(e):
+    skin = "#B98CFF"
+    legs = "".join(f'<path d="M{x} {C+48}q{dx} 34 {dx*2} 40" fill="none" stroke="{skin}" stroke-width="20" stroke-linecap="round"/>'
+                   for x, dx in ((C-52, -8), (C-20, -4), (C+20, 4), (C+52, 8)))
+    dots = "".join(f'<circle cx="{x}" cy="{y}" r="4" fill="#FFFFFF" fill-opacity="0.6"/>' for x, y in ((C-62, C+78), (C-26, C+84), (C+26, C+84), (C+62, C+78)))
+    spots = f'<circle cx="{C+44}" cy="{C-40}" r="8" fill="#A372F5"/><circle cx="{C+58}" cy="{C-18}" r="5" fill="#A372F5"/>'
+    return wrap(legs + dots + body(skin) + spots + face(e, cheek="#FF9ACB"))
+
+
+def dragon(e):
+    skin, deep = "#6FD49B", "#3E9C6A"
+    horns = (f'<path d="M{C-46} {C-58}q-10-30 6-44q4 22 16 34z" fill="#FFC93C"/>'
+             f'<path d="M{C+46} {C-58}q10-30-6-44q-4 22-16 34z" fill="#FFC93C"/>')
+    spikes = (f'<path d="M{C-14} {C-74}l14-22 14 22z" fill="{deep}"/>'
+              f'<path d="M{C+18} {C-70}l11-17 9 20z" fill="{deep}"/><path d="M{C-38} {C-64}l7-18 12 13z" fill="{deep}"/>')
+    nose = f'<circle cx="{C-7}" cy="{C+8}" r="3.4" fill="{deep}"/><circle cx="{C+7}" cy="{C+8}" r="3.4" fill="{deep}"/>'
+    belly = f'<path d="M{C-40} {C+52}q40 26 80 0" fill="none" stroke="#B6F0CC" stroke-width="10" stroke-linecap="round"/>'
+    return wrap(horns + spikes + body(skin) + belly + face(e, cheek="#FFB3A0") + nose)
+
+
+def fox(e):
+    fur, cream = "#FF8A3D", "#FFF3E6"
+    ears = (f'<path d="M{C-64} {C-28}L{C-60} {C-94}L{C-16} {C-66}Z" fill="{fur}"/><path d="M{C+64} {C-28}L{C+60} {C-94}L{C+16} {C-66}Z" fill="{fur}"/>'
+            f'<path d="M{C-61} {C-74}L{C-60} {C-94}L{C-44} {C-82}Z" fill="{INK}"/><path d="M{C+61} {C-74}L{C+60} {C-94}L{C+44} {C-82}Z" fill="{INK}"/>')
+    defs = f'<defs><clipPath id="fx"><circle cx="{C}" cy="{C}" r="{R}"/></clipPath></defs>'
+    cheeks = f'<g clip-path="url(#fx)"><path d="M{C-90} {C+4}Q{C-40} {C+2} {C} {C+40}Q{C+40} {C+2} {C+90} {C+4}V{C+90}H{C-90}Z" fill="{cream}"/></g>'
+    nose = f'<ellipse cx="{C}" cy="{C+10}" rx="7" ry="5" fill="{INK}"/>'
+    return wrap(ears + body(fur) + cheeks + face(e, cheek="#FFB08A") + nose, defs)
+
+
+def snow(e):
+    white, line = "#F4F9FF", "#C9DDF2"
+    hat = (f'<rect x="{C-44}" y="{C-80}" width="88" height="12" rx="6" fill="#3A3F6B"/>'
+           f'<rect x="{C-28}" y="{C-118}" width="56" height="44" rx="6" fill="#3A3F6B"/>'
+           f'<rect x="{C-28}" y="{C-90}" width="56" height="9" fill="#FF6B57"/>')
+    rim = f'<circle cx="{C}" cy="{C}" r="{R}" fill="{white}" stroke="{line}" stroke-width="5"/>'
+    carrot = f'<path d="M{C-2} {C+3}L{C+30} {C+10}L{C-2} {C+15}Z" fill="#FF8A3D" stroke="#FF8A3D" stroke-width="3" stroke-linejoin="round"/>'
+    flakes = f'<circle cx="{C+62}" cy="{C+52}" r="4" fill="#BFE3FF"/><circle cx="{C-66}" cy="{C+40}" r="3" fill="#BFE3FF"/>'
+    return wrap(rim + f'<circle cx="{C-31}" cy="{C-38}" r="12.5" fill="#FFFFFF"/>' + face(e, cheek="#FFB3CF") + carrot + hat + flakes)
+
+
 EXPRESSIONS = ("idle", "happy", "sad", "wow")
 
 BALLS = {
@@ -107,6 +174,13 @@ BALLS = {
     "astro":  astro,
     "stella": stella,
     "champ":  champ,
+    "bunny":  bunny,
+    "bear":   bear,
+    "penguin": penguin,
+    "octo":   octo,
+    "dragon": dragon,
+    "fox":    fox,
+    "snow":   snow,
 }
 
 PW, PH, CAP, BEND, LIP = 430, 110, 55, 12, 21
@@ -159,6 +233,22 @@ comet_tail = ('<g clip-path="url(#cc)" stroke="#FFFFFF" stroke-linecap="round" f
               '<path d="M205 42H322" stroke-opacity="0.28" stroke-width="6"/>'
               '<path d="M215 82H322" stroke-opacity="0.28" stroke-width="6"/></g>'
               '<circle cx="342" cy="62" r="27" fill="#FFFFFF" fill-opacity="0.28"/><circle cx="342" cy="62" r="16" fill="#FFFFFF"/>')
+pc_clip = "<defs>" + f'<clipPath id="pk"><path d="{bar_path()}"/></clipPath>' + "</defs>"
+melon = ('<g clip-path="url(#pk)"><rect x="0" y="92" width="430" height="40" fill="#BDF0A8"/>'
+         + "".join(f'<ellipse cx="{x}" cy="{y}" rx="6" ry="9" fill="#2B2D42" transform="rotate(-12 {x} {y})"/>' for x, y in ((96, 50), (156, 70), (214, 44), (274, 72), (334, 50)))
+         + '</g>')
+lava_d = ('<defs><linearGradient id="lv" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#FF4D2E"/><stop offset="1" stop-color="#FF8A2B"/></linearGradient>'
+          f'<clipPath id="lc"><path d="{bar_path()}"/></clipPath></defs>')
+lava = ('<g clip-path="url(#lc)" fill="none" stroke="#B8361B" stroke-width="7" stroke-linecap="round"><path d="M70 30l30 26-18 30"/><path d="M250 22l-16 34 30 28"/><path d="M330 80l26-24"/></g>'
+        '<g fill="#FFD23F"><circle cx="150" cy="48" r="9"/><circle cx="300" cy="44" r="7"/><circle cx="196" cy="84" r="6"/></g>')
+ice = ('<g clip-path="url(#pk)" fill="#FFFFFF"><path d="M60 20l70 0-40 90-50 0z" fill-opacity="0.35"/><path d="M250 18l50 0-34 96-36 0z" fill-opacity="0.28"/></g>'
+       '<path d="M360 34l4 10 10 4-10 4-4 10-4-10-10-4 10-4z" fill="#FFFFFF"/>')
+bamboo = ('<g clip-path="url(#pk)" stroke="#4F8A2F" stroke-width="8"><path d="M140 0v140"/><path d="M290 0v140"/></g>'
+          '<g fill="#5E9E3B"><path d="M150 40q24-22 46-12q-20 18-46 12z"/><path d="M300 74q26-18 46-4q-22 14-46 4z"/></g>')
+snowflake_flakes = ('<g clip-path="url(#pk)" stroke="#FFFFFF" stroke-width="5" stroke-linecap="round">'
+                    + "".join(f'<path d="M{x} {y-14}v28M{x-12} {y-7}l24 14M{x-12} {y+7}l24-14"/>' for x, y in ((100, 46), (210, 72), (320, 42)))
+                    + '</g>')
+
 PADDLES = {
     "teal":    paddle("#2EC4B6", "#1E9C90"),
     "coral":   paddle("#FF6B57", "#D94C39"),
@@ -169,6 +259,11 @@ PADDLES = {
     "starry":  paddle("#2E3270", "#1C1F4D", night_stars, "<defs>" + sky_clip + "</defs>"),
     "aurora":  paddle("url(#au)", "#5B4BC4", '<path d="M372 28l4 10 10 4-10 4-4 10-4-10-10-4 10-4z" fill="#FFFFFF"/>', aurora_d),
     "comet":   paddle("url(#cm)", "#C9416A", comet_tail, comet_d),
+    "melon":   paddle("#FF5F6D", "#3FA34D", melon, pc_clip),
+    "lava":    paddle("url(#lv)", "#8E2A14", lava, lava_d),
+    "ice":     paddle("#BDEBFF", "#7CC6F0", ice, pc_clip),
+    "bamboo":  paddle("#9BD86B", "#5E9E3B", bamboo, pc_clip),
+    "snowflake": paddle("#7FB6FF", "#4F86D9", snowflake_flakes, pc_clip),
 }
 
 PLAYER_PADDLES = {

@@ -18,8 +18,27 @@
             <ui:Button name="tab-ball" text="Pingi" class="tab" />
             <ui:Button name="tab-paddle" text="Paddles" class="tab" />
             <ui:Button name="tab-theme" text="Themes" class="tab" />
+            <ui:Button name="tab-effect" text="Effects" class="tab" />
         </ui:VisualElement>
         <ui:ScrollView name="shop-scroll" mode="Vertical" horizontal-scroller-visibility="Hidden" vertical-scroller-visibility="Hidden" class="shop-scroll">
+            <ui:VisualElement name="showcase" class="shop-panel showcase" picking-mode="Ignore">
+                <ui:VisualElement class="shop-panel__head" picking-mode="Ignore">
+                    <ui:Label text="Today's picks" class="shop-panel__title" picking-mode="Ignore" />
+                    <ui:VisualElement class="shop-timer" picking-mode="Ignore">
+                        <ui:VisualElement class="icon icon--clock" picking-mode="Ignore" />
+                        <ui:Label name="showcase-timer" text="00:00:00" class="shop-timer__label fit-skip" picking-mode="Ignore" />
+                    </ui:VisualElement>
+                </ui:VisualElement>
+                <ui:VisualElement name="showcase-row" class="shop-row" picking-mode="Ignore" />
+                <ui:Label name="showcase-hint" text="" class="shop-panel__hint" picking-mode="Ignore" />
+            </ui:VisualElement>
+            <ui:VisualElement name="season" class="shop-panel season" picking-mode="Ignore">
+                <ui:VisualElement class="shop-panel__head" picking-mode="Ignore">
+                    <ui:Label name="season-title" text="" class="shop-panel__title" picking-mode="Ignore" />
+                    <ui:Label name="season-days" text="" class="shop-timer shop-timer__label" picking-mode="Ignore" />
+                </ui:VisualElement>
+                <ui:VisualElement name="season-row" class="shop-row" picking-mode="Ignore" />
+            </ui:VisualElement>
             <ui:Button name="pass-button" class="offer offer--pass">
                 <ui:VisualElement class="offer__face" picking-mode="Ignore">
                     <ui:VisualElement name="pass-art" class="offer__art" picking-mode="Ignore" />
@@ -30,7 +49,39 @@
                     <ui:Label name="pass-price" text="..." class="price" picking-mode="Ignore" />
                 </ui:VisualElement>
             </ui:Button>
+            <ui:VisualElement name="effect-filters" class="filters" picking-mode="Ignore">
+                <ui:Button name="filter-trail" text="Trails" class="filter" />
+                <ui:Button name="filter-hit" text="Hits" class="filter" />
+                <ui:Button name="filter-party" text="Parties" class="filter" />
+                <ui:Button name="filter-frame" text="Frames" class="filter" />
+                <ui:Button name="filter-sets" text="Sets" class="filter" />
+                <ui:Button name="filter-box" text="Box" class="filter" />
+            </ui:VisualElement>
             <ui:VisualElement name="grid" class="grid" picking-mode="Ignore" />
+            <ui:VisualElement name="sets" class="sets" picking-mode="Ignore" />
+            <ui:VisualElement name="box" class="shop-panel box-panel" picking-mode="Ignore">
+                <ui:Label text="Surprise box" class="shop-panel__title box-panel__title" picking-mode="Ignore" />
+                <ui:VisualElement class="box-stage" picking-mode="Ignore">
+                    <ui:VisualElement name="box-gift" class="gift" picking-mode="Ignore">
+                        <ui:VisualElement class="gift__body" picking-mode="Ignore" />
+                        <ui:VisualElement class="gift__lid" picking-mode="Ignore" />
+                        <ui:VisualElement class="gift__ribbon" picking-mode="Ignore" />
+                    </ui:VisualElement>
+                    <ui:VisualElement name="box-prize" class="box-prize" picking-mode="Ignore">
+                        <ui:VisualElement name="box-prize-art" class="item__art" picking-mode="Ignore" />
+                        <ui:Label name="box-prize-name" text="" class="box-prize__name" picking-mode="Ignore" />
+                        <ui:Label name="box-prize-tier" text="" class="box-prize__tier" picking-mode="Ignore" />
+                    </ui:VisualElement>
+                </ui:VisualElement>
+                <ui:Label name="box-odds" text="" class="shop-panel__hint" picking-mode="Ignore" />
+                <ui:Label text="Never gives an item you already have." class="shop-panel__hint" picking-mode="Ignore" />
+                <ui:Button name="box-open" class="btn btn--gold btn--buy box-open">
+                    <ui:VisualElement class="btn__face" picking-mode="Ignore">
+                        <ui:VisualElement class="icon icon--coin" picking-mode="Ignore" />
+                        <ui:Label name="box-open-label" text="" class="btn__label" picking-mode="Ignore" />
+                    </ui:VisualElement>
+                </ui:Button>
+            </ui:VisualElement>
             <ui:Button name="noads-button" class="offer offer--noads">
                 <ui:VisualElement class="offer__face" picking-mode="Ignore">
                     <ui:Label text="Remove ads" class="offer__title offer__title--grow" picking-mode="Ignore" />

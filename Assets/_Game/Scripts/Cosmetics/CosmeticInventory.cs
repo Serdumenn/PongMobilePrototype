@@ -18,6 +18,14 @@ public sealed class CosmeticInventory
         public string Ball;
         public string Paddle;
         public string Theme;
+        public string Trail;
+        public string Hit;
+        public string Celebration;
+        public string Frame;
+        public int ShowcaseDiscountDay;
+        public string ShopSeed;
+        public int ShowcaseDay;
+        public List<string> ShowcaseIds = new List<string>();
         public bool HasPass;
         public bool NoAds;
         public int Stars;
@@ -39,6 +47,16 @@ public sealed class CosmeticInventory
     public int Xp => data.Xp;
     public int RoadLevel => Math.Max(1, data.RoadLevel);
     public bool XpSeeded => data.XpSeeded;
+    public int ShowcaseDiscountDay => data.ShowcaseDiscountDay;
+
+    public string ShopSeed
+    {
+        get
+        {
+            if (string.IsNullOrEmpty(data.ShopSeed)) data.ShopSeed = Guid.NewGuid().ToString("N");
+            return data.ShopSeed;
+        }
+    }
 
     public int TotalLevelStars
     {
@@ -122,6 +140,17 @@ public sealed class CosmeticInventory
         if (string.IsNullOrEmpty(data.Ball)) data.Ball = o.Ball;
         if (string.IsNullOrEmpty(data.Paddle)) data.Paddle = o.Paddle;
         if (string.IsNullOrEmpty(data.Theme)) data.Theme = o.Theme;
+        if (string.IsNullOrEmpty(data.Trail)) data.Trail = o.Trail;
+        if (string.IsNullOrEmpty(data.Hit)) data.Hit = o.Hit;
+        if (string.IsNullOrEmpty(data.Celebration)) data.Celebration = o.Celebration;
+        if (string.IsNullOrEmpty(data.Frame)) data.Frame = o.Frame;
+        data.ShowcaseDiscountDay = Math.Max(data.ShowcaseDiscountDay, o.ShowcaseDiscountDay);
+        if (string.IsNullOrEmpty(data.ShopSeed)) data.ShopSeed = o.ShopSeed;
+        if (o.ShowcaseDay > data.ShowcaseDay && o.ShowcaseIds != null)
+        {
+            data.ShowcaseDay = o.ShowcaseDay;
+            data.ShowcaseIds = new List<string>(o.ShowcaseIds);
+        }
     }
 
     public static CosmeticInventory Load(string path)
@@ -142,9 +171,9 @@ public sealed class CosmeticInventory
     public bool IsUnlocked(CosmeticItem item)
     {
         if (item == null) return false;
-        if (item.Unlock == UnlockKind.Free) return true;
-        if (item.Unlock == UnlockKind.Streak || item.Unlock == UnlockKind.Stars || item.Unlock == UnlockKind.Level) return data.Owned.Contains(item.Id);
-        return data.HasPass || data.Owned.Contains(item.Id);
+        if (item.Unlock == UnlockKind.Free || data.Owned.Contains(item.Id)) return true;
+        if (item.Unlock == UnlockKind.Streak || item.Unlock == UnlockKind.Stars || item.Unlock == UnlockKind.Level || item.Unlock == UnlockKind.SetReward) return false;
+        return data.HasPass && item.PassCovers;
     }
 
     public void AddStars(int count)
@@ -226,7 +255,11 @@ public sealed class CosmeticInventory
         {
             CosmeticCategory.Ball => data.Ball,
             CosmeticCategory.Paddle => data.Paddle,
-            _ => data.Theme
+            CosmeticCategory.Theme => data.Theme,
+            CosmeticCategory.Trail => data.Trail,
+            CosmeticCategory.Hit => data.Hit,
+            CosmeticCategory.Celebration => data.Celebration,
+            _ => data.Frame
         };
     }
 
@@ -236,8 +269,30 @@ public sealed class CosmeticInventory
         {
             case CosmeticCategory.Ball: data.Ball = itemId; break;
             case CosmeticCategory.Paddle: data.Paddle = itemId; break;
-            default: data.Theme = itemId; break;
+            case CosmeticCategory.Theme: data.Theme = itemId; break;
+            case CosmeticCategory.Trail: data.Trail = itemId; break;
+            case CosmeticCategory.Hit: data.Hit = itemId; break;
+            case CosmeticCategory.Celebration: data.Celebration = itemId; break;
+            default: data.Frame = itemId; break;
         }
+    }
+
+    public string[] ShowcaseFor(int day)
+    {
+        return data.ShowcaseDay == day && data.ShowcaseIds != null && data.ShowcaseIds.Count > 0 ? data.ShowcaseIds.ToArray() : null;
+    }
+
+    public void KeepShowcase(int day, IEnumerable<string> ids)
+    {
+        data.ShowcaseDay = day;
+        data.ShowcaseIds = ids != null ? new List<string>(ids) : new List<string>();
+    }
+
+    public bool UseShowcaseDiscount(int day)
+    {
+        if (day <= data.ShowcaseDiscountDay) return false;
+        data.ShowcaseDiscountDay = day;
+        return true;
     }
 
     public void GrantPass()

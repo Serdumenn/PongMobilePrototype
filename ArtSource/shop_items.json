@@ -1,0 +1,620 @@
+{
+  "faces": [
+    {
+      "id": "ball_bunny",
+      "art": "bunny",
+      "name": "Bunny",
+      "tier": "Rare",
+      "gold": 700,
+      "unlock": "Gold",
+      "accent": "#FF8FB8",
+      "burst": "spr_fx_heart"
+    },
+    {
+      "id": "ball_bear",
+      "art": "bear",
+      "name": "Bear",
+      "tier": "Rare",
+      "gold": 700,
+      "unlock": "Gold",
+      "accent": "#C98B5E",
+      "burst": "spr_fx_paw"
+    },
+    {
+      "id": "ball_penguin",
+      "art": "penguin",
+      "name": "Penguin",
+      "tier": "Epic",
+      "gold": 1500,
+      "unlock": "Gold",
+      "accent": "#5B6E96",
+      "burst": "spr_fx_drop"
+    },
+    {
+      "id": "ball_octo",
+      "art": "octo",
+      "name": "Octo",
+      "tier": "Common",
+      "gold": 300,
+      "unlock": "Gold",
+      "accent": "#B98CFF",
+      "burst": "spr_bg_bubble"
+    },
+    {
+      "id": "ball_dragon",
+      "art": "dragon",
+      "name": "Dragon",
+      "tier": "Legendary",
+      "gold": 3000,
+      "unlock": "Gold",
+      "accent": "#4FC487",
+      "burst": "spr_fx_flame"
+    },
+    {
+      "id": "ball_fox",
+      "art": "fox",
+      "name": "Fox",
+      "tier": "Rare",
+      "gold": 700,
+      "unlock": "Gold",
+      "accent": "#FF8A3D",
+      "burst": "spr_fx_leaf"
+    },
+    {
+      "id": "ball_snow",
+      "art": "snow",
+      "name": "Snowy",
+      "tier": "Epic",
+      "gold": 1500,
+      "unlock": "Season",
+      "season": "winter",
+      "accent": "#9FD3FF",
+      "burst": "spr_fx_flake"
+    }
+  ],
+  "paddles": [
+    {
+      "id": "paddle_melon",
+      "art": "melon",
+      "name": "Melon",
+      "tier": "Common",
+      "gold": 300,
+      "unlock": "Gold"
+    },
+    {
+      "id": "paddle_lava",
+      "art": "lava",
+      "name": "Lava",
+      "tier": "Rare",
+      "gold": 700,
+      "unlock": "Gold"
+    },
+    {
+      "id": "paddle_ice",
+      "art": "ice",
+      "name": "Ice",
+      "tier": "Common",
+      "gold": 300,
+      "unlock": "Gold"
+    },
+    {
+      "id": "paddle_bamboo",
+      "art": "bamboo",
+      "name": "Bamboo",
+      "tier": "Common",
+      "gold": 300,
+      "unlock": "Gold"
+    },
+    {
+      "id": "paddle_snowflake",
+      "art": "snowflake",
+      "name": "Snowflake",
+      "tier": "Rare",
+      "gold": 700,
+      "unlock": "Season",
+      "season": "winter"
+    }
+  ],
+  "themes": [
+    {
+      "id": "theme_forest",
+      "name": "Forest",
+      "tier": "Rare",
+      "gold": 700,
+      "unlock": "Gold",
+      "bg": "#EAF6DF",
+      "a": "#CDEBB5",
+      "b": "#FFE9A8",
+      "ui": "theme-forest"
+    },
+    {
+      "id": "theme_space",
+      "name": "Space",
+      "tier": "Epic",
+      "gold": 1500,
+      "unlock": "Gold",
+      "bg": "#161A3A",
+      "a": "#2A2F6B",
+      "b": "#4B2E6B",
+      "ui": "theme-space"
+    },
+    {
+      "id": "theme_candy",
+      "name": "Cotton Candy",
+      "tier": "Rare",
+      "gold": 700,
+      "unlock": "Gold",
+      "bg": "#FFE8F3",
+      "a": "#FFC6E2",
+      "b": "#C9F1FF",
+      "ui": "theme-candy"
+    }
+  ],
+  "trails": [
+    {
+      "id": "trail_basic",
+      "name": "Classic",
+      "unlock": "Free",
+      "head": "#FF6B57",
+      "tail": "#FF6B57"
+    },
+    {
+      "id": "trail_stardust",
+      "name": "Stardust",
+      "tier": "Common",
+      "gold": 300,
+      "unlock": "Gold",
+      "head": "#FFE27A",
+      "tail": "#FFC93C",
+      "shape": "spr_fx_star",
+      "rate": 22,
+      "drift": [
+        0,
+        0.15
+      ],
+      "width": 0.8
+    },
+    {
+      "id": "trail_hearts",
+      "name": "Hearts",
+      "tier": "Rare",
+      "gold": 700,
+      "unlock": "Gold",
+      "head": "#FF8FB8",
+      "tail": "#FF4D7E",
+      "shape": "spr_fx_heart",
+      "rate": 14,
+      "drift": [
+        0,
+        0.5
+      ],
+      "width": 0.9
+    },
+    {
+      "id": "trail_bubbles",
+      "name": "Bubbles",
+      "tier": "Common",
+      "gold": 300,
+      "unlock": "Gold",
+      "head": "#BFE9FF",
+      "tail": "#7CC6F0",
+      "shape": "spr_bg_bubble",
+      "rate": 12,
+      "drift": [
+        0,
+        0.35
+      ],
+      "width": 0.9
+    },
+    {
+      "id": "trail_rainbow",
+      "name": "Rainbow",
+      "tier": "Epic",
+      "gold": 1500,
+      "unlock": "Gold",
+      "head": "#FF6B57",
+      "tail": "#9B6BFF",
+      "rainbow": true,
+      "width": 1.25
+    },
+    {
+      "id": "trail_comet",
+      "name": "Comet",
+      "tier": "Legendary",
+      "gold": 3000,
+      "unlock": "Showcase",
+      "head": "#FFFFFF",
+      "tail": "#7C83FD",
+      "shape": "spr_fx_spark",
+      "rate": 30,
+      "drift": [
+        0,
+        0
+      ],
+      "width": 1.4
+    },
+    {
+      "id": "trail_leaf",
+      "name": "Leaves",
+      "tier": "Common",
+      "gold": 300,
+      "unlock": "Gold",
+      "head": "#8FD16A",
+      "tail": "#3E9C6A",
+      "shape": "spr_fx_leaf",
+      "rate": 10,
+      "drift": [
+        0,
+        -0.3
+      ],
+      "width": 0.85
+    },
+    {
+      "id": "trail_snow",
+      "name": "Snow",
+      "tier": "Rare",
+      "gold": 700,
+      "unlock": "Season",
+      "season": "winter",
+      "head": "#FFFFFF",
+      "tail": "#BFE3FF",
+      "shape": "spr_fx_flake",
+      "rate": 14,
+      "drift": [
+        0,
+        -0.4
+      ],
+      "width": 0.9
+    },
+    {
+      "id": "trail_dragonfire",
+      "name": "Dragon Fire",
+      "unlock": "SetReward",
+      "head": "#FFD23F",
+      "tail": "#FF4D2E",
+      "shape": "spr_fx_flame",
+      "rate": 20,
+      "drift": [
+        0,
+        0.6
+      ],
+      "width": 1.2
+    }
+  ],
+  "hits": [
+    {
+      "id": "hit_basic",
+      "name": "Classic",
+      "unlock": "Free",
+      "colors": [
+        "#FF6B57"
+      ]
+    },
+    {
+      "id": "hit_confetti",
+      "name": "Confetti",
+      "tier": "Common",
+      "gold": 300,
+      "unlock": "Gold",
+      "shape": "spr_fx_confetti",
+      "colors": [
+        "#FF6B57",
+        "#FFC93C",
+        "#4FD1B0",
+        "#5B8DEF",
+        "#9B6BFF"
+      ],
+      "count": 10,
+      "speed": 1.2,
+      "gravity": 6
+    },
+    {
+      "id": "hit_stars",
+      "name": "Stars",
+      "tier": "Rare",
+      "gold": 700,
+      "unlock": "Gold",
+      "shape": "spr_fx_star",
+      "colors": [
+        "#FFC93C",
+        "#FFE27A",
+        "#FFFFFF"
+      ],
+      "count": 8,
+      "speed": 1.1,
+      "gravity": 0
+    },
+    {
+      "id": "hit_notes",
+      "name": "Music",
+      "tier": "Rare",
+      "gold": 700,
+      "unlock": "Gold",
+      "shape": "spr_fx_note",
+      "colors": [
+        "#9B6BFF",
+        "#5B8DEF",
+        "#FF6B8A"
+      ],
+      "count": 5,
+      "speed": 0.8,
+      "gravity": -2
+    },
+    {
+      "id": "hit_splash",
+      "name": "Splash",
+      "tier": "Common",
+      "gold": 300,
+      "unlock": "Gold",
+      "shape": "spr_fx_drop",
+      "colors": [
+        "#5BB8F5",
+        "#9FDCFF"
+      ],
+      "count": 9,
+      "speed": 1.3,
+      "gravity": 9
+    },
+    {
+      "id": "hit_bolt",
+      "name": "Lightning",
+      "tier": "Epic",
+      "gold": 1500,
+      "unlock": "Gold",
+      "shape": "spr_fx_bolt",
+      "colors": [
+        "#FFE27A",
+        "#FFC93C",
+        "#FFFFFF"
+      ],
+      "count": 6,
+      "speed": 1.5,
+      "gravity": 0
+    },
+    {
+      "id": "hit_heart",
+      "name": "Love",
+      "tier": "Common",
+      "gold": 300,
+      "unlock": "Gold",
+      "shape": "spr_fx_heart",
+      "colors": [
+        "#FF8FB8",
+        "#FF4D7E"
+      ],
+      "count": 6,
+      "speed": 1.0,
+      "gravity": -1
+    }
+  ],
+  "parties": [
+    {
+      "id": "party_basic",
+      "name": "Classic",
+      "unlock": "Free",
+      "style": "Confetti"
+    },
+    {
+      "id": "party_fireworks",
+      "name": "Fireworks",
+      "tier": "Epic",
+      "gold": 1500,
+      "unlock": "Gold",
+      "style": "Fireworks",
+      "shape": "spr_fx_dot",
+      "colors": [
+        "#FF6B57",
+        "#FFC93C",
+        "#4FD1B0",
+        "#9B6BFF",
+        "#5B8DEF"
+      ]
+    },
+    {
+      "id": "party_pingi",
+      "name": "Pingi Dance",
+      "tier": "Epic",
+      "gold": 1500,
+      "unlock": "Showcase",
+      "style": "PingiParty",
+      "colors": [
+        "#FFC93C",
+        "#FFE27A"
+      ]
+    },
+    {
+      "id": "party_rain",
+      "name": "Confetti Rain",
+      "tier": "Rare",
+      "gold": 700,
+      "unlock": "Gold",
+      "style": "Rain",
+      "shape": "spr_fx_confetti",
+      "colors": [
+        "#FF6B57",
+        "#FFC93C",
+        "#4FD1B0",
+        "#5B8DEF",
+        "#9B6BFF"
+      ]
+    },
+    {
+      "id": "party_stars",
+      "name": "Star Shower",
+      "tier": "Rare",
+      "gold": 700,
+      "unlock": "Gold",
+      "style": "Stars",
+      "shape": "spr_fx_star",
+      "colors": [
+        "#FFC93C",
+        "#FFE27A",
+        "#FF9A5A"
+      ]
+    },
+    {
+      "id": "party_hearts",
+      "name": "Heart Rain",
+      "unlock": "SetReward",
+      "style": "Rain",
+      "shape": "spr_fx_heart",
+      "colors": [
+        "#FF8FB8",
+        "#FF4D7E",
+        "#FFB3CF"
+      ]
+    },
+    {
+      "id": "party_leaves",
+      "name": "Leaf Rain",
+      "unlock": "SetReward",
+      "style": "Rain",
+      "shape": "spr_fx_leaf",
+      "colors": [
+        "#8FD16A",
+        "#3E9C6A",
+        "#FFC93C"
+      ]
+    }
+  ],
+  "frames": [
+    {
+      "id": "frame_none",
+      "name": "No frame",
+      "unlock": "Free",
+      "ui": ""
+    },
+    {
+      "id": "frame_crown",
+      "name": "Crown",
+      "tier": "Legendary",
+      "gold": 3000,
+      "unlock": "Showcase",
+      "ui": "frame--crown"
+    },
+    {
+      "id": "frame_fire",
+      "name": "Fire",
+      "tier": "Epic",
+      "gold": 1500,
+      "unlock": "Gold",
+      "ui": "frame--fire"
+    },
+    {
+      "id": "frame_rainbow",
+      "name": "Rainbow",
+      "tier": "Rare",
+      "gold": 700,
+      "unlock": "Gold",
+      "ui": "frame--rainbow"
+    },
+    {
+      "id": "frame_ice",
+      "name": "Ice",
+      "tier": "Common",
+      "gold": 300,
+      "unlock": "Gold",
+      "ui": "frame--ice"
+    },
+    {
+      "id": "frame_star",
+      "name": "Star",
+      "tier": "Common",
+      "gold": 300,
+      "unlock": "Gold",
+      "ui": "frame--star"
+    },
+    {
+      "id": "frame_galaxy",
+      "name": "Galaxy",
+      "unlock": "SetReward",
+      "ui": "frame--galaxy"
+    },
+    {
+      "id": "frame_wave",
+      "name": "Wave",
+      "unlock": "SetReward",
+      "ui": "frame--wave"
+    }
+  ],
+  "sets": [
+    {
+      "id": "space",
+      "name": "Space set",
+      "items": [
+        "theme_space",
+        "trail_comet",
+        "hit_stars",
+        "party_fireworks"
+      ],
+      "reward": "frame_galaxy"
+    },
+    {
+      "id": "sweet",
+      "name": "Sweet set",
+      "items": [
+        "ball_bunny",
+        "paddle_melon",
+        "theme_candy",
+        "trail_hearts"
+      ],
+      "reward": "party_hearts"
+    },
+    {
+      "id": "ocean",
+      "name": "Ocean set",
+      "items": [
+        "ball_octo",
+        "trail_bubbles",
+        "hit_splash",
+        "paddle_ice"
+      ],
+      "reward": "frame_wave"
+    },
+    {
+      "id": "forest",
+      "name": "Forest set",
+      "items": [
+        "ball_bear",
+        "paddle_bamboo",
+        "theme_forest",
+        "trail_leaf"
+      ],
+      "reward": "party_leaves"
+    },
+    {
+      "id": "fire",
+      "name": "Fire set",
+      "items": [
+        "ball_dragon",
+        "paddle_lava",
+        "hit_bolt",
+        "frame_fire"
+      ],
+      "reward": "trail_dragonfire"
+    }
+  ],
+  "seasons": [
+    {
+      "id": "winter",
+      "name": "Winter Fest",
+      "start": [
+        12,
+        15
+      ],
+      "end": [
+        1,
+        15
+      ],
+      "items": [
+        "ball_snow",
+        "paddle_snowflake",
+        "trail_snow"
+      ]
+    }
+  ],
+  "existing_tiers": {
+    "Common": 300,
+    "Rare": 750
+  }
+}

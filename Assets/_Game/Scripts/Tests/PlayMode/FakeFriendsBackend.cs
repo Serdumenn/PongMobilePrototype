@@ -10,6 +10,7 @@ public sealed class FakeFriendsBackend : IFriendsBackend
     public readonly List<string> Calls = new List<string>();
     public readonly List<(string To, FriendInvite Invite)> SentInvites = new List<(string, FriendInvite)>();
     public readonly List<FriendStatus> Presence = new List<FriendStatus>();
+    public readonly List<string> PresenceFrames = new List<string>();
     public readonly HashSet<string> KnownTags = new HashSet<string>();
 
     public event Action Changed;
@@ -77,9 +78,10 @@ public sealed class FakeFriendsBackend : IFriendsBackend
         return Task.FromResult(FriendsResult.Ok);
     }
 
-    public Task SetPresenceAsync(FriendStatus status)
+    public Task SetPresenceAsync(FriendStatus status, string frame)
     {
         Presence.Add(status);
+        PresenceFrames.Add(frame);
         return Task.CompletedTask;
     }
 

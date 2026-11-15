@@ -8,6 +8,7 @@ public sealed class FriendsScreen : UIScreen
 
     private readonly OnlineFriends friends;
     private readonly OnlineService online;
+    private readonly CosmeticsService cosmetics;
     private readonly Action<string> onInvite;
     private readonly Action<string> toast;
 
@@ -42,8 +43,9 @@ public sealed class FriendsScreen : UIScreen
     private string menuTarget;
     private bool working;
 
-    public FriendsScreen(VisualElement root, OnlineFriends friends, OnlineService online, Action onBack, Action<string> onInvite, Action<string> toast) : base(root)
+    public FriendsScreen(VisualElement root, OnlineFriends friends, OnlineService online, CosmeticsService cosmetics, Action onBack, Action<string> onInvite, Action<string> toast) : base(root)
     {
+        this.cosmetics = cosmetics;
         this.friends = friends;
         this.online = online;
         this.onInvite = onInvite;
@@ -207,6 +209,7 @@ public sealed class FriendsScreen : UIScreen
     private VisualElement FriendRow(OnlineFriends.Friend friend)
     {
         var row = RowBase(friend.Name, StatusText(friend), friend.Status);
+        if (cosmetics != null) FrameLook.Apply(row, cosmetics.FrameClassFor(friend.Frame));
 
         if (friend.Status == FriendStatus.Online)
         {

@@ -157,7 +157,7 @@ public sealed class GameUI : MonoBehaviour
         onlineResult = new OnlineResultScreen(root.Q("online-result"), Cosmetics, () => OnlineMatch?.RequestRematch(), LeaveOnline, Friends, () => lastOpponentId, toast.Show);
         rushBattle = new RushBattleScreen(root.Q("rush-battle"), Cosmetics, LeaveOnline);
         rushResult = new RushResultScreen(root.Q("rush-result"), Cosmetics, () => OnlineRush?.RequestRematch(), LeaveOnline, Friends, toast.Show);
-        friendsScreen = new FriendsScreen(root.Q("friends"), Friends, Online, CloseFriends, InviteFriend, toast.Show);
+        friendsScreen = new FriendsScreen(root.Q("friends"), Friends, Online, Cosmetics, CloseFriends, InviteFriend, toast.Show);
         inviteBanner = new InviteBanner(root.Q("invite-banner"));
         setup = new MatchSetupScreen(root.Q("match-setup"), Cosmetics, CancelSetup, entries => Match.Begin(entries));
         matchHud = new MatchHudScreen(root.Q("match-hud"), () => Match.SetPaused(true));

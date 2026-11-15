@@ -19,6 +19,9 @@ MonoBehaviour:
   <UnlockValue>k__BackingField: 15
   <ProductId>k__BackingField: skin_froggy
   <GoldPrice>k__BackingField: 750
+  <Tier>k__BackingField: 2
+  <SeasonId>k__BackingField: 
+  <Icon>k__BackingField: {fileID: 0}
   <Idle>k__BackingField: {fileID: 3286163911610860551, guid: a657e08eb05e0ff4da207240db44e311, type: 3}
   <Happy>k__BackingField: {fileID: 3286163911610860551, guid: 33574008150eb354b815da211f43bc2a, type: 3}
   <Sad>k__BackingField: {fileID: 3286163911610860551, guid: 746c114c9b31e4a44b5e3dc09b370a19, type: 3}
@@ -31,3 +34,18 @@ MonoBehaviour:
   <BlobPrimary>k__BackingField: {r: 1, g: 1, b: 1, a: 1}
   <BlobSecondary>k__BackingField: {r: 1, g: 1, b: 1, a: 1}
   <UiClass>k__BackingField: 
+  <TrailHead>k__BackingField: {r: 1, g: 1, b: 1, a: 1}
+  <TrailTail>k__BackingField: {r: 1, g: 1, b: 1, a: 1}
+  <TrailRainbow>k__BackingField: 0
+  <TrailWidth>k__BackingField: 1
+  <TrailShape>k__BackingField: {fileID: 0}
+  <TrailShapeRate>k__BackingField: 0
+  <TrailDrift>k__BackingField: {x: 0, y: 0}
+  <HitShape>k__BackingField: {fileID: 0}
+  <HitColors>k__BackingField: []
+  <HitCount>k__BackingField: 0
+  <HitSpeed>k__BackingField: 1
+  <HitGravity>k__BackingField: 0
+  <Style>k__BackingField: 0
+  <CelebrationShape>k__BackingField: {fileID: 0}
+  <FrameClass>k__BackingField: 

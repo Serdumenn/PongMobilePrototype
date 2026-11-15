@@ -89,3 +89,79 @@
     --unity-cursor-color: #F4F1FF;
     --unity-selection-color: rgba(46, 196, 182, 0.45);
 }
+
+.root.theme-forest {
+    --color-bg: #EAF6DF;
+    --color-surface-edge: #CFE6BE;
+    --color-card-edge: #C7E0B4;
+    --color-ink: #23361F;
+    --color-ink-muted: #536B4C;
+    --color-divider: #DDEDD0;
+    --color-track-off: #D3E7C4;
+    --color-field: #F5FBF0;
+    --color-inset: #EDF7E5;
+    --color-fog: rgba(245, 251, 240, 0.94);
+    --color-fog-soft: rgba(245, 251, 240, 0.6);
+    --color-watermark: rgba(35, 54, 31, 0.12);
+    --color-ink-faint: rgba(35, 54, 31, 0.55);
+}
+
+.root.theme-candy {
+    --color-bg: #FFE8F3;
+    --color-surface-edge: #F5CFE1;
+    --color-card-edge: #F0C6DA;
+    --color-ink: #3D2236;
+    --color-ink-muted: #7D5A72;
+    --color-divider: #FBDDEB;
+    --color-track-off: #F1D3E1;
+    --color-field: #FFF5FA;
+    --color-inset: #FFEEF6;
+    --color-fog: rgba(255, 245, 250, 0.94);
+    --color-fog-soft: rgba(255, 245, 250, 0.6);
+    --color-watermark: rgba(61, 34, 54, 0.12);
+    --color-ink-faint: rgba(61, 34, 54, 0.55);
+}
+
+.root.theme-space {
+    --color-bg: #161A3A;
+    --color-surface: #262B55;
+    --color-surface-edge: #10132C;
+    --color-card-edge: #0E1129;
+    --color-ink: #F4F1FF;
+    --color-ink-muted: #B0B3DA;
+    --color-divider: #343A6A;
+    --color-track-off: #3E4475;
+    --color-scrim: rgba(6, 7, 20, 0.58);
+    --color-hint: rgba(255, 255, 255, 0.05);
+    --color-hint-icon: rgba(255, 255, 255, 0.35);
+    --color-coral-text: #FF8A78;
+    --color-coral-ink: #FF9D8E;
+    --color-coral-tint: #4E2C3E;
+    --color-teal-text: #5FD8CC;
+    --color-teal-ink: #7FE3D8;
+    --color-teal-tint: #1C4250;
+    --color-sun-ink: #FFD65A;
+    --color-sun-tint: #463F25;
+    --color-chip: #F4F1FF;
+    --color-chip-edge: #C9C6E0;
+    --color-chip-deep: #0F1126;
+    --color-on-chip: #161A3A;
+    --color-select: #2B4C6B;
+    --color-field: #1B1F42;
+    --color-inset: #1F2447;
+    --color-note: rgba(255, 255, 255, 0.06);
+    --color-veil: rgba(255, 255, 255, 0.05);
+    --color-float: rgba(38, 43, 85, 0.92);
+    --color-fog: rgba(38, 43, 85, 0.96);
+    --color-fog-soft: rgba(38, 43, 85, 0.62);
+    --color-watermark: rgba(244, 241, 255, 0.1);
+    --color-ink-faint: rgba(244, 241, 255, 0.6);
+    --color-player-1-text: #4FD6C9;
+    --color-player-2-text: #FFD65A;
+    --color-player-3-text: #B39DFF;
+}
+
+.root.theme-space .code-field {
+    --unity-cursor-color: #F4F1FF;
+    --unity-selection-color: rgba(46, 196, 182, 0.45);
+}

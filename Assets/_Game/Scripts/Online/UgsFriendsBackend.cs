@@ -56,7 +56,13 @@ public sealed class UgsFriendsBackend : IFriendsBackend
     public Task<FriendsResult> BlockAsync(string playerId) => Run(() => service.AddBlockAsync(playerId));
     public Task<FriendsResult> InviteAsync(string playerId, FriendInvite invite) => Run(() => service.MessageAsync(playerId, invite));
 
-    public async Task SetPresenceAsync(FriendStatus status)
+    [Serializable]
+    public sealed class PresenceLook
+    {
+        public string frame;
+    }
+
+    public async Task SetPresenceAsync(FriendStatus status, string frame)
     {
         if (service == null) return;
         var availability = status switch
@@ -68,11 +74,19 @@ public sealed class UgsFriendsBackend : IFriendsBackend
 
         try
         {
-            await service.SetPresenceAvailabilityAsync(availability);
+            await service.SetPresenceAsync(availability, new PresenceLook { frame = frame ?? "" });
         }
         catch (Exception e)
         {
             Debug.LogWarning($"Friends presence update failed: {e.Message}");
+            try
+            {
+                await service.SetPresenceAvailabilityAsync(availability);
+            }
+            catch (Exception fallback)
+            {
+                Debug.LogWarning($"Friends availability update failed: {fallback.Message}");
+            }
         }
     }
 
@@ -127,7 +141,7 @@ public sealed class UgsFriendsBackend : IFriendsBackend
         {
             var member = relationship?.Member;
             if (member == null) continue;
-            friends.Add(new FriendRecord(member.Id, StatusOf(member.Presence), member.Presence != null ? member.Presence.LastSeen : default));
+            friends.Add(new FriendRecord(member.Id, StatusOf(member.Presence), member.Presence != null ? member.Presence.LastSeen : default, FrameOf(member.Presence)));
         }
         foreach (var relationship in service.IncomingFriendRequests)
             if (relationship?.Member != null) incoming.Add(relationship.Member.Id);
@@ -150,6 +164,19 @@ public sealed class UgsFriendsBackend : IFriendsBackend
         }
 
         if (invite != null && invite.IsValid) InviteReceived?.Invoke(message.UserId, invite);
+    }
+
+    private static string FrameOf(Presence presence)
+    {
+        if (presence == null) return null;
+        try
+        {
+            return presence.GetActivity<PresenceLook>()?.frame;
+        }
+        catch (Exception)
+        {
+            return null;
+        }
     }
 
     private static FriendStatus StatusOf(Presence presence)

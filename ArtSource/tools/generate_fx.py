@@ -72,6 +72,15 @@ def leaf():
     return svg(128, f'<path d="M64 6C100 30 112 74 64 122 16 74 28 30 64 6z" fill="{WHITE}" transform="translate(64 64) rotate(32) scale(0.84) translate(-64 -64)"/>')
 
 
+def bolt():
+    return svg(128, f'<path d="M74 6L26 72h32l-10 50 52-70H66z" fill="{WHITE}" stroke="{WHITE}" stroke-width="6" stroke-linejoin="round"/>')
+
+
+def flake():
+    arms = "".join(f'<g transform="rotate({a} 64 64)"><path d="M64 10V118M64 30l-14-14M64 30l14-14M64 98l-14 14M64 98l14 14"/></g>' for a in (0, 60, 120))
+    return svg(128, f'<g fill="none" stroke="{WHITE}" stroke-width="11" stroke-linecap="round">{arms}</g>')
+
+
 def paw():
     toes = "".join(f'<ellipse cx="{x}" cy="{y}" rx="14" ry="17" fill="{WHITE}"/>' for x, y in ((28, 52), (50, 30), (78, 30), (100, 52)))
     pad = f'<path d="M64 62c22 0 40 22 40 40 0 14-12 20-22 18-7-1-11-5-18-5s-11 4-18 5c-10 2-22-4-22-18 0-18 18-40 40-40z" fill="{WHITE}"/>'
@@ -196,6 +205,8 @@ SHAPES = {
     "spr_fx_note": note,
     "spr_fx_leaf": leaf,
     "spr_fx_paw": paw,
+    "spr_fx_bolt": bolt,
+    "spr_fx_flake": flake,
     "spr_fx_bubble": bubble,
     "spr_fx_token": token,
     "spr_fx_power_big": power_big,

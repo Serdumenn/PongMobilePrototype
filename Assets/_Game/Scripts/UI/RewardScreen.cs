@@ -28,6 +28,10 @@ public sealed class RewardScreen : UIScreen
         {
             CosmeticCategory.Ball => Loc.T("New costume!"),
             CosmeticCategory.Paddle => Loc.T("New paddle!"),
+            CosmeticCategory.Trail => Loc.T("New trail!"),
+            CosmeticCategory.Hit => Loc.T("New hit effect!"),
+            CosmeticCategory.Celebration => Loc.T("New celebration!"),
+            CosmeticCategory.Frame => Loc.T("New frame!"),
             _ => Loc.T("New theme!")
         };
         text.text = item.Unlock switch
@@ -35,6 +39,7 @@ public sealed class RewardScreen : UIScreen
             UnlockKind.Streak => Loc.T("{0} days in a row!\n{1} is unlocked.", item.UnlockValue, item.Title),
             UnlockKind.Stars => Loc.T("{0} mission stars!\n{1} is unlocked.", item.UnlockValue, item.Title),
             UnlockKind.Level => Loc.T("Level {0}!\n{1} is unlocked.", item.UnlockValue, item.Title),
+            UnlockKind.SetReward => Loc.T("Set complete!\n{0} is unlocked.", item.Title),
             _ => Loc.T("You reached {0} points.\n{1} is unlocked.", item.UnlockValue, item.Title)
         };
 
@@ -42,7 +47,7 @@ public sealed class RewardScreen : UIScreen
         art.EnableInClassList("dialog__art--paddle", item.Category == CosmeticCategory.Paddle);
         art.EnableInClassList("dialog__art--theme", item.Category == CosmeticCategory.Theme);
 
-        Sprite sprite = item.Category == CosmeticCategory.Ball ? item.Happy : item.PaddleSprite;
+        Sprite sprite = item.Category == CosmeticCategory.Ball ? item.Happy : item.Category == CosmeticCategory.Paddle ? item.PaddleSprite : item.Preview;
         art.style.backgroundImage = sprite != null ? new StyleBackground(sprite) : new StyleBackground(StyleKeyword.None);
         art.style.backgroundColor = item.Category == CosmeticCategory.Theme ? new StyleColor(item.BackgroundColor) : new StyleColor(StyleKeyword.Null);
         if (item.Category == CosmeticCategory.Theme)

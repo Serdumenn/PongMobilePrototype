@@ -9,6 +9,7 @@ public sealed class CosmeticsService : MonoBehaviour
 
     [Header("Data")]
     [SerializeField] private CosmeticCatalog Catalog;
+    [SerializeField] private ShopContent Content;
 
     [Header("Refs")]
     [SerializeField] private SoloGameManager Game;
@@ -18,6 +19,9 @@ public sealed class CosmeticsService : MonoBehaviour
     public event Action Changed;
 
     public CosmeticCatalog CatalogAsset => Catalog;
+    public ShopContent Shop => Content;
+    public Func<DateTime> Clock { get; set; } = () => DateTime.Now;
+    public int Today => ShopClock.DayIndex(Clock());
     public CosmeticInventory Inventory { get; private set; }
     public List<CosmeticItem> PendingRewards { get; } = new List<CosmeticItem>();
 
@@ -30,6 +34,7 @@ public sealed class CosmeticsService : MonoBehaviour
         Inventory = CosmeticInventory.Load(SaveLocation.PathFor(SaveFileName));
         EnsureEquippedDefaults();
         GrantScoreUnlocks(PlayerPrefs.GetInt(SoloScoreManager.BestScoreKey, 0), false);
+        GrantSetRewards(false);
         Inventory.Save();
     }
 
@@ -92,7 +97,7 @@ public sealed class CosmeticsService : MonoBehaviour
 
     public bool CanBuyWithGold(CosmeticItem item)
     {
-        return item != null && item.SoldForGold && !Inventory.IsUnlocked(item) && Gold >= item.GoldPrice;
+        return item != null && !Inventory.IsUnlocked(item) && OnSale(item) && Gold >= item.GoldPrice;
     }
 
     public bool BuyWithGold(CosmeticItem item)
@@ -100,9 +105,147 @@ public sealed class CosmeticsService : MonoBehaviour
         if (!CanBuyWithGold(item) || !Inventory.SpendGold(item.GoldPrice)) return false;
 
         Inventory.Grant(item.Id);
+        GrantSetRewards(true);
         Inventory.Save();
         Changed?.Invoke();
         return true;
+    }
+
+    public bool OnSale(CosmeticItem item)
+    {
+        if (item == null) return false;
+        if (Content == null) return item.SoldForGold && item.Unlock != UnlockKind.Season;
+        return ShopRules.OnSale(item, Content.Seasons, item.Unlock == UnlockKind.Showcase ? ShowcaseToday() : null, Clock());
+    }
+
+    public IReadOnlyList<CosmeticItem> ShowcaseToday()
+    {
+        var list = new List<CosmeticItem>();
+        if (Content == null || Inventory == null) return list;
+
+        int day = Today;
+        var kept = Inventory.ShowcaseFor(day);
+        if (kept != null)
+        {
+            foreach (var id in kept)
+            {
+                var item = Catalog.Find(id);
+                if (item != null) list.Add(item);
+            }
+            return list;
+        }
+
+        list = Showcase.Pick(Catalog.Items, Inventory.IsUnlocked, Inventory.ShopSeed, day, Content.ShowcaseSize);
+        var ids = new List<string>();
+        foreach (var item in list) ids.Add(item.Id);
+        Inventory.KeepShowcase(day, ids);
+        Inventory.Save();
+        return list;
+    }
+
+    public bool InShowcase(CosmeticItem item)
+    {
+        if (item == null) return false;
+        foreach (var entry in ShowcaseToday())
+            if (entry == item) return true;
+        return false;
+    }
+
+    public int SecondsToNewShowcase => ShopClock.SecondsToMidnight(Clock());
+    public bool DiscountReady => Inventory != null && Inventory.ShowcaseDiscountDay < Today;
+    public float Discount => Content != null ? Content.AdDiscount : 0f;
+
+    public int DiscountedPrice(CosmeticItem item)
+    {
+        return item != null ? ShopRules.Discounted(item.GoldPrice, Discount) : 0;
+    }
+
+    public bool CanBuyDiscounted(CosmeticItem item)
+    {
+        return item != null && Discount > 0f && DiscountReady && InShowcase(item) && !Inventory.IsUnlocked(item) && Gold >= DiscountedPrice(item);
+    }
+
+    public bool BuyDiscounted(CosmeticItem item)
+    {
+        if (!CanBuyDiscounted(item)) return false;
+
+        int price = DiscountedPrice(item);
+        if (!Inventory.UseShowcaseDiscount(Today) || !Inventory.SpendGold(price)) return false;
+
+        Inventory.Grant(item.Id);
+        GrantSetRewards(true);
+        Inventory.Save();
+        Changed?.Invoke();
+        return true;
+    }
+
+    public void WatchAdForDiscount(CosmeticItem item, Action<bool> onDone)
+    {
+        var ads = AdManager.Instance;
+        if (!CanBuyDiscounted(item) || ads == null)
+        {
+            onDone?.Invoke(false);
+            return;
+        }
+
+        bool bought = false;
+        ads.ShowRewarded(() => bought = BuyDiscounted(item), earned => onDone?.Invoke(earned && bought));
+    }
+
+    public SeasonDef CurrentSeason => Content != null ? SeasonWindow.Current(Content.Seasons, Clock()) : null;
+
+    public int SeasonDaysLeft(SeasonDef season)
+    {
+        return SeasonWindow.DaysLeft(season, Clock());
+    }
+
+    public IReadOnlyList<CosmeticSet> Sets => Content != null ? (IReadOnlyList<CosmeticSet>)Content.Sets : Array.Empty<CosmeticSet>();
+
+    public int SetProgress(CosmeticSet set)
+    {
+        return Inventory != null ? CosmeticSets.Progress(set, Inventory.IsUnlocked) : 0;
+    }
+
+    public int BoxPrice => Content != null ? Content.BoxPrice : 0;
+
+    public Dictionary<CosmeticTier, float> BoxOdds()
+    {
+        if (Content == null || Inventory == null) return new Dictionary<CosmeticTier, float>();
+        return SurpriseBox.Odds(Catalog.Items, Inventory.IsUnlocked, Content.BoxCommon, Content.BoxRare, Content.BoxEpic);
+    }
+
+    public bool BoxHasItems => BoxOdds().Count > 0;
+    public bool CanOpenBox => Content != null && BoxHasItems && Gold >= Content.BoxPrice;
+
+    public CosmeticItem OpenBox()
+    {
+        return OpenBox(UnityEngine.Random.value, UnityEngine.Random.value);
+    }
+
+    public CosmeticItem OpenBox(float tierRoll, float itemRoll)
+    {
+        if (!CanOpenBox) return null;
+
+        var item = SurpriseBox.Draw(Catalog.Items, Inventory.IsUnlocked, Content.BoxCommon, Content.BoxRare, Content.BoxEpic, tierRoll, itemRoll);
+        if (item == null || !Inventory.SpendGold(Content.BoxPrice)) return null;
+
+        Inventory.Grant(item.Id);
+        GrantSetRewards(true);
+        Inventory.Save();
+        Changed?.Invoke();
+        return item;
+    }
+
+    private bool GrantSetRewards(bool announce)
+    {
+        bool any = false;
+        foreach (var reward in CosmeticSets.RewardsDue(Sets, Inventory.IsUnlocked))
+        {
+            if (!Inventory.Grant(reward.Id)) continue;
+            any = true;
+            if (announce) PendingRewards.Add(reward);
+        }
+        return any;
     }
 
     public void AddStars(int count)
@@ -137,6 +280,7 @@ public sealed class CosmeticsService : MonoBehaviour
         GrantScoreUnlocks(PlayerPrefs.GetInt(SoloScoreManager.BestScoreKey, 0), false);
         GrantWhere(UnlockKind.Stars, Inventory.Stars, false);
         GrantWhere(UnlockKind.Level, Inventory.RoadLevel, false);
+        GrantSetRewards(false);
         Inventory.Save();
         ApplyAdRules();
         Changed?.Invoke();
@@ -164,6 +308,22 @@ public sealed class CosmeticsService : MonoBehaviour
     public bool IsUnlocked(CosmeticItem item)
     {
         return Inventory.IsUnlocked(item);
+    }
+
+    public string FrameId
+    {
+        get
+        {
+            var frame = Inventory != null ? Equipped(CosmeticCategory.Frame) : null;
+            return frame != null && frame.Unlock != UnlockKind.Free ? frame.Id : "";
+        }
+    }
+
+    public string FrameClassFor(string frameId)
+    {
+        if (string.IsNullOrEmpty(frameId)) return null;
+        var item = Catalog.Find(frameId);
+        return item != null && item.Category == CosmeticCategory.Frame ? item.FrameClass : null;
     }
 
     public bool IsEquipped(CosmeticItem item)
@@ -211,6 +371,18 @@ public sealed class CosmeticsService : MonoBehaviour
     public string PriceOf(string productId)
     {
         return Purchases != null ? Purchases.PriceOf(productId) : null;
+    }
+
+    public CosmeticItem TakeSetReward()
+    {
+        for (int i = 0; i < PendingRewards.Count; i++)
+        {
+            var item = PendingRewards[i];
+            if (item == null || item.Unlock != UnlockKind.SetReward) continue;
+            PendingRewards.RemoveAt(i);
+            return item;
+        }
+        return null;
     }
 
     public CosmeticItem TakeNextReward()
@@ -281,6 +453,7 @@ public sealed class CosmeticsService : MonoBehaviour
             Inventory.Grant(item.Id);
         }
 
+        GrantSetRewards(true);
         Inventory.MarkOrderProcessed(orderId);
         if (!Inventory.Save()) return false;
 

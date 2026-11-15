@@ -413,6 +413,7 @@ public sealed class ArcadeEvents : MonoBehaviour
         if (Feel == null || WorldCamera == null) return;
 
         Vector2 origin = WorldCamera.ViewportToWorldPoint(new Vector3(0.5f, 0.78f, -WorldCamera.transform.position.z));
-        Feel.Celebrate(origin, Vector2.up, Confetti, 150f, 5.5f);
+        if (Feel.PartyStyled) Feel.Party(origin, Confetti);
+        else Feel.Celebrate(origin, Vector2.up, Confetti, 150f, 5.5f);
     }
 }

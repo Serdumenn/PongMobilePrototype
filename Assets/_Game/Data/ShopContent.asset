@@ -1,0 +1,72 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e0321e2bbcd34b24d944c619f3a79748, type: 3}
+  m_Name: ShopContent
+  m_EditorClassIdentifier: Pingi.Runtime::ShopContent
+  <Sets>k__BackingField:
+  - id: space
+    name: Space set
+    items:
+    - {fileID: 11400000, guid: 19ae8901e5955cc43a17ae1ebbadcef8, type: 2}
+    - {fileID: 11400000, guid: d3a74dddab8174e4280fc9be1d8bf78d, type: 2}
+    - {fileID: 11400000, guid: 4e11eba10fc7d044b9ac2c2c7dda26a2, type: 2}
+    - {fileID: 11400000, guid: b21e1f13e081fd44da8d8b2cb8bf0449, type: 2}
+    reward: {fileID: 11400000, guid: 051e00bf2a039534285a3c5b5e75af5f, type: 2}
+  - id: sweet
+    name: Sweet set
+    items:
+    - {fileID: 11400000, guid: b800cf5191852f441843fb41db931aeb, type: 2}
+    - {fileID: 11400000, guid: 92842eee51d36e148a6f32972903969b, type: 2}
+    - {fileID: 11400000, guid: 3316e0f18e0ab004f8b980320010481e, type: 2}
+    - {fileID: 11400000, guid: 56b4974b1fb56a646831d3b6e3108f8a, type: 2}
+    reward: {fileID: 11400000, guid: 0028d721c53e9aa49884a97679c01b07, type: 2}
+  - id: ocean
+    name: Ocean set
+    items:
+    - {fileID: 11400000, guid: 679b8a640795a6b479e517580be5058b, type: 2}
+    - {fileID: 11400000, guid: 661c0a47693c1694e9f1760fc10462f2, type: 2}
+    - {fileID: 11400000, guid: 7324e15b7ee7e93429a3ca268301b44c, type: 2}
+    - {fileID: 11400000, guid: be2c5a9b0bd2d434aade79499bf5646a, type: 2}
+    reward: {fileID: 11400000, guid: 88ddb6243d6a8094c9c25229fc1ef29b, type: 2}
+  - id: forest
+    name: Forest set
+    items:
+    - {fileID: 11400000, guid: 60929dd888465dd438b28d3510fac96f, type: 2}
+    - {fileID: 11400000, guid: dffdd567991434d4ab0e9217b198d3fb, type: 2}
+    - {fileID: 11400000, guid: 0a7fee6b092f1a442b0d38df27620ee1, type: 2}
+    - {fileID: 11400000, guid: 36e6bb69065fce8439e6307f6b5f0103, type: 2}
+    reward: {fileID: 11400000, guid: d8ec2920725c6164d8568ec97b5474b9, type: 2}
+  - id: fire
+    name: Fire set
+    items:
+    - {fileID: 11400000, guid: 03d609799c70ff141913f1a733bc9667, type: 2}
+    - {fileID: 11400000, guid: 7229ddeb8ea600640bf1c146c36e9a23, type: 2}
+    - {fileID: 11400000, guid: 331dbfc604b745047ae289148a2e230b, type: 2}
+    - {fileID: 11400000, guid: db3a94af7a5bc1e4997ce9e524d92c67, type: 2}
+    reward: {fileID: 11400000, guid: bc44135f33266f948b6dfc79cab52999, type: 2}
+  <Seasons>k__BackingField:
+  - id: winter
+    name: Winter Fest
+    startMonth: 12
+    startDay: 15
+    endMonth: 1
+    endDay: 15
+    items:
+    - {fileID: 11400000, guid: 41807abeca0b3374db9b6bf3ba766baa, type: 2}
+    - {fileID: 11400000, guid: 8b812a2b68c0ce047b624dc5378fdb2f, type: 2}
+    - {fileID: 11400000, guid: 6c4428bbef39f364b9703fd282f7cae7, type: 2}
+  <ShowcaseSize>k__BackingField: 3
+  <AdDiscount>k__BackingField: 0.3
+  <BoxPrice>k__BackingField: 500
+  <BoxCommon>k__BackingField: 70
+  <BoxRare>k__BackingField: 25
+  <BoxEpic>k__BackingField: 5

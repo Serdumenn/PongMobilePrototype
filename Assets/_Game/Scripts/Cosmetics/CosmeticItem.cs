@@ -4,7 +4,11 @@ public enum CosmeticCategory
 {
     Ball,
     Paddle,
-    Theme
+    Theme,
+    Trail,
+    Hit,
+    Celebration,
+    Frame
 }
 
 public enum UnlockKind
@@ -15,7 +19,29 @@ public enum UnlockKind
     PassOnly,
     Streak,
     Stars,
-    Level
+    Level,
+    Gold,
+    Showcase,
+    SetReward,
+    Season
+}
+
+public enum CosmeticTier
+{
+    None,
+    Common,
+    Rare,
+    Epic,
+    Legendary
+}
+
+public enum CelebrationStyle
+{
+    Confetti,
+    Fireworks,
+    PingiParty,
+    Rain,
+    Stars
 }
 
 [CreateAssetMenu(menuName = "Pingi/Cosmetic Item", fileName = "cos_item")]
@@ -31,6 +57,10 @@ public sealed class CosmeticItem : ScriptableObject
     [field: SerializeField] public int UnlockValue { get; private set; }
     [field: SerializeField] public string ProductId { get; private set; }
     [field: SerializeField] public int GoldPrice { get; private set; }
+    [field: SerializeField] public CosmeticTier Tier { get; private set; }
+    [field: SerializeField] public string SeasonId { get; private set; }
+    [field: SerializeField] public Sprite Icon { get; private set; }
+    [field: SerializeField] public Color[] Colors { get; private set; }
 
     [field: Header("Ball")]
     [field: SerializeField] public Sprite Idle { get; private set; }
@@ -50,14 +80,39 @@ public sealed class CosmeticItem : ScriptableObject
     [field: SerializeField] public Color BlobSecondary { get; private set; } = Color.white;
     [field: SerializeField] public string UiClass { get; private set; }
 
+    [field: Header("Trail")]
+    [field: SerializeField] public Color TrailHead { get; private set; } = Color.white;
+    [field: SerializeField] public Color TrailTail { get; private set; } = Color.white;
+    [field: SerializeField] public bool TrailRainbow { get; private set; }
+    [field: SerializeField] public float TrailWidth { get; private set; } = 1f;
+    [field: SerializeField] public Sprite TrailShape { get; private set; }
+    [field: SerializeField] public float TrailShapeRate { get; private set; }
+    [field: SerializeField] public Vector2 TrailDrift { get; private set; }
+
+    [field: Header("Hit")]
+    [field: SerializeField] public Sprite HitShape { get; private set; }
+    [field: SerializeField] public int HitCount { get; private set; }
+    [field: SerializeField] public float HitSpeed { get; private set; } = 1f;
+    [field: SerializeField] public float HitGravity { get; private set; }
+
+    [field: Header("Celebration")]
+    [field: SerializeField] public CelebrationStyle Style { get; private set; }
+    [field: SerializeField] public Sprite CelebrationShape { get; private set; }
+
+    [field: Header("Frame")]
+    [field: SerializeField] public string FrameClass { get; private set; }
+
     public bool IsPurchasable => !string.IsNullOrEmpty(ProductId);
-    public bool SoldForGold => GoldPrice > 0 && (Unlock == UnlockKind.Score || Unlock == UnlockKind.Ads);
+    public bool SoldForGold => GoldPrice > 0 && (Unlock == UnlockKind.Score || Unlock == UnlockKind.Ads || Unlock == UnlockKind.Gold || Unlock == UnlockKind.Season);
+    public bool IsEffect => Category == CosmeticCategory.Trail || Category == CosmeticCategory.Hit || Category == CosmeticCategory.Celebration || Category == CosmeticCategory.Frame;
+    public bool PassCovers => Category == CosmeticCategory.Ball || Category == CosmeticCategory.Paddle || Category == CosmeticCategory.Theme;
     public string Title => Loc.T(DisplayName);
 
     public Sprite Preview => Category switch
     {
         CosmeticCategory.Ball => Idle,
         CosmeticCategory.Paddle => PaddleSprite,
-        _ => null
+        CosmeticCategory.Theme => null,
+        _ => Icon
     };
 }

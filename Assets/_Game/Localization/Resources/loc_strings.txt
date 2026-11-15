@@ -47,7 +47,7 @@ Ready	Ready	LobbyScreen.uxml, LobbyScreen.cs, MatchSetupScreen.cs	Hazır	準備O
 Reconnecting…	Reconnecting…	LobbyScreen.uxml, OnlineHudScreen.uxml	Yeniden bağlanıyor…	再接続中…	다시 연결 중…	Verbinde neu…	Reconectando…	Reconectando…	Reconnexion…
 The connection dropped. We'll keep trying for 10 seconds.	The connection dropped. We'll keep trying for 10 seconds.	LobbyScreen.uxml	Bağlantı koptu. 10 saniye boyunca denemeye devam edeceğiz.	接続が切れました。10秒間再接続を試みます。	연결이 끊겼어요. 10초 동안 다시 시도할게요.	Die Verbindung ist weg. Wir versuchen es noch 10 Sekunden lang.	Se perdió la conexión. Seguiremos intentando durante 10 segundos.	A conexão caiu. Vamos continuar tentando por 10 segundos.	La connexion a été perdue. On réessaie pendant 10 secondes.
 Leave	Leave	LobbyScreen.uxml, OnlineHudScreen.uxml, RushBattleScreen.uxml	Ayrıl	退出	나가기	Verlassen	Salir	Sair	Quitter
-Classic	Classic	MenuScreen.uxml, ScoresScreen.cs, mode_classic.asset	Klasik	クラシック	클래식	Klassisch	Clásico	Clássico	Classique
+Classic	Classic	MenuScreen.uxml, ScoresScreen.cs, mode_classic.asset, cos_hit_basic.asset, cos_party_basic.asset, cos_trail_basic.asset	Klasik	クラシック	클래식	Klassisch	Clásico	Clássico	Classique
 Ball leaves through the portal	Ball leaves through the portal	OnlineHudScreen.uxml	Top portaldan çıkar	ボールはポータルから出ていく	공이 포털로 나가요	Der Ball geht durchs Portal	La pelota sale por el portal	A bola sai pelo portal	La balle passe par le portail
 Your serve · tap to start	Your serve · tap to start	OnlineHudScreen.uxml	Servis sende · başlamak için dokun	あなたのサーブ・タップでスタート	내 서브 · 탭해서 시작	Dein Aufschlag · tippe zum Start	Tu saque · toca para empezar	Seu saque · toque para começar	Ton service · touche pour commencer
 Leave match?	Leave match?	OnlineHudScreen.uxml, RushBattleScreen.uxml	Maçtan çıkılsın mı?	対戦をやめますか？	대전에서 나갈까요?	Spiel verlassen?	¿Salir de la partida?	Sair da partida?	Quitter la partie ?
@@ -118,7 +118,7 @@ Sunny	Sunny	cos_ball_sunny.asset	Güneş	サニー	써니	Sonni	Solecito	Solzinh
 Candy	Candy	cos_paddle_candy.asset	Şeker	キャンディ	캔디	Bonbon	Caramelo	Doce	Bonbon
 Coral	Coral	cos_paddle_coral.asset	Mercan	コーラル	코랄	Koralle	Coral	Coral	Corail
 Gold	Gold	cos_paddle_gold.asset	Altın	ゴールド	골드	Gold	Oro	Ouro	Or
-Rainbow	Rainbow	cos_paddle_rainbow.asset	Gökkuşağı	レインボー	무지개	Regenbogen	Arcoíris	Arco-íris	Arc-en-ciel
+Rainbow	Rainbow	cos_frame_rainbow.asset, cos_paddle_rainbow.asset, cos_trail_rainbow.asset	Gökkuşağı	レインボー	무지개	Regenbogen	Arcoíris	Arco-íris	Arc-en-ciel
 Teal	Teal	cos_paddle_teal.asset	Turkuaz	ティール	청록	Petrol	Turquesa	Turquesa	Turquoise
 Wood	Wood	cos_paddle_wood.asset	Ahşap	ウッド	나무	Holz	Madera	Madeira	Bois
 Mint	Mint	cos_theme_mint.asset	Nane	ミント	민트	Minze	Menta	Menta	Menthe
@@ -444,7 +444,7 @@ Play to earn XP. Every level has a reward.	Play to earn XP. Every level has a re
 {0} mission stars!\n{1} is unlocked.	{0} mission stars!\n{1} is unlocked.	RewardScreen.cs	{0} görev yıldızı!\n{1} açıldı.	ミッションスター{0}個！\n{1}を解放	미션 별 {0}개!\n{1} 열림!	{0} Aufgabensterne!\n{1} ist freigeschaltet.	¡{0} estrellas de misión!\n{1} desbloqueado.	{0} estrelas de missão!\n{1} desbloqueado.	{0} étoiles de mission !\n{1} est débloqué.
 Level {0}!\n{1} is unlocked.	Level {0}!\n{1} is unlocked.	RewardScreen.cs	Seviye {0}!\n{1} açıldı.	レベル{0}！\n{1}を解放	레벨 {0}!\n{1} 열림!	Level {0}!\n{1} ist freigeschaltet.	¡Nivel {0}!\n{1} desbloqueado.	Nível {0}!\n{1} desbloqueado.	Niveau {0} !\n{1} est débloqué.
 Reach level {0} on the Pingi Road to unlock.\nYour level: {1}	Reach level {0} on the Pingi Road to unlock.\nYour level: {1}	ShopScreen.cs	Açmak için Pingi Yolu'nda {0}. seviyeye ulaş.\nSeviyen: {1}	ピンギロードでレベル{0}になると解放。\n今のレベル：{1}	핑기 로드에서 레벨 {0}이 되면 열려요.\n내 레벨: {1}	Erreiche Level {0} auf dem Pingi-Pfad zum Freischalten.\nDein Level: {1}	Llega al nivel {0} del Camino Pingi para desbloquear.\nTu nivel: {1}	Chegue ao nível {0} do Caminho Pingi para desbloquear.\nSeu nível: {1}	Atteins le niveau {0} sur la Route Pingi pour débloquer.\nTon niveau : {1}
-Comet	Comet	cos_paddle_comet.asset	Kuyruklu Yıldız	コメット	혜성	Komet	Cometa	Cometa	Comète
+Comet	Comet	cos_paddle_comet.asset, cos_trail_comet.asset	Kuyruklu Yıldız	コメット	혜성	Komet	Cometa	Cometa	Comète
 Champ	Champ	cos_ball_champ.asset	Şampiyon	チャンプ	챔프	Champ	Campeón	Campeão	Champion
 Ocean	Ocean	cos_theme_ocean.asset	Okyanus	オーシャン	바다	Ozean	Océano	Oceano	Océan
 Adventure	Adventure	AdventureScreen.uxml, mode_adventure.asset	Macera	アドベンチャー	모험	Abenteuer	Aventura	Aventura	Aventure
@@ -471,3 +471,91 @@ Keep more tries for more stars	Keep more tries for more stars	AdventureResultScr
 Next	Next	AdventureResultScreen.uxml, AdventureResultScreen.cs	Sonraki	次へ	다음	Weiter	Siguiente	Próxima	Suivant
 {0} of {1} stars	{0} of {1} stars	GameUI.cs	{0}/{1} yıldız	スター{0}/{1}	별 {0}/{1}	{0} von {1} Sternen	{0} de {1} estrellas	{0} de {1} estrelas	{0} étoiles sur {1}
 Moving background	Moving background	SettingsScreen.uxml	Hareketli arka plan	動く背景	움직이는 배경	Bewegter Hintergrund	Fondo animado	Fundo animado	Fond animé
+Bear	Bear	cos_ball_bear.asset	Ayıcık	くま	곰돌이	Bärchen	Osito	Ursinho	Ourson
+Bunny	Bunny	cos_ball_bunny.asset	Tavşan	うさぎ	토끼	Häschen	Conejito	Coelhinho	Lapinou
+Dragon	Dragon	cos_ball_dragon.asset	Ejder	ドラゴン	드래곤	Drache	Dragón	Dragão	Dragon
+Fox	Fox	cos_ball_fox.asset	Tilki	キツネ	여우	Fuchs	Zorro	Raposa	Renard
+Octo	Octo	cos_ball_octo.asset	Ahtapot	タコ	문어	Oktopus	Pulpo	Polvo	Poulpe
+Penguin	Penguin	cos_ball_penguin.asset	Penguen	ペンギン	펭귄	Pinguin	Pingüino	Pinguim	Pingouin
+Snowy	Snowy	cos_ball_snow.asset	Kardan Pingi	ゆきだるま	눈사람	Schneemann	Muñeco de nieve	Boneco de neve	Bonhomme de neige
+Crown	Crown	cos_frame_crown.asset	Taç	かんむり	왕관	Krone	Corona	Coroa	Couronne
+Fire	Fire	cos_frame_fire.asset	Alev	ほのお	불꽃	Feuer	Fuego	Fogo	Feu
+Galaxy	Galaxy	cos_frame_galaxy.asset	Galaksi	ギャラクシー	은하	Galaxie	Galaxia	Galáxia	Galaxie
+Ice	Ice	cos_frame_ice.asset, cos_paddle_ice.asset	Buz	アイス	얼음	Eis	Hielo	Gelo	Glace
+No frame	No frame	cos_frame_none.asset	Çerçevesiz	フレームなし	테두리 없음	Kein Rahmen	Sin marco	Sem moldura	Sans cadre
+Star	Star	cos_frame_star.asset	Yıldız	スター	스타	Stern	Estrella	Estrela	Étoile
+Wave	Wave	cos_frame_wave.asset	Dalga	なみ	파도	Welle	Ola	Onda	Vague
+Lightning	Lightning	cos_hit_bolt.asset	Şimşek	いなずま	번개	Blitz	Rayo	Raio	Éclair
+Confetti	Confetti	cos_hit_confetti.asset	Konfeti	かみふぶき	색종이	Konfetti	Confeti	Confete	Confettis
+Love	Love	cos_hit_heart.asset	Kalp	ラブ	러브	Liebe	Amor	Amor	Amour
+Music	Music	cos_hit_notes.asset	Nota	おんぷ	음표	Musik	Música	Música	Musique
+Splash	Splash	cos_hit_splash.asset	Su Sıçraması	しぶき	물보라	Spritzer	Salpicón	Respingo	Éclaboussure
+Stars	Stars	cos_hit_stars.asset	Yıldızlar	ほしぼし	별무리	Sterne	Estrellas	Estrelas	Étoiles
+Bamboo	Bamboo	cos_paddle_bamboo.asset	Bambu	たけ	대나무	Bambus	Bambú	Bambu	Bambou
+Lava	Lava	cos_paddle_lava.asset	Lav	マグマ	용암	Lava	Lava	Lava	Lave
+Melon	Melon	cos_paddle_melon.asset	Karpuz	スイカ	수박	Melone	Sandía	Melancia	Pastèque
+Snowflake	Snowflake	cos_paddle_snowflake.asset	Kar Tanesi	スノーフレーク	눈송이	Schneeflocke	Copo de nieve	Floco de neve	Flocon
+Fireworks	Fireworks	cos_party_fireworks.asset	Havai Fişek	はなび	불꽃놀이	Feuerwerk	Fuegos artificiales	Fogos de artifício	Feu d'artifice
+Heart Rain	Heart Rain	cos_party_hearts.asset	Kalp Yağmuru	ハートの雨	하트 비	Herzregen	Lluvia de corazones	Chuva de corações	Pluie de cœurs
+Leaf Rain	Leaf Rain	cos_party_leaves.asset	Yaprak Yağmuru	はっぱの雨	나뭇잎 비	Blätterregen	Lluvia de hojas	Chuva de folhas	Pluie de feuilles
+Pingi Dance	Pingi Dance	cos_party_pingi.asset	Pingi Dansı	ピンギダンス	핑기 댄스	Pingi-Tanz	Baile Pingi	Dança Pingi	Danse Pingi
+Confetti Rain	Confetti Rain	cos_party_rain.asset	Konfeti Yağmuru	かみふぶきの雨	색종이 비	Konfettiregen	Lluvia de confeti	Chuva de confete	Pluie de confettis
+Star Shower	Star Shower	cos_party_stars.asset	Yıldız Yağmuru	ほしの雨	별똥비	Sternenregen	Lluvia de estrellas	Chuva de estrelas	Pluie d'étoiles
+Cotton Candy	Cotton Candy	cos_theme_candy.asset	Pamuk Şeker	わたあめ	솜사탕	Zuckerwatte	Algodón de azúcar	Algodão-doce	Barbe à papa
+Forest	Forest	cos_theme_forest.asset	Orman	もり	숲	Wald	Bosque	Floresta	Forêt
+Space	Space	cos_theme_space.asset	Uzay	うちゅう	우주	Weltall	Espacio	Espaço	Espace
+Bubbles	Bubbles	cos_trail_bubbles.asset	Baloncuklar	あわ	거품	Blasen	Burbujas	Bolhas	Bulles
+Dragon Fire	Dragon Fire	cos_trail_dragonfire.asset	Ejder Ateşi	ドラゴンの炎	용의 불꽃	Drachenfeuer	Fuego de dragón	Fogo de dragão	Feu de dragon
+Hearts	Hearts	cos_trail_hearts.asset	Kalpler	ハート	하트	Herzen	Corazones	Corações	Cœurs
+Leaves	Leaves	cos_trail_leaf.asset	Yapraklar	はっぱ	나뭇잎	Blätter	Hojas	Folhas	Feuilles
+Snow	Snow	cos_trail_snow.asset	Kar	ゆき	눈	Schnee	Nieve	Neve	Neige
+Stardust	Stardust	cos_trail_stardust.asset	Yıldız Tozu	ほしくず	별가루	Sternenstaub	Polvo de estrellas	Poeira estelar	Poussière d'étoiles
+Space set	Space set	ShopContent.asset	Uzay seti	うちゅうセット	우주 세트	Weltall-Set	Set espacial	Conjunto espacial	Ensemble espace
+Sweet set	Sweet set	ShopContent.asset	Tatlı seti	スイートセット	달콤 세트	Süßes Set	Set dulce	Conjunto doce	Ensemble sucré
+Ocean set	Ocean set	ShopContent.asset	Okyanus seti	オーシャンセット	바다 세트	Ozean-Set	Set océano	Conjunto oceano	Ensemble océan
+Forest set	Forest set	ShopContent.asset	Orman seti	もりセット	숲 세트	Wald-Set	Set bosque	Conjunto floresta	Ensemble forêt
+Fire set	Fire set	ShopContent.asset	Ateş seti	ほのおセット	불꽃 세트	Feuer-Set	Set fuego	Conjunto fogo	Ensemble feu
+Winter Fest	Winter Fest	ShopContent.asset	Kış Şenliği	ウィンターフェス	겨울 축제	Winterfest	Fiesta de invierno	Festa de inverno	Fête d'hiver
+Effects	Effects	ShopScreen.uxml	Efektler	エフェクト	효과	Effekte	Efectos	Efeitos	Effets
+Today's picks	Today's picks	ShopScreen.uxml	Günün vitrini	今日のおすすめ	오늘의 추천	Tagesauswahl	Selección del día	Destaques do dia	Sélection du jour
+Trails	Trails	ShopScreen.uxml	İzler	軌跡	궤적	Spuren	Estelas	Rastros	Traînées
+Hits	Hits	ShopScreen.uxml	Vuruşlar	ヒット	타격	Treffer	Golpes	Batidas	Frappes
+Parties	Parties	ShopScreen.uxml	Kutlamalar	お祝い	축하	Partys	Fiestas	Festas	Fêtes
+Frames	Frames	ShopScreen.uxml	Çerçeveler	フレーム	테두리	Rahmen	Marcos	Molduras	Cadres
+Sets	Sets	ShopScreen.uxml	Setler	セット	세트	Sets	Sets	Conjuntos	Ensembles
+Box	Box	ShopScreen.uxml	Kutu	ボックス	상자	Box	Caja	Caixa	Boîte
+Surprise box	Surprise box	ShopScreen.uxml	Sürpriz kutu	びっくりボックス	깜짝 상자	Überraschungsbox	Caja sorpresa	Caixa surpresa	Boîte surprise
+Never gives an item you already have.	Never gives an item you already have.	ShopScreen.uxml	Sende olan bir eşyayı asla vermez.	持っているアイテムは出ません。	이미 가진 아이템은 나오지 않아요.	Gibt nie etwas, das du schon hast.	Nunca te da algo que ya tienes.	Nunca dá um item que você já tem.	Ne donne jamais un objet que tu as déjà.
+New trail!	New trail!	RewardScreen.cs	Yeni iz!	新しい軌跡！	새 궤적!	Neue Spur!	¡Nueva estela!	Novo rastro!	Nouvelle traînée !
+New hit effect!	New hit effect!	RewardScreen.cs	Yeni vuruş efekti!	新しいヒットエフェクト！	새 타격 효과!	Neuer Treffereffekt!	¡Nuevo efecto de golpe!	Novo efeito de batida!	Nouvel effet de frappe !
+New celebration!	New celebration!	RewardScreen.cs	Yeni kutlama!	新しいお祝い！	새 축하 효과!	Neue Feier!	¡Nueva celebración!	Nova comemoração!	Nouvelle célébration !
+New frame!	New frame!	RewardScreen.cs	Yeni çerçeve!	新しいフレーム！	새 테두리!	Neuer Rahmen!	¡Nuevo marco!	Nova moldura!	Nouveau cadre !
+Set complete!\n{0} is unlocked.	Set complete!\n{0} is unlocked.	RewardScreen.cs	Set tamam!\n{0} açıldı.	セット完成！\n{0}を解放！	세트 완성!\n{0} 해제!	Set komplett!\n{0} ist freigeschaltet.	¡Set completo!\n{0} desbloqueado.	Conjunto completo!\n{0} desbloqueado.	Ensemble complet !\n{0} est débloqué.
+Watch an ad for {0}% off one pick today.	Watch an ad for {0}% off one pick today.	ShopScreen.cs	Bugün bir eşyada %{0} indirim için reklam izle.	広告を見ると今日のおすすめ1つが{0}%オフ。	광고를 보면 오늘의 추천 하나가 {0}% 할인돼요.	Sieh dir eine Werbung an: {0} % Rabatt auf ein Angebot heute.	Mira un anuncio y obtén {0}% de descuento en una selección hoy.	Veja um anúncio e ganhe {0}% de desconto em um destaque hoje.	Regarde une pub pour {0} % de réduction sur une sélection aujourd'hui.
+New picks every day.	New picks every day.	ShopScreen.cs	Her gün yeni eşyalar.	毎日入れ替わり！	매일 새로운 추천!	Jeden Tag neue Angebote.	Nuevas selecciones cada día.	Novos destaques todo dia.	Nouvelle sélection chaque jour.
+Collected: {0}	Collected: {0}	ShopScreen.cs	Alındı: {0}	獲得済み：{0}	획득: {0}	Erhalten: {0}	Conseguido: {0}	Conquistado: {0}	Obtenu : {0}
+Reward: {0}	Reward: {0}	ShopScreen.cs	Ödül: {0}	ごほうび：{0}	보상: {0}	Belohnung: {0}	Premio: {0}	Prêmio: {0}	Récompense : {0}
+You have everything the box can give!	You have everything the box can give!	ShopScreen.cs	Kutudan çıkabilecek her şey sende!	ボックスのアイテムは全部持っています！	상자에서 나올 아이템을 모두 가졌어요!	Du hast schon alles aus der Box!	¡Ya tienes todo lo que da la caja!	Você já tem tudo o que a caixa dá!	Tu as déjà tout ce que la boîte peut donner !
+All collected	All collected	ShopScreen.cs	Hepsi toplandı	コンプリート	모두 획득	Alles gesammelt	Todo conseguido	Tudo coletado	Tout obtenu
+{0} {1}%	{0} {1}%	ShopScreen.cs	{0} %{1}	{0} {1}%	{0} {1}%	{0} {1} %	{0} {1}%	{0} {1}%	{0} {1} %
+Open · {0}	Open · {0}	ShopScreen.cs	Aç · {0}	開ける · {0}	열기 · {0}	Öffnen · {0}	Abrir · {0}	Abrir · {0}	Ouvrir · {0}
+Not enough gold yet.	Not enough gold yet.	ShopScreen.cs	Henüz yeterli altının yok.	ゴールドが足りません。	골드가 부족해요.	Noch nicht genug Gold.	Aún no tienes suficiente oro.	Ainda não tem ouro suficiente.	Pas encore assez d'or.
+Set complete! {0} is yours.	Set complete! {0} is yours.	ShopScreen.cs	Set tamam! {0} artık senin.	セット完成！{0}をゲット！	세트 완성! {0} 획득!	Set komplett! {0} gehört dir.	¡Set completo! {0} es tuyo.	Conjunto completo! {0} é seu.	Ensemble complet ! {0} est à toi.
+Showcase	Showcase	ShopScreen.cs	Vitrin	おすすめ	추천	Angebot	Vitrina	Vitrine	Vitrine
+Season	Season	ShopScreen.cs	Sezon	シーズン	시즌	Saison	Temporada	Temporada	Saison
+Set reward	Set reward	ShopScreen.cs	Set ödülü	セット報酬	세트 보상	Set-Belohnung	Premio del set	Prêmio do conjunto	Récompense d'ensemble
+Only here	Only here	ShopScreen.cs	Sadece burada	ここだけ	여기서만	Nur hier	Solo aquí	Só aqui	Ici seulement
+Common	Common	ShopScreen.cs	Yaygın	コモン	일반	Gewöhnlich	Común	Comum	Commun
+Rare	Rare	ShopScreen.cs	Nadir	レア	희귀	Selten	Raro	Raro	Rare
+Epic	Epic	ShopScreen.cs	Destansı	エピック	영웅	Episch	Épico	Épico	Épique
+Legendary	Legendary	ShopScreen.cs	Efsane	レジェンド	전설	Legendär	Legendario	Lendário	Légendaire
+Today's pick! Watch an ad to get it {0}% off.	Today's pick! Watch an ad to get it {0}% off.	ShopScreen.cs	Günün eşyası! Reklam izle, %{0} indirimle al.	今日のおすすめ！広告を見ると{0}%オフ。	오늘의 추천! 광고를 보면 {0}% 할인돼요.	Tagesangebot! Sieh dir eine Werbung an und spare {0} %.	¡Selección del día! Mira un anuncio y llévatelo con {0}% de descuento.	Destaque do dia! Veja um anúncio e leve com {0}% de desconto.	Sélection du jour ! Regarde une pub pour l'avoir à -{0} %.
+{0}% off · {1} gold	{0}% off · {1} gold	ShopScreen.cs	%{0} indirim · {1} altın	{0}%オフ · {1}ゴールド	{0}% 할인 · {1} 골드	-{0} % · {1} Gold	-{0}% · {1} de oro	-{0}% · {1} de ouro	-{0} % · {1} or
+Unlock {0} with the gold you win in games.	Unlock {0} with the gold you win in games.	ShopScreen.cs	{0}, oyunlarda kazandığın altınla açılır.	ゲームで集めたゴールドで{0}を解放。	게임에서 모은 골드로 {0} 해제.	Schalte {0} mit dem Gold aus deinen Spielen frei.	Desbloquea {0} con el oro que ganas jugando.	Desbloqueie {0} com o ouro que você ganha jogando.	Débloque {0} avec l'or gagné en jouant.
+Only in today's picks!	Only in today's picks!	ShopScreen.cs	Sadece günün vitrininde!	今日のおすすめ限定！	오늘의 추천 한정!	Nur im heutigen Angebot!	¡Solo en la selección de hoy!	Só nos destaques de hoje!	Seulement dans la sélection du jour !
+Shows up in today's picks on some days. Check back tomorrow!	Shows up in today's picks on some days. Check back tomorrow!	ShopScreen.cs	Bazı günler vitrine gelir. Yarın tekrar bak!	ときどき今日のおすすめに登場。明日もチェックしてね！	가끔 오늘의 추천에 나와요. 내일 다시 확인해 보세요!	Taucht an manchen Tagen im Angebot auf. Schau morgen wieder vorbei!	Aparece algunos días en la selección. ¡Vuelve mañana!	Aparece em alguns dias nos destaques. Volte amanhã!	Apparaît certains jours dans la sélection. Reviens demain !
+Festival item! Get it before {0} ends.	Festival item! Get it before {0} ends.	ShopScreen.cs	Şenlik eşyası! {0} bitmeden al.	フェス限定！{0}が終わる前にゲットしよう。	축제 아이템! {0}가 끝나기 전에 받으세요.	Festartikel! Hol ihn dir, bevor {0} endet.	¡Artículo de fiesta! Consíguelo antes de que termine {0}.	Item de festa! Pegue antes que {0} acabe.	Objet de fête ! Obtiens-le avant la fin de {0}.
+Comes back with {0}.	Comes back with {0}.	ShopScreen.cs	{0} ile geri gelir.	{0}で再登場。	{0}에 다시 돌아와요.	Kommt mit {0} zurück.	Vuelve con {0}.	Volta com {0}.	Revient avec {0}.
+Complete the {0} to get it.	Complete the {0} to get it.	ShopScreen.cs	Almak için tamamla: {0}	{0}を完成させるともらえる。	{0}를 완성하면 받아요.	Vervollständige {0}, um es zu bekommen.	Completa el {0} para conseguirlo.	Complete o {0} para ganhar.	À obtenir en complétant : {0}.
+{0} day left	{0} day left	ShopScreen.cs	{0} gün kaldı	あと{0}日	{0}일 남음	Noch {0} Tag	Queda {0} día	Falta {0} dia	Encore {0} jour
+{0} days left	{0} days left	ShopScreen.cs	{0} gün kaldı	あと{0}日	{0}일 남음	Noch {0} Tage	Quedan {0} días	Faltam {0} dias	Encore {0} jours

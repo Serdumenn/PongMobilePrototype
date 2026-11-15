@@ -28,13 +28,15 @@ public sealed class OnlineFriends : MonoBehaviour
         public readonly string Name;
         public readonly FriendStatus Status;
         public readonly DateTime LastSeen;
+        public readonly string Frame;
 
-        public Friend(string id, FriendStatus status, DateTime lastSeen)
+        public Friend(string id, FriendStatus status, DateTime lastSeen, string frame = null)
         {
             Id = id;
             Name = PlayerNames.ForId(id);
             Status = status;
             LastSeen = lastSeen;
+            Frame = frame;
         }
     }
 
@@ -64,6 +66,9 @@ public sealed class OnlineFriends : MonoBehaviour
     private bool playing;
     private bool paused;
     private FriendStatus? sentPresence;
+    private string sentFrame;
+    private CosmeticsService cosmetics;
+    private bool watchingCosmetics;
 
     public Status State { get; private set; } = Status.Off;
     public bool IsReady => State == Status.Ready;
@@ -102,6 +107,7 @@ public sealed class OnlineFriends : MonoBehaviour
     private void OnDestroy()
     {
         if (online != null) online.StateChanged -= OnOnlineState;
+        if (watchingCosmetics && cosmetics != null) cosmetics.Changed -= OnCosmeticsChanged;
         Attach(null);
     }
 
@@ -281,7 +287,7 @@ public sealed class OnlineFriends : MonoBehaviour
     private void Rebuild()
     {
         friends.Clear();
-        foreach (var record in backend.Friends) friends.Add(new Friend(record.Id, record.Status, record.LastSeen));
+        foreach (var record in backend.Friends) friends.Add(new Friend(record.Id, record.Status, record.LastSeen, record.Frame));
         friends.Sort(Compare);
 
         incoming.Clear();
@@ -325,9 +331,28 @@ public sealed class OnlineFriends : MonoBehaviour
     {
         if (!IsReady) return;
         var presence = CurrentPresence();
-        if (sentPresence == presence) return;
+        string frame = CurrentFrame();
+        if (sentPresence == presence && sentFrame == frame) return;
         sentPresence = presence;
-        _ = backend.SetPresenceAsync(presence);
+        sentFrame = frame;
+        _ = backend.SetPresenceAsync(presence, frame);
+    }
+
+    private string CurrentFrame()
+    {
+        if (cosmetics == null) cosmetics = FindFirstObjectByType<CosmeticsService>();
+        if (cosmetics == null) return "";
+        if (!watchingCosmetics)
+        {
+            cosmetics.Changed += OnCosmeticsChanged;
+            watchingCosmetics = true;
+        }
+        return cosmetics.FrameId;
+    }
+
+    private void OnCosmeticsChanged()
+    {
+        PushPresence();
     }
 
     private void SetState(Status state)

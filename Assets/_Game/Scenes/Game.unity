@@ -373,6 +373,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CosmeticsService
   Catalog: {fileID: 11400000, guid: 6cf9385c338d8134d8aab874c6adc2e7, type: 2}
+  Content: {fileID: 11400000, guid: b7811102954726d40beeaba89479d240, type: 2}
   Game: {fileID: 7019952436038793779}
   Purchases: {fileID: 315089629}
   Records: {fileID: 315089632}

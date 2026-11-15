@@ -103,3 +103,68 @@ Hepsi **tek seferlik (non-consumable)**, toplam 15 ürün. Fiyatlar Play Console
 - [x] Seri ödülü kostümü Astro eklendi (2026-09-30)
 - [x] Görev yıldızı ödülleri: 15 Starry, 40 Stella, 80 Aurora (2026-10-15)
 - [ ] Fiyatların son onayı (Play Console'da)
+
+## Koleksiyon genişlemesi (1.3)
+
+Ayrıntılı tasarım: [shop.md](shop.md). Eşyaların tek kaynağı `ArtSource/shop_items.json`; çizimler `generate_skins.py`, `generate_fx.py` ve `generate_shop_icons.py` ile üretilir, eşya varlıkları **Pingi → Build Shop Content** ile kurulur.
+
+| İçerik | Tür | Basamak | Açılma yolu | Kimlik |
+|---|---|---|---|---|
+| Tavşan | Pingi | Nadir | 700 altın | `ball_bunny` |
+| Ayıcık | Pingi | Nadir | 700 altın | `ball_bear` |
+| Penguen | Pingi | Destansı | 1.500 altın | `ball_penguin` |
+| Ahtapot | Pingi | Yaygın | 300 altın | `ball_octo` |
+| Ejder | Pingi | Efsane | 3.000 altın | `ball_dragon` |
+| Tilki | Pingi | Nadir | 700 altın | `ball_fox` |
+| Kardan Pingi | Pingi | Destansı | 1.500 altın, Kış Şenliği | `ball_snow` |
+| Karpuz | Raket | Yaygın | 300 altın | `paddle_melon` |
+| Lav | Raket | Nadir | 700 altın | `paddle_lava` |
+| Buz | Raket | Yaygın | 300 altın | `paddle_ice` |
+| Bambu | Raket | Yaygın | 300 altın | `paddle_bamboo` |
+| Kar Tanesi | Raket | Nadir | 700 altın, Kış Şenliği | `paddle_snowflake` |
+| Orman | Tema | Nadir | 700 altın | `theme_forest` |
+| Uzay | Tema | Destansı | 1.500 altın | `theme_space` |
+| Pamuk Şeker | Tema | Nadir | 700 altın | `theme_candy` |
+| Klasik | İz | — | Ücretsiz, varsayılan | `trail_basic` |
+| Yıldız Tozu | İz | Yaygın | 300 altın | `trail_stardust` |
+| Kalpler | İz | Nadir | 700 altın | `trail_hearts` |
+| Baloncuklar | İz | Yaygın | 300 altın | `trail_bubbles` |
+| Gökkuşağı | İz | Destansı | 1.500 altın | `trail_rainbow` |
+| Kuyruklu Yıldız | İz | Efsane | 3.000 altın, sadece vitrinde | `trail_comet` |
+| Yapraklar | İz | Yaygın | 300 altın | `trail_leaf` |
+| Kar | İz | Nadir | 700 altın, Kış Şenliği | `trail_snow` |
+| Ejder Ateşi | İz | — | Set ödülü | `trail_dragonfire` |
+| Klasik | Vuruş | — | Ücretsiz, varsayılan | `hit_basic` |
+| Konfeti | Vuruş | Yaygın | 300 altın | `hit_confetti` |
+| Yıldızlar | Vuruş | Nadir | 700 altın | `hit_stars` |
+| Nota | Vuruş | Nadir | 700 altın | `hit_notes` |
+| Su Sıçraması | Vuruş | Yaygın | 300 altın | `hit_splash` |
+| Şimşek | Vuruş | Destansı | 1.500 altın | `hit_bolt` |
+| Kalp | Vuruş | Yaygın | 300 altın | `hit_heart` |
+| Klasik | Kutlama | — | Ücretsiz, varsayılan | `party_basic` |
+| Havai Fişek | Kutlama | Destansı | 1.500 altın | `party_fireworks` |
+| Pingi Dansı | Kutlama | Destansı | 1.500 altın, sadece vitrinde | `party_pingi` |
+| Konfeti Yağmuru | Kutlama | Nadir | 700 altın | `party_rain` |
+| Yıldız Yağmuru | Kutlama | Nadir | 700 altın | `party_stars` |
+| Kalp Yağmuru | Kutlama | — | Set ödülü | `party_hearts` |
+| Yaprak Yağmuru | Kutlama | — | Set ödülü | `party_leaves` |
+| Çerçevesiz | Çerçeve | — | Ücretsiz, varsayılan | `frame_none` |
+| Taç | Çerçeve | Efsane | 3.000 altın, sadece vitrinde | `frame_crown` |
+| Alev | Çerçeve | Destansı | 1.500 altın | `frame_fire` |
+| Gökkuşağı | Çerçeve | Nadir | 700 altın | `frame_rainbow` |
+| Buz | Çerçeve | Yaygın | 300 altın | `frame_ice` |
+| Yıldız | Çerçeve | Yaygın | 300 altın | `frame_star` |
+| Galaksi | Çerçeve | — | Set ödülü | `frame_galaxy` |
+| Dalga | Çerçeve | — | Set ödülü | `frame_wave` |
+
+| Set | Parçalar | Ödül |
+|---|---|---|
+| Uzay seti | Uzay, Kuyruklu Yıldız, Yıldızlar, Havai Fişek | Galaksi |
+| Tatlı seti | Tavşan, Karpuz, Pamuk Şeker, Kalpler | Kalp Yağmuru |
+| Okyanus seti | Ahtapot, Baloncuklar, Su Sıçraması, Buz | Dalga |
+| Orman seti | Ayıcık, Bambu, Orman, Yapraklar | Yaprak Yağmuru |
+| Ateş seti | Ejder, Lav, Şimşek, Alev | Ejder Ateşi |
+
+- Pingi Pass yeni Pingi yüzlerini, raketleri ve temaları da açar (sezon eşyaları dahil); iz, vuruş, kutlama ve çerçeve Pass'a dahil değildir.
+- Günün vitrini her gece yerel 00:00'da yenilenir, 3 eşya gösterir; ilk yer "sadece vitrinde" eşyalara ayrılır. Günde bir kez vitrindeki bir eşya reklamla %30 indirimli alınır.
+- Sürpriz kutu 500 altın; Yaygın %70, Nadir %25, Destansı %5. Sadece sahip olunmayan eşyalardan seçer, Efsane, sezon ve set ödülü vermez.

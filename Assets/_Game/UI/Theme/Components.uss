@@ -539,3 +539,36 @@
 .lives-chip .life--lost {
     opacity: 0.25;
 }
+
+.framed {
+    border-width: 6px;
+}
+
+.frame--crown { border-color: var(--color-frame-gold); }
+.frame--fire { border-color: var(--color-frame-fire); }
+.frame--ice { border-color: var(--color-frame-ice); }
+.frame--star { border-color: var(--color-frame-star); }
+.frame--galaxy { border-color: var(--color-frame-galaxy); }
+.frame--wave { border-color: var(--color-frame-wave); }
+
+.frame--rainbow {
+    border-top-color: var(--color-frame-red);
+    border-right-color: var(--color-frame-gold);
+    border-bottom-color: var(--color-frame-wave);
+    border-left-color: var(--color-frame-galaxy);
+}
+
+.frame-badge {
+    position: absolute;
+    top: -30px;
+    right: 40px;
+    width: 60px;
+    height: 60px;
+}
+
+.frame--crown > .frame-badge { -unity-background-image-tint-color: var(--color-frame-gold); }
+.frame--fire > .frame-badge { -unity-background-image-tint-color: var(--color-frame-fire); }
+.frame--ice > .frame-badge { -unity-background-image-tint-color: var(--color-frame-ice); }
+.frame--star > .frame-badge { -unity-background-image-tint-color: var(--color-frame-star); }
+.frame--galaxy > .frame-badge { -unity-background-image-tint-color: var(--color-frame-galaxy); }
+.frame--wave > .frame-badge { -unity-background-image-tint-color: var(--color-frame-wave); }

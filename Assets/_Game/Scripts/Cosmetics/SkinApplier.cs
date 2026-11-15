@@ -13,6 +13,7 @@ public sealed class SkinApplier : MonoBehaviour
     [SerializeField] private SpriteRenderer BlobPrimary;
     [SerializeField] private SpriteRenderer BlobSecondary;
     [SerializeField] private BackdropDirector Backdrop;
+    [SerializeField] private GameFeel Feel;
 
     [Header("UI")]
     [SerializeField] private UIDocument Document;
@@ -45,7 +46,19 @@ public sealed class SkinApplier : MonoBehaviour
         {
             Ball.SetExpressions(ball.Idle, ball.Happy, ball.Sad, ball.Wow);
             var feel = Ball.GetComponent<BallFeel>();
-            if (feel != null) feel.Wear(ball);
+            if (feel != null)
+            {
+                feel.Wear(ball);
+                feel.WearTrail(Cosmetics.Equipped(CosmeticCategory.Trail));
+                feel.WearHit(Cosmetics.Equipped(CosmeticCategory.Hit));
+            }
+        }
+
+        if (Feel == null) Feel = GameFeel.Instance != null ? GameFeel.Instance : FindFirstObjectByType<GameFeel>();
+        if (Feel != null)
+        {
+            Feel.PartyLook = Cosmetics.Equipped(CosmeticCategory.Celebration);
+            Feel.PartyFace = ball != null ? ball.Happy : null;
         }
 
         var paddle = Cosmetics.Equipped(CosmeticCategory.Paddle);

@@ -43,14 +43,14 @@ public sealed class GoldTests
     }
 
     [Test]
-    public void Catalog_SellsOnlyEarnableCostumesForGold()
+    public void Catalog_SellsOnlyGoldItemsForGold()
     {
         var catalog = TestData.LoadCatalog();
         int forGold = 0;
         foreach (var item in catalog.Items)
         {
-            bool earnable = item.Unlock == UnlockKind.Score || item.Unlock == UnlockKind.Ads;
-            if (earnable)
+            bool goldItem = item.Unlock == UnlockKind.Score || item.Unlock == UnlockKind.Ads || item.Unlock == UnlockKind.Gold || item.Unlock == UnlockKind.Season;
+            if (goldItem)
             {
                 Assert.Greater(item.GoldPrice, 0, item.Id);
                 Assert.IsTrue(item.SoldForGold, item.Id);
@@ -62,7 +62,7 @@ public sealed class GoldTests
             }
         }
 
-        Assert.AreEqual(13, forGold);
+        Assert.AreEqual(47, forGold);
     }
 
     [Test]

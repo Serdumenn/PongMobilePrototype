@@ -106,6 +106,37 @@ public sealed class FriendsPlayTests : GameSceneFixture
     }
 
     [UnityTest]
+    public IEnumerator FramedFriend_ShowsTheirFrame()
+    {
+        yield return LoadGame();
+        fake = new FakeFriendsBackend();
+        fake.FriendList.Add(new FriendRecord(OnlineFriend, FriendStatus.Online, default, "frame_crown"));
+        fake.FriendList.Add(new FriendRecord(OfflineFriend, FriendStatus.Offline, default));
+        yield return Await(Friends.StartAsync(fake));
+        yield return OpenFriends();
+
+        var rows = FriendsRoot.Q("friend-list").Query(className: "friend-row").ToList();
+        var crowned = rows.Single(r => r.Q<Label>(className: "friend-row__name").text == PlayerNames.ForId(OnlineFriend));
+        var plain = rows.Single(r => r.Q<Label>(className: "friend-row__name").text == PlayerNames.ForId(OfflineFriend));
+        Assert.IsTrue(crowned.ClassListContains("frame--crown"));
+        Assert.IsFalse(plain.ClassListContains(FrameLook.Framed));
+    }
+
+    [UnityTest]
+    public IEnumerator EquippingAFrame_SharesItWithFriends()
+    {
+        yield return StartFriends();
+        var cosmetics = Object.FindFirstObjectByType<CosmeticsService>();
+        var ice = cosmetics.CatalogAsset.Find("frame_ice");
+        cosmetics.Inventory.Grant(ice.Id);
+        Assert.IsTrue(cosmetics.Equip(ice));
+        yield return null;
+
+        Assert.IsNotEmpty(fake.PresenceFrames);
+        Assert.AreEqual("frame_ice", fake.PresenceFrames.Last());
+    }
+
+    [UnityTest]
     public IEnumerator AcceptingARequest_MakesAFriend()
     {
         yield return StartFriends();

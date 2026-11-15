@@ -33,7 +33,7 @@ public sealed class GameDataTests
     {
         var items = TestData.LoadCatalog().Items;
 
-        Assert.AreEqual(25, items.Count);
+        Assert.AreEqual(71, items.Count);
         Assert.That(items, Has.None.Null);
         CollectionAssert.AllItemsAreUnique(items.Select(i => i.Id));
         Assert.That(items.Select(i => i.Id), Has.None.Null.And.None.Empty);
@@ -44,9 +44,13 @@ public sealed class GameDataTests
     {
         var catalog = TestData.LoadCatalog();
 
-        Assert.AreEqual(11, catalog.InCategory(CosmeticCategory.Ball).Count);
-        Assert.AreEqual(9, catalog.InCategory(CosmeticCategory.Paddle).Count);
-        Assert.AreEqual(5, catalog.InCategory(CosmeticCategory.Theme).Count);
+        Assert.AreEqual(18, catalog.InCategory(CosmeticCategory.Ball).Count);
+        Assert.AreEqual(14, catalog.InCategory(CosmeticCategory.Paddle).Count);
+        Assert.AreEqual(8, catalog.InCategory(CosmeticCategory.Theme).Count);
+        Assert.AreEqual(9, catalog.InCategory(CosmeticCategory.Trail).Count);
+        Assert.AreEqual(7, catalog.InCategory(CosmeticCategory.Hit).Count);
+        Assert.AreEqual(7, catalog.InCategory(CosmeticCategory.Celebration).Count);
+        Assert.AreEqual(8, catalog.InCategory(CosmeticCategory.Frame).Count);
     }
 
     [Test]

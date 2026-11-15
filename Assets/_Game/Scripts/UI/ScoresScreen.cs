@@ -273,7 +273,7 @@ public sealed class ScoresScreen : UIScreen
         worldNote.style.display = string.IsNullOrEmpty(worldNote.text) ? DisplayStyle.None : DisplayStyle.Flex;
     }
 
-    private static VisualElement WorldRow(OnlineScores.Row row)
+    private VisualElement WorldRow(OnlineScores.Row row)
     {
         var element = new VisualElement { pickingMode = PickingMode.Ignore };
         element.AddToClassList("rank-row");
@@ -291,6 +291,7 @@ public sealed class ScoresScreen : UIScreen
 
         var score = new Label(row.Score.ToString()) { pickingMode = PickingMode.Ignore };
         score.AddToClassList("rank-row__score");
+        if (cosmetics != null) FrameLook.Apply(element, cosmetics.FrameClassFor(row.Frame));
         element.Add(score);
         return element;
     }

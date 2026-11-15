@@ -36,6 +36,16 @@ internal static class TestData
         return item;
     }
 
+    public static CosmeticItem Priced(string id, CosmeticCategory category, UnlockKind unlock, int gold, CosmeticTier tier = CosmeticTier.None)
+    {
+        var item = Item(id, category, unlock);
+        var so = new SerializedObject(item);
+        so.FindProperty("<GoldPrice>k__BackingField").intValue = gold;
+        so.FindProperty("<Tier>k__BackingField").enumValueIndex = (int)tier;
+        so.ApplyModifiedPropertiesWithoutUndo();
+        return item;
+    }
+
     public static string TempFile(string name)
     {
         string dir = Path.Combine(Path.GetTempPath(), "PingiTests");

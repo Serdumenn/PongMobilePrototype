@@ -182,7 +182,11 @@ public sealed class RunMoments : MonoBehaviour
 
     private void CelebrateBest()
     {
-        if (Feel != null)
+        if (Feel != null && Feel.PartyStyled)
+        {
+            Feel.Party(ViewPoint(0.5f, BestHeight), ConfettiPerSide * 2);
+        }
+        else if (Feel != null)
         {
             Feel.Celebrate(ViewPoint(0f, BestHeight), new Vector2(0.55f, 0.85f).normalized, ConfettiPerSide, BestSpread, BestSpeed);
             Feel.Celebrate(ViewPoint(1f, BestHeight), new Vector2(-0.55f, 0.85f).normalized, ConfettiPerSide, BestSpread, BestSpeed);

@@ -26,12 +26,14 @@ public readonly struct FriendRecord
     public readonly string Id;
     public readonly FriendStatus Status;
     public readonly DateTime LastSeen;
+    public readonly string Frame;
 
-    public FriendRecord(string id, FriendStatus status, DateTime lastSeen)
+    public FriendRecord(string id, FriendStatus status, DateTime lastSeen, string frame = null)
     {
         Id = id;
         Status = status;
         LastSeen = lastSeen;
+        Frame = frame;
     }
 }
 
@@ -52,7 +54,7 @@ public interface IFriendsBackend
     Task<FriendsResult> RemoveAsync(string playerId);
     Task<FriendsResult> BlockAsync(string playerId);
     Task<FriendsResult> InviteAsync(string playerId, FriendInvite invite);
-    Task SetPresenceAsync(FriendStatus status);
+    Task SetPresenceAsync(FriendStatus status, string frame);
     Task RefreshAsync();
     Task ClearAsync();
 }

@@ -95,6 +95,7 @@ Bu klasör oyunun görsel ve UX kararlarının tek kaynağıdır. Her faz bir **
 | 2026-10-31 | **Pingi Yolu:** XP ile seviye; sezon ve ücretli yol yok, tek ve bitmeyen yol; her seviye altın, her 5. seviye yıldız, 10/25/40'ta yola özel kostüm ([modes.md](modes.md)) | Ürün sahibinin kararı. Uzun vadeli geri dönme sebebi; içerik yükü olmadan sürer, ücretli ürün gerekmez |
 | 2026-10-31 | **Macera:** 3 dünya × 10 bölüm, her bölümde hedef ve 3 hak (kalan hak = yıldız); can/enerji sistemi yok; Kumsal'da engeller, Gece'de hareketli hedefler ([modes.md](modes.md)) | Ürün sahibinin kararı. Skor dışında ilerleme ve merak; kaybeden oyuncu bekletilmez, yeni dünyalar güncellemeyle gelir |
 | 2026-11-06 | **Ana menü arka planı ve kaydırarak mod geçişi:** her modun canlı dünyası, oklar kalktı ve kart parmakla kaydırılıyor, diğer menü ekranlarında canlı lekeler, "Hareketli arka plan" ayarı ([lobby.md](lobby.md)) | Ürün sahibinin kararı. Arka plan her ekranda aynıydı, mod geçişi sıradandı; butonlar ve temalar korunur |
+| 2026-11-15 | **Koleksiyon genişlemesi:** iz, vuruş efekti, rekor kutlaması ve profil çerçevesi türleri; 6 Pingi, 5 raket, 3 tema; günün vitrini, 5 set, sürpriz kutu, Kış Şenliği ([shop.md](shop.md)) | Ürün sahibinin kararı. Altınla alınacak içerik 2-3 haftada bitiyordu; Pass'ın sözü korunur, kutu yalnızca altınla açılır ve olasılıkları gösterir |
 
 ## Asset takibi
 

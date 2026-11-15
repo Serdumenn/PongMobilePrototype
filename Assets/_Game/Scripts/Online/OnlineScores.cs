@@ -20,14 +20,16 @@ public sealed class OnlineScores : MonoBehaviour
         public readonly string Partner;
         public readonly int Score;
         public readonly bool IsMe;
+        public readonly string Frame;
 
-        public Row(int rank, string name, string partner, int score, bool isMe)
+        public Row(int rank, string name, string partner, int score, bool isMe, string frame = null)
         {
             Rank = rank;
             Name = name;
             Partner = partner;
             Score = score;
             IsMe = isMe;
+            Frame = frame;
         }
     }
 
@@ -51,9 +53,11 @@ public sealed class OnlineScores : MonoBehaviour
     {
         public string name;
         public string partner;
+        public string frame;
     }
 
     [SerializeField] private OnlineService online;
+    [SerializeField] private CosmeticsService cosmetics;
     [SerializeField] private int TopCount = 50;
 
     private bool synced;
@@ -96,6 +100,25 @@ public sealed class OnlineScores : MonoBehaviour
         return ParseMeta(metadata)?.partner;
     }
 
+    public static string FrameFrom(string metadata)
+    {
+        return ParseMeta(metadata)?.frame;
+    }
+
+    private string MyFrame
+    {
+        get
+        {
+            if (cosmetics == null) cosmetics = FindFirstObjectByType<CosmeticsService>();
+            return cosmetics != null ? cosmetics.FrameId : "";
+        }
+    }
+
+    private string FrameOf(string metadata, bool isMe)
+    {
+        return isMe ? MyFrame : FrameFrom(metadata);
+    }
+
     public async Task<bool> SubmitAsync(string board, int score, string partner = null, bool joinIfNeeded = false)
     {
         if (string.IsNullOrEmpty(board) || score <= 0 || online == null) return false;
@@ -111,6 +134,8 @@ public sealed class OnlineScores : MonoBehaviour
 
             var meta = new Dictionary<string, string> { { "name", online.PlayerName } };
             if (!string.IsNullOrEmpty(partner)) meta["partner"] = partner;
+            string frame = MyFrame;
+            if (!string.IsNullOrEmpty(frame)) meta["frame"] = frame;
             await LeaderboardsService.Instance.AddPlayerScoreAsync(board, score, new AddPlayerScoreOptions { Metadata = meta });
             return true;
         }
@@ -150,7 +175,10 @@ public sealed class OnlineScores : MonoBehaviour
         {
             var page = await LeaderboardsService.Instance.GetScoresAsync(board, new GetScoresOptions { Limit = TopCount, IncludeMetadata = true });
             foreach (var entry in page.Results)
-                result.Top.Add(new Row(entry.Rank + 1, NameFrom(entry.Metadata, entry.PlayerId), PartnerFrom(entry.Metadata), (int)entry.Score, entry.PlayerId == online.PlayerId));
+            {
+                bool isMe = entry.PlayerId == online.PlayerId;
+                result.Top.Add(new Row(entry.Rank + 1, NameFrom(entry.Metadata, entry.PlayerId), PartnerFrom(entry.Metadata), (int)entry.Score, isMe, FrameOf(entry.Metadata, isMe)));
+            }
         }
         catch (LeaderboardsException e) when (e.Reason == LeaderboardsExceptionReason.LeaderboardNotFound)
         {
@@ -167,7 +195,7 @@ public sealed class OnlineScores : MonoBehaviour
         try
         {
             var mine = await LeaderboardsService.Instance.GetPlayerScoreAsync(board, new GetPlayerScoreOptions { IncludeMetadata = true });
-            result.Me = new Row(mine.Rank + 1, NameFrom(mine.Metadata, mine.PlayerId), PartnerFrom(mine.Metadata), (int)mine.Score, true);
+            result.Me = new Row(mine.Rank + 1, NameFrom(mine.Metadata, mine.PlayerId), PartnerFrom(mine.Metadata), (int)mine.Score, true, MyFrame);
         }
         catch (Exception)
         {
@@ -206,7 +234,8 @@ public sealed class OnlineScores : MonoBehaviour
             for (int i = 0; i < entries.Count; i++)
             {
                 var entry = entries[i];
-                var row = new Row(i + 1, NameFrom(entry.Metadata, entry.PlayerId), PartnerFrom(entry.Metadata), (int)entry.Score, entry.PlayerId == online.PlayerId);
+                bool isMe = entry.PlayerId == online.PlayerId;
+                var row = new Row(i + 1, NameFrom(entry.Metadata, entry.PlayerId), PartnerFrom(entry.Metadata), (int)entry.Score, isMe, FrameOf(entry.Metadata, isMe));
                 result.Top.Add(row);
                 if (row.IsMe) result.Me = row;
             }
