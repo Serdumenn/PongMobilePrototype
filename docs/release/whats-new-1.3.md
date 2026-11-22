@@ -1,8 +1,8 @@
-# Sürüm notu: 1.3.0
+# Sürüm notu: 1.3.1
 
 Play Console → sürüm → **Release notes** alanına aşağıdaki bloğun tamamı yapıştırılır; Play her dili kendi etiketinden okur. Her dil 500 karakterin altındadır. GitHub Releases için İngilizce kısım kullanılır.
 
-Sürüm adı: `1.3.0`
+Sürüm adı: `1.3.1`. 1.3.0 yalnızca kapalı teste çıktı; 1.3.1 aynı notlarla yüklenir ve yeni raketlerle yeni Pingi yüzlerinin boyutunu düzeltir.
 
 ```
 <en-US>

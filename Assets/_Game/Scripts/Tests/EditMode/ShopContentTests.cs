@@ -51,6 +51,35 @@ public sealed class ShopContentTests
     }
 
     [Test]
+    public void SkinSprites_MatchTheDefaultSize()
+    {
+        var catalog = TestData.LoadCatalog();
+        var paddleSize = catalog.DefaultFor(CosmeticCategory.Paddle).PaddleSprite.bounds.size;
+        var ballSize = catalog.DefaultFor(CosmeticCategory.Ball).Idle.bounds.size;
+        var wrong = new List<string>();
+
+        foreach (var item in catalog.Items)
+        {
+            if (item.Category == CosmeticCategory.Paddle) Check(item.Id, item.PaddleSprite, paddleSize, wrong);
+            if (item.Category != CosmeticCategory.Ball) continue;
+            Check(item.Id + " idle", item.Idle, ballSize, wrong);
+            Check(item.Id + " happy", item.Happy, ballSize, wrong);
+            Check(item.Id + " sad", item.Sad, ballSize, wrong);
+            Check(item.Id + " wow", item.Wow, ballSize, wrong);
+        }
+
+        Assert.IsEmpty(wrong, string.Join(", ", wrong));
+    }
+
+    private static void Check(string name, UnityEngine.Sprite sprite, UnityEngine.Vector3 expected, List<string> wrong)
+    {
+        if (sprite == null) return;
+        var size = sprite.bounds.size;
+        if (UnityEngine.Mathf.Abs(size.x - expected.x) > 0.005f || UnityEngine.Mathf.Abs(size.y - expected.y) > 0.005f)
+            wrong.Add(name + " " + size.x.ToString("0.000") + "x" + size.y.ToString("0.000"));
+    }
+
+    [Test]
     public void GoldItems_UseTheFourTiers()
     {
         var prices = new Dictionary<CosmeticTier, int> { { CosmeticTier.Common, 300 }, { CosmeticTier.Rare, 700 }, { CosmeticTier.Epic, 1500 }, { CosmeticTier.Legendary, 3000 } };

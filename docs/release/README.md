@@ -135,4 +135,4 @@ Monetize → Products → In-app products. 15 ürün, hepsi tek seferlik. Kimlik
 - GitHub → Releases → **Draft a new release** → aynı etiket → kısa sürüm notu ("What's new"). Play Console'daki "Release notes" ile aynı metin kullanılır.
 - 1.2.0 sürüm notu (8 dil, Play'e yapıştırmaya hazır): [whats-new-1.2.md](whats-new-1.2.md).
 - 1.2.1 sürüm notu (8 dil, Play'e yapıştırmaya hazır): [whats-new-1.2.1.md](whats-new-1.2.1.md).
-- 1.3.0 sürüm notu (8 dil, Play'e yapıştırmaya hazır): [whats-new-1.3.md](whats-new-1.3.md).
+- 1.3.1 sürüm notu (8 dil, Play'e yapıştırmaya hazır): [whats-new-1.3.md](whats-new-1.3.md).
